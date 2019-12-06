@@ -45,6 +45,8 @@ I need to build two main applications:
 1. Maintenance Application
 2. Live Gig COntrol Application
 
+Those apps as well as few other apps and API will be hosted on Raspberrypi
+
 
 Live Gig Control Application (LGCA) should allow to select a gig from the list of gigs 
 
@@ -69,13 +71,14 @@ See the Image of FCB1010 in the list of files
 - pedals 5, 10 send the commands to change the current song
 - pedals 1,2,3,4 are reserved for changing the parameters of the currently selected presets
 - pedals UP, DOWN allow to switch between the GIGS . there are 7 banks reserver for 7 gig.
+
 The current bank number is displayd on FCB1010 2 digit monitor 
 
 In fact those pedals are programmed to send the predefind MIDI ControlChange messages to Python application running on RaspberryPi
 
 The Python application needs to know the rules how to convert those messages into required MIDI messages
 
-The LGCA should provide the following:
+The LGCA should provide the following info to a user:
 
 - show currnt gig
 - show current song
@@ -83,3 +86,8 @@ The LGCA should provide the following:
 - show list of presets for the selected program
 - show parameters for each preset
 
+As soon as anything is changed in python controller app the LGCA has to reflect the change
+
+User should be able to control the pythin controller using the GUI provided by LGCA
+
+ 
