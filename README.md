@@ -90,4 +90,9 @@ As soon as anything is changed in python controller app the LGCA has to reflect 
 
 User should be able to control the pythin controller using the GUI provided by LGCA
 
+ -------------------------------------------------------------------------------------------------------------------
  
+ Maintenance Application (MA)
+ 
+ The MA has to provide the tools for managing all the maintenace DB tables
+and build the configuration for the Songs and Gigs
