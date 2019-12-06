@@ -27,13 +27,15 @@ All the data will be saved into a SQLITE database with the following structure
 Tables:
 1.Instrument
   
-2.PresetBank
+2.InstrumentBank
 
 3.Preset
 
 4.Song
 
-5.SongPreset
+5.SongProgram
+
+5.SongProgramPreset
 
 6.Gig
 
@@ -56,8 +58,7 @@ Each song to have 4 programs
 
 Each program can have up to 4 presets for 4 instruments specified
 
-Each preset to have extra parameters for 
-
+Each preset selected for a Song to have extra parameters for 
   - Volume
   - Panorama
   - Delay On/Off
@@ -67,6 +68,7 @@ Each preset to have extra parameters for
 
 See the Image of FCB1010 in the list of files
 
+FCB1010 pedal usage:
 - pedals 6, 7, 8, 9 send the command about the program change within the selected song
 - pedals 5, 10 send the commands to change the current song
 - pedals 1,2,3,4 are reserved for changing the parameters of the currently selected presets
@@ -74,9 +76,11 @@ See the Image of FCB1010 in the list of files
 
 The current bank number is displayd on FCB1010 2 digit monitor 
 
-In fact those pedals are programmed to send the predefind MIDI ControlChange messages to Python application running on RaspberryPi
+In fact all those pedals are programmed to send the predefind MIDI ControlChange messages to Python application running on RaspberryPi
+(UP, DOWN pedals do net send any MIDI message)
 
-The Python application needs to know the rules how to convert those messages into required MIDI messages
+The Python application needs to know the rules how to convert those pedal messages into required MIDI messages
+
 
 The LGCA should provide the following info to a user:
 
@@ -86,9 +90,11 @@ The LGCA should provide the following info to a user:
 - show list of presets for the selected program
 - show parameters for each preset
 
-As soon as anything is changed in python controller app the LGCA has to reflect the change
+On one hand As soon as anything is changed in python controller app the LGCA has to reflect the change
+On another hand User should be able to control the python controller using the GUI provided by LGCA
+It means the LGCA and python MIDI controller have to be always in sync
 
-User should be able to control the pythin controller using the GUI provided by LGCA
+
 
  -------------------------------------------------------------------------------------------------------------------
  
