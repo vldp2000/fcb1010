@@ -50,11 +50,11 @@ Live Gig Control Application (LGCA) should allow to select a gig from the list o
 
 The songs recorded into gig list will be loaded from the database
 
-Each song to have 4 programms
+Each song to have 4 programs
 
 Each program can have up to 4 presets for 4 instruments specified
 
-Each preset to have etra parameters for 
+Each preset to have extra parameters for 
 
   - Volume
   - Panorama
@@ -62,4 +62,24 @@ Each preset to have etra parameters for
   - Revereb On/Off 
   - Mode On/Off
   - Mute/Unmute Flag 
+
+See the Image of FCB1010 in the list of files
+
+- pedals 6, 7, 8, 9 send the command about the program change within the selected song
+- pedals 5, 10 send the commands to change the current song
+- pedals 1,2,3,4 are reserved for changing the parameters of the currently selected presets
+- pedals UP, DOWN allow to switch between the GIGS . there are 7 banks reserver for 7 gig.
+The current bank number is displayd on FCB1010 2 digit monitor 
+
+In fact those pedals are programmed to send the predefind MIDI ControlChange messages to Python application running on RaspberryPi
+
+The Python application needs to know the rules how to convert those messages into required MIDI messages
+
+The LGCA should provide the following:
+
+- show currnt gig
+- show current song
+- show current program
+- show list of presets for the selected program
+- show parameters for each preset
 
