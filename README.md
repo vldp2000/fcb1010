@@ -35,11 +35,11 @@ Tables:
 
 5.SongProgram
 
-5.SongProgramPreset
+6.SongProgramPreset
 
-6.Gig
+7.Gig
 
-7.GigSong
+8.GigSong
 
 
 I need to build two main applications:
@@ -95,10 +95,25 @@ On another hand User should be able to control the python controller using the G
 It means the LGCA and python MIDI controller have to be always in sync
 
 
+Whould be nice to have the graphical user controls similar to what is used by MidiDesigner (see mididesigner_example.jpg)
+
+
 
  -------------------------------------------------------------------------------------------------------------------
  
  Maintenance Application (MA)
  
- The MA has to provide the tools for managing all the maintenace DB tables
-and build the configuration for the Songs and Gigs
+ 1. The MA has to provide tools for managing all the maintenace DB tables
+  - Instrument
+  - InstrumentBank
+  - Preset
+
+ 2. Configure Songs
+  - Song
+  - SongProgram
+  - SongProgramPreset
+
+ 3. Set the Gigs
+  - Gig
+  - GigSong
+
