@@ -20,20 +20,20 @@ The Python MIDI Controller sends the MIDI messages, they are picked by ReveloxMi
 ReveloxMidi broadcasts the MIDI messages via WiFi. 
 All the devices have to be connected to the same WiFi network to be able to connect to ReveloxMidi broadcasts service.
 
-###Issues with the current solution
+### Issues with the current solution
 The current solution has a limitation related to the way the guitar presets are selected for the specific songs.
 There is no simple way to combine the songs into a new gig songs list with the easy to reorder way of doing it.
 The songs and presets are recorderd into JSON file.
 
 
-#New Functionality
+# New Functionality
 
 I would like to change the whole way of setting and using the FCB1010 MIDI foot controller.
 
 
 All the data will be saved into a SQLITE database with the following structure
 
- ###Tables:
+### Tables:
 1.Instrument
 2.InstrumentBank
 3.Preset
@@ -52,9 +52,9 @@ I need to build two main applications:
 Those apps as well as few other apps and API will be hosted on Raspberrypi
 
 
-##Live Gig COntrol Application
+## Live Gig Control Application (LGCA)
 
-Live Gig Control Application (LGCA) should allow to select a gig from the list of gigs 
+Live Gig Control Application  should allow to select a gig from the list of gigs 
 
 The songs recorded into gig list will be loaded from the database
 
@@ -109,7 +109,7 @@ https://hellocomet.github.io/vue-svg-gauge/
 https://www.vuescript.com/svg-gauge-component-for-vue-js/
 
 
-Problems to be resolved :
+### Problems to be resolved :
 
   1. Implement the communication between the Vue.js web application and Python MIDI Controller.
      Options: 
@@ -118,7 +118,7 @@ Problems to be resolved :
 
 
 
-##Maintenance Application (MA)
+## Maintenance Application (MA)
 
 
  1. MA has to provide tools for managing all the maintenace DB tables
