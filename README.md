@@ -8,7 +8,9 @@ The are few types of applications used:
   3. Synth applications to play the MIDI note received from Guitar-to-MIDI with the sounds of different music instruments.
 
 I have modified the FCB1010 foot MIDI controller to be able to send the MIDI wireless signals 
-to iPad and to MacBook. There is the RaspberryPi computer integrated into it which does the following:
+to iPad and to MacBook. 
+
+There is the RaspberryPi computer integrated into it which does the following:
   1. Receives the wired MIDI signal from pedals,
   2. Converts them into PC (Program Change) and CC (Control Change) MIDI signals. 
 It's all done y the Python application I wrote (Python MIDI Controller app)
@@ -25,6 +27,7 @@ There is no simle way to combine the songs into a new gig songs list with the ea
 
 
 The songs and presets are recorderd into JSON file.
+
 
 I would like to change the whole way of setting and using the FCB1010 MIDI foot controller.
 
