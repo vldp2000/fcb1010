@@ -1,5 +1,5 @@
 --
--- File generated with SQLiteStudio v3.2.1 on Sat Dec 7 10:38:22 2019
+-- File generated with SQLiteStudio v3.2.1 on Sat Dec 7 13:08:20 2019
 --
 -- Text encoding used: System
 --
@@ -90,13 +90,14 @@ CREATE TABLE preset (
     name              VARCHAR (64) NOT NULL,
     refinstrumentbank INTEGER      NOT NULL
                                    REFERENCES instrumentbank (id),
-    midipc            INTEGER      NOT NULL
+    midipc            INTEGER      NOT NULL,
+    IsDefault         INTEGER      DEFAULT (0) 
 );
 
-INSERT INTO preset (id, name, refinstrumentbank, midipc) VALUES (1, 'Empty', 1, 0);
-INSERT INTO preset (id, name, refinstrumentbank, midipc) VALUES (2, 'Empty', 2, 0);
-INSERT INTO preset (id, name, refinstrumentbank, midipc) VALUES (3, 'Empty', 3, 0);
-INSERT INTO preset (id, name, refinstrumentbank, midipc) VALUES (4, 'Empty', 4, 0);
+INSERT INTO preset (id, name, refinstrumentbank, midipc, IsDefault) VALUES (1, 'Empty', 1, 0, 1);
+INSERT INTO preset (id, name, refinstrumentbank, midipc, IsDefault) VALUES (2, 'Empty', 2, 0, 1);
+INSERT INTO preset (id, name, refinstrumentbank, midipc, IsDefault) VALUES (3, 'Empty', 3, 0, 1);
+INSERT INTO preset (id, name, refinstrumentbank, midipc, IsDefault) VALUES (4, 'Empty', 4, 0, 1);
 
 -- Table: song
 DROP TABLE IF EXISTS song;

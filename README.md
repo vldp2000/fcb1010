@@ -1,15 +1,22 @@
 # fcb1010
 
-I'm playing the guitan in a band using the applications on iPad an MacBook as guitar processors.
+I'm playing the guitar in a band using the applications on iPad an MacBook as guitar processors.
 
-the are few types of applications used:
+The are few types of applications used:
   1. Guitar processors to modify the sound of guitar
   2. Guitar-to-MIDI to convert the notes played on guitar into MIDI signals
-  3. Synth applications
-  ese
+  3. Synth applications to play the MIDI note received from Guitar-to-MIDI with the sounds of different music instruments.
+
 I have modified the FCB1010 foot MIDI controller to be able to send the MIDI wireless signals 
-to iPad and to MacBook. There is the RaspberryPi computer integrated into it which receives the wired MIDI signal,
-convert them into PC and CC MIDI signals by the Python application I wrote and broadcasts them via WiFi.
+to iPad and to MacBook. There is the RaspberryPi computer integrated into it which does the following:
+  1. Receives the wired MIDI signal from pedals,
+  2. Converts them into PC (Program Change) and CC (Control Change) MIDI signals. 
+It's all done y the Python application I wrote (Python MIDI Controller app)
+
+The Python MIDI Controller sends the MIDI messages, they are picked by ReveloxMidi 
+(thanks to Dave Kelly https://github.com/ravelox/pimidi)
+ReveloxMidi broadcasts the MIDI messages via WiFi. 
+All the devices have to be connected to the same WiFi network to be able to connect to ReveloxMidi broadcasts service.
 
 
 The current solution has a limitation related to the way the guitar presets are selected for the specific songs.
@@ -124,9 +131,17 @@ Problems to be resolved :
   - Preset
 
  2. Configure Songs
-  - Song
+  - Song 
+      When new song created add four SongProgram records with names set to "A", "B", "C", "D"  automatically
+      It has to be a config file which defines the number of defauls SongProgram and their names
   - SongProgram
+      When new SongProgram record created add four SongProgramPreset records (one foreach Instrument). 
+      Use Instrument->InstrumentBank->Preset records where Preset.IsDefault=1 
+      There must be one single preset only with Preset.IsDefault=1 for any existing Instrument
+
   - SongProgramPreset
+
+
 
  3. Set the Gigs
   - Gig
