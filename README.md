@@ -121,20 +121,20 @@ see the examples:
 
 
  1. MA has to provide tools for managing all the maintenace DB tables
-  - Instrument
-  - InstrumentBank
-  - Preset
+  - **Instrument**
+  - **InstrumentBank**
+  - **Preset**
 
  2. Configure Songs
-  - Song 
-      When new song created add four SongProgram records with names set to "A", "B", "C", "D"  automatically
-      It has to be a config file which defines the number of defauls SongProgram and their names
-  - SongProgram
-      When new SongProgram record created add four SongProgramPreset records (one foreach Instrument). 
-      Use Instrument->InstrumentBank->Preset records where Preset.IsDefault=1 
-      There must be one single preset only with Preset.IsDefault=1 for any existing Instrument
-  - SongProgramPreset
+  - **Song.**
+    When new song created add four SongProgram records with names set to "A", "B", "C", "D"  automatically
+    It has to be a config file which defines the number of defauls SongProgram and their names
+  - **SongProgram.**
+    When new SongProgram record created add four SongProgramPreset records (one foreach Instrument). 
+    Use Instrument->InstrumentBank->Preset records where Preset.IsDefault=1 
+    There must be one single preset only with Preset.IsDefault=1 for any existing Instrument
+  - **SongProgramPreset**
  3. Set the Gigs
-  - Gig
-  - GigSong
+  - **Gig**
+  - **GigSong**
 
