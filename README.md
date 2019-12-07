@@ -96,6 +96,21 @@ It means the LGCA and python MIDI controller have to be always in sync
 
 
 Whould be nice to have the graphical user controls similar to what is used by MidiDesigner (see mididesigner_example.jpg)
+It can be achieved by using the gauge components)
+
+see the examples:
+ 
+https://www.jqwidgets.com/vue/vue-gauge/#https://www.jqwidgets.com/vue/vue-gauge/vue-gauge-lineargauge.htm
+https://hellocomet.github.io/vue-svg-gauge/
+https://www.vuescript.com/svg-gauge-component-for-vue-js/
+
+
+Problems to be resolved :
+
+  1. Implement the communication between the Vue.js web application and Python MIDI Controller.
+     Options: 
+        - Use SignalR to send messages from  Python MIDI Controller to Vue client
+        - Use MIDI messages:  Vue-idi-plugin  https://www.npmjs.com/package/vue-midi     
 
 
 
