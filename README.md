@@ -74,7 +74,6 @@ Each preset selected for a Song to have extra parameters for
 See the Image of FCB1010 in the list of files "fcb1010.png"
 
 ![FCB1010](/fcb1010.png)
-Format: ![Alt Text](url)
 
 FCB1010 pedal usage:
  - pedals 6, 7, 8, 9 send the command about the program change within the selected song
