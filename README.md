@@ -20,35 +20,27 @@ The Python MIDI Controller sends the MIDI messages, they are picked by ReveloxMi
 ReveloxMidi broadcasts the MIDI messages via WiFi. 
 All the devices have to be connected to the same WiFi network to be able to connect to ReveloxMidi broadcasts service.
 
-
+###Issues with the current solution
 The current solution has a limitation related to the way the guitar presets are selected for the specific songs.
-
-There is no simle way to combine the songs into a new gig songs list with the easy to reorder way of doing it.
-
-
+There is no simple way to combine the songs into a new gig songs list with the easy to reorder way of doing it.
 The songs and presets are recorderd into JSON file.
 
+
+#New Functionality
 
 I would like to change the whole way of setting and using the FCB1010 MIDI foot controller.
 
 
 All the data will be saved into a SQLITE database with the following structure
 
-Tables:
+ ###Tables:
 1.Instrument
-  
 2.InstrumentBank
-
 3.Preset
-
 4.Song
-
 5.SongProgram
-
 6.SongProgramPreset
-
 7.Gig
-
 8.GigSong
 
 
@@ -59,6 +51,8 @@ I need to build two main applications:
 
 Those apps as well as few other apps and API will be hosted on Raspberrypi
 
+
+##Live Gig COntrol Application
 
 Live Gig Control Application (LGCA) should allow to select a gig from the list of gigs 
 
@@ -124,11 +118,10 @@ Problems to be resolved :
 
 
 
- -------------------------------------------------------------------------------------------------------------------
- 
- Maintenance Application (MA)
- 
- 1. The MA has to provide tools for managing all the maintenace DB tables
+##Maintenance Application (MA)
+
+
+ 1. MA has to provide tools for managing all the maintenace DB tables
   - Instrument
   - InstrumentBank
   - Preset
@@ -141,11 +134,7 @@ Problems to be resolved :
       When new SongProgram record created add four SongProgramPreset records (one foreach Instrument). 
       Use Instrument->InstrumentBank->Preset records where Preset.IsDefault=1 
       There must be one single preset only with Preset.IsDefault=1 for any existing Instrument
-
   - SongProgramPreset
-
-
-
  3. Set the Gigs
   - Gig
   - GigSong
