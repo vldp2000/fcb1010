@@ -32,8 +32,6 @@ I would like to change the whole way of setting and using the FCB1010 MIDI foot 
 
 ## Solution Diagram
 ![FCB1010 Solution Diagram](/fcb1010_SolutionDiagram.png)
-Format: ![Alt Text](url)
-
 
 All the data will be saved into a SQLITE database with the following structure
 
