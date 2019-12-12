@@ -46,12 +46,14 @@ All the data will be saved into a SQLITE database with the following structure
   8. GigSong
 
 
-I need to build two main applications:
+I need to build the following applications:
  1. Maintenance Application
  2. Live Gig COntrol Application
+ 3. SQLite DB API
+ 
+ 
 
 Those apps as well as few other apps and API will be hosted on Raspberrypi
-
 
 ## Live Gig Control Application (LGCA)
 
@@ -117,7 +119,8 @@ see the examples:
   1. Implement the communication between the Vue.js web application and Python MIDI Controller.
      Options: 
         - Use SignalR to send messages from  Python MIDI Controller to Vue client
-        - Use MIDI messages:  Vue-idi-plugin  https://www.npmjs.com/package/vue-midi     
+        - Use MIDI messages:  Vue-idi-plugin  https://www.npmjs.com/package/vue-midi  
+        - socketIO-client-nexus 0.7.6 ( pip install socketIO-client-nexus)
 
 
 
@@ -141,4 +144,10 @@ see the examples:
  3. Set the Gigs
   - **Gig**
   - **GigSong**
+
+
+## SQLite DB API
+
+NodeJS based API
+
 
