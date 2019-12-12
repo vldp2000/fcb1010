@@ -1,16 +1,16 @@
 // Create express app
-var express = require("express")
-var app = express()
-var express = require("express")
-var app = express()
-var db = require("./database.js")
+let express = require("express")
+let app = express()
+let express = require("express")
+let app = express()
+let db = require("./database.js")
 
-var bodyParser = require("body-parser");
+let bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Server port
-var HTTP_PORT = 8000 
+let HTTP_PORT = 8000 
 // Start server
 app.listen(HTTP_PORT, () => {
     console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
@@ -46,10 +46,16 @@ app.get('/apio/songs', function (req, res, next) {
         })
     })
 })
+
+app.get('/api/gigs', function (req, res, next) {
+    let result = [1,2,3,4,5]
+    console.log(result)
+    res.json(result)
+})
   
 app.get("/api/song/:id", (req, res, next) => {
-    var sql = "select * from user where id = ?"
-    var params = [req.params.id]
+    let sql = "select * from user where id = ?"
+    let params = [req.params.id]
     db.get(sql, params, (err, row) => {
         if (err) {
             res.status(400).json({"error":err.message});
