@@ -1,7 +1,7 @@
 // Create express app
 const express = require("express")
 const app = express()
-const db = require("./database.js")
+const dbaccess = require("./dbaccess.js")
 
 let bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,30 +17,21 @@ app.listen(HTTP_PORT, () => {
 
 
 app.get("/api/data/:table", (req, res, next) => {
-    let table = req.params.table;
-    let sql = `select * from  ${table}`;
-    console.log(sql);
-    let params = []
-    db.all(sql, params, (err, rows) => {
-        if (err) {
-          res.status(400).json({"error":err.message});
-          return;
+    let tableName = req.params.table;
+    let dataset = [];
+    dbaccess.getTable(tableName,function(data){
+            console.log(`Callback Result = ${data}`);
+            dataset = data;
         }
-        res.json({ "data":rows });
-      });
+    );
+    console.log("API result " + dataset);
+    res.json({ "tableName" : dataset });
 });
 
 app.get("/api/databyid/:table/:id", (req, res, next) => {
-    let params = [ req.params.id ];
-    let sql = `select * from ${ req.params.table } where id = ?`;
-    console.log(sql);
-    db.get(sql, params, (err, row) => {
-        if (err) {
-            res.status(400).json({"error":err.message});
-            return;
-        }
-        res.json({ "data":row });
-    });
+    let result = dbaccess.getTableRecord(req.params.table, req.params.id);
+    console.log("API result " + result);
+    res.json({ "tableName" : result });    
 });
 
 // Default response for any other request
