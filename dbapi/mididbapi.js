@@ -17,21 +17,19 @@ app.listen(HTTP_PORT, () => {
 
 
 app.get("/api/data/:table", (req, res, next) => {
-    let tableName = req.params.table;
-    let dataset = [];
-    dbaccess.getTable(tableName,function(data){
-            console.log(`Callback Result = ${data}`);
-            dataset = data;
-        }
-    );
-    console.log("API result " + dataset);
-    res.json({ "tableName" : dataset });
+    dbaccess.getTable(req.params.table,function(data){
+        console.log("getTable result ");
+        console.log(data);
+        res.json({ tableName : data });
+    });
 });
 
 app.get("/api/databyid/:table/:id", (req, res, next) => {
-    let result = dbaccess.getTableRecord(req.params.table, req.params.id);
-    console.log("API result " + result);
-    res.json({ "tableName" : result });    
+    dbaccess.getTableRecord(req.params.table, req.params.id, function(data){
+        console.log("getTableRecord result ");
+        console.log(data);
+        res.json({ "tableName" : data });
+    });
 });
 
 // Default response for any other request

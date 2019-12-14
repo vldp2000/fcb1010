@@ -9,29 +9,26 @@ exports.getTable = function(tableName, callback){
     let params = [];
     let resultData = []; //for storing the rows.
     db.serialize(function() {
+        console.log("DB rows ");
         db.each(sql, function(err, row) {
-            console.log("DB row =  " + row); 
+            console.log(row); 
             resultData.push(row); //pushing rows into array
         }, function(){ // calling function when all rows have been pulled
-            console.log("data before callback  =  " + resultData); 
             callback(resultData);
         });
     });
 }
 
-/*
-function getTableRecord(tableName, id){
+exports.getTableRecord = function(tableName, id, callback) {
     let params = [ id ];
     let sql = `select * from ${ tableName } where id = ?`;
-    db.get(sql, params, (err, row) => {
-        if (err) {
-            console.log("DB error " + err);  
-            return;
-         }
-         console.log("DB result " + row); 
-         return row;
+    let resultData = []; //for storing the rows.
+    console.log(sql); 
+    console.log(`Row by id = ${id}`); 
+    
+    db.get(sql,[id], function(err, row) {
+        console.log(row); 
+        callback(row);
     });
 }
 
-module.exports.getTableRecord = getTableRecord;
-*/
