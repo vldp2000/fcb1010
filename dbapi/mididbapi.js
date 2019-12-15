@@ -18,17 +18,66 @@ app.listen(HTTP_PORT, () => {
 
 app.get("/api/data/:table", (req, res, next) => {
     dbaccess.getTable(req.params.table,function(data){
-        console.log("getTable result ");
-        console.log(data);
-        res.json({ tableName : data });
+        //console.log("getTable result ");
+        //console.log(data);
+        let resultdata = {};
+        resultdata[req.params.table] = data;
+
+        parceJsonObject(resultdata);
+        //console.log(resultdata);
+        res.json(resultdata);
     });
 });
 
+function parceJsonData(resultdata){
+    console.log("Parce JSON");
+    console.log(resultdata);
+
+    for (var key in resultdata) {
+        if (resultdata.hasOwnProperty(key)) {
+            //console.log(resultdata[key]);
+            obj = resultdata[key];
+            //console.log(obj);
+            if ( obj !== null && obj !== undefined ) {
+                if (Array.isArray(obj)){
+                    for (let item of obj){
+                        console.log('array item ')
+                        console.log(item);
+                        parceJsonObject(item);
+                    }
+                }
+                else {
+                    console.log('<Data> ')
+                    Object.keys(obj).forEach(key => {
+                        console.log(key);
+                        console.log(obj[key]);
+                    
+                    });
+                }
+            }
+        }
+     }
+}
+
+function parceJsonObject(jsonData) {
+    for (let prop in jsonData ) {
+        console.log("prop =" , prop);
+        console.log("value =." + jsonData[prop]);
+    }
+}
+
+
+
+
 app.get("/api/databyid/:table/:id", (req, res, next) => {
     dbaccess.getTableRecord(req.params.table, req.params.id, function(data){
-        console.log("getTableRecord result ");
-        console.log(data);
-        res.json({ "tableName" : data });
+        //console.log("getTableRecord result ");
+        //console.log(data);
+        let resultdata = {};
+        resultdata[req.params.table] = data;
+        //console.log(resultdata);
+        parceJsonObject(resultdata);
+        res.json(resultdata);
     });
 });
 
