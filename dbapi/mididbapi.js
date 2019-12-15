@@ -18,14 +18,9 @@ app.listen(HTTP_PORT, () => {
 
 app.get("/api/data/:table", (req, res, next) => {
     dbaccess.getTable(req.params.table,function(data){
-        //console.log("getTable result ");
-        //console.log(data);
-        let resultdata = {};
-        resultdata[req.params.table] = data;
-
-        parceJsonObject(resultdata);
+        //parceJsonObject(data);
         //console.log(resultdata);
-        res.json(resultdata);
+        res.json(data);
     });
 });
 
@@ -62,22 +57,24 @@ function parceJsonData(resultdata){
 function parceJsonObject(jsonData) {
     for (let prop in jsonData ) {
         console.log("prop =" , prop);
-        console.log("value =." + jsonData[prop]);
+        console.log(jsonData[prop]);
     }
 }
 
 
-
+app.get("/api/update/:table/", (req, res, next) => {
+    const songdata = { id: 1, name: 'The Star', tempo: null , v_dummy1:'qqqqq', v_dummy2:'zzzzzz' }
+    dbaccess.buildQuery(req.params.table, songdata);
+    res.json({"message":"Ok"});
+    //{
+        //buildQuery(data);
+        //res.json(data);
+    //}
+});
 
 app.get("/api/databyid/:table/:id", (req, res, next) => {
     dbaccess.getTableRecord(req.params.table, req.params.id, function(data){
-        //console.log("getTableRecord result ");
-        //console.log(data);
-        let resultdata = {};
-        resultdata[req.params.table] = data;
-        //console.log(resultdata);
-        parceJsonObject(resultdata);
-        res.json(resultdata);
+        res.json(data);
     });
 });
 

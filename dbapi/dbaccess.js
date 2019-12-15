@@ -29,3 +29,24 @@ exports.getTableRecord = function(tableName, id, callback) {
     });
 }
 
+
+exports.buildQuery = function(tableName, jsonData) {
+    let sql = 'UPDATE '+ tableName + ' set ';
+    let id = '';
+    for (let prop in jsonData ) {
+        if (prop.startsWith('v_')) {
+            console.log('skip');
+        }
+        else {
+            sql += prop + " = '" + jsonData[prop]+ "' ,";
+            if ( prop === 'id')
+                id = jsonData[prop];
+        }
+    }
+    if (sql.endsWith(','))
+        sql = sql.slice(0, sql.length -1 );
+    sql += ' where id = '+ id;    
+    console.log(sql);
+    console.log(id);
+}
+
