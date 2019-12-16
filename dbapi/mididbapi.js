@@ -24,42 +24,30 @@ app.get("/api/data/:table", (req, res, next) => {
     });
 });
 
-function parceJsonData(resultdata){
-    console.log("Parce JSON");
-    console.log(resultdata);
+app.get("/api/databyid/:table/:id", (req, res, next) => {
+    dbaccess.getTableRecord(req.params.table, req.params.id, function(data){
+        res.json(data);
+    });
+});
 
-    for (var key in resultdata) {
-        if (resultdata.hasOwnProperty(key)) {
-            //console.log(resultdata[key]);
-            obj = resultdata[key];
-            //console.log(obj);
-            if ( obj !== null && obj !== undefined ) {
-                if (Array.isArray(obj)){
-                    for (let item of obj){
-                        console.log('array item ')
-                        console.log(item);
-                        parceJsonObject(item);
-                    }
-                }
-                else {
-                    console.log('<Data> ')
-                    Object.keys(obj).forEach(key => {
-                        console.log(key);
-                        console.log(obj[key]);
-                    
-                    });
-                }
-            }
-        }
-     }
-}
 
-function parceJsonObject(jsonData) {
-    for (let prop in jsonData ) {
-        console.log("prop =" , prop);
-        console.log(jsonData[prop]);
-    }
-}
+app.post('/api/updatedata',  function (req, res) { 
+
+    let data = req.body;
+    console.log(data);
+    dbaccess.updateTableRecord(data,function(result){
+        console.log(result);
+        res.json(result);  
+    });    
+});
+
+app.post('/api/insertdata',  function (req, res, next) { 
+    var data = req.body;
+    console.log(data);
+    let sql = dbaccess.buildInsertQuery(data);
+    console.log(sql);
+    res.json({"message":"Ok"}); 
+});
 
 
 app.get("/api/update/:table/", (req, res, next) => {
@@ -83,11 +71,7 @@ app.get("/api/insert/:table/", (req, res, next) => {
         //res.json(data);
     //}
 });
-app.get("/api/databyid/:table/:id", (req, res, next) => {
-    dbaccess.getTableRecord(req.params.table, req.params.id, function(data){
-        res.json(data);
-    });
-});
+
 
 // Default response for any other request
 app.get("/", (req, res, next) => {
