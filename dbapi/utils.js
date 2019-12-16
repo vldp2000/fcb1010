@@ -39,7 +39,7 @@ exports.parceJsonObject = function(jsonData) {
 exports.buildUpdateQuery = function(data) {
     let tableName = data.tableName;
     let jsonData = data.data;
-
+    let values = [];
     let sql = 'UPDATE '+ tableName + ' set ';
     let id = '';
     for (let prop in jsonData ) {
@@ -49,7 +49,8 @@ exports.buildUpdateQuery = function(data) {
         }
         else {
             //console.log(prop.toUpperCase());
-            sql += prop + " = '" + jsonData[prop]+ "' ,";
+            sql += prop + " = ? ," ;
+            values.push( prepareData( "'" + jsonData[prop] + "'")) ;
         }
         if ( prop === 'id') {
             id = jsonData[prop];
@@ -57,10 +58,12 @@ exports.buildUpdateQuery = function(data) {
     }
     if (sql.endsWith(','))
         sql = sql.slice(0, sql.length -1 );
-    sql += ' where id = '+ id;    
+    sql += ' where id = ? '
+    values.push(id);    
+
     sql = sql.split( "'null'" ).join( 'null' );
     console.log(sql);
-    return sql;
+    return { "sql": sql, "values":values };
 }
 
 exports.buildInsertQuery = function(data) {
@@ -68,7 +71,8 @@ exports.buildInsertQuery = function(data) {
     let jsonData = data.data;
     let sql = 'Insert Into '+ tableName ;
     let fields = ' (';
-    let values = ' (';
+    let format = ' ('
+    let values = [];
     for (let prop in jsonData ) {
         if (prop.startsWith('v_') || prop.toUpperCase() == 'ID') {
             //console.log(prop.toUpperCase());
@@ -77,19 +81,21 @@ exports.buildInsertQuery = function(data) {
         else {
             //console.log(prop.toUpperCase());
             fields += prop + "," 
-            values += "'" + jsonData[prop] + "' ,";
-        }
-
-        if ( prop === 'id') {
-            id = jsonData[prop];
+            format += ' ?,'
+            values.push( prepareData( "'" + jsonData[prop] + "'") );
         }
     }
     if (fields.endsWith(','))
         fields = fields.slice(0, fields.length -1 );
-    if (values.endsWith(','))
-        values = values.slice(0, values.length -1 );    
-    sql += fields + ' )  values (' + values + ') ' ;   
+    if (format.endsWith(','))
+        format = format.slice(0, format.length -1 );    
+    sql += fields + ' )  values ' + format + ') ' ;   
     sql = sql.split( "'null'" ).join( 'null' );
     //console.log(sql);
-    return sql;
+    return  { "sql": sql, "values":values };
+}
+
+function prepareData(value) {
+    return value.split( "'null'" ).join( 'null' );
+
 }

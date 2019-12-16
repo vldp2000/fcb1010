@@ -31,11 +31,10 @@ exports.getTableRecord = function (tableName, id, callback) {
 }
 
 exports.updateTableRecord = function (data, callback) {
-    const sql = utils.buildUpdateQuery(data);
-    let id = -1;
+    const sqldata = utils.buildUpdateQuery(data);
     db.serialize(function () {
         try {
-            db.run(sql, function (err) {
+            db.run(sqldata.sql, sqldata.values, function (err) {
                 if (err) {
                     callback({
                         "status": false,
@@ -59,20 +58,32 @@ exports.updateTableRecord = function (data, callback) {
     });
 }
 
+exports.InsertTableRecord = function (data, callback) {
+    const sqldata = utils.buildInsertQuery(data);
+    console.log(sqldata);
 
+    db.serialize(function () {
+        try {
+            db.run(sqldata.sql, sqldata.values, function (err) {
+                if (err) {
+                    callback({
+                        "status": false,
+                        "val": err
+                    });
+                } else {
+                    console.log("val  " + this.lastID);
+                    callback({
+                        "status": true,
+                        "val": this.lastID
+                    });
+                }
+            });
+        } catch (ex) {
+            callback({
+                "status": false,
+                "val": ex
+            });
+        }
 
-/*
-db.serialize(function() {
-    db.run("CREATE TABLE IF NOT EXISTS users (nom TEXT, prenom TEXT, sexe TEXT, email TEXT)");
-
-    var stmt = db.prepare("INSERT INTO users VALUES (?, ?, ?, ?)");
-    stmt.run(users[id].nom, users[id].prenom, users[id].sexe, users[id].email);
-    stmt.finalize();
-   });
-
-    last_insert_rowid()
-    The last_insert_rowid() function returns the ROWID of the last 
-    row insert from the database connection which invoked the function. 
-    The last_insert_rowid() SQL function is a wrapper around the 
-    sqlite3_last_insert_rowid() C/C++ interface function.
-*/
+    });
+}

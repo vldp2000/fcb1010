@@ -41,12 +41,13 @@ app.post('/api/updatedata',  function (req, res) {
     });    
 });
 
-app.post('/api/insertdata',  function (req, res, next) { 
+app.post('/api/insertdata',  function (req, res) { 
     var data = req.body;
     console.log(data);
-    let sql = dbaccess.buildInsertQuery(data);
-    console.log(sql);
-    res.json({"message":"Ok"}); 
+    dbaccess.InsertTableRecord(data,function(result){
+        console.log(result);
+        res.json(result);  
+    });    
 });
 
 
