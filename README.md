@@ -150,4 +150,39 @@ see the examples:
 
 NodeJS based API
 
+1. test the load of all the records from a required table:
+  http://127.0.0.1:8000/api/data/song/
+  where song - name of the table
+
+2. test the load of one records from a required table by Id:  Get Request
+http://127.0.0.1:8000/api/databyid/song/1
+
+3. Update the existing record in a table. Post request
+http://127.0.0.1:8000/api/updatedata
+body:
+{
+  "tableName": "Song",
+  "data": {
+    "id": 16,
+    "name": "Name of a song",
+    "tempo": 10,
+    "v_dummy1": "qqqqq",
+    "v_dummy2": "zzzzzz"
+  }
+}
+
+3. Inser a new record into a table. Post request
+http://127.0.0.1:8000/api/insertdata
+body:
+{
+  "tableName": "Song",
+  "data": {
+    "name": "Name of a song",
+    "tempo": 100,
+    "v_dummy1": "bbbbb",
+    "v_dummy2": "cccc"
+  }
+}
+
+Properties with the names starting with "v_" will be ignored by the query builder
 
