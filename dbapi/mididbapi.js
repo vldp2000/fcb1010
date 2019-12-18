@@ -51,28 +51,6 @@ app.post('/api/insertdata',  function (req, res) {
 });
 
 
-app.get("/api/update/:table/", (req, res, next) => {
-    const songdata = { id: 1, name: 'The Star', tempo: null , v_dummy1:'qqqqq', v_dummy2:'zzzzzz' }
-    let sql = dbaccess.buildUpdateQuery(req.params.table, songdata);
-    console.log(sql);
-    res.json({"message":"Ok"});
-    //{
-        //buildQuery(data);
-        //res.json(data);
-    //}
-});
-
-app.get("/api/insert/:table/", (req, res, next) => {
-    const songdata = { id: 1, name: 'The Star', tempo: null , v_dummy1:'qqqqq', v_dummy2:'zzzzzz' }
-    let sql = dbaccess.buildInsertQuery(req.params.table, songdata);
-    console.log(sql);
-    res.json({"message":"Ok"});
-    //{
-        //buildQuery(data);
-        //res.json(data);
-    //}
-});
-
 
 // Default response for any other request
 app.get("/", (req, res, next) => {
