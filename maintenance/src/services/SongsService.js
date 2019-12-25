@@ -8,11 +8,8 @@ export default {
       }
     })
   },
-  showById (songId) {
-    return Api().get(`databyid/:song/:id/${songId}`)
-  },
-  showAll () {
-    return Api().get('data/song')
+  show (songId) {
+    return Api().get(`songs/${songId}`)
   },
   post (song) {
     return Api().post('song', song)

@@ -1,51 +1,25 @@
 <template>
   <vpanel title="Songs">
-    <v-btn
-      slot="action"
-      :to="{
-        name: 'songs-create'
-      }"
-      class="cyan accent-2"
-      light
-      medium
-      absolute
-      right
-      middle
-      fab>
-      <v-icon>add</v-icon>
-    </v-btn>
-    <div
-      v-for="song in songs"
-      class="song"
-      :key="song.id">
-      <v-layout>
-        <v-flex xs6>
-          <div class="song-name">
-            {{song.name}}
-          </div>
-          <div class="song-tempo">
-            {{song.tempo}}
-          </div>
-          <v-btn
-            dark
-            class="cyan"
-            :to="{
-              name: 'song',
-              params: {
-                songId: song.id
-              }
-            }">
-            View
-          </v-btn>
-        </v-flex>
-        <v-flex xs6>
-          <v-text-field
-            v-model="placeholder"
-            label="Lirycs"
-          ></v-text-field>
-        </v-flex>
-      </v-layout>
-    </div>
+    <template>
+      <v-simple-table>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-left">Id</th>
+              <th class="text-left">Name</th>
+              <th class="text-left">Tempo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in songs" :key="item.id">
+              <td>{{ item.id }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.tempo }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </template>
   </vpanel>
 </template>
 
@@ -55,42 +29,16 @@ import SongsService from '@/services/SongsService'
 export default {
   data () {
     return {
-      songs: null,
-      placeholder: ''
+      songs: null
     }
   },
   watch: {
     '$route.query.search': {
       immediate: true,
       async handler (value) {
-        this.songs = (await SongsService.showAll()).data
+        this.songs = (await SongsService.index(value)).data
       }
     }
   }
 }
 </script>
-
-<style scoped>
-.song {
-  padding: 20px;
-  height: 330px;
-  overflow: hidden;
-}
-
-.song-title {
-  font-size: 30px;
-}
-
-.song-artist {
-  font-size: 24px;
-}
-
-.song-genre {
-  font-size: 18px;
-}
-
-.album-image {
-  width: 70%;
-  margin: 0 auto;
-}
-</style>

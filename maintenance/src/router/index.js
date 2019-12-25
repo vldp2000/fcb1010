@@ -18,11 +18,6 @@ const routes = [
     component: Test
   },
   {
-    path: '/home',
-    name: 'home',
-    component: HelloWorld
-  },
-  {
     path: '/songs',
     name: 'songs',
     component: Songs
