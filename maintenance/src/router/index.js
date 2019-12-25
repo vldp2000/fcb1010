@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Test from '@/components/Test'
+import Songs from '@/components/Songs/Index'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -19,6 +21,11 @@ const routes = [
     path: '/home',
     name: 'home',
     component: HelloWorld
+  },
+  {
+    path: '/songs',
+    name: 'songs',
+    component: Songs
   },
   {
     path: '/',

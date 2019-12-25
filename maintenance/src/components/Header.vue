@@ -21,9 +21,9 @@
       </v-btn>
       <v-btn
         :to="{
-          name: 'test'
+          name: 'songs'
         }">
-        TEST
+        songs
       </v-btn>
     </v-toolbar-items>
 
