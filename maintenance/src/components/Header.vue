@@ -25,6 +25,12 @@
         }">
         songs
       </v-btn>
+      <v-btn
+        :to="{
+          name: 'test'
+        }">
+        Test
+      </v-btn>
     </v-toolbar-items>
 
   </v-toolbar>
