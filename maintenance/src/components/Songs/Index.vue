@@ -1,10 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs12>
-      <songs-search-panel />
-    </v-flex>
-
-    <v-flex xs12 class="ml-2">
+    <v-flex class="ml-2">
       <songs-panel class="mt-2" />
     </v-flex>
   </v-layout>
@@ -12,24 +8,21 @@
 
 <script>
 import SongsPanel from './SongsPanel'
-import SongsSearchPanel from './SongsSearchPanel'
 import SongsService from '@/services/SongsService'
 
 export default {
   components: {
-    SongsPanel,
-    SongsSearchPanel
+    SongsPanel
   },
   data () {
     return {
-      songs: null
     }
   },
   async mounted () {
-    this.songs = (await SongsService.index()).data
+    if (!this.$store.state.songList || !this.$store.state.songList.Length) {
+      let songs = (await SongsService.index()).data
+      this.$store.dispatch('setSongList', songs)
+    }
   }
 }
 </script>
-
-<style scoped>
-</style>

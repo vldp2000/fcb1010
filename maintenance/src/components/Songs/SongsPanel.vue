@@ -71,7 +71,8 @@
 </template>
 
 <script>
-import SongsService from '@/services/SongsService'
+
+import { mapState } from 'vuex'
 
 export default {
   data () {
@@ -100,17 +101,27 @@ export default {
       },
       pagination: {
         page: 1,
-        rowsPerPage: 10,
+        rowsPerPage: 50,
         totalItems: 0
       },
       selected: []
     }
   },
   computed: {
+    ...mapState(['songList']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     }
   },
+
+  watch: {
+    songList (newValue, oldValue) {
+      console.log(`Updating from >>>>>>  ${oldValue} to ${newValue}`)
+      // Do whatever makes sense now
+      this.songs = newValue
+    }
+  },
+
   methods: {
     editItem (item) {
       this.editedIndex = this.songs.indexOf(item)
@@ -132,25 +143,15 @@ export default {
     },
 
     save () {
+      // TODO Implement via getters
       if (this.editedIndex > -1) {
-        Object.assign(this.songs[this.editedIndex], this.editedItem)
+        this.$set(this.$store.state.songList, this.editedIndex, this.editedItem)
       } else {
-        this.songs.push(this.editedItem)
+        // this.songs.push(this.editedItem)
+        this.$set(this.$store.state.songList, this.$store.state.songList.length, this.editedItem)
       }
       this.close()
     }
-  },
-  watch: {
-    '$route.query.search': {
-      immediate: true,
-      async handler (value) {
-        this.songs = (await SongsService.index(value)).data
-      }
-    }
-  },
-  async mounted () {
-    this.songs = (await SongsService.index()).data
-    this.pagination.totalItems = this.songs.length
   }
 }
 </script>
