@@ -17,18 +17,19 @@ export default {
   async post (song) {
     console.log('// ----------->>return Api().post(song)')
     console.log(song)
-    let result = await Api().post('song', song).data
+    let result = await Api().post('song', song)
+    console.log('// -----------result')
     console.log(result)
-    store.dispatch('addSong', result)
+    store.dispatch('addSong', result.data)
   },
 
   async put (song) {
     console.log('// ----------->>return Api().put(song{song.id}, song)')
     console.log(song)
     console.log(song.id)
-    // let result = await updateSong(song)
     let result = await Api().put(`song/${song.id}`, song)
-    console.log(result.data)
+    console.log('// -----------result')
+    console.log(result)
     store.dispatch('updateSong', result.data)
   }
 }

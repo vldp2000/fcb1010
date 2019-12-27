@@ -30,6 +30,7 @@ module.exports = {
       })
     }
   },
+
   async show (req, res) {
     try {
       const song = await Song.findById(req.params.songId)
@@ -40,11 +41,15 @@ module.exports = {
       })
     }
   },
+
   async post (req, res) {
     try {
-      console.log("Post >>>>>>>>> Song")
-      console.log(req.body)
-      const song = await Song.create(req.body)
+      let model = req.body
+      delete model.id
+      delete model.createdAt
+      delete model.updatedAt
+      //console.log(model)
+      const song = await Song.create(model)
       console.log(song)
       res.send(song)
     } catch (err) {
@@ -53,11 +58,9 @@ module.exports = {
       })
     }
   },
+
   async put (req, res) {
     try {
-      console.log("Put>>>>>>>>> Song")
-      console.log(req.body)
-      console.log(req.params.songId)
       await Song.update(req.body, {
         where: {
           id: req.params.songId
@@ -70,6 +73,7 @@ module.exports = {
       })
     }
   },
+
   async selectAll (req, res) {
     try {
       console.log("Select>>>>>>>>>All songa:")

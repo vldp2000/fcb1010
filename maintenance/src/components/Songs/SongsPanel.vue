@@ -18,7 +18,7 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
-              <v-btn color="cyan" dark class="mb-2" v-on="on">New Item</v-btn>
+              <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -62,9 +62,6 @@
           delete
         </v-icon>
       </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
-      </template>
     </v-data-table>
   </custom-panel>
 </template>
@@ -95,13 +92,19 @@ export default {
         name: '',
         tempo: 0,
         lirycs: '',
-        tabs: ''
+        tabs: '',
+        id: -1,
+        createdAt: '',
+        updatedAt: ''
       },
       defaultItem: {
         name: '',
         tempo: 0,
         lirycs: '',
-        tabs: ''
+        tabs: '',
+        id: -1,
+        createdAt: '',
+        updatedAt: ''
       },
       pagination: {
         page: 1,
@@ -124,6 +127,9 @@ export default {
   watch: {
     songList: function (newValue, oldValue) {
       this.songs = newValue
+    },
+    dialog: function (val) {
+      val || this.closeDialog()
     }
   },
 
@@ -131,6 +137,7 @@ export default {
     editItem (item) {
       this.editedIndex = this.songs.indexOf(item)
       this.editedItem = Object.assign({}, item)
+      console.log(this.editedItem)
       this.dialog = true
     },
 
@@ -148,7 +155,7 @@ export default {
     },
 
     saveSong () {
-      console.log('saveSong () ')
+      console.log('saveSong () -------')
       console.log(this.editedItem)
       if (this.editedIndex > -1) {
         try {
