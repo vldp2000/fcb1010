@@ -1,10 +1,10 @@
 <template>
-  <vpanel title="Search">
+  <custom-panel title="Search">
     <v-text-field
       label="Search by song title"
       v-model="search"
     ></v-text-field>
-  </vpanel>
+  </custom-panel>
 </template>
 
 <script>

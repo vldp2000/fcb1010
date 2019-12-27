@@ -1,5 +1,5 @@
 <template>
-  <vpanel>
+  <custom-panel>
     <v-data-table
       :headers="headers"
       :items="desserts"
@@ -74,7 +74,7 @@
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
-  </vpanel>
+  </custom-panel>
 </template>
 
 <script>

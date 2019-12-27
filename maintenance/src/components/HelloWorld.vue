@@ -5,11 +5,11 @@
       wrap
     >
       <v-flex mb-12>
-        <vpanel title="Hello World">
+        <custom-panel title="Hello World">
           <h1 class="display-2 font-weight-bold mb-3">
             Welcome to Maintenance
           </h1>
-        </vpanel>
+        </custom-panel>
       </v-flex>
     </v-layout>
   </v-container>

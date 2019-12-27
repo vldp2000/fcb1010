@@ -1,10 +1,9 @@
 <template>
-  <vpanel title="Songs">
+  <custom-panel title="Songs">
     <v-data-table
-      :total-items="pagination.totalItems"
-      :pagination.sync="pagination"
+      @pagination="pagination = $event"
       :headers="headers"
-      :items="songs"
+      :items="songList"
       sort-by="name"
       class="elevation-1"
     >
@@ -19,7 +18,7 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
+              <v-btn color="cyan" dark class="mb-2" v-on="on">New Item</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -41,8 +40,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+                <v-btn color="cyan darken-1" text @click="closeDialog">Cancel</v-btn>
+                <v-btn color="cyan darken-1" text @click="saveSong">Save</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -67,12 +66,13 @@
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
-  </vpanel>
+  </custom-panel>
 </template>
 
 <script>
 
 import { mapState } from 'vuex'
+import SongsService from '@/services/SongsService'
 
 export default {
   data () {
@@ -93,16 +93,23 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: '',
-        tempo: 0
+        tempo: 0,
+        lirycs: '',
+        tabs: ''
       },
       defaultItem: {
         name: '',
-        tempo: 0
+        tempo: 0,
+        lirycs: '',
+        tabs: ''
       },
       pagination: {
         page: 1,
-        rowsPerPage: 50,
-        totalItems: 0
+        itemsPerPage: 20,
+        pageStart: 1,
+        // pageStop: 2,
+        // pageCount: number
+        itemsLength: 128
       },
       selected: []
     }
@@ -115,9 +122,7 @@ export default {
   },
 
   watch: {
-    songList (newValue, oldValue) {
-      console.log(`Updating from >>>>>>  ${oldValue} to ${newValue}`)
-      // Do whatever makes sense now
+    songList: function (newValue, oldValue) {
       this.songs = newValue
     }
   },
@@ -134,7 +139,7 @@ export default {
       confirm('Are you sure you want to delete this item?') && this.songs.splice(index, 1)
     },
 
-    close () {
+    closeDialog () {
       this.dialog = false
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
@@ -142,15 +147,23 @@ export default {
       }, 300)
     },
 
-    save () {
-      // TODO Implement via getters
+    saveSong () {
+      console.log('saveSong () ')
+      console.log(this.editedItem)
       if (this.editedIndex > -1) {
-        this.$set(this.$store.state.songList, this.editedIndex, this.editedItem)
+        try {
+          SongsService.put(this.editedItem)
+        } catch (err) {
+          console.log(err)
+        }
       } else {
-        // this.songs.push(this.editedItem)
-        this.$set(this.$store.state.songList, this.$store.state.songList.length, this.editedItem)
+        try {
+          SongsService.post(this.editedItem)
+        } catch (err) {
+          console.log(err)
+        }
       }
-      this.close()
+      this.closeDialog()
     }
   }
 }

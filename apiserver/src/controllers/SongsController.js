@@ -2,7 +2,8 @@ const {Song} = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      console.log("Select>>>>>>>>>SearcH:")
+      console.log("Select>>>>>>>>>Search")
+      console.log(req.query.search)
       let songs = null
       const search = req.query.search
       console.log(search)
@@ -41,7 +42,10 @@ module.exports = {
   },
   async post (req, res) {
     try {
+      console.log("Post >>>>>>>>> Song")
+      console.log(req.body)
       const song = await Song.create(req.body)
+      console.log(song)
       res.send(song)
     } catch (err) {
       res.status(500).send({
@@ -51,6 +55,9 @@ module.exports = {
   },
   async put (req, res) {
     try {
+      console.log("Put>>>>>>>>> Song")
+      console.log(req.body)
+      console.log(req.params.songId)
       await Song.update(req.body, {
         where: {
           id: req.params.songId

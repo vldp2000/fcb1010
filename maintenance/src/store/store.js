@@ -11,38 +11,31 @@ export default new Vuex.Store({
   ],
   state: {
     songList: [],
-    currentSong: null,
     presetList: [],
-    currentPreset: null,
     gigList: [],
-    currentGig: null,
-    gigSongList: [],
-    currentGigSong: null
+    gigSongList: []
   },
   mutations: {
     setSongList (state, songList) {
       state.songList = songList
     },
-    setCurrentSong (state, song) {
-      state.currentSong = song
+    addSong (state, song) {
+      state.songList.push(song)
     },
+    updateSong (state, song) {
+      console.log('mutations - updateSong')
+      const item = state.songList.find(item => item.id === song.id)
+      Object.assign(item, song)
+    },
+
     setPresetList (state, presetList) {
       state.presetList = presetList
-    },
-    setCurrentPreset (state, preset) {
-      state.currentPreset = preset
     },
     setGigList (state, gigList) {
       state.gigList = gigList
     },
-    setCurrentGig (state, gig) {
-      state.currentGig = gig
-    },
     setGigSongList (state, gigSongList) {
       state.gigSongList = gigSongList
-    },
-    setCurrentGigSong (state, gigSong) {
-      state.currentGigSong = gigSong
     }
   },
 
@@ -50,28 +43,25 @@ export default new Vuex.Store({
     setSongList ({ commit }, setSongList) {
       commit('setSongList', setSongList)
     },
-    setCurrentSong ({ commit }, song) {
-      commit('setCurrentSong', song)
+    addSong ({ commit }, song) {
+      commit('addSong', song)
     },
+    updateSong ({ commit }, song) {
+      console.log('action - updateSong')
+      commit('updateSong', song)
+    },
+
     setPresetList ({ commit }, presetList) {
       commit('setPresetList', presetList)
-    },
-    setCurrentPreset ({ commit }, preset) {
-      commit('setCurrentPreset', preset)
     },
     setGigList ({ commit }, setGigList) {
       commit('setGigList', setGigList)
     },
-    setCurrentGig ({ commit }, gig) {
-      commit('setCurrentGig', gig)
-    },
     setGigSongList ({ commit }, setGigSongList) {
       commit('setGigSongList', setGigSongList)
-    },
-    setCurrentGigSong ({ commit }, gigSong) {
-      commit('setCurrentGigSong', gigSong)
     }
   },
+
   getters: {
     songList: state => state.songList
   }
