@@ -9,6 +9,9 @@
           sort-by="name"
           class="elevation-1"
         >
+          <template v-slot:item.instrument="{ item }">
+            <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip>
+          </template>
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Banks Instruments</v-toolbar-title>
@@ -93,7 +96,8 @@ export default {
           value: 'name'
         },
         { text: 'Number', value: 'number' },
-        { text: 'Instrument', value: 'refinstrument' },
+        { text: 'refInstrument', value: 'refinstrument' },
+        { text: 'Instrument', value: 'instrument' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
 

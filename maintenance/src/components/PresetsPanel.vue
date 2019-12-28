@@ -9,6 +9,20 @@
           sort-by="name"
           class="elevation-1"
         >
+          <template v-slot:item.pc="{ item }">
+            <circle-slider
+              v-model="item.midipc"
+              :side="127"
+              :min="0"
+              :max="127"
+              :step-size="1"
+              :circle-width="12"
+              :progress-width="3"
+              :knob-radius="4"
+            ></circle-slider>
+            <!-- <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip> -->
+          </template>
+
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Presets</v-toolbar-title>
@@ -74,6 +88,7 @@
 
 import { mapState } from 'vuex'
 import PresetsService from '@/services/PresetsService'
+// import VueCircleSlider from 'vue-circle-slider'
 
 export default {
   data () {
@@ -87,7 +102,9 @@ export default {
           sortable: false,
           value: 'name'
         },
+        { text: 'Instrument', value: 'instrument' },
         { text: 'Midi PC', value: 'midipc' },
+        { text: 'PC', value: 'pc' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
 
