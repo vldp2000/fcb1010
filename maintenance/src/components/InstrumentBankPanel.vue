@@ -37,6 +37,16 @@
                           <v-text-field v-model="editedItem.number" label="Number"></v-text-field>
                         </v-col>
                       </v-row>
+                      <v-row>
+                        <v-select
+                          label="Instrument"
+                          v-model="editedItem.refinstrument"
+                          :items="instrumentList"
+                          required
+                          item-text="name"
+                          item-value="id">
+                        </v-select>
+                      </v-row>
                     </v-container>
                   </v-card-text>
 
@@ -68,6 +78,7 @@
 
 import { mapState } from 'vuex'
 import InstrumentBankService from '@/services/InstrumentBankService'
+import InstrumentsService from '@/services/InstrumentsService'
 
 export default {
   data () {
@@ -82,6 +93,7 @@ export default {
           value: 'name'
         },
         { text: 'Number', value: 'number' },
+        { text: 'Instrument Id', value: 'refinstrument' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
 
@@ -89,12 +101,14 @@ export default {
       editedItem: {
         id: -1,
         name: '',
-        number: 0
+        number: 0,
+        refinstrument: -1
       },
       defaultItem: {
         id: -1,
         name: '',
-        number: 0
+        number: 0,
+        refinstrument: -1
       },
       pagination: {
         page: 1,
@@ -113,7 +127,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['instrumentBankList']),
+    ...mapState(['instrumentBankList', 'instrumentList']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     }
@@ -130,19 +144,34 @@ export default {
 
   methods: {
     async init () {
-      console.log(this.instrumentBankList.length)
-      if (this.instrumentBankList.length === 0) {
-        console.log('Init instrument Banks storage')
-        let result = await InstrumentBankService.getAll()
-        let list = await result.data
-        // console.log('<< Init instrument bank List?>>')
-        await this.$store.dispatch('setInstrumentBankList', list)
-        // console.log(this.$store.state.instrumentBankList)
-      } else {
-        console.log(' Instrument Bank List already populated')
-        console.log(this.$store.state.instrumentBankList)
+      try {
+        console.log(this.instrumentBankList.length)
+        if (this.instrumentBankList.length === 0) {
+          console.log('Init instrument Banks storage')
+          let result = await InstrumentBankService.getAll()
+          let list = await result.data
+          // console.log('<< Init instrument bank List?>>')
+          await this.$store.dispatch('setInstrumentBankList', list)
+          // console.log(this.$store.state.instrumentBankList)
+        } else {
+          console.log(' Instrument Bank List already populated')
+          // console.log(this.$store.state.instrumentBankList)
+        }
+
+        if (this.instrumentList.length === 0) {
+          console.log('Init instrument storage')
+          let result = await InstrumentsService.getAll()
+          let list = await result.data
+          await this.$store.dispatch('setInstrumentList', list)
+        } else {
+          console.log(' Instrument Bank already populated')
+          // console.log(this.$store.state.instrumentBankList)
+        }
+      } catch (err) {
+        console.log(err)
       }
     },
+
     editItem (item) {
       this.editedIndex = this.instrumentBankList.indexOf(item)
       this.editedItem = Object.assign({}, item)

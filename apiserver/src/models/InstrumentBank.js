@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     number:DataTypes.INTEGER ,
-    refinstrument:  DataTypes.INTEGER 
+    refinstrument:  DataTypes.INTEGER
   },
   {
     underscored: false,
