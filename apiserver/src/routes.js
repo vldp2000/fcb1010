@@ -1,32 +1,43 @@
-const SongsController = require('./controllers/SongsController')
-const InstrumentsController = require('./controllers/InstrumentsController')
-const PresetsController = require('./controllers/PresetsController')
+const SongController = require('./controllers/SongController')
+const InstrumentController = require('./controllers/InstrumentController')
+const PresetController = require('./controllers/PresetController')
+const InstrumentBankController = require('./controllers/InstrumentBankController')
 
 module.exports = (app) => {
   app.get('/songs',
-    SongsController.index)
+    SongController.index)
   app.get('/song/:id',
-    SongsController.show)
+    SongController.show)
   app.put('/song/:id',
-    SongsController.put)
+    SongController.put)
   app.post('/song',
-    SongsController.post)
+    SongController.post)
 
   app.get('/instruments',
-    InstrumentsController.index)
+    InstrumentController.index)
   app.get('/instrument/:id',
-    InstrumentsController.show)
+    InstrumentController.show)
   app.put('/instrument/:id',
-    InstrumentsController.put)
+    InstrumentController.put)
   app.post('/instrument',
-    InstrumentsController.post)
+    InstrumentController.post)
 
   app.get('/presets',
-    PresetsController.index)
+    PresetController.index)
   app.get('/preset/:id',
-    PresetsController.show)
+    PresetController.show)
   app.put('/preset/:id',
-    PresetsController.put)
+    PresetController.put)
   app.post('/preset',
-    PresetsController.post)    
+    PresetController.post)    
+
+  app.get('/instrumentBanks',
+    InstrumentBankController.index)
+  app.get('/instrumentBank/:id',
+    InstrumentBankController.show)
+  app.put('/instrumentBank/:id',
+    InstrumentBankController.put)
+  app.post('/instrumentBank',
+    InstrumentBankController.post)
+
 }

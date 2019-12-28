@@ -13,6 +13,7 @@ export default new Vuex.Store({
     songList: [],
     instrumentList: [],
     presetList: [],
+    instrumentBankList: [],
     gigList: [],
     gigSongList: []
   },
@@ -53,6 +54,18 @@ export default new Vuex.Store({
     updatePreset (state, preset) {
       const item = state.presetList.find(item => item.id === preset.id)
       Object.assign(item, preset)
+    },
+
+    setInstrumentBankList (state, instrumentBankList) {
+      state.instrumentBankList = instrumentBankList
+    },
+    addInstrumentBank (state, instrumentBank) {
+      state.instrumentBankList.push(instrumentBank)
+    },
+    updateInstrumentBank (state, instrumentBank) {
+      console.log('mutations - updateInstrumentBank')
+      const item = state.instrumentBankList.find(item => item.id === instrumentBank.id)
+      Object.assign(item, instrumentBank)
     },
 
     setGigList (state, gigList) {
@@ -98,6 +111,17 @@ export default new Vuex.Store({
       commit('updatePreset', preset)
     },
 
+    setInstrumentBankList ({ commit }, setInstrumentBankList) {
+      commit('setInstrumentBankList', setInstrumentBankList)
+    },
+    addInstrumentBank ({ commit }, instrumentBank) {
+      commit('addInstrumentBank', instrumentBank)
+    },
+    updateInstrumentBank ({ commit }, instrumentBank) {
+      console.log('action - updateInstrumentBank')
+      commit('updateInstrumentBank', instrumentBank)
+    },
+
     setGigList ({ commit }, setGigList) {
       commit('setGigList', setGigList)
     },
@@ -109,6 +133,7 @@ export default new Vuex.Store({
   getters: {
     songList: state => state.songList,
     instrumentList: state => state.instrumentList,
-    presetList: state => state.presetList
+    presetList: state => state.presetList,
+    instrumentBankList: state => state.instrumenBanktList
   }
 })
