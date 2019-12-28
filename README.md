@@ -49,7 +49,7 @@ All the data will be saved into a SQLITE database with the following structure
 I need to build the following applications:
  1. Maintenance Application
  2. Live Gig COntrol Application
- 3. SQLite DB API
+ 3. APIServer  ( based on SQLite DB)
  
  
 
@@ -126,6 +126,18 @@ see the examples:
 
 ## Maintenance Application (MA)
 
+start the local service:
+
+cd maintenance
+npm run serve
+
+to see the logs of the maintenance app run the chrome browser and enter address
+http://localhost:8080/
+click f12 and select "Console" tab
+
+there is a Vue plugin for Chrome which helps to debug
+
+
 
  1. MA has to provide tools for managing all the maintenace DB tables
   - **Instrument**
@@ -146,43 +158,43 @@ see the examples:
   - **GigSong**
 
 
+
 ## SQLite DB API
+ApiServer
 
 NodeJS based API
 
+start service :
+
+cd apiserver
+npm start
+
+you will see the logs of the apiserver in you terminal window
+
+
+
 1. test the load of all the records from a required table:
-  http://127.0.0.1:8000/api/data/song/
-  where song - name of the table
+  http://127.0.0.1:8081/songs/
+  
 
-2. test the load of one records from a required table by Id:  Get Request
-http://127.0.0.1:8000/api/databyid/song/1
-
-3. Update the existing record in a table. Post request
-http://127.0.0.1:8000/api/updatedata
+3. Update the existing record in a table. PUT request
+http://127.0.0.1:8081/song
 body:
-{
-  "tableName": "Song",
-  "data": {
+
+ {
     "id": 16,
     "name": "Name of a song",
     "tempo": 10,
-    "v_dummy1": "qqqqq",
-    "v_dummy2": "zzzzzz"
   }
-}
+
 
 3. Inser a new record into a table. Post request
-http://127.0.0.1:8000/api/insertdata
+http://127.0.0.1:8081/song
 body:
-{
-  "tableName": "Song",
-  "data": {
+  {
     "name": "Name of a song",
     "tempo": 100,
-    "v_dummy1": "bbbbb",
-    "v_dummy2": "cccc"
   }
-}
 
-Properties with the names starting with "v_" will be ignored by the query builder
+
 
