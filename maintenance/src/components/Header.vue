@@ -31,6 +31,12 @@
         }">
         Test
       </v-btn>
+      <v-btn
+        :to="{
+          name: 'instruments'
+        }">
+        Instruments
+      </v-btn>
     </v-toolbar-items>
 
   </v-toolbar>

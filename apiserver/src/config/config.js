@@ -10,7 +10,6 @@ module.exports = {
       dialect: process.env.DIALECT || 'sqlite',
       host: process.env.HOST || '127.0.0.1',
       storage: path.resolve(__dirname, '../../../Database/midigig.db'),
-      freezeTableName: 'true'
     }
   }
 }
