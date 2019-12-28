@@ -11,7 +11,7 @@
         >
           <template v-slot:top>
             <v-toolbar flat color="white">
-              <v-toolbar-title>Instruments</v-toolbar-title>
+              <v-toolbar-title>Banks Instruments</v-toolbar-title>
               <v-divider
                 class="mx-4"
                 inset
@@ -93,7 +93,7 @@ export default {
           value: 'name'
         },
         { text: 'Number', value: 'number' },
-        { text: 'Instrument Id', value: 'refinstrument' },
+        { text: 'Instrument', value: 'refinstrument' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
 
