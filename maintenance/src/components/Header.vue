@@ -37,6 +37,12 @@
         }">
         Instruments
       </v-btn>
+            <v-btn
+        :to="{
+          name: 'presets'
+        }">
+        Presets
+      </v-btn>
     </v-toolbar-items>
 
   </v-toolbar>

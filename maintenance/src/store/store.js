@@ -17,8 +17,8 @@ export default new Vuex.Store({
     gigSongList: []
   },
   mutations: {
-    setSongList (state, list) {
-      state.songList = list
+    setSongList (state, songList) {
+      state.songList = songList
       console.log('<State>  songList populated ß!!!')
       // console.log(list)
     },
@@ -44,7 +44,17 @@ export default new Vuex.Store({
 
     setPresetList (state, presetList) {
       state.presetList = presetList
+      console.log('<State>  presetList populated !!!')
+      console.log(presetList)
     },
+    addPreset (state, preset) {
+      state.presetList.push(preset)
+    },
+    updatePreset (state, preset) {
+      const item = state.presetList.find(item => item.id === preset.id)
+      Object.assign(item, preset)
+    },
+
     setGigList (state, gigList) {
       state.gigList = gigList
     },
@@ -76,9 +86,18 @@ export default new Vuex.Store({
       commit('updateInstrument', instrument)
     },
 
-    setPresetList ({ commit }, presetList) {
-      commit('setPresetList', presetList)
+    setPresetList ({ commit }, setPresetList) {
+      console.log('action - setPresetList')
+      commit('setPresetList', setPresetList)
     },
+    addPreset ({ commit }, preset) {
+      commit('addPreset', preset)
+    },
+    updatePreset ({ commit }, preset) {
+      console.log('action - updatePreset')
+      commit('updatePreset', preset)
+    },
+
     setGigList ({ commit }, setGigList) {
       commit('setGigList', setGigList)
     },
@@ -89,6 +108,7 @@ export default new Vuex.Store({
 
   getters: {
     songList: state => state.songList,
-    instrumentList: state => state.instrumentList
+    instrumentList: state => state.instrumentList,
+    presetList: state => state.presetList
   }
 })

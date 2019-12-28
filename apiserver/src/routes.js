@@ -1,5 +1,6 @@
 const SongsController = require('./controllers/SongsController')
 const InstrumentsController = require('./controllers/InstrumentsController')
+const PresetsController = require('./controllers/PresetsController')
 
 module.exports = (app) => {
   app.get('/songs',
@@ -19,4 +20,13 @@ module.exports = (app) => {
     InstrumentsController.put)
   app.post('/instrument',
     InstrumentsController.post)
+
+  app.get('/presets',
+    PresetsController.index)
+  app.get('/preset/:id',
+    PresetsController.show)
+  app.put('/preset/:id',
+    PresetsController.put)
+  app.post('/preset',
+    PresetsController.post)    
 }
