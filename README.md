@@ -48,19 +48,19 @@ All the data will be saved into a SQLITE database with the following structure
 
 I need to build the following applications:
  1. Maintenance Application
- 2. Live Gig COntrol Application
+ 2. Gig Manager Application
  3. APIServer  ( based on SQLite DB)
  
  
 
 Those apps as well as few other apps and API will be hosted on Raspberrypi
 
-## Live Gig Control Application (LGCA)
+## Gig Manager  (GM)
 
-Live Gig Control Application  should allow to select a gig from the list of gigs 
+Gig Manager  should allow to select a gig from the list of gigs 
 
 The songs recorded into gig list will be loaded from the database
-
+s
 Each song to have 4 programs
 
 Each program can have up to 4 presets for 4 instruments specified
@@ -91,7 +91,7 @@ In fact all those pedals are programmed to send the predefind MIDI ControlChange
 The Python application needs to know the rules how to convert those pedal messages into required MIDI messages
 
 
-The LGCA should provide the following info to a user:
+The GM should provide the following info to a user:
 
  - show currnt gig
  - show current song
@@ -99,9 +99,9 @@ The LGCA should provide the following info to a user:
  - show list of presets for the selected program
  - show parameters for each preset
 
-On one hand As soon as anything is changed in python controller app the LGCA has to reflect the change
-On another hand User should be able to control the python controller using the GUI provided by LGCA
-It means the LGCA and python MIDI controller have to be always in sync
+On one hand As soon as anything is changed in python controller app the GM has to reflect the change
+On another hand User should be able to control the python controller using the GUI provided by GM
+It means the GM and python MIDI controller have to be always in sync
 
 
 Whould be nice to have the graphical user controls similar to what is used by MidiDesigner (see mididesigner_example.jpg)
