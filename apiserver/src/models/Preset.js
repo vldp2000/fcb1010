@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     midipc:  DataTypes.INTEGER,
     refinstrumentbank: DataTypes.INTEGER,
+    refinstrument: DataTypes.INTEGER,
     isDefault: DataTypes.INTEGER
 
   },

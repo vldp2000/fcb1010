@@ -9,6 +9,25 @@
           sort-by="name"
           class="elevation-1"
         >
+
+          <template v-slot:item.channel="{ item }">
+            <div class="gauge">
+              <vue-svg-gauge
+                :start-angle="-110"
+                :end-angle="110"
+                :value="item.midichannel"
+                :separator-step="10"
+                :min="0"
+                :max="127"
+                :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
+                :scale-interval="0.5">
+                <div class="inner-text">
+                  <span><b>{{ item.midichannel }}</b></span>
+                </div>
+              </vue-svg-gauge>
+            </div>
+          </template>
+
           <template v-slot:top>
             <v-toolbar flat color="white">
               <v-toolbar-title>Instruments</v-toolbar-title>
@@ -51,17 +70,10 @@
           </template>
           <template v-slot:item.action="{ item }">
             <v-icon
-              small
               class="mr-2"
               @click="editItem(item)"
             >
               edit
-            </v-icon>
-            <v-icon
-              small
-              @click="deleteItem(item)"
-            >
-              delete
             </v-icon>
           </template>
         </v-data-table>
@@ -88,6 +100,7 @@ export default {
           value: 'name'
         },
         { text: 'Midi Channel', value: 'midichannel' },
+        { text: 'Channel', value: 'channel' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
 
@@ -190,3 +203,21 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .inner-text {
+    /* allow the text to take all the available space in the svg on top of the gauge */
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+    font-size: 50px !important;
+  }
+  .gauge {
+    height:80px;
+    width: 100px;
+  }
+  .dataTable {
+    font-size: 24px !important;
+  }
+</style>

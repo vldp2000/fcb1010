@@ -9,17 +9,31 @@
           sort-by="name"
           class="elevation-1"
         >
+
+          <template v-slot:item.instrument="{ item }">
+            <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip>
+          </template>
+
+          <template v-slot:item.bank="{ item }">
+            <v-chip color="blue" dark>{{ instrumentBankList.find(i => i.id === item.refinstrumentbank).name }}</v-chip>
+          </template>
+
           <template v-slot:item.pc="{ item }">
-            <vue-svg-gauge
-              :start-angle="-110"
-              :end-angle="110"
-              :value="3"
-              :separator-step="0"
-              :min="0"
-              :max="10"
-              :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
-              :scale-interval="0.1"
-            />
+            <div class="gauge">
+              <vue-svg-gauge
+                :start-angle="-110"
+                :end-angle="110"
+                :value="item.midipc"
+                :separator-step="10"
+                :min="0"
+                :max="127"
+                :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
+                :scale-interval="0.5">
+                <div class="inner-text">
+                  <span><b>{{ item.midipc }}</b></span>
+                </div>
+              </vue-svg-gauge>
+            </div>
           </template>
 
           <template v-slot:top>
@@ -63,13 +77,15 @@
             </v-toolbar>
           </template>
           <template v-slot:item.action="{ item }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="editItem(item)"
-            >
-              edit
-            </v-icon>
+            <div class="editicon">
+              <v-icon
+                big
+                class="mr-2"
+                @click="editItem(item)"
+              >
+                edit
+              </v-icon>
+            </div>
           </template>
         </v-data-table>
       </custom-panel>
@@ -81,7 +97,8 @@
 
 import { mapState } from 'vuex'
 import PresetsService from '@/services/PresetsService'
-// import VueCircleSlider from 'vue-circle-slider'
+import InstrumentsService from '@/services/InstrumentsService'
+import InstrumentBankService from '@/services/InstrumentBankService'
 
 export default {
   data () {
@@ -96,6 +113,7 @@ export default {
           value: 'name'
         },
         { text: 'Instrument', value: 'instrument' },
+        { text: 'Bank', value: 'bank' },
         { text: 'Midi PC', value: 'midipc' },
         { text: 'PC', value: 'pc' },
         { text: 'Actions', value: 'action', sortable: false }
@@ -106,6 +124,7 @@ export default {
         id: -1,
         name: '',
         midipc: 0,
+        refinstrument: null,
         refinstrumentbank: null,
         isDefault: 0
       },
@@ -113,6 +132,7 @@ export default {
         id: -1,
         name: '',
         midipc: 0,
+        refinstrument: null,
         refinstrumentbank: null,
         isDefault: 0
       },
@@ -133,7 +153,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['presetList']),
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     }
@@ -162,7 +182,30 @@ export default {
         console.log(' Preset List already populated')
         console.log(this.$store.state.presetList)
       }
+
+      if (this.instrumentList.length === 0) {
+        console.log('Init instrument storage')
+        let result = await InstrumentsService.getAll()
+        let list = await result.data
+        await this.$store.dispatch('setInstrumentList', list)
+      } else {
+        console.log(' Instrument Bank already populated')
+        // console.log(this.$store.state.instrumentBankList)
+      }
+
+      if (this.instrumentBankList.length === 0) {
+        console.log('Init instrument Banks storage')
+        let result = await InstrumentBankService.getAll()
+        let list = await result.data
+        // console.log('<< Init instrument bank List?>>')
+        await this.$store.dispatch('setInstrumentBankList', list)
+        // console.log(this.$store.state.instrumentBankList)
+      } else {
+        console.log(' Instrument Bank List already populated')
+        // console.log(this.$store.state.instrumentBankList)
+      }
     },
+
     editItem (item) {
       this.editedIndex = this.presetList.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -210,10 +253,15 @@ export default {
     /* allow the text to take all the available space in the svg on top of the gauge */
     height: 100%;
     width: 100%;
-
-    span {
-      max-width: 100px;
-      color: red;
-    }
+    text-align: center;
+    margin-top: 50px;
+    font-size: 50px !important;
+  }
+  .gauge {
+    height:80px;
+    width: 100px;
+  }
+  .dataTable {
+    font-size: 24px !important;
   }
 </style>
