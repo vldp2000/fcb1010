@@ -10,17 +10,16 @@
           class="elevation-1"
         >
           <template v-slot:item.pc="{ item }">
-            <circle-slider
-              v-model="item.midipc"
-              :side="127"
+            <vue-svg-gauge
+              :start-angle="-110"
+              :end-angle="110"
+              :value="3"
+              :separator-step="0"
               :min="0"
-              :max="127"
-              :step-size="1"
-              :circle-width="12"
-              :progress-width="3"
-              :knob-radius="4"
-            ></circle-slider>
-            <!-- <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip> -->
+              :max="10"
+              :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
+              :scale-interval="0.1"
+            />
           </template>
 
           <template v-slot:top>
@@ -70,12 +69,6 @@
               @click="editItem(item)"
             >
               edit
-            </v-icon>
-            <v-icon
-              small
-              @click="deleteItem(item)"
-            >
-              delete
             </v-icon>
           </template>
         </v-data-table>
@@ -211,3 +204,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .inner-text {
+    /* allow the text to take all the available space in the svg on top of the gauge */
+    height: 100%;
+    width: 100%;
+
+    span {
+      max-width: 100px;
+      color: red;
+    }
+  }
+</style>
