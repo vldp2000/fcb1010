@@ -27,7 +27,7 @@
             :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
             :scale-interval="0.5">
             <div class="inner-text">
-              <span><b>{{ item.tempo }}</b></span>
+              <span> {{ item.tempo }}</span>
             </div>
           </vue-svg-gauge>
         </div>
@@ -191,12 +191,30 @@ export default {
         }
       }
       this.closeDialog()
+    },
+    async init () {
+      console.log(this.songList.length)
+      // if (!this.$store.state.songList || this.$store.state.songList === undefined || !this.$store.state.songList.Length) {
+      if (this.$store.state.songList.length === 0) {
+        console.log('Init songs storage')
+        let result = await SongsService.getAll()
+        let list = await result.data
+        // console.log('<< Init Song List?>>')
+        await this.$store.dispatch('setSongList', list)
+        // console.log(this.$store.state.songList)
+      } else {
+        console.log(' Song List already populated')
+      }
     }
+  },
+  mounted () {
+    this.init()
   }
+
 }
 </script>
 
-<style>
+<style scoped>
   .inner-text {
     /* allow the text to take all the available space in the svg on top of the gauge */
     height: 100%;
