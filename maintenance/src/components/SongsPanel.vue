@@ -61,6 +61,28 @@
                       <v-text-field v-model="editedItem.tempo" label="Tempo"></v-text-field>
                     </v-col>
                   </v-row>
+                  <v-row>
+                    <v-col>
+                      <div class="gauge">
+                        <span v-touch:swipe="swipeHandler">
+                        <vue-svg-gauge
+                          :start-angle="-110"
+                          :end-angle="110"
+                          :value="editedItem.tempo"
+                          :separator-step="10"
+                          :min="0"
+                          :max="200"
+                          :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
+                          :scale-interval="0.5">
+                          <div class="inner-text">
+                            <span> {{ editedItem.tempo }}</span>
+                          </div>
+                        </vue-svg-gauge>
+                        </span>
+
+                      </div>
+                    </v-col>
+                  </v-row>
                 </v-container>
               </v-card-text>
 
@@ -204,6 +226,15 @@ export default {
         // console.log(this.$store.state.songList)
       } else {
         console.log(' Song List already populated')
+      }
+    },
+    swipeHandler (direction) {
+      console.log(direction)
+      // May be left right top bottom
+      if (direction === 'left' || direction === 'bottom') {
+        this.editedItem.tempo--
+      } else {
+        this.editedItem.tempo++
       }
     }
   },
