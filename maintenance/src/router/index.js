@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Test from '@/components/Test'
+import GigControl from '@/components/GigControlPanel'
 import Songs from '@/components/SongsPanel'
 import Instruments from '@/components/InstrumentsPanel'
 import Presets from '@/components/PresetsPanel'
@@ -11,14 +10,9 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/hello',
-    name: 'hello',
-    component: HelloWorld
-  },
-  {
-    path: '/test',
-    name: 'test',
-    component: Test
+    path: '/gigcontrol',
+    name: 'gigcontrol',
+    component: GigControl
   },
   {
     path: '/songs',
@@ -43,7 +37,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HelloWorld
+    component: GigControl
   }
 ]
 

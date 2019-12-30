@@ -15,9 +15,9 @@
     <v-toolbar-items>
       <v-btn
         :to="{
-          name: 'home'
+          name: 'gigcontrol'
         }">
-        Home
+        Gig Contol
       </v-btn>
       <v-btn
         :to="{

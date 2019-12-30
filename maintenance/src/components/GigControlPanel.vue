@@ -5,9 +5,9 @@
       wrap
     >
       <v-flex mb-12>
-        <custom-panel title="Hello World">
+        <custom-panel title="Gig Control">
           <h1 class="display-2 font-weight-bold mb-3">
-            Welcome to Maintenance
+            Welcome to Gig Control
           </h1>
         </custom-panel>
       </v-flex>
@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'GigControlPanel',
 
   data: () => ({
 
