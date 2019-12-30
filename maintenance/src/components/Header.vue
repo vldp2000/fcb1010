@@ -49,6 +49,13 @@
         }">
         instrumentBank
       </v-btn>
+      <v-btn
+        :to="{
+          name: 'songPrograms'
+        }">
+        Song Programs
+      </v-btn>
+
     </v-toolbar-items>
 
   </v-toolbar>
