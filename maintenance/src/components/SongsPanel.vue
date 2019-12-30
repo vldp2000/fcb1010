@@ -20,7 +20,7 @@
           <vue-svg-gauge
             :start-angle="-110"
             :end-angle="110"
-            :value="item.tempo"
+            :value="parseInt(item.tempo,10)"
             :separator-step="10"
             :min="0"
             :max="200"
@@ -68,7 +68,7 @@
                         <vue-svg-gauge
                           :start-angle="-110"
                           :end-angle="110"
-                          :value="editedItem.tempo"
+                          :value="parseInt(editedItem.tempo,10)"
                           :separator-step="10"
                           :min="0"
                           :max="200"
@@ -177,7 +177,9 @@ export default {
 
   methods: {
     editItem (item) {
+      console.log(item)
       this.editedIndex = this.songs.indexOf(item)
+      console.log(this.editedIndex)
       this.editedItem = Object.assign({}, item)
       console.log(this.editedItem)
       this.dialog = true

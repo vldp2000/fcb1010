@@ -25,6 +25,7 @@ module.exports = {
       }
       res.send(songs)
     } catch (err) {
+      console.log(err)
       res.status(500).send({
         error: 'bad error has occured trying to fetch the songs'
       })
@@ -36,6 +37,7 @@ module.exports = {
       const song = await Song.findById(req.params.songId)
       res.send(song)
     } catch (err) {
+      console.log(err)
       res.status(500).send({
         error: 'an error has occured trying to show the songs'
       })
@@ -53,6 +55,7 @@ module.exports = {
       console.log(song)
       res.send(song)
     } catch (err) {
+      console.log(err)
       res.status(500).send({
         error: 'an error has occured trying to create the song'
       })
@@ -69,6 +72,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (err) {
+      console.log(err)
       res.status(500).send({
         error: 'an error has occured trying to update the song'
       })
@@ -82,6 +86,7 @@ module.exports = {
       songList = await Song.findAll()
       res.send(songList)
     } catch (err) {
+      console.log(err)
       res.status(500).send({
         error: 'strange error has occured trying to fetch the songs'
       })

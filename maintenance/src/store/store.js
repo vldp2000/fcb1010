@@ -1,23 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // import createPersistedState from 'vuex-persistedstate'
-// import {
-//   SET_SONGLIST,
-//   ADD_SONG,
-//   UPDATE_SONG,
-
-//   SET_PRESETLIST,
-//   ADD_PRESET,
-//   UPDATE_PRESET,
-
-//   SET_INSTRUMENTLIST,
-//   ADD_INSTRUMENT,
-//   UPDATE_INSTRUMENT,
-
-//   SET_INSTRUMENTBANKLIST,
-//   ADD_INSTRUMENTBANK,
-//   UPDATE_INSTRUMENTBANK
-// } from './mutation-types'
 
 import * as types from './mutation-types'
 
@@ -87,11 +70,30 @@ export default new Vuex.Store({
       Object.assign(item, instrumentBank)
     },
 
-    setGigList (state, gigList) {
+    [types.SET_GIGLIST] (state, gigList) {
       state.gigList = gigList
+      console.log('<State>  gigList populated ß!!!')
+      // console.log(list)
     },
-    setGigSongList (state, gigSongList) {
-      state.gigSongList = gigSongList
+    [types.ADD_GIG] (state, gig) {
+      state.gigList.push(gig)
+    },
+    [types.UPDATE_GIG] (state, gig) {
+      const item = state.gigList.find(item => item.id === gig.id)
+      Object.assign(item, gig)
+    },
+
+    [types.SET_GIGSONGLIST] (state, gigsongList) {
+      state.gigsongList = gigsongList
+      console.log('<State>  gigsongList populated ß!!!')
+      // console.log(list)
+    },
+    [types.ADD_GIGSONG] (state, gigsong) {
+      state.gigsongList.push(gigsong)
+    },
+    [types.UPDATE_GIGSONG] (state, gigsong) {
+      const item = state.gigsongList.find(item => item.id === gigsong.id)
+      Object.assign(item, gigsong)
     }
   },
 
@@ -104,7 +106,7 @@ export default new Vuex.Store({
     },
     updateSong ({ commit }, song) {
       console.log('action - updateSong')
-      commit('updateSong', song)
+      commit(types.UPDATE_SONG, song)
     },
 
     setInstrumentList ({ commit }, setInstrumentList) {
@@ -142,17 +144,35 @@ export default new Vuex.Store({
     },
 
     setGigList ({ commit }, setGigList) {
-      commit('setGigList', setGigList)
+      commit(types.SET_GIGLIST, setGigList)
     },
+    addGig ({ commit }, gig) {
+      commit(types.ADD_GIG, gig)
+    },
+    updateGig ({ commit }, gig) {
+      console.log('action - updateGig')
+      commit('updateGig', gig)
+    },
+
     setGigSongList ({ commit }, setGigSongList) {
-      commit('setGigSongList', setGigSongList)
+      commit(types.SET_GIGSONGLIST, setGigSongList)
+    },
+    addGigSong ({ commit }, gigsong) {
+      commit(types.ADD_GIGSONG, gigsong)
+    },
+    updateGigSong ({ commit }, gigsong) {
+      console.log('action - updateGigSong')
+      commit('updateGigSong', gigsong)
     }
+
   },
 
   getters: {
     songList: state => state.songList,
     instrumentList: state => state.instrumentList,
     presetList: state => state.presetList,
-    instrumentBankList: state => state.instrumenBanktList
+    instrumentBankList: state => state.instrumenBanktList,
+    gigList: state => state.gigList,
+    gigSongList: state => state.gigSongList
   }
 })

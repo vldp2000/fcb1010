@@ -27,7 +27,7 @@
       </v-btn>
       <v-btn
         :to="{
-          name: 'test'
+          name: 'songs'
         }">
         Test
       </v-btn>

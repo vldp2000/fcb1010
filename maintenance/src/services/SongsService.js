@@ -23,23 +23,31 @@ export default {
   },
 
   async post (song) {
-    console.log('// ----------->>return Api().post(song)')
-    console.log(song)
-    let result = await Api().post('song', song)
-    let newSong = await result.data
-    console.log('// -----------result')
-    console.log(newSong)
-    await store.dispatch('addSong', newSong)
+    try {
+      console.log('// ----------->>return Api().post(song)')
+      console.log(song)
+      let result = await Api().post('song', song)
+      let newSong = await result.data
+      console.log('// -----------result')
+      console.log(newSong)
+      await store.dispatch('addSong', newSong)
+    } catch (ex) {
+      console.log(ex)
+    }
   },
 
   async put (song) {
-    console.log('// ----------->>return Api().put(song{song.id}, song)')
-    console.log(song)
-    console.log(song.id)
-    let result = await Api().put(`song/${song.id}`, song)
-    let newSong = await result.data
-    console.log('// -----------result')
-    console.log(newSong)
-    await store.dispatch('updateSong', newSong)
+    try {
+      console.log('// ----------->>return Api().put(song{song.id}, song)')
+      console.log(song)
+      console.log(song.id)
+      let result = await Api().put(`song/${song.id}`, song)
+      let newSong = await result.data
+      console.log('// -----------result')
+      console.log(newSong)
+      await store.dispatch('updateSong', newSong)
+    } catch (ex) {
+      console.log(ex)
+    }
   }
 }
