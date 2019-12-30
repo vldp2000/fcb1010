@@ -1,6 +1,25 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // import createPersistedState from 'vuex-persistedstate'
+// import {
+//   SET_SONGLIST,
+//   ADD_SONG,
+//   UPDATE_SONG,
+
+//   SET_PRESETLIST,
+//   ADD_PRESET,
+//   UPDATE_PRESET,
+
+//   SET_INSTRUMENTLIST,
+//   ADD_INSTRUMENT,
+//   UPDATE_INSTRUMENT,
+
+//   SET_INSTRUMENTBANKLIST,
+//   ADD_INSTRUMENTBANK,
+//   UPDATE_INSTRUMENTBANK
+// } from './mutation-types'
+
+import * as types from './mutation-types'
 
 Vue.use(Vuex)
 
@@ -18,51 +37,51 @@ export default new Vuex.Store({
     gigSongList: []
   },
   mutations: {
-    setSongList (state, songList) {
+    [types.SET_SONGLIST] (state, songList) {
       state.songList = songList
       console.log('<State>  songList populated ß!!!')
       // console.log(list)
     },
-    addSong (state, song) {
+    [types.ADD_SONG] (state, song) {
       state.songList.push(song)
     },
-    updateSong (state, song) {
+    [types.UPDATE_SONG] (state, song) {
       const item = state.songList.find(item => item.id === song.id)
       Object.assign(item, song)
     },
 
-    setInstrumentList (state, instrumentList) {
+    [types.SET_INSTRUMENTLIST] (state, instrumentList) {
       state.instrumentList = instrumentList
     },
-    addInstrument (state, instrument) {
+    [types.ADD_INSTRUMENT] (state, instrument) {
       state.instrumentList.push(instrument)
     },
-    updateInstrument (state, instrument) {
+    [types.UPDATE_INSTRUMENT] (state, instrument) {
       console.log('mutations - updateInstrument')
       const item = state.instrumentList.find(item => item.id === instrument.id)
       Object.assign(item, instrument)
     },
 
-    setPresetList (state, presetList) {
+    [types.SET_PRESETLIST] (state, presetList) {
       state.presetList = presetList
       console.log('<State>  presetList populated !!!')
       console.log(presetList)
     },
-    addPreset (state, preset) {
+    [types.ADD_PRESET] (state, preset) {
       state.presetList.push(preset)
     },
-    updatePreset (state, preset) {
+    [types.UPDATE_PRESET] (state, preset) {
       const item = state.presetList.find(item => item.id === preset.id)
       Object.assign(item, preset)
     },
 
-    setInstrumentBankList (state, instrumentBankList) {
+    [types.SET_INSTRUMENTBANKLIST] (state, instrumentBankList) {
       state.instrumentBankList = instrumentBankList
     },
-    addInstrumentBank (state, instrumentBank) {
+    [types.ADD_INSTRUMENTBANK] (state, instrumentBank) {
       state.instrumentBankList.push(instrumentBank)
     },
-    updateInstrumentBank (state, instrumentBank) {
+    [types.UPDATE_INSTRUMENTBANK] (state, instrumentBank) {
       console.log('mutations - updateInstrumentBank')
       const item = state.instrumentBankList.find(item => item.id === instrumentBank.id)
       Object.assign(item, instrumentBank)
@@ -78,10 +97,10 @@ export default new Vuex.Store({
 
   actions: {
     setSongList ({ commit }, setSongList) {
-      commit('setSongList', setSongList)
+      commit(types.SET_SONGLIST, setSongList)
     },
     addSong ({ commit }, song) {
-      commit('addSong', song)
+      commit(types.ADD_SONG, song)
     },
     updateSong ({ commit }, song) {
       console.log('action - updateSong')
@@ -89,37 +108,37 @@ export default new Vuex.Store({
     },
 
     setInstrumentList ({ commit }, setInstrumentList) {
-      commit('setInstrumentList', setInstrumentList)
+      commit(types.SET_INSTRUMENTLIST, setInstrumentList)
     },
     addInstrument ({ commit }, instrument) {
-      commit('addInstrument', instrument)
+      commit(types.ADD_INSTRUMENT, instrument)
     },
     updateInstrument ({ commit }, instrument) {
       console.log('action - updateInstrument')
-      commit('updateInstrument', instrument)
+      commit(types.UPDATE_INSTRUMENT, instrument)
     },
 
     setPresetList ({ commit }, setPresetList) {
       console.log('action - setPresetList')
-      commit('setPresetList', setPresetList)
+      commit(types.SET_PRESETLIST, setPresetList)
     },
     addPreset ({ commit }, preset) {
-      commit('addPreset', preset)
+      commit(types.ADD_PRESET, preset)
     },
     updatePreset ({ commit }, preset) {
       console.log('action - updatePreset')
-      commit('updatePreset', preset)
+      commit(types.UPDATE_PRESET, preset)
     },
 
     setInstrumentBankList ({ commit }, setInstrumentBankList) {
-      commit('setInstrumentBankList', setInstrumentBankList)
+      commit(types.SET_INSTRUMENTBANKLIST, setInstrumentBankList)
     },
     addInstrumentBank ({ commit }, instrumentBank) {
-      commit('addInstrumentBank', instrumentBank)
+      commit(types.ADD_INSTRUMENTBANK, instrumentBank)
     },
     updateInstrumentBank ({ commit }, instrumentBank) {
       console.log('action - updateInstrumentBank')
-      commit('updateInstrumentBank', instrumentBank)
+      commit(types.UPDATE_INSTRUMENTBANK, instrumentBank)
     },
 
     setGigList ({ commit }, setGigList) {
