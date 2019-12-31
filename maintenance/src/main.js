@@ -5,12 +5,15 @@ import router from './router'
 import store from '@/store/store'
 import vuetify from './plugins/vuetify'
 import CustomPanel from '@/components/globals/CustomPanel'
+import CustomKnob from '@/components/globals/CustomKnob'
 // import { sync } from 'vuex-router-sync'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import VueSvgGauge from 'vue-svg-gauge'
 import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.component('CustomPanel', CustomPanel)
+Vue.component('CustomKnob', CustomKnob)
+
 Vue.config.productionTip = false
 Vue.use(VueSvgGauge)
 // Vue.use(Vue2TouchEvents)
