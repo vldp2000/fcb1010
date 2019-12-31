@@ -1,6 +1,10 @@
 <template>
 <div>
-  <v-toolbar fixed class="cyan" dark solid>
+  <v-toolbar
+  fixed
+  class="cyan"
+  dark
+  solid>
     <v-toolbar-title class="mr-4">
       <router-link
         class="maintenance"

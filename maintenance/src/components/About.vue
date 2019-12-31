@@ -5,22 +5,12 @@
       wrap
     >
       <v-flex mb-12>
-        <custom-panel title="Gig Control">
+        <custom-panel title="Gig Control Application">
           <h1 class="display-2 font-weight-bold mb-3">
-            Gig Control
+            Welcome to Gig Control
           </h1>
         </custom-panel>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
-
-<script>
-export default {
-  name: 'GigControlPanel',
-
-  data: () => ({
-
-  })
-}
-</script>

@@ -6,6 +6,7 @@ import Instruments from '@/components/InstrumentsPanel'
 import Presets from '@/components/PresetsPanel'
 import InstrumentBank from '@/components/InstrumentBankPanel'
 import SongPrograms from '@/components/SongProgramsPanel'
+import About from '@/components/About'
 
 Vue.use(VueRouter)
 
@@ -36,15 +37,21 @@ const routes = [
     component: Presets
   },
   {
-    path: '/instrumentBank',
-    name: 'instrumentBank',
+    path: '/instrumentBanks',
+    name: 'instrumentBanks',
     component: InstrumentBank
   },
   {
     path: '/',
     name: 'home',
     component: GigControl
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About
   }
+
 ]
 
 const router = new VueRouter({
