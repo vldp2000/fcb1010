@@ -9,6 +9,11 @@
           sort-by="name"
           class="elevation-1"
         >
+          <template v-slot:item.image="{ item }">
+            <div class ="_image">
+                <img v-bind:src="item.imageURL" :alt="item.image"/>
+            </div>
+          </template>
 
           <template v-slot:item.channel="{ item }">
             <div class="gauge">
@@ -86,6 +91,10 @@
 
 import { mapState } from 'vuex'
 import InstrumentsService from '@/services/InstrumentsService'
+// import image1 from "./assets/1_image.png"
+// import image2 from "./assets/1_image.png"
+// import image3 from "./assets/1_image.png"
+// import image4 from "./assets/1_image.png"
 
 export default {
   data () {
@@ -99,6 +108,7 @@ export default {
           sortable: false,
           value: 'name'
         },
+        { text: 'Image', value: 'image' },
         { text: 'Midi Channel', value: 'midichannel' },
         { text: 'Channel', value: 'channel' },
         { text: 'Actions', value: 'action', sortable: false }
@@ -129,6 +139,8 @@ export default {
 
   mounted () {
     this.init()
+    // this.importAll(require.context('../assets/', false, /\.png$/))
+    // this.importAll(require.context('../assets/', true, ([a-zA-Z0-9\image_\\.\-\(\):])+(.png)$))
   },
 
   computed: {
@@ -157,6 +169,7 @@ export default {
         // console.log('<< Init instrument List?>>')
         await this.$store.dispatch('setInstrumentList', list)
         // console.log(this.$store.state.instrumentList)
+        await this.importAll(require.context('../assets/', false, /\.png$/))
       } else {
         console.log(' Instrument List already populated')
         console.log(this.$store.state.instrumentList)
@@ -199,6 +212,20 @@ export default {
         }
       }
       this.closeDialog()
+    },
+
+    importAll (files) {
+      files.keys().forEach(key => {
+        const pathLong = files(key)
+        const pathShort = key
+        let id = -1
+        if (pathShort.includes('image_')) {
+          id = key.substring(8, 10)
+          const payload = { 'id': parseInt(id, 10), 'url': pathLong }
+          this.$store.dispatch('setInstrumentImage', payload)
+        }
+      })
+      console.log(this.instrumentList)
     }
   }
 }
@@ -216,6 +243,10 @@ export default {
   .gauge {
     height:80px;
     width: 100px;
+  }
+  .image {
+    height:80px;
+    width: px;
   }
   .dataTable {
     font-size: 24px !important;

@@ -44,7 +44,22 @@ export default new Vuex.Store({
       const item = state.instrumentList.find(item => item.id === instrument.id)
       Object.assign(item, instrument)
     },
-
+    [types.SET_INSTRUMENT_IMAGE] (state, { id, url }) {
+      try {
+        let item = state.instrumentList.find(item => item.id === id)
+        if (!item.imageURL) {
+          console.log('SET_INSTRUMENT_IMAGE ............----->>>')
+          console.log(item)
+          console.log(id)
+          console.log(url)
+          // item = { ...item, imageURL: url }
+          Vue.set(item, 'imageURL', url)
+          console.log(url)
+        }
+      } catch (ex) {
+        console.log(ex)
+      }
+    },
     [types.SET_PRESETLIST] (state, presetList) {
       state.presetList = presetList
       console.log('<State>  presetList populated !!!')
@@ -120,6 +135,12 @@ export default new Vuex.Store({
       commit(types.UPDATE_INSTRUMENT, instrument)
     },
 
+    setInstrumentImage ({ commit }, { id, url }) {
+      console.log('action - setInstrumentImage')
+      console.log(id)
+      console.log(url)
+      commit(types.SET_INSTRUMENT_IMAGE, { id, url })
+    },
     setPresetList ({ commit }, setPresetList) {
       console.log('action - setPresetList')
       commit(types.SET_PRESETLIST, setPresetList)

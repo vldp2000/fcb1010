@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true 
     },
     name: DataTypes.STRING,
-    midichannel:  DataTypes.INTEGER 
+    midichannel:  DataTypes.INTEGER
   },
   {
     underscored: false,
