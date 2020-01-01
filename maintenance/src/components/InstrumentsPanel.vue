@@ -10,8 +10,13 @@
           class="elevation-1"
         >
           <template v-slot:item.image="{ item }">
-            <div class ="_image">
-                <img v-bind:src="item.imageURL" :alt="item.image"/>
+            <div class ="image">
+              <v-img v-bind:src="item.imageURL" :alt="item.image"
+                contain
+                height="60px"
+                width="60px"
+              >
+              </v-img>
             </div>
           </template>
 
@@ -246,7 +251,8 @@ export default {
   }
   .image {
     height:80px;
-    width: px;
+    width: 80px;
+    margin-top: 20px;
   }
   .dataTable {
     font-size: 24px !important;
