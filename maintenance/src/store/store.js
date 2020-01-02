@@ -172,7 +172,7 @@ export default new Vuex.Store({
     },
     updateGig ({ commit }, gig) {
       console.log('action - updateGig')
-      commit('updateGig', gig)
+      commit(types.UPDATE_GIG, gig)
     },
 
     setGigSongList ({ commit }, setGigSongList) {
@@ -183,7 +183,7 @@ export default new Vuex.Store({
     },
     updateGigSong ({ commit }, gigsong) {
       console.log('action - updateGigSong')
-      commit('updateGigSong', gigsong)
+      commit(types.UPDATE_GIGSONG, gigsong)
     }
 
   },

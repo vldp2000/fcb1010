@@ -2,6 +2,7 @@ const SongController = require('./controllers/SongController')
 const InstrumentController = require('./controllers/InstrumentController')
 const PresetController = require('./controllers/PresetController')
 const InstrumentBankController = require('./controllers/InstrumentBankController')
+const GigController = require('./controllers/GigController')
 
 module.exports = (app) => {
   app.get('/songs',
@@ -39,5 +40,15 @@ module.exports = (app) => {
     InstrumentBankController.put)
   app.post('/instrumentBank',
     InstrumentBankController.post)
+
+  app.get('/gigs',
+    GigController.index)
+  app.get('/gig/:id',
+    GigController.show)
+  app.put('/gig/:id',
+    GigController.put)
+  app.post('/gig',
+    GigController.post)
+
 
 }

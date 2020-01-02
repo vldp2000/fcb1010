@@ -211,17 +211,21 @@ export default {
     },
 
     importAll (files) {
-      files.keys().forEach(key => {
-        const pathLong = files(key)
-        const pathShort = key
-        let id = -1
-        if (pathShort.includes('image_')) {
-          id = key.substring(8, 10)
-          const payload = { 'id': parseInt(id, 10), 'url': pathLong }
-          this.$store.dispatch('setInstrumentImage', payload)
-        }
-      })
-      console.log(this.instrumentList)
+      try {
+        files.keys().forEach(key => {
+          const pathLong = files(key)
+          const pathShort = key
+          let id = -1
+          if (pathShort.includes('image_')) {
+            id = key.substring(8, 10)
+            const payload = { 'id': parseInt(id, 10), 'url': pathLong }
+            this.$store.dispatch('setInstrumentImage', payload)
+          }
+        })
+        // console.log(this.instrumentList)
+      } catch (ex) {
+        console.log(ex)
+      }
     }
   }
 }
