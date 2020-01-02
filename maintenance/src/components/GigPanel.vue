@@ -189,10 +189,6 @@ export default {
     margin-top: 50px;
     font-size: 50px !important;
   }
-  .gauge {
-    height:80px;
-    width: 100px;
-  }
   .v-data-table th {
     font-size: 16px;
   }

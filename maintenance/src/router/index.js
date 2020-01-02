@@ -8,6 +8,7 @@ import InstrumentBank from '@/components/InstrumentBankPanel'
 import SongPrograms from '@/components/SongProgramsPanel'
 import About from '@/components/About'
 import Gigs from '@/components/GigPanel'
+import SongPrograms from '@/components/SongProgramsPanel'
 Vue.use(VueRouter)
 
 const routes = [
@@ -55,6 +56,11 @@ const routes = [
     path: '/about',
     name: 'about',
     component: About
+  },
+  {
+    path: '/songPrograms',
+    name: 'songPrograms',
+    component: SongPrograms
   }
 
 ]
