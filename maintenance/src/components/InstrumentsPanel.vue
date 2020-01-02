@@ -21,20 +21,11 @@
           </template>
 
           <template v-slot:item.channel="{ item }">
-            <div class="gauge">
-              <vue-svg-gauge
-                :start-angle="-110"
-                :end-angle="110"
-                :value="item.midichannel"
-                :separator-step="10"
-                :min="0"
-                :max="127"
-                :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
-                :scale-interval="0.5">
-                <div class="inner-text">
-                  <span><b>{{ item.midichannel }}</b></span>
-                </div>
-              </vue-svg-gauge>
+            <div class="customKnob">
+              <custom-knob
+                :value="parseInt(item.midichannel,10)"
+              >
+              </custom-knob>
             </div>
           </template>
 
@@ -245,7 +236,7 @@ export default {
     margin-top: 50px;
     font-size: 50px !important;
   }
-  .gauge {
+  .customKnob {
     height:80px;
     width: 100px;
   }
