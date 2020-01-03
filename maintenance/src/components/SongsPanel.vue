@@ -4,9 +4,20 @@
       @pagination="pagination = $event"
       :headers="headers"
       :items="songList"
-      sort-by="name"
+      :single-expand="singleExpand"
+      :expanded.sync="expanded"
+      :loading="isLoading"
+      :custom-filter="customDataTableItemsFilter"
+      @click:row="rowClicked"
+      item-key="id"
+      sort-by="id"
       class="elevation-1"
     >
+      <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
+
+      <template v-slot:expanded-item="{ headers }">
+        <td :colspan="headers.length">TEST EXPANDED ROW</td>
+      </template>
 
       <template v-slot:item.name="{ item }">
         <div class="customTableCell">{{ item.name }}</div>
@@ -117,6 +128,9 @@ export default {
     return {
       songs: [],
       dialog: false,
+      expanded: [],
+      singleExpand: true,
+      isLoading: true,
       headers: [
         {
           text: 'Name',
@@ -176,6 +190,11 @@ export default {
   },
 
   methods: {
+
+    showLoading (value) {
+      this.isLoading = value
+    },
+
     editItem (item) {
       console.log(item)
       this.editedIndex = this.songs.indexOf(item)
@@ -199,6 +218,7 @@ export default {
     },
 
     saveSong () {
+      this.showLoading(true)
       console.log('saveSong () -------')
       console.log(this.editedItem)
       if (this.editedIndex > -1) {
@@ -214,6 +234,7 @@ export default {
           console.log(err)
         }
       }
+      this.showLoading(false)
       this.closeDialog()
     },
     async init () {
@@ -226,8 +247,10 @@ export default {
         // console.log('<< Init Song List?>>')
         await this.$store.dispatch('setSongList', list)
         // console.log(this.$store.state.songList)
+        await this.showLoading(false)
       } else {
         console.log(' Song List already populated')
+        await this.showLoading(false)
       }
     },
     swipeHandler (direction) {
@@ -238,10 +261,43 @@ export default {
       } else {
         this.editedItem.tempo++
       }
+    },
+    customDataTableItemsFilter (value, search, items) {
+      /*
+      Filter for individual words in search string. Filters
+      all object values rather than just the keys included
+      in the data table headers.
+       */
+      const wordArray = search
+        .toString()
+        .toLowerCase()
+        .split(' ')
+        .filter(x => x)
+      return wordArray.every(word =>
+        JSON.stringify(Object.values(items))
+          .toString()
+          .toLowerCase()
+          .includes(word)
+      )
+    },
+    rowClicked (value) {
+      if (this.expanded.length > 0) {
+        this.expanded.pop()
+      } else {
+        this.expanded.push(value)
+        console.log(value)
+      }
     }
+
   },
   mounted () {
     this.init()
+  },
+  updated () {
+    this.showLoading(false)
+  },
+  activated () {
+    this.showLoading(false)
   }
 
 }

@@ -31,6 +31,8 @@ export default new Vuex.Store({
     [types.UPDATE_SONG] (state, song) {
       const item = state.songList.find(item => item.id === song.id)
       Object.assign(item, song)
+      // JSON.parse(JSON.stringify(obj)); // <- could be a better option to make a deep copy of an object
+      // people recon that Object.assign does the shallow copy
     },
 
     [types.SET_INSTRUMENTLIST] (state, instrumentList) {
