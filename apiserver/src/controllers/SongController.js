@@ -1,12 +1,24 @@
 const {Song} = require('../models')
+const {SongProgram} = require('../models')
+const {SongProgramPreset} = require('../models')
+
+function reqLogger (name, req) {
+  console.log(` << Request >> ${name}`)
+  console.log(req.method)
+  console.log(req.url)
+  console.log(req.query)
+  console.log(req.params)
+}
+
 module.exports = {
+
   async index (req, res) {
     try {
-      console.log("Select>>>>>>>>>Search")
-      console.log(req.query.search)
+
+      //await reqLogger('== Index ', req)
+
       let songs = null
       const search = req.query.search
-      console.log(search)
       const Sequelize = require('sequelize');
       const Op = Sequelize.Op;
 
@@ -32,17 +44,36 @@ module.exports = {
     }
   },
 
-  async show (req, res) {
+  async getSongItems (req, res) {
+    req.params.songId
     try {
-      const song = await Song.findById(req.params.songId)
-      res.send(song)
+      //await reqLogger('== Get ==', req)
+
+      const songPrograms = await SongProgram.findAll({
+        where: { 
+          refsong: req.params.id
+        }
+      })
+
+      const songProgramPresets = await SongProgramPreset.findAll({
+        where: { 
+          refsong: req.params.id
+        }
+      })
+      let requestedItems = {
+        'songPrograms': songPrograms, 
+        'songProgramPresets':songProgramPresets 
+      }
+
+      res.send(requestedItems)
     } catch (err) {
       console.log(err)
       res.status(500).send({
-        error: 'an error has occured trying to show the songs'
+        error: 'an error has occured trying to get the song items'
       })
     }
   },
+
 
   async post (req, res) {
     try {
@@ -52,7 +83,7 @@ module.exports = {
       delete model.updatedAt
       //console.log(model)
       const song = await Song.create(model)
-      console.log(song)
+      //console.log(song)
       res.send(song)
     } catch (err) {
       console.log(err)
@@ -64,7 +95,7 @@ module.exports = {
 
   async put (req, res) {
     try {
-      console.log(req.body)
+      //console.log(req.body)
       await Song.update(req.body, {
         where: {
           id: req.params.id
@@ -81,7 +112,8 @@ module.exports = {
 
   async selectAll (req, res) {
     try {
-      console.log("Select>>>>>>>>>All songa:")
+      //reqLogger('== select All == ', req)
+
       let songList = null
       songList = await Song.findAll()
       res.send(songList)

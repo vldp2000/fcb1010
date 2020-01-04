@@ -171,6 +171,7 @@ export default {
         console.log(this.$store.state.instrumentList)
       }
     },
+
     editItem (item) {
       this.editedIndex = this.instrumentList.indexOf(item)
       this.editedItem = Object.assign({}, item)

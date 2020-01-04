@@ -2,24 +2,42 @@ import Api from '@/services/Api'
 import store from '@/store/store'
 
 export default {
+
   async getAll () {
-    let songs = await Api()('songs')
-    // console.log('// ----------->> get all songs')
-    // console.log(songs)
-    return songs
+    try {
+      console.log('// ----------->> get all songs')
+      let songs = await Api()('songs')
+      // console.log(songs)
+      return songs
+    } catch (ex) {
+      console.log(ex)
+    }
   },
-  index (search) {
-    let songs = Api().get('songs', {
-      params: {
-        search: search
-      }
-    })
-    console.log('// ----------->> get all songs')
-    console.log(songs)
-    return songs
+
+  async getSongItems (songId) {
+    try {
+      let items = await Api().get(`songitems/${songId}`)
+      console.log(`// ----------->> get songitems by id ${songId}`)
+      console.log(items)
+      let programs = await items.data.songPrograms
+      let presets = await items.data.songProgramPresets
+
+      presets.forEach(item => {
+        let program = programs.find(pr => pr.id === item.refsongprogram)
+        if (!program.presetList) {
+          program.presetList = []
+        }
+        program.presetList.push(item)
+      })
+      console.log(programs)
+      return items
+    } catch (ex) {
+      console.log(ex)
+    }
   },
-  show (songId) {
-    return Api().get(`songs/${songId}`)
+
+  getData (songId) {
+    return Api().get(`song/${songId}`)
   },
 
   async post (song) {

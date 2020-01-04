@@ -7,8 +7,8 @@ const GigController = require('./controllers/GigController')
 module.exports = (app) => {
   app.get('/songs',
     SongController.index)
-  app.get('/song/:id',
-    SongController.show)
+  app.get('/songitems/:id',
+    SongController.getSongItems)
   app.put('/song/:id',
     SongController.put)
   app.post('/song',

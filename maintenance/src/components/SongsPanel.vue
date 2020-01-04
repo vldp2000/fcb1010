@@ -26,23 +26,15 @@
         <div class="customTableCell">{{ item.tempo }}</div>
       </template>
 
-      <template v-slot:item.songTempo="{ item }">
-        <div class="gauge">
-          <vue-svg-gauge
-            :start-angle="-110"
-            :end-angle="110"
-            :value="parseInt(item.tempo,10)"
-            :separator-step="10"
-            :min="0"
-            :max="200"
-            :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
-            :scale-interval="0.5">
-            <div class="inner-text">
-              <span> {{ item.tempo }}</span>
+      <template v-slot:item.tempo="{ item }">
+            <div class="customKnob">
+              <custom-knob
+                :value="parseInt(item.tempo,10)"
+                :max=200
+              >
+              </custom-knob>
             </div>
-          </vue-svg-gauge>
-        </div>
-      </template>
+          </template>
 
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -139,7 +131,6 @@ export default {
           value: 'name'
         },
         { text: 'Tempo', value: 'tempo' },
-        { text: 'Tempo', value: 'songTempo' },
         { text: 'Actions', value: 'action', sortable: false }
       ],
 
@@ -286,18 +277,13 @@ export default {
       } else {
         this.expanded.push(value)
         console.log(value)
+        SongsService.getSongItems(value.id)
       }
     }
 
   },
   mounted () {
     this.init()
-  },
-  updated () {
-    this.showLoading(false)
-  },
-  activated () {
-    this.showLoading(false)
   }
 
 }
@@ -312,9 +298,10 @@ export default {
     margin-top: 50px;
     font-size: 50px !important;
   }
-  .gauge {
+  .customKnob {
     height:80px;
-    width: 100px;
+    width: 80px;
+    margin-top: 10px;
   }
   .customTableCell {
     font-size: 20px !important;

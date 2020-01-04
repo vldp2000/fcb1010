@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true 
     },
-    name: DataTypes.STRING,
     refsong: DataTypes.INTEGER,
     refsongprogram: DataTypes.INTEGER,
     refinstrument: DataTypes.INTEGER,
@@ -23,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     underscored: false,
     timestamps: false,
     reezeTableName: true,
-    tableName: 'SongProgramPreset'
+    tableName: 'songprogrampreset'
   })
 
   SongProgramPreset.associate = function (models) {
