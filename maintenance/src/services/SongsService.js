@@ -15,10 +15,9 @@ export default {
   },
 
   async getSongItems (songId) {
+    console.log(`// ----------->> get songitems by id ${songId}`)
     try {
       let items = await Api().get(`songitems/${songId}`)
-      console.log(`// ----------->> get songitems by id ${songId}`)
-      console.log(items)
       let programs = await items.data.songPrograms
       let presets = await items.data.songProgramPresets
 
@@ -29,8 +28,10 @@ export default {
         }
         program.presetList.push(item)
       })
-      console.log(programs)
-      return items
+      console.log(songId)
+      const payload = { 'id': songId, 'programs': programs }
+      await store.dispatch('addSongItems', payload)
+      return songId
     } catch (ex) {
       console.log(ex)
     }

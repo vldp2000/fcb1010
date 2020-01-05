@@ -35,6 +35,20 @@ export default new Vuex.Store({
       // people recon that Object.assign does the shallow copy
     },
 
+    [types.ADD_SONG_ITEMS] (state, payload) {
+      try {
+        let song = state.songList.find(sn => sn.id === payload.id)
+        if (!song.programList) {
+          console.log('types.ADD_SONG_ITEMS -->>')
+          console.log(payload.id)
+          console.log(payload.programs)
+          Vue.set(song, 'programList', payload.programs)
+        }
+      } catch (ex) {
+        console.log('types.ADD_SONG_ITEMS] (state, { id, programs })')
+        console.log(ex)
+      }
+    },
     [types.SET_INSTRUMENTLIST] (state, instrumentList) {
       state.instrumentList = instrumentList
     },
@@ -51,10 +65,6 @@ export default new Vuex.Store({
         let item = state.instrumentList.find(item => item.id === id)
         if (!item.imageURL) {
           console.log('SET_INSTRUMENT_IMAGE ............----->>>')
-          console.log(item)
-          console.log(id)
-          console.log(url)
-          // item = { ...item, imageURL: url }
           Vue.set(item, 'imageURL', url)
           console.log(url)
         }
@@ -115,6 +125,7 @@ export default new Vuex.Store({
   },
 
   actions: {
+    //  Song List -----------------------------------------------------
     setSongList ({ commit }, setSongList) {
       commit(types.SET_SONGLIST, setSongList)
     },
@@ -125,7 +136,18 @@ export default new Vuex.Store({
       console.log('action - updateSong')
       commit(types.UPDATE_SONG, song)
     },
+    addSongItems ({ commit }, payload) {
+      try {
+        console.log('action - addSongItems')
+        console.log(payload.id)
+        console.log(payload.programs)
+        commit(types.ADD_SONG_ITEMS, payload)
+      } catch (ex) {
+        console.log(ex)
+      }
+    },
 
+    //  Instrument List -----------------------------------------------------
     setInstrumentList ({ commit }, setInstrumentList) {
       commit(types.SET_INSTRUMENTLIST, setInstrumentList)
     },
@@ -143,6 +165,8 @@ export default new Vuex.Store({
       console.log(url)
       commit(types.SET_INSTRUMENT_IMAGE, { id, url })
     },
+
+    //  Preset List -----------------------------------------------------
     setPresetList ({ commit }, setPresetList) {
       console.log('action - setPresetList')
       commit(types.SET_PRESETLIST, setPresetList)
@@ -155,6 +179,7 @@ export default new Vuex.Store({
       commit(types.UPDATE_PRESET, preset)
     },
 
+    //  Instrument Bank List -----------------------------------------------------
     setInstrumentBankList ({ commit }, setInstrumentBankList) {
       commit(types.SET_INSTRUMENTBANKLIST, setInstrumentBankList)
     },
@@ -166,6 +191,7 @@ export default new Vuex.Store({
       commit(types.UPDATE_INSTRUMENTBANK, instrumentBank)
     },
 
+    //  Gig List -----------------------------------------------------
     setGigList ({ commit }, setGigList) {
       commit(types.SET_GIGLIST, setGigList)
     },
@@ -177,6 +203,7 @@ export default new Vuex.Store({
       commit(types.UPDATE_GIG, gig)
     },
 
+    //  Gig Song List -----------------------------------------------------
     setGigSongList ({ commit }, setGigSongList) {
       commit(types.SET_GIGSONGLIST, setGigSongList)
     },

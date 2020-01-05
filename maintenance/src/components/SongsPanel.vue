@@ -16,7 +16,13 @@
       <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
 
       <template v-slot:expanded-item="{ headers }">
-        <td :colspan="headers.length">TEST EXPANDED ROW</td>
+        <td :colspan="headers.length">
+          <div>
+            <song-programs-panel :programList="selectedSong.programList" >
+
+            </song-programs-panel>
+          </div>
+        </td>
       </template>
 
       <template v-slot:item.name="{ item }">
@@ -114,8 +120,12 @@
 
 import { mapState } from 'vuex'
 import SongsService from '@/services/SongsService'
+import SongProgramsPanel from '@/components/SongProgramsPanel'
 
 export default {
+  components: {
+    SongProgramsPanel
+  },
   data () {
     return {
       songs: [],
@@ -161,9 +171,10 @@ export default {
         // pageCount: number
         itemsLength: 128
       },
-      selected: []
+      selectedSong: {}
     }
   },
+
   computed: {
     ...mapState(['songList']),
     formTitle () {
@@ -271,16 +282,24 @@ export default {
           .includes(word)
       )
     },
-    rowClicked (value) {
+
+    async rowClicked (value) {
+      console.log(`<SongPanel row clicked> ${value.id}`)
       if (this.expanded.length > 0) {
         this.expanded.pop()
       } else {
+        let song = this.songList.find(sn => sn.id === value.id)
+        console.log(song)
+        if (!song.programList || song.programList.lenght === 0) {
+          await SongsService.getSongItems(value.id)
+          this.selectedSong = this.songList.find(sn => sn.id === value.id)
+        } else {
+          this.selectedSong = song
+        }
         this.expanded.push(value)
-        console.log(value)
-        SongsService.getSongItems(value.id)
+        console.log(this.selectedSong)
       }
     }
-
   },
   mounted () {
     this.init()
