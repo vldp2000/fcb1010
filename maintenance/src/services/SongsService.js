@@ -1,5 +1,8 @@
 import Api from '@/services/Api'
 import store from '@/store/store'
+import InstrumentsService from '@/services/InstrumentsService'
+import InstrumentBankService from '@/services/InstrumentBankService'
+import PresetsService from '@/services/PresetsService'
 
 export default {
 
@@ -65,6 +68,77 @@ export default {
       console.log('// -----------result')
       console.log(newSong)
       await store.dispatch('updateSong', newSong)
+    } catch (ex) {
+      console.log(ex)
+    }
+  },
+
+  async initAll () {
+    try {
+      console.log('// ----------->>init ALL)')
+      if (store.state.songList.length === 0) {
+        console.log('Init songs storage')
+        let result = await this.getAll()
+        let list = await result.data
+        // console.log('<< Init Song List?>>')
+        await store.dispatch('setSongList', list)
+        // console.log(this.$store.state.songList)
+      } else {
+        console.log(' Song List already populated')
+      }
+
+      if (store.state.instrumentList.length === 0) {
+        console.log('Init instruments storage')
+        let result = await InstrumentsService.getAll()
+        let list = await result.data
+        // console.log('<< Init instrument List?>>')
+        await store.dispatch('setInstrumentList', list)
+        // console.log(this.$store.state.instrumentList)
+        await this.importAll(require.context('../assets/', false, /\.png$/))
+      } else {
+        console.log(' Instrument List already populated')
+      }
+
+      if (store.state.instrumentBankList.length === 0) {
+        console.log('Init instrument Banks storage')
+        let result = await InstrumentBankService.getAll()
+        let list = await result.data
+        // console.log('<< Init instrument bank List?>>')
+        await store.dispatch('setInstrumentBankList', list)
+        // console.log(this.$store.state.instrumentBankList)
+      } else {
+        console.log(' Instrument Bank List already populated')
+        // console.log(this.$store.state.instrumentBankList)
+      }
+
+      if (store.state.presetList.length === 0) {
+        console.log('Init presets storage')
+        let result = await PresetsService.getAll()
+        let list = await result.data
+        // console.log('<< Init preset List?>>')
+        await store.dispatch('setPresetList', list)
+        // console.log(this.$store.state.presetList)
+      } else {
+        console.log(' Preset List already populated')
+      }
+    } catch (ex) {
+      console.log(ex)
+    }
+  },
+
+  importAll (files) {
+    try {
+      files.keys().forEach(key => {
+        const pathLong = files(key)
+        const pathShort = key
+        let id = -1
+        if (pathShort.includes('image_')) {
+          id = key.substring(8, 10)
+          const payload = { 'id': parseInt(id, 10), 'url': pathLong }
+          store.dispatch('setInstrumentImage', payload)
+        }
+      })
+      // console.log(this.instrumentList)
     } catch (ex) {
       console.log(ex)
     }

@@ -15,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     muteflag: DataTypes.INTEGER,
     reverbflag: DataTypes.INTEGER,
     delayflag: DataTypes.INTEGER,
-    modeflag: DataTypes.INTEGER
+    modeflag: DataTypes.INTEGER,
+    reverbvalue: DataTypes.INTEGER,
+    delayvalue: DataTypes.INTEGER
 
   },
   {

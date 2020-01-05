@@ -11,7 +11,7 @@
     <template v-slot:expanded-item="{ headers }">
       <td :colspan="headers.length">
         <div>
-          <song-presets-panel v-bind:presetList="selectedPresetList" >
+          <song-presets-panel v-bind:songPresetList="selectedPresetList" >
 
           </song-presets-panel>
         </div>
@@ -59,7 +59,7 @@ export default {
 
   mounted () {
   //   this.programList = this.selectedSong.programList
-    console.log('----->ongProgramsPanel')
+    console.log('-----> SongProgramsPanel')
     console.log(this.programList)
   },
   methods: {
@@ -69,11 +69,10 @@ export default {
 
       if (this.expanded.length > 0) {
         this.expanded.pop()
-      } else {
-        this.selectedPresetList = value.presetList
-        this.expanded.push(value)
-        console.log(this.selectedPresetList)
       }
+      this.selectedPresetList = value.presetList
+      this.expanded.push(value)
+      console.log(this.selectedPresetList)
     }
   }
 

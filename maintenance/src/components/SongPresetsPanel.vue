@@ -1,20 +1,92 @@
 <template>
+<div style="overflow-x: scroll;">
   <v-data-table
     :headers="headers"
-    :items="presetList"
+    :items="songPresetList"
     item-key="id"
     class="elevation-1"
   >
+
+    <template v-slot:item.image="{ item }">
+      <div class ="image">
+        <v-img v-bind:src="instrumentList.find(i => i.id === item.refinstrument).imageURL" :alt="item.image"
+          contain
+        >
+        </v-img>
+      </div>
+    </template>
+
+    <template v-slot:item.preset="{ item }">
+      <v-chip color="blue" dark>{{ presetList.find(i => i.id === item.refpreset).name }}</v-chip>
+    </template>
+
+    <template v-slot:item.instrumentbank="{ item }">
+      <v-chip color="blue" dark>{{ instrumentBankList.find(i => i.id === item.refinstrumentbank).name }}</v-chip>
+    </template>
+
+    <template v-slot:item.volume="{ item }">
+      <div class="customKnob">
+        <custom-knob
+          :value="parseInt(item.volume,10)"
+        >
+        </custom-knob>
+      </div>
+    </template>
+
+    <template v-slot:item.pan="{ item }">
+      <div class="customKnob">
+        <custom-knob
+          :value="parseInt(item.pan,10)"
+        >
+        </custom-knob>
+      </div>
+    </template>
+
+    <template v-slot:item.muteflag="{ item }">
+      <v-checkbox v-model="item.muteflag" />
+   </template>
+
+    <template v-slot:item.reverbflag="{ item }">
+      <v-checkbox v-model="item.reverbflag" />
+   </template>
+
+    <template v-slot:item.reverbvalue="{ item }">
+      <div class="customKnob">
+        <custom-knob
+          :value="parseInt(item.reverbvalue,10)"
+        >
+        </custom-knob>
+      </div>
+    </template>
+
+    <template v-slot:item.delayflag="{ item }">
+      <v-checkbox v-model="item.delayflag" />
+   </template>
+
+    <template v-slot:item.delayvalue="{ item }">
+      <div class="customKnob">
+        <custom-knob
+          :value="parseInt(item.delayvalue,10)"
+        >
+        </custom-knob>
+      </div>
+    </template>
+
+    <template v-slot:item.modeflag="{ item }">
+      <v-checkbox v-model="item.modeflag" />
+   </template>
   </v-data-table>
+</div>
 </template>
 
 <script>
 // import { mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'SongPresetsPanel',
   props: {
-    presetList: {
+    songPresetList: {
       type: Array
     }
   },
@@ -22,28 +94,31 @@ export default {
   data () {
     return {
       headers: [
-        {
-          text: 'name',
-          align: 'left',
-          sortable: false,
-          value: 'name'
-        },
-        { text: 'instrument', value: 'refinstrument' },
-        { text: 'instrumentbank', value: 'refinstrumentbank' },
+        // {
+        //   text: 'name',
+        //   align: 'left',
+        //   sortable: false,
+        //   value: 'name'
+        // },
+        { text: 'image', value: 'image' },
+        { text: 'bank', value: 'instrumentbank' },
+        { text: 'preset', value: 'preset' },
         { text: 'volume', value: 'volume' },
         { text: 'pan', value: 'pan' },
-        { text: 'muteflag', value: 'muteflag' },
-        { text: 'reverbflag', value: 'reverbflag' },
-        { text: 'reverbvalue', value: 'reverbvalue' },
-        { text: 'delayflag', value: 'delayflag' },
-        { text: 'delayvalue', value: 'delayvalue' },
-        { text: 'modeflag', value: 'modeflag' }
+        { text: 'mute', value: 'muteflag' },
+        { text: 'reverb', value: 'reverbflag' },
+        { text: 'reverb value', value: 'reverbvalue' },
+        { text: 'delay', value: 'delayflag' },
+        { text: 'delay value', value: 'delayvalue' },
+        { text: 'mode', value: 'modeflag' }
       ],
       expanded: [],
       singleExpand: false
     }
   },
-
+  computed: {
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList'])
+  },
   // computed: {
   //   ...mapState(['songList'])
   // }
@@ -51,7 +126,7 @@ export default {
   mounted () {
   //   this.programList = this.selectedSong.programList
     console.log('----->SongPresetsPanel')
-    console.log(this.presetList)
+    console.log(this.songPresetList)
   }
 
   // watch: {
@@ -61,3 +136,16 @@ export default {
   // }
 }
 </script>
+
+<style>
+  .image {
+    height:55px;
+    width: 55px;
+    padding: 2px;
+  }
+  .customKnob {
+    height:55px;
+    width: 55px;
+    margin-top: 5px;
+  }
+</style>

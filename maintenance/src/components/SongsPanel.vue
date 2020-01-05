@@ -33,14 +33,14 @@
       </template>
 
       <template v-slot:item.tempo="{ item }">
-            <div class="customKnob">
-              <custom-knob
-                :value="parseInt(item.tempo,10)"
-                :max=200
-              >
-              </custom-knob>
-            </div>
-          </template>
+        <div class="customKnob">
+          <custom-knob
+            :value="parseInt(item.tempo,10)"
+            :max=200
+          >
+          </custom-knob>
+        </div>
+      </template>
 
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -240,20 +240,24 @@ export default {
       this.closeDialog()
     },
     async init () {
-      console.log(this.songList.length)
-      // if (!this.$store.state.songList || this.$store.state.songList === undefined || !this.$store.state.songList.Length) {
-      if (this.$store.state.songList.length === 0) {
-        console.log('Init songs storage')
-        let result = await SongsService.getAll()
-        let list = await result.data
-        // console.log('<< Init Song List?>>')
-        await this.$store.dispatch('setSongList', list)
-        // console.log(this.$store.state.songList)
-        await this.showLoading(false)
-      } else {
-        console.log(' Song List already populated')
-        await this.showLoading(false)
-      }
+      console.log(' >>> Init all relted to songs storage')
+      await SongsService.initAll()
+      await this.showLoading(false)
+      console.log(' Finish Init all relted to songs storage <<< ')
+      // console.log(this.songList.length)
+      // // if (!this.$store.state.songList || this.$store.state.songList === undefined || !this.$store.state.songList.Length) {
+      // if (this.$store.state.songList.length === 0) {
+      //   console.log('Init songs storage')
+      //   let result = await SongsService.getAll()
+      //   let list = await result.data
+      //   // console.log('<< Init Song List?>>')
+      //   await this.$store.dispatch('setSongList', list)
+      //   // console.log(this.$store.state.songList)
+      //   await this.showLoading(false)
+      // } else {
+      //   console.log(' Song List already populated')
+      //   await this.showLoading(false)
+      // }
     },
     swipeHandler (direction) {
       console.log(direction)
@@ -287,18 +291,17 @@ export default {
       console.log(`<SongPanel row clicked> ${value.id}`)
       if (this.expanded.length > 0) {
         this.expanded.pop()
-      } else {
-        let song = this.songList.find(sn => sn.id === value.id)
-        console.log(song)
-        if (!song.programList || song.programList.lenght === 0) {
-          await SongsService.getSongItems(value.id)
-          this.selectedProgramList = this.songList.find(sn => sn.id === value.id).programList
-        } else {
-          this.selectedProgramList = song.programList
-        }
-        this.expanded.push(value)
-        console.log(this.selectedProgramList)
       }
+      let song = this.songList.find(sn => sn.id === value.id)
+      console.log(song)
+      if (!song.programList || song.programList.lenght === 0) {
+        await SongsService.getSongItems(value.id)
+        this.selectedProgramList = this.songList.find(sn => sn.id === value.id).programList
+      } else {
+        this.selectedProgramList = song.programList
+      }
+      this.expanded.push(value)
+      console.log(this.selectedProgramList)
     }
   },
   mounted () {
