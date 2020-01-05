@@ -5,6 +5,8 @@
     :items="songPresetList"
     item-key="id"
     class="elevation-1"
+    dense
+    hide-default-footer
   >
 
     <template v-slot:item.image="{ item }">

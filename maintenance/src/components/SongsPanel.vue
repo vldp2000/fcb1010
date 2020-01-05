@@ -321,9 +321,9 @@ export default {
     font-size: 50px !important;
   }
   .customKnob {
-    height:80px;
-    width: 80px;
-    margin-top: 10px;
+    height:55px;
+    width: 55px;
+    margin-top: 5px;
   }
   .customTableCell {
     font-size: 20px !important;

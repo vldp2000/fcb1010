@@ -7,6 +7,7 @@
     @click:row="rowClicked"
     :single-expand="singleExpand"
     :expanded.sync="expanded"
+    hide-default-footer
   >
     <template v-slot:expanded-item="{ headers }">
       <td :colspan="headers.length">
