@@ -18,7 +18,7 @@
       <template v-slot:expanded-item="{ headers }">
         <td :colspan="headers.length">
           <div>
-            <song-programs-panel :programList="selectedSong.programList" >
+            <song-programs-panel v-bind:programList="selectedProgramList" >
 
             </song-programs-panel>
           </div>
@@ -171,7 +171,7 @@ export default {
         // pageCount: number
         itemsLength: 128
       },
-      selectedSong: {}
+      selectedProgramList: []
     }
   },
 
@@ -292,12 +292,12 @@ export default {
         console.log(song)
         if (!song.programList || song.programList.lenght === 0) {
           await SongsService.getSongItems(value.id)
-          this.selectedSong = this.songList.find(sn => sn.id === value.id)
+          this.selectedProgramList = this.songList.find(sn => sn.id === value.id).programList
         } else {
-          this.selectedSong = song
+          this.selectedProgramList = song.programList
         }
         this.expanded.push(value)
-        console.log(this.selectedSong)
+        console.log(this.selectedProgramList)
       }
     }
   },

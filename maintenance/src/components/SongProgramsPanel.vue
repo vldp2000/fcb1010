@@ -13,7 +13,12 @@
 
 export default {
   name: 'SongProgramsPanel',
-  props: ['programList'],
+  props: {
+    programList: {
+      type: Array
+    }
+  },
+
   data () {
     return {
       headers: [
@@ -26,15 +31,17 @@ export default {
         { text: 'midipedal', value: 'midipedal' }
       ]
     }
-  }
+  },
 
   // computed: {
   //   ...mapState(['songList'])
   // }
 
-  // mounted () {
+  mounted () {
   //   this.programList = this.selectedSong.programList
-  // }
+    console.log('----->ongProgramsPanel')
+    console.log(this.programList)
+  }
 
   // watch: {
   //   songList: function (newValue, oldValue) {
