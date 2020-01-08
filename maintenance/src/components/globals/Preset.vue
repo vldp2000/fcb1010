@@ -2,7 +2,7 @@
 <template>
   <v-card
     class="mx-auto"
-    max-width="400"
+    max-width="500"
   >
   <v-container class="px-0" fluid>
     <v-row no-gutters>
@@ -36,13 +36,16 @@
             <v-checkbox class="ma-0 pa-0" dense hide-details  label="Del" v-model="item.delayflag" />
             <v-checkbox class="ma-0 pa-0" dense hide-details  label="Rev" v-model="item.reverbflag" />
         </div>
-        <div class="textInput">
-            <custom-text-input
-              v-model="item.delayvalue" />
-            <custom-text-input
-              v-model="item.delayvalue" />
-            <custom-text-input
-              v-model="item.delayvalue" />
+        <div class="inputpanel">
+          <div class="valueInput">
+            <custom-text-input v-model="item.delayvalue" />
+          </div>
+          <div class="valueInput">
+            <custom-text-input v-model="item.delayvalue" />
+          </div>
+          <div class="valueInput">
+            <custom-text-input v-model="item.reverbvalue" />
+          </div>
         </div>
       </v-row>
 
@@ -93,13 +96,7 @@ export default {
   .v-label {
     font-size: 10px;
   }
-  .v-text-field input {
-    font-size: 0.8em;
-  }
-  .v-text-field {
-    margin: 5px;
-    /* height: 10px; */
-  }
+
   .presetName {
     display: flex;
     /* justify-content: flex-start; */
@@ -107,12 +104,14 @@ export default {
     flex-direction: column;
   }
   .custom-text-input {
-    margin: 4px;
+    width: 100px;
   }
-  .textInput {
+  .inputpanel {
     margin-left: 10px;
-    margin-inline: 2px;
-    width: 30px;
+    width: 100px;
+  }
+  .valueInput {
+    width: 100px;
   }
 
 </style>

@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <label class='label-input' v-bind:for="fieldId">{{labelName}}</label>
-    <input v-bind:id="fieldId" v-bind:class="cssClass" v-bind:placeholder="placeHolder" v-bind:value="value" v-on:input="updateValue($event.target.value)"/>
+  <div id="main">
+    <!-- <label class='label-input' v-bind:for="fieldId">{{labelName}}</label> -->
+    <input v-bind:id="fieldId"
+      class="input-field"
+      :placeholder="placeHolder"
+      :value="value"
+      v-on:input="updateValue($event.target.value)"/>
   </div>
 </template>
 
@@ -10,7 +14,8 @@ export default {
   props: {
     labelName: {
       type: String,
-      required: true
+      default: '',
+      required: false
     },
     fieldId: {
       type: String,
@@ -39,17 +44,39 @@ export default {
 </script>
 
 <style>
-  .label-input {
-    display: block;
-    margin: 2px;
+  #main {
+    width: 50px;
+    height: 25px;
+    border: 1px solid black;
+    display: -webkit-flex; /* Safari */
+    -webkit-align-items: flex-start; /* Safari 7.0+ */
+    display: flex;
+    align-items: flex-start;
   }
-  .input-field {
-    padding: -3px;
-    margin: 2px;
-    font-size: 12px;
+  .textInput {
+    /* background-color: aqua; */
+    border: solid 1px #444342fd;
+    width: 50px;
+    height: 20px;
+    margin-top: 5px;
+  }
+  /* .label-input {
     display: block;
-    -moz-box-shadow: 1px 1px 2px 3px #ccc;
-    -webkit-box-shadow: 1px 2px 2px 3px #ccc;
-    box-shadow: 1px 1px 2px 3px #ccc;
+  } */
+  .input-field {
+    /* padding: -3px;
+    margin: 2px; */
+    font-size: 11px;
+    /* display: block; */
+    -moz-box-shadow: 0px 0px 1px 1px #ccc;
+    -webkit-box-shadow: 0px 0px 1px 1px #ccc;
+    box-shadow: 0px 0px 1px 1px #ccc;
+
+    border: solid 1px #444342fd;
+    /* padding: 1px; */
+    background-clip: content-box; /* support: IE9+ */
+    background-color: rgb(250, 244, 250);
+    width: 50px;
+    height: 12px;
   }
 </style>
