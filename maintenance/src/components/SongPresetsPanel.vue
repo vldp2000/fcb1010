@@ -141,7 +141,7 @@ export default {
 
 <style>
   .image {
-    height:55px;
+    height:70px;
     width: 55px;
     padding: 2px;
   }

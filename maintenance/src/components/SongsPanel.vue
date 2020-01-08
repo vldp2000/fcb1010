@@ -323,7 +323,7 @@ export default {
   .customKnob {
     height:55px;
     width: 55px;
-    margin-top: 5px;
+    /* margin-top: 5px; */
   }
   .customTableCell {
     font-size: 20px !important;

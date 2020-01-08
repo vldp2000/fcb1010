@@ -1,18 +1,22 @@
 <template>
-  <div class="customknob">
-    <vue-svg-gauge
-      :start-angle='startAngle'
-      :end-angle='endAngle'
-      :value='parseInt(value,10)'
-      :separator-step='separatorStep'
-      :min='min'
-      :max='max'
-      :gauge-color='gaugeColor'
-      :scale-interval='scaleInterval'>
-      <div class="inner-text">
-        <span><b>{{ value }}</b></span>
+  <div>
+      <div class="customknob">
+        <!-- <v-row align-center style="background-color:#ffffff;"> -->
+        <vue-svg-gauge
+          :start-angle='startAngle'
+          :end-angle='endAngle'
+          :value='parseInt(value,10)'
+          :separator-step='separatorStep'
+          :min='min'
+          :max='max'
+          :gauge-color='gaugeColor'
+          :scale-interval='scaleInterval'>
+            <div class="inner-text">
+              <b class="label1">{{ value }}</b>
+              <label class="label2">{{ knobLabel }}</label>
+            </div>
+        </vue-svg-gauge>
       </div>
-    </vue-svg-gauge>
   </div>
 </template>
 
@@ -84,6 +88,10 @@ export default {
     transitionDuration: {
       type: Number,
       default: 500
+    },
+    knobLabel: {
+      type: String,
+      default: ''
     }
   },
   watch: {
@@ -101,10 +109,20 @@ export default {
 <!--  change style to calculate the position of the inner text automatically  -->
 <style>
 .inner-text {
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    margin-top: 50px;
-    font-size: 50px !important;
-  }
+  display: flex;
+  /* justify-content: flex-start; */
+  /* align-items: flex-end; */
+  flex-direction: column;
+}
+.label1 {
+  margin-top: 0px;
+  font-size: 45px !important;
+  /* background-color: hsl(219, 100%, 54%); */
+}
+.label2 {
+  /* background-color: hsl(123, 100%, 54%); */
+  /* color: #000; */
+  font-size: 30px !important;
+  margin: -16px;
+}
  </style>

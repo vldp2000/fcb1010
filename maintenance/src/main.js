@@ -6,6 +6,8 @@ import store from '@/store/store'
 import vuetify from './plugins/vuetify'
 import CustomPanel from '@/components/globals/CustomPanel'
 import CustomKnob from '@/components/globals/CustomKnob'
+import Preset from '@/components/globals/Preset'
+import CustomTextInput from '@/components/globals/CustomTextInput'
 // import { sync } from 'vuex-router-sync'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import VueSvgGauge from 'vue-svg-gauge'
@@ -13,6 +15,8 @@ import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.component('CustomPanel', CustomPanel)
 Vue.component('CustomKnob', CustomKnob)
+Vue.component('Preset', Preset)
+Vue.component('CustomTextInput', CustomTextInput)
 
 Vue.config.productionTip = false
 Vue.use(VueSvgGauge)
