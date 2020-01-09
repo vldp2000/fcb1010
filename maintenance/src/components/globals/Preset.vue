@@ -102,6 +102,7 @@ export default {
     /* justify-content: flex-start; */
     /* align-items: flex-end; */
     flex-direction: column;
+    height: 60px;
   }
   .custom-text-input {
     width: 70px;
