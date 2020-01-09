@@ -45,21 +45,21 @@ export default {
 
 <style>
   #main {
-    width: 50px;
-    height: 25px;
-    border: 1px solid black;
+    width: 60px;
+    height: 24px;
+    /* border: 1px solid black; */
     display: -webkit-flex; /* Safari */
-    -webkit-align-items: flex-start; /* Safari 7.0+ */
+    -webkit-align-items: center; /* Safari 7.0+ */
     display: flex;
-    align-items: flex-start;
+    align-items: center;
   }
-  .textInput {
-    /* background-color: aqua; */
+  /* .textInput {
     border: solid 1px #444342fd;
     width: 50px;
     height: 20px;
     margin-top: 5px;
-  }
+  } */
+
   /* .label-input {
     display: block;
   } */
@@ -74,9 +74,7 @@ export default {
 
     border: solid 1px #444342fd;
     /* padding: 1px; */
-    background-clip: content-box; /* support: IE9+ */
-    background-color: rgb(250, 244, 250);
-    width: 50px;
-    height: 12px;
+    width: 60px;
+    height: 16px;
   }
 </style>

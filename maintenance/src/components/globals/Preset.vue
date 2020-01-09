@@ -1,8 +1,8 @@
 
 <template>
   <v-card
-    class="mx-auto"
-    max-width="500"
+    class="mx-auto presetCard"
+    max-width="400"
   >
   <v-container class="px-0" fluid>
     <v-row no-gutters>
@@ -104,14 +104,16 @@ export default {
     flex-direction: column;
   }
   .custom-text-input {
-    width: 100px;
+    width: 70px;
   }
   .inputpanel {
     margin-left: 10px;
-    width: 100px;
   }
   .valueInput {
-    width: 100px;
+    width: 80px;
+  }
+  .presetCard {
+    background-color: white;
   }
 
 </style>
