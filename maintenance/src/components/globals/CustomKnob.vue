@@ -69,8 +69,10 @@ export default {
     gaugeColor: {
       type: [Array, String],
       default: () => ([
-        { offset: 0, color: '#347AB0' },
-        { offset: 100, color: '#8CDFAD' }
+        // { offset: 0, color: '#347AB0' },
+        // { offset: 100, color: '#8CDFAD' }
+        { offset: 0, color: 'lightblue' },
+        { offset: 100, color: 'blue' }
       ])
     },
     baseColor: {

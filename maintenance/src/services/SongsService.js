@@ -8,7 +8,7 @@ export default {
 
   async getAll () {
     try {
-      console.log('// ----------->> get all songs')
+      // console.log('// ----------->> get all songs')
       let songs = await Api()('songs')
       // console.log(songs)
       return songs
@@ -18,7 +18,7 @@ export default {
   },
 
   async getSongItems (songId) {
-    console.log(`// ----------->> get songitems by id ${songId}`)
+    // console.log(`// ----------->> get songitems by id ${songId}`)
     try {
       let items = await Api().get(`songitems/${songId}`)
       let programs = await items.data.songPrograms
@@ -31,7 +31,7 @@ export default {
         }
         program.presetList.push(item)
       })
-      console.log(songId)
+      // console.log(songId)
       const payload = { 'id': songId, 'programs': programs }
       await store.dispatch('addSongItems', payload)
       return songId
@@ -46,12 +46,12 @@ export default {
 
   async post (song) {
     try {
-      console.log('// ----------->>return Api().post(song)')
-      console.log(song)
+      // console.log('// ----------->>return Api().post(song)')
+      // console.log(song)
       let result = await Api().post('song', song)
       let newSong = await result.data
-      console.log('// -----------result')
-      console.log(newSong)
+      // console.log('// -----------result')
+      // console.log(newSong)
       await store.dispatch('addSong', newSong)
     } catch (ex) {
       console.log(ex)
@@ -60,13 +60,13 @@ export default {
 
   async put (song) {
     try {
-      console.log('// ----------->>return Api().put(song{song.id}, song)')
-      console.log(song)
-      console.log(song.id)
+      // console.log('// ----------->>return Api().put(song{song.id}, song)')
+      // console.log(song)
+      // console.log(song.id)
       let result = await Api().put(`song/${song.id}`, song)
       let newSong = await result.data
-      console.log('// -----------result')
-      console.log(newSong)
+      // console.log('// -----------result')
+      // console.log(newSong)
       await store.dispatch('updateSong', newSong)
     } catch (ex) {
       console.log(ex)
@@ -75,9 +75,9 @@ export default {
 
   async initAll () {
     try {
-      console.log('// ----------->>init ALL)')
+      // console.log('// ----------->>init ALL)')
       if (store.state.songList.length === 0) {
-        console.log('Init songs storage')
+        // console.log('Init songs storage')
         let result = await this.getAll()
         let list = await result.data
         // console.log('<< Init Song List?>>')
@@ -88,7 +88,7 @@ export default {
       }
 
       if (store.state.instrumentList.length === 0) {
-        console.log('Init instruments storage')
+        // console.log('Init instruments storage')
         let result = await InstrumentsService.getAll()
         let list = await result.data
         // console.log('<< Init instrument List?>>')
@@ -100,7 +100,7 @@ export default {
       }
 
       if (store.state.instrumentBankList.length === 0) {
-        console.log('Init instrument Banks storage')
+        // console.log('Init instrument Banks storage')
         let result = await InstrumentBankService.getAll()
         let list = await result.data
         // console.log('<< Init instrument bank List?>>')
@@ -112,7 +112,7 @@ export default {
       }
 
       if (store.state.presetList.length === 0) {
-        console.log('Init presets storage')
+        // console.log('Init presets storage')
         let result = await PresetsService.getAll()
         let list = await result.data
         // console.log('<< Init preset List?>>')

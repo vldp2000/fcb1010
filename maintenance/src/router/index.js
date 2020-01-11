@@ -8,7 +8,7 @@ import InstrumentBank from '@/components/InstrumentBankPanel'
 import SongPrograms from '@/components/SongProgramsPanel'
 import About from '@/components/About'
 import Gigs from '@/components/GigPanel'
-import Preset from '@/components/globals/Preset'
+import Preset from '@/components/globals/PresetControl'
 
 Vue.use(VueRouter)
 

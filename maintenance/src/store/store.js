@@ -22,7 +22,7 @@ export default new Vuex.Store({
   mutations: {
     [types.SET_SONGLIST] (state, songList) {
       state.songList = songList
-      console.log('<State>  songList populated ß!!!')
+      // console.log('<State>  songList populated ß!!!')
       // console.log(list)
     },
     [types.ADD_SONG] (state, song) {
@@ -39,8 +39,8 @@ export default new Vuex.Store({
       try {
         let song = state.songList.find(sn => sn.id === payload.id)
         if (!song.programList) {
-          console.log('types.ADD_SONG_ITEMS -->>')
-          console.log(payload.id)
+          // console.log('types.ADD_SONG_ITEMS -->>')
+          // console.log(payload.id)
           console.log(payload.programs)
           Vue.set(song, 'programList', payload.programs)
         }
@@ -56,7 +56,7 @@ export default new Vuex.Store({
       state.instrumentList.push(instrument)
     },
     [types.UPDATE_INSTRUMENT] (state, instrument) {
-      console.log('mutations - updateInstrument')
+      // console.log('mutations - updateInstrument')
       const item = state.instrumentList.find(item => item.id === instrument.id)
       Object.assign(item, instrument)
     },
@@ -64,9 +64,9 @@ export default new Vuex.Store({
       try {
         let item = state.instrumentList.find(item => item.id === id)
         if (!item.imageURL) {
-          console.log('SET_INSTRUMENT_IMAGE ............----->>>')
+          // console.log('SET_INSTRUMENT_IMAGE ............----->>>')
           Vue.set(item, 'imageURL', url)
-          console.log(url)
+          // console.log(url)
         }
       } catch (ex) {
         console.log(ex)
@@ -74,8 +74,8 @@ export default new Vuex.Store({
     },
     [types.SET_PRESETLIST] (state, presetList) {
       state.presetList = presetList
-      console.log('<State>  presetList populated !!!')
-      console.log(presetList)
+      // console.log('<State>  presetList populated !!!')
+      // console.log(presetList)
     },
     [types.ADD_PRESET] (state, preset) {
       state.presetList.push(preset)
@@ -92,14 +92,14 @@ export default new Vuex.Store({
       state.instrumentBankList.push(instrumentBank)
     },
     [types.UPDATE_INSTRUMENTBANK] (state, instrumentBank) {
-      console.log('mutations - updateInstrumentBank')
+      // console.log('mutations - updateInstrumentBank')
       const item = state.instrumentBankList.find(item => item.id === instrumentBank.id)
       Object.assign(item, instrumentBank)
     },
 
     [types.SET_GIGLIST] (state, gigList) {
       state.gigList = gigList
-      console.log('<State>  gigList populated ß!!!')
+      // console.log('<State>  gigList populated ß!!!')
       // console.log(list)
     },
     [types.ADD_GIG] (state, gig) {
@@ -112,7 +112,7 @@ export default new Vuex.Store({
 
     [types.SET_GIGSONGLIST] (state, gigsongList) {
       state.gigsongList = gigsongList
-      console.log('<State>  gigsongList populated ß!!!')
+      // console.log('<State>  gigsongList populated ß!!!')
       // console.log(list)
     },
     [types.ADD_GIGSONG] (state, gigsong) {
@@ -133,14 +133,14 @@ export default new Vuex.Store({
       commit(types.ADD_SONG, song)
     },
     updateSong ({ commit }, song) {
-      console.log('action - updateSong')
+      // console.log('action - updateSong')
       commit(types.UPDATE_SONG, song)
     },
     addSongItems ({ commit }, payload) {
       try {
-        console.log('action - addSongItems')
-        console.log(payload.id)
-        console.log(payload.programs)
+        // console.log('action - addSongItems')
+        // console.log(payload.id)
+        // console.log(payload.programs)
         commit(types.ADD_SONG_ITEMS, payload)
       } catch (ex) {
         console.log(ex)
@@ -155,27 +155,27 @@ export default new Vuex.Store({
       commit(types.ADD_INSTRUMENT, instrument)
     },
     updateInstrument ({ commit }, instrument) {
-      console.log('action - updateInstrument')
+      // console.log('action - updateInstrument')
       commit(types.UPDATE_INSTRUMENT, instrument)
     },
 
     setInstrumentImage ({ commit }, { id, url }) {
-      console.log('action - setInstrumentImage')
-      console.log(id)
-      console.log(url)
+      // console.log('action - setInstrumentImage')
+      // console.log(id)
+      // console.log(url)
       commit(types.SET_INSTRUMENT_IMAGE, { id, url })
     },
 
     //  Preset List -----------------------------------------------------
     setPresetList ({ commit }, setPresetList) {
-      console.log('action - setPresetList')
+      // console.log('action - setPresetList')
       commit(types.SET_PRESETLIST, setPresetList)
     },
     addPreset ({ commit }, preset) {
       commit(types.ADD_PRESET, preset)
     },
     updatePreset ({ commit }, preset) {
-      console.log('action - updatePreset')
+      // console.log('action - updatePreset')
       commit(types.UPDATE_PRESET, preset)
     },
 
@@ -187,7 +187,7 @@ export default new Vuex.Store({
       commit(types.ADD_INSTRUMENTBANK, instrumentBank)
     },
     updateInstrumentBank ({ commit }, instrumentBank) {
-      console.log('action - updateInstrumentBank')
+      // console.log('action - updateInstrumentBank')
       commit(types.UPDATE_INSTRUMENTBANK, instrumentBank)
     },
 
@@ -199,7 +199,7 @@ export default new Vuex.Store({
       commit(types.ADD_GIG, gig)
     },
     updateGig ({ commit }, gig) {
-      console.log('action - updateGig')
+      // console.log('action - updateGig')
       commit(types.UPDATE_GIG, gig)
     },
 
@@ -211,7 +211,7 @@ export default new Vuex.Store({
       commit(types.ADD_GIGSONG, gigsong)
     },
     updateGigSong ({ commit }, gigsong) {
-      console.log('action - updateGigSong')
+      // console.log('action - updateGigSong')
       commit(types.UPDATE_GIGSONG, gigsong)
     }
 
@@ -223,6 +223,12 @@ export default new Vuex.Store({
     presetList: state => state.presetList,
     instrumentBankList: state => state.instrumenBanktList,
     gigList: state => state.gigList,
-    gigSongList: state => state.gigSongList
+    gigSongList: state => state.gigSongList,
+    // getPresetById: state => id => state.presetList.find(preset => preset.id === id)
+    getPresetById (state) {
+      return id => state.presetList.filter(item => {
+        return item.id === id
+      })
+    }
   }
 })

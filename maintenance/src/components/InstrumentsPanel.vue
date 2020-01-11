@@ -157,9 +157,9 @@ export default {
 
   methods: {
     async init () {
-      console.log(this.instrumentList.length)
+      // console.log(this.instrumentList.length)
       if (this.instrumentList.length === 0) {
-        console.log('Init instruments storage')
+        // console.log('Init instruments storage')
         let result = await InstrumentsService.getAll()
         let list = await result.data
         // console.log('<< Init instrument List?>>')
@@ -168,7 +168,7 @@ export default {
         await this.importAll(require.context('../assets/', false, /\.png$/))
       } else {
         console.log(' Instrument List already populated')
-        console.log(this.$store.state.instrumentList)
+        // console.log(this.$store.state.instrumentList)
       }
     },
 
