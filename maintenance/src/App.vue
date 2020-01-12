@@ -149,8 +149,7 @@ export default {
           { icon: 'mdi-settings', text: 'Song Programs', link: '/songPrograms' },
           { icon: 'mdi-settings', text: 'Preset', link: '/preset' }
         ]
-      },
-      { icon: 'mdi-help-circle', text: 'Help', link: '/about' }
+      }
     ]
   })
 }

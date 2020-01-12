@@ -19,7 +19,7 @@ export default new Vuex.Store({
     gigList: [],
     gigSongList: [],
     currentSongId: 0,
-    currentProgramId: 0
+    currentProgramMidiPedal: 0
 
   },
   mutations: {
@@ -129,8 +129,8 @@ export default new Vuex.Store({
     [types.SET_CURRENTSONG_ID] (state, id) {
       state.currentSongId = id
     },
-    [types.SET_CURRENTPROGRAM_ID] (state, id) {
-      state.currentProgramId = id
+    [types.SET_CURRENT_PROGRAMMIDIPEDAL] (state, idx) {
+      state.currentProgramMidiPedal = idx
     }
   },
 
@@ -229,8 +229,8 @@ export default new Vuex.Store({
       commit(types.SET_CURRENTSONG_ID, id)
     },
     //  Set current Program Id-----------------------------------------------------
-    setCurrentProgramId ({ commit }, id) {
-      commit(types.SET_CURRENTPROGRAM_ID_ID, id)
+    setCurrentProgramMidiPedal ({ commit }, idx) {
+      commit(types.SET_CURRENT_PROGRAMMIDIPEDAL, idx)
     }
 
   },
@@ -249,6 +249,6 @@ export default new Vuex.Store({
       })
     },
     currentSongId: state => state.currentSongId,
-    currentProgramId: state => state.currentProgramId
+    currentProgramMidiPedal: state => state.currentProgramMidiPedal
   }
 })
