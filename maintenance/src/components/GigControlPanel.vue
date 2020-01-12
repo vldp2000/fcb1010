@@ -220,7 +220,7 @@ export default {
     padding: 5px;
     margin: 5px;
     box-shadow: 4px 4px 4px;
-    /* color: rgb(233, 221, 224); */
+    color: blue !important;
   }
   .vcard {
     color: rgba(36, 34, 34, 0.856);
