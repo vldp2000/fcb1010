@@ -243,7 +243,7 @@ export default {
   width: 40px;
   height: 50px;
   /* margin: 50px, 10px, 0px, -10px; */
-  margin-top: 50px;
+  margin-top: 40px;
   margin-left: -10px;
   margin-right: 2px;
   padding: 0px;
@@ -259,7 +259,7 @@ export default {
   width: 40px;
   height: 50px;
   /* margin: 50px, 10px, 0px, -10px; */
-  margin-top: 50px;
+  margin-top: 40px;
   margin-left: -10px;
   margin-right: 2px;
   padding: 0px;
