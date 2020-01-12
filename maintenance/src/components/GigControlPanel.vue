@@ -1,6 +1,16 @@
 <template>
- <v-container grid-list-md text-md-center fluid class="darkBackgroud">
+  <v-container grid-list-md text-md-center fluid class="darkBackgroud">
  <!-- <v-container fluid  class="darkBackgroud"> -->
+    <v-row md12 ma-0 pa-0 no-gutters>
+      <v-select
+        label="Instrument"
+        v-model="songId"
+        :items="songList"
+        required
+        item-text="name"
+        item-value="id">
+      </v-select>
+    </v-row>
 <!-------PROFRAM A----------->
     <v-row md12 ma-0 pa-0 no-gutters>
 
@@ -118,7 +128,8 @@
       </v-col>
     </v-row>
     <v-row md12 ma-0 pa-0 no-gutters>
-      <v-btn large @click="btnclick()" > change current program </v-btn>
+      <v-btn large @click="btnClickPogram()" > change current program </v-btn>
+      <v-btn large @click="btnClickSong()" > change current song </v-btn>
     </v-row>
   </v-container>
 </template>
@@ -130,6 +141,7 @@ import SongsService from '@/services/SongsService'
 export default {
   data () {
     return {
+      songId: -1,
       currentSong: null,
       currentProgramIdx: 0,
       initFlag: true
@@ -144,10 +156,16 @@ export default {
     currentSongId: function (id) {
       if (typeof this.songList !== 'undefined') {
         this.currentSong = this.songList.find(item => item.id === id)
+        console.log('----,,,,, Song Changed')
+        console.log(this.currentSong)
       }
     },
     currentProgramMidiPedal: function (idx) {
       this.currentProgramIdx = idx
+    },
+    songId: function () {
+      console.log('----,,,,,try to set setCurrentSongId')
+      this.$store.dispatch('setCurrentSongId', this.songId)
     }
   },
 
@@ -190,7 +208,7 @@ export default {
             if (this.currentSong.programList === null ||
             typeof (this.currentSong.programList) === 'undefined') {
               SongsService.getSongItems(this.currentSong.id)
-              this.currentSong = this.songList[0]
+              // this.currentSong = this.songList[]
             }
 
             const preset = this.currentSong.programList[programIndex].presetList[presetIndex]
@@ -203,10 +221,15 @@ export default {
       }
     },
 
-    btnclick () {
+    btnClickProgram () {
       let x = this.currentProgramIdx + 1
       if (x > 3) { x = 0 }
       this.$store.dispatch('setCurrentProgramMidiPedal', x)
+    },
+    btnClickSong () {
+      let x = this.songList.indexOf(this.currentSong) + 1
+      if (x > 12) { x = 0 }
+      this.$store.dispatch('setCurrentSongId', x)
     },
 
     onProgramClick (idx) {
