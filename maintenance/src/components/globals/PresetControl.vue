@@ -82,11 +82,13 @@ export default {
           console.log('--instrument list is not ready->>')
         } else {
           console.log(this.currentPreset)
-          console.log(this.instrumentList)
-          const instrument = this.instrumentList.find(item => item.id === this.currentPreset.refinstrument)
-          console.log(instrument)
-          this.imageURL = instrument.imageURL
-          console.log(this.imageURL)
+          // console.log(this.instrumentList)
+          if (this.presetControlData.refinstrument > 0) {
+            const instrument = this.instrumentList.find(item => item.id === this.currentPreset.refinstrument)
+            // console.log(instrument)
+            this.imageURL = instrument.imageURL
+            console.log(this.imageURL)
+          }
         }
       }
     }

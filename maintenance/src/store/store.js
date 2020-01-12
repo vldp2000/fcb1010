@@ -227,6 +227,8 @@ export default new Vuex.Store({
     //  Set current Song Id-----------------------------------------------------
     setCurrentSongId ({ commit }, id) {
       commit(types.SET_CURRENTSONG_ID, id)
+      console.log('STORE. Set current Song Id-------------------------------')
+      console.log(id)
     },
     //  Set current Program Id-----------------------------------------------------
     setCurrentProgramMidiPedal ({ commit }, idx) {

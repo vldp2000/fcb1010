@@ -3,7 +3,7 @@
  <!-- <v-container fluid  class="darkBackgroud"> -->
     <v-row md12 ma-0 pa-0 no-gutters>
       <v-select
-        label="Instrument"
+        label="Select Song"
         v-model="songId"
         :items="songList"
         required
@@ -141,10 +141,26 @@ import SongsService from '@/services/SongsService'
 export default {
   data () {
     return {
-      songId: -1,
+      songId: 1,
       currentSong: null,
       currentProgramIdx: 0,
-      initFlag: true
+      initFlag: true,
+      defaultPreset: {
+        id: -1,
+        refsong: -1,
+        refsongprogram: -1,
+        refinstrument: -1,
+        refinstrumentbank: -1,
+        refpreset: -1,
+        volume: 0,
+        pan: 0,
+        muteflag: 0,
+        reverbflag: 0,
+        delayflag: 0,
+        modeflag: 0,
+        reverbvalue: 0,
+        delayvalue: 0
+      }
     }
   },
 
@@ -153,20 +169,31 @@ export default {
   },
 
   watch: {
-    currentSongId: function (id) {
+    currentSongId: async function (id) {
+      this.initFlag = true
       if (typeof this.songList !== 'undefined') {
-        this.currentSong = this.songList.find(item => item.id === id)
-        console.log('----,,,,, Song Changed')
+        console.log(id)
+        this.currentSong = await this.songList.find(item => item.id === id)
+
+        if (this.currentSong.programList === null ||
+        typeof (this.currentSong.programList) === 'undefined') {
+          await SongsService.getSongItems(this.currentSong.id)
+        }
+
         console.log(this.currentSong)
+        this.songId = id
+        console.log('----,,,,, Song Changed')
       }
+      this.initFlag = false
     },
+
     currentProgramMidiPedal: function (idx) {
       this.currentProgramIdx = idx
-    },
-    songId: function () {
-      console.log('----,,,,,try to set setCurrentSongId')
-      this.$store.dispatch('setCurrentSongId', this.songId)
     }
+    // songId: function () {
+    //   console.log('----,,,,,try to set setCurrentSongId')
+    //   this.$store.dispatch('setCurrentSongId', this.songId)
+    // }
   },
 
   mounted () {
@@ -199,16 +226,17 @@ export default {
     getPresetControlData (programIndex, presetIndex) {
       if (!this.initFlag) {
         try {
-          // console.log(`get program for ${programIndex} ${presetIndex} `)
-          // console.log(this.currentSong)
+          console.log(`get program for ${programIndex} ${presetIndex} `)
+          console.log(this.currentSong)
           if (typeof (this.currentSong) === 'undefined' || this.currentSong === null) {
             console.log(programIndex)
-            return {}
+            return this.defaultPreset
           } else {
             if (this.currentSong.programList === null ||
             typeof (this.currentSong.programList) === 'undefined') {
-              SongsService.getSongItems(this.currentSong.id)
+              // SongsService.getSongItems(this.currentSong.id)
               // this.currentSong = this.songList[]
+              return this.defaultPreset
             }
 
             const preset = this.currentSong.programList[programIndex].presetList[presetIndex]
@@ -218,22 +246,25 @@ export default {
         } catch (ex) {
           console.log(ex)
         }
+      } else {
+        return this.defaultPreset
       }
     },
 
-    btnClickProgram () {
+    btnClickPogram () {
       let x = this.currentProgramIdx + 1
       if (x > 3) { x = 0 }
       this.$store.dispatch('setCurrentProgramMidiPedal', x)
     },
     btnClickSong () {
-      let x = this.songList.indexOf(this.currentSong) + 1
+      let x = this.songId + 1
       if (x > 12) { x = 0 }
       this.$store.dispatch('setCurrentSongId', x)
     },
 
     onProgramClick (idx) {
       this.$store.dispatch('setCurrentProgramMidiPedal', idx)
+      this.$store.dispatch('setCurrentProgramMidiPedal', 0)
     }
   }
 }
