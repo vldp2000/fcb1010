@@ -70,9 +70,9 @@ export default {
       type: [Array, String],
       default: () => ([
         // { offset: 0, color: '#347AB0' },
-        // { offset: 100, color: '#8CDFAD' }
+        // { offset: 100, color: '#8CDFAD' }  'rgba(238, 3, 54, 0.945)'
         { offset: 0, color: 'lightblue' },
-        { offset: 100, color: 'blue' }
+        { offset: 50, color: 'blue' }
       ])
     },
     baseColor: {
@@ -100,8 +100,8 @@ export default {
     immediate: true,
     value: function (newValue, oldValue) {
       this.currentValue = newValue
-      console.log(oldValue)
-      console.log(newValue)
+      // console.log(oldValue)
+      // console.log(newValue)
     }
   }
 

@@ -8,7 +8,7 @@
     <v-row no-gutters>
       <v-col cols=3>
         <div class="presetName">
-          <v-img height="55" width="55" margine-right="10" :src="imageURL"/>
+          <v-img height="40" width="40" margine-right="5" :src="imageURL"/>
         </div>
       </v-col>
       <v-col cols=9>
@@ -122,8 +122,8 @@ export default {
   .customKnob {
     height: 60px;
     width: 60px;
-    margin-top: 10px;
-    margin-right: 10px;
+    margin-top: 15px;
+    margin-right: 5px;
   }
   .customControls {
     height: 60px;
@@ -137,7 +137,7 @@ export default {
     /* justify-content: flex-start; */
     /* align-items: flex-end; */
     flex-direction: column;
-    height: 60px;
+    height: 40px;
   }
   .custom-text-input {
     width: 70px;
@@ -149,7 +149,8 @@ export default {
     width: 80px;
   }
   .presetCard {
-    background-color: white;
+    background-color: rgba(238, 3, 54, 0.945);
+    /* background-color: white; */
   }
 
 </style>

@@ -1,122 +1,124 @@
 <template>
- <v-container grid-list-md text-md-center fluid fill-height class="darkBackgroud">
+ <v-container grid-list-md text-md-center fluid class="darkBackgroud">
+ <!-- <v-container fluid  class="darkBackgroud"> -->
+<!-------PROFRAM A----------->
+    <v-row md12 ma-0 pa-0 no-gutters style="background-color='red'">
 
-      <v-row no-gutters >
+      <div class="progLabel">
+        <h1>A</h1>
+      </div>
 
-          <!-- <div class='rotatedLabel'>
-            <b>Program A</b>
-          </div> -->
+      <v-col md3 d-flex>
+        <v-card class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(0, 0)'/>
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(0, 1)'/>
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(0, 2)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(0, 3)' />
+        </v-card>
+      </v-col>
 
-          <div class="progLabel">
-            <h1>A</h1>
-          </div>
+    </v-row>
 
-        <v-col md3 d-flex>
-          <v-card class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(0, 0)'/>
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(0, 1)'/>
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(0, 2)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(0, 3)' />
-          </v-card>
-        </v-col>
+<!-------PROFRAM B----------->
+    <v-row md12 ma-0 pa-0 no-gutters>
 
-      </v-row>
+      <div class="progLabelSelected">
+        <h1>B</h1>
+      </div>
 
-      <v-row md12 no-gutters>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(1, 0)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(1, 1)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(1, 2)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(1, 3)' />
+        </v-card>
+      </v-col>
 
-          <div class="progLabelSelected">
-            <h1>B</h1>
-          </div>
+    </v-row>
+<!-------PROFRAM C----------->
+    <v-row md12 ma-0 pa-0 no-gutters>
 
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(1, 0)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(1, 1)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(1, 2)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(1, 3)' />
-          </v-card>
-        </v-col>
+      <div class="progLabel">
+        <h1>C</h1>
+      </div>
 
-      </v-row>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(2, 0)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(2, 1)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(2, 2)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(2, 3)' />
+        </v-card>
+      </v-col>
+    </v-row>
 
-      <v-row md12 no-gutters>
-          <div class="progLabel">
-            <h1>C</h1>
-          </div>
+<!-------PROFRAM D----------->
+    <v-row md12 no-gutters>
 
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(2, 0)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(2, 1)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(2, 2)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(2, 3)' />
-          </v-card>
-        </v-col>
-      </v-row>
+      <div class="progLabel">
+        <h1>D</h1>
+      </div>
 
-      <v-row md12 no-gutters>
-          <div class="progLabel">
-            <h1>D</h1>
-          </div>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control  :presetControlData='getPresetControlData(3, 0)'/>
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(3, 1)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(3, 2)' />
-          </v-card>
-        </v-col>
-        <v-col md3 d-flex>
-          <v-card  class="pa-1" dark >
-            <preset-control :presetControlData='getPresetControlData(3, 3)' />
-          </v-card>
-        </v-col>
-      </v-row>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control  :presetControlData='getPresetControlData(3, 0)'/>
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(3, 1)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(3, 2)' />
+        </v-card>
+      </v-col>
+      <v-col md3 d-flex>
+        <v-card  class="pa-1" dark >
+          <preset-control :presetControlData='getPresetControlData(3, 3)' />
+        </v-card>
+      </v-col>
+    </v-row>
 
-    </v-container>
+  </v-container>
 </template>
 
 <script>
@@ -129,15 +131,21 @@ export default {
       currentSong: null,
       currentProgram: null,
       initFlag: true
-
     }
   },
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList'])
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'currentSongId', 'currentProgramId'])
   },
   watch: {
-    songList: function (newValue, oldValue) {
-      this.currentSong = newValue
+    currentSongId: function (id) {
+      if (typeof this.songList !== 'undefined') {
+        this.currentSong = this.songList.find(item => item.id === id)
+      }
+    },
+    currentProgramId: function (id) {
+      if (typeof this.programList !== 'undefined') {
+        this.currentProgram = this.programList.find(item => item.id === id)
+      }
     }
   },
   mounted () {
@@ -200,10 +208,11 @@ export default {
   }
   .v-card {
     color: rgba(36, 34, 34, 0.856);
-    padding: 2px;
+    padding: 3px;
+    margin: 4px;
   }
   .darkBackgroud {
-    background-color:rgba(36, 34, 34, 0.856)
+    background-color:rgba(36, 34, 34, 0.830)
   }
 
 .progLabel {

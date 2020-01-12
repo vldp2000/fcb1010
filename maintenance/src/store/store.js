@@ -17,7 +17,10 @@ export default new Vuex.Store({
     presetList: [],
     instrumentBankList: [],
     gigList: [],
-    gigSongList: []
+    gigSongList: [],
+    currentSongId: 0,
+    currentProgramId: 0
+
   },
   mutations: {
     [types.SET_SONGLIST] (state, songList) {
@@ -121,6 +124,13 @@ export default new Vuex.Store({
     [types.UPDATE_GIGSONG] (state, gigsong) {
       const item = state.gigsongList.find(item => item.id === gigsong.id)
       Object.assign(item, gigsong)
+    },
+
+    [types.SET_CURRENTSONG_ID] (state, id) {
+      state.currentSongId = id
+    },
+    [types.SET_CURRENTPROGRAM_ID] (state, id) {
+      state.currentProgramId = id
     }
   },
 
@@ -213,6 +223,14 @@ export default new Vuex.Store({
     updateGigSong ({ commit }, gigsong) {
       // console.log('action - updateGigSong')
       commit(types.UPDATE_GIGSONG, gigsong)
+    },
+    //  Set current Song Id-----------------------------------------------------
+    setCurrentSongId ({ commit }, id) {
+      commit(types.SET_CURRENTSONG_ID, id)
+    },
+    //  Set current Program Id-----------------------------------------------------
+    setCurrentProgramId ({ commit }, id) {
+      commit(types.SET_CURRENTPROGRAM_ID_ID, id)
     }
 
   },
@@ -229,6 +247,8 @@ export default new Vuex.Store({
       return id => state.presetList.filter(item => {
         return item.id === id
       })
-    }
+    },
+    currentSongId: state => state.currentSongId,
+    currentProgramId: state => state.currentProgramId
   }
 })
