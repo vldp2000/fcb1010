@@ -7,6 +7,8 @@
     class="elevation-1"
     dense
     hide-default-footer
+    disable-sort
+    disable-pagination
   >
 
     <template v-slot:item.image="{ item }">
@@ -109,9 +111,9 @@ export default {
         { text: 'pan', value: 'pan' },
         { text: 'mute', value: 'muteflag' },
         { text: 'reverb', value: 'reverbflag' },
-        { text: 'reverb value', value: 'reverbvalue' },
+        { text: 'rev value', value: 'reverbvalue' },
         { text: 'delay', value: 'delayflag' },
-        { text: 'delay value', value: 'delayvalue' },
+        { text: 'del value', value: 'delayvalue' },
         { text: 'mode', value: 'modeflag' }
       ],
       expanded: [],

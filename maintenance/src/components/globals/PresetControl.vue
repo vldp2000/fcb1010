@@ -1,18 +1,20 @@
 
 <template>
   <v-card
-    class="mx-auto presetCard"
+    class="mx-auto"
     max-width="400"
   >
   <v-container class="pa-0 ma-0" fluid>
     <v-row no-gutters>
       <v-col cols=3>
-        <div class="presetName">
-          <v-img height="40" width="40" margine-right="5" :src="imageURL"/>
+        <div class="instrumentImage">
+          <v-img :src="imageURL"/>
         </div>
       </v-col>
       <v-col cols=9>
-        <b>{{ getPresetName() }}</b>
+        <div class="presetName">
+          <b>{{ getPresetName() }}</b>
+        </div>
       </v-col>
     </v-row>
 
@@ -148,9 +150,11 @@ export default {
   .valueInput {
     width: 80px;
   }
-  .presetCard {
-    background-color: rgba(238, 3, 54, 0.945);
-    /* background-color: white; */
+  .instrumentImage {
+    height: 40px;
+    width: 40px;
+    margin-top: 5px;
+    margin-left: 5px;
+    padding-bottom: -5px;
   }
-
 </style>
