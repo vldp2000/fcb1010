@@ -9,6 +9,7 @@
     hide-default-footer
     disable-sort
     disable-pagination
+    @click:row="onClick"
   >
 
     <template v-slot:item.image="{ item }">
@@ -86,6 +87,7 @@
 <script>
 // import { mapState } from 'vuex'
 import { mapState } from 'vuex'
+import { singleOrDoubleRowClick } from '@/helpers/utils'
 
 export default {
   name: 'SongPresetsPanel',
@@ -123,21 +125,28 @@ export default {
   computed: {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList'])
   },
-  // computed: {
-  //   ...mapState(['songList'])
-  // }
 
   mounted () {
   //   this.programList = this.selectedSong.programList
     console.log('----->SongPresetsPanel')
     console.log(this.songPresetList)
+  },
+  methods: {
+    onClick (item) {
+      try {
+        singleOrDoubleRowClick(item,
+          function singleCLick (item) {
+            console.log('Single Click')
+          },
+          function doubleCLick (item) {
+            console.log('Double Click')
+          }
+        )
+      } catch (ex) {
+        console.log(ex)
+      }
+    }
   }
-
-  // watch: {
-  //   songList: function (newValue, oldValue) {
-  //     this.programList = newValue.programList
-  //   }
-  // }
 }
 </script>
 
@@ -151,5 +160,8 @@ export default {
     height:55px;
     width: 55px;
     margin-top: 5px;
+  }
+  .td {
+    text-align: "text-xs-left";
   }
 </style>

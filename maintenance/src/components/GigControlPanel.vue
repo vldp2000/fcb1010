@@ -4,7 +4,7 @@
 <!-------PROFRAM A----------->
     <v-row md12 ma-0 pa-0 no-gutters>
 
-      <div id="Proram0" v-bind:class="(currentProgramIdx === 0) ? 'progLabelSelected' : 'progLabel'">
+      <div id="Proram0" v-bind:class="(currentProgramIdx === 0) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(0)">
         <h1>A</h1>
       </div>
 
@@ -34,7 +34,7 @@
 <!-------PROFRAM B----------->
     <v-row md12 ma-0 pa-0 no-gutters>
 
-      <div id="Proram1" v-bind:class="(currentProgramIdx === 1) ? 'progLabelSelected' : 'progLabel'">
+      <div id="Proram1" v-bind:class="(currentProgramIdx === 1) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(1)" >
         <h1>B</h1>
       </div>
 
@@ -63,7 +63,7 @@
 <!-------PROFRAM C----------->
     <v-row md12 ma-0 pa-0 no-gutters>
 
-      <div id="Proram2"  v-bind:class="(currentProgramIdx === 2) ? 'progLabelSelected' : 'progLabel'">
+      <div id="Proram2"  v-bind:class="(currentProgramIdx === 2) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(2)">
         <h1>C</h1>
       </div>
 
@@ -92,7 +92,7 @@
 <!-------PROFRAM D----------->
     <v-row md12 no-gutters>
 
-      <div id="Proram3"  v-bind:class="(currentProgramIdx === 3) ? 'progLabelSelected' : 'progLabel'">
+      <div id="Proram3"  v-bind:class="(currentProgramIdx === 3) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(3)">
         <h1>D</h1>
       </div>
 
@@ -135,9 +135,11 @@ export default {
       initFlag: true
     }
   },
+
   computed: {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'currentSongId', 'currentProgramMidiPedal'])
   },
+
   watch: {
     currentSongId: function (id) {
       if (typeof this.songList !== 'undefined') {
@@ -148,9 +150,11 @@ export default {
       this.currentProgramIdx = idx
     }
   },
+
   mounted () {
     this.init()
   },
+
   methods: {
     async init () {
       try {
@@ -198,10 +202,15 @@ export default {
         }
       }
     },
+
     btnclick () {
       let x = this.currentProgramIdx + 1
       if (x > 3) { x = 0 }
       this.$store.dispatch('setCurrentProgramMidiPedal', x)
+    },
+
+    onProgramClick (idx) {
+      this.$store.dispatch('setCurrentProgramMidiPedal', idx)
     }
   }
 }
@@ -219,17 +228,13 @@ export default {
   .presetControlSelected {
     padding: 5px;
     margin: 5px;
-    box-shadow: 4px 4px 4px;
-    color: blue !important;
+    box-shadow: 1px 4px 8px 1px rgba(5, 79, 218, 0.83);
+    /* box-shadow: 0px 1px 5px 0px; */
+    /* color: blue !important; */
   }
-  .vcard {
-    color: rgba(36, 34, 34, 0.856);
-    padding: 3px;
-    margin: 4px;
-    box-shadow: 2px 3px 4px;
-    color: rgb(194, 10, 56);
-  }
+
   .darkBackgroud {
+    /* background-color:rgba(50, 31, 119, 0.83) */
     background-color:rgba(36, 34, 34, 0.830)
   }
 
@@ -240,7 +245,7 @@ export default {
   border: 2px solid black;
   border-radius: 10px;
 
-  width: 40px;
+  width: 50px;
   height: 50px;
   /* margin: 50px, 10px, 0px, -10px; */
   margin-top: 40px;
@@ -256,7 +261,7 @@ export default {
   border: 2px solid blue;
   border-radius: 10px;
 
-  width: 40px;
+  width: 50px;
   height: 50px;
   /* margin: 50px, 10px, 0px, -10px; */
   margin-top: 40px;
@@ -264,14 +269,5 @@ export default {
   margin-right: 2px;
   padding: 0px;
 }
-.card-shadow {
-    /* width: 30px;
-    height: 30px; */
-    box-shadow: 1px 1px 25px;
-    color: rgb(30, 54, 156);
-}
 
-.box-shadow:hover  {
-    color: #ff0000;
-}
 </style>
