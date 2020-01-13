@@ -76,7 +76,7 @@ export default {
   watch: {
     presetControlData: function () {
       if (typeof this.presetControlData !== 'undefined') {
-        console.log('--WATCH presetControlData<<<-->>')
+        // console.log('--WATCH presetControlData<<<-->>')
         this.currentPreset = this.presetControlData
         if (typeof this.instrumentList === 'undefined' || this.instrumentList === null) {
           console.log('--instrument list is not ready->>')
@@ -87,7 +87,7 @@ export default {
             const instrument = this.instrumentList.find(item => item.id === this.currentPreset.refinstrument)
             // console.log(instrument)
             this.imageURL = instrument.imageURL
-            console.log(this.imageURL)
+            // console.log(this.imageURL)
           }
         }
       }

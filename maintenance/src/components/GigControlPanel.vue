@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-md text-md-center fluid class="darkBackgroud">
  <!-- <v-container fluid  class="darkBackgroud"> -->
-    <v-row md12 ma-0 pa-0 no-gutters>
+    <v-row md12no-gutters>
       <v-select
         label="Select Song"
         v-model="songId"
@@ -141,7 +141,7 @@ import SongsService from '@/services/SongsService'
 export default {
   data () {
     return {
-      songId: 1,
+      // songId: 1,
       currentSong: null,
       currentProgramIdx: 0,
       initFlag: true,
@@ -165,7 +165,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'currentSongId', 'currentProgramMidiPedal'])
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'currentSongId', 'currentProgramMidiPedal']),
+    songId: {
+      get () { return this.currentSongId },
+      set (value) { this.$store.dispatch('setCurrentSongId', value) }
+    }
   },
 
   watch: {
@@ -264,33 +268,33 @@ export default {
 
     onProgramClick (idx) {
       this.$store.dispatch('setCurrentProgramMidiPedal', idx)
-      this.$store.dispatch('setCurrentProgramMidiPedal', 0)
+      // this.$store.dispatch('setCurrentProgramMidiPedal', 0)
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
 
-  .preset {
-    margin: 5px;
-  }
-  .presetControl {
-    padding: 5px;
-    margin: 5px;
-  }
-  .presetControlSelected {
-    padding: 5px;
-    margin: 5px;
-    box-shadow: 1px 4px 8px 1px rgba(5, 79, 218, 0.83);
-    /* box-shadow: 0px 1px 5px 0px; */
-    /* color: blue !important; */
-  }
+.preset {
+  margin: 5px;
+}
+.presetControl {
+  padding: 5px;
+  margin: 5px;
+}
+.presetControlSelected {
+  padding: 5px;
+  margin: 5px;
+  box-shadow: 1px 4px 8px 1px rgba(5, 79, 218, 0.83);
+  /* box-shadow: 0px 1px 5px 0px; */
+  /* color: blue !important; */
+}
 
-  .darkBackgroud {
-    /* background-color:rgba(50, 31, 119, 0.83) */
-    background-color:rgba(36, 34, 34, 0.830)
-  }
+.darkBackgroud {
+  /* background-color:rgba(50, 31, 119, 0.83) */
+  background-color:rgba(36, 34, 34, 0.830)
+}
 
 .progLabel {
   text-align: center;
@@ -322,6 +326,22 @@ export default {
   margin-left: -10px;
   margin-right: 2px;
   padding: 0px;
+}
+
+.v-select  {
+  font-size: 20px;
+  font-style: bold;
+  text-shadow: 2px 2px 1px rgba(5, 79, 218, 0.83);
+
+  color: lightblue;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: -10px;
+  margin-bottom: -20px;
+  padding-top: -5px;
+  padding-bottom: -20px;
+  padding-left: 60px;
+  padding-right: 20px;
 }
 
 </style>
