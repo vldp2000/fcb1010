@@ -19,7 +19,8 @@ export default new Vuex.Store({
     gigList: [],
     gigSongList: [],
     currentSongId: 0,
-    currentProgramMidiPedal: 0
+    currentProgramMidiPedal: 0,
+    currentGigId: 0
 
   },
   mutations: {
@@ -126,6 +127,9 @@ export default new Vuex.Store({
       Object.assign(item, gigsong)
     },
 
+    [types.SET_CURRENTGIG_ID] (state, id) {
+      state.currentGigId = id
+    },
     [types.SET_CURRENTSONG_ID] (state, id) {
       state.currentSongId = id
     },
@@ -225,6 +229,12 @@ export default new Vuex.Store({
       commit(types.UPDATE_GIGSONG, gigsong)
     },
     //  Set current Song Id-----------------------------------------------------
+    setCurrentGigId ({ commit }, id) {
+      commit(types.SET_CURRENTGIG_ID, id)
+      console.log('STORE. Set current Gig Id-------------------------------')
+      console.log(id)
+    },
+    //  Set current Song Id-----------------------------------------------------
     setCurrentSongId ({ commit }, id) {
       commit(types.SET_CURRENTSONG_ID, id)
       console.log('STORE. Set current Song Id-------------------------------')
@@ -234,7 +244,6 @@ export default new Vuex.Store({
     setCurrentProgramMidiPedal ({ commit }, idx) {
       commit(types.SET_CURRENT_PROGRAMMIDIPEDAL, idx)
     }
-
   },
 
   getters: {
@@ -250,6 +259,7 @@ export default new Vuex.Store({
         return item.id === id
       })
     },
+    currentGigId: state => state.currentGigId,
     currentSongId: state => state.currentSongId,
     currentProgramMidiPedal: state => state.currentProgramMidiPedal
   }

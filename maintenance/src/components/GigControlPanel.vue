@@ -2,15 +2,28 @@
   <v-container grid-list-md text-md-center fluid class="darkBackgroud">
  <!-- <v-container fluid  class="darkBackgroud"> -->
     <v-row md12no-gutters>
-      <v-select
-        label="Select Song"
-        v-model="songId"
-        :items="songList"
-        required
-        item-text="name"
-        item-value="id">
-      </v-select>
+      <v-col md6>
+        <v-select
+          label="Select Gig"
+          v-model="songId"
+          :items="songList"
+          required
+          item-text="name"
+          item-value="id">
+        </v-select>
+      </v-col>
+      <v-col md6>
+        <v-select
+          label="Select Song"
+          v-model="songId"
+          :items="songList"
+          required
+          item-text="name"
+          item-value="id">
+        </v-select>
+      </v-col>
     </v-row>
+
 <!-------PROFRAM A----------->
     <v-row md12 ma-0 pa-0 no-gutters>
 
@@ -142,6 +155,7 @@ export default {
   data () {
     return {
       // songId: 1,
+      currentGig: null,
       currentSong: null,
       currentProgramIdx: 0,
       initFlag: true,
@@ -165,7 +179,8 @@ export default {
   },
 
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'currentSongId', 'currentProgramMidiPedal']),
+    currentGigId: state => state.currentGigId,
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal', 'currentGigId']),
     songId: {
       get () { return this.currentSongId },
       set (value) { this.$store.dispatch('setCurrentSongId', value) }
@@ -173,6 +188,24 @@ export default {
   },
 
   watch: {
+    currentGigId: async function (id) {
+      this.initFlag = true
+      if (typeof this.gigList !== 'undefined') {
+        console.log(id)
+        this.currentSong = await this.songList.find(item => item.id === id)
+
+        if (this.currentSong.programList === null ||
+        typeof (this.currentSong.programList) === 'undefined') {
+          await SongsService.getSongItems(this.currentSong.id)
+        }
+
+        console.log(this.currentSong)
+        this.songId = id
+        console.log('----,,,,, Song Changed')
+      }
+      this.initFlag = false
+    },
+
     currentSongId: async function (id) {
       this.initFlag = true
       if (typeof this.songList !== 'undefined') {
@@ -211,17 +244,18 @@ export default {
         console.log(' >>> Init all related collections in storage')
         await SongsService.initAll()
         console.log(' Finish the Init of all related collections in storage <<< ')
-        this.currentSong = await this.songList[0]
-        console.log(this.currentSong.programList)
-        if (this.currentSong.programList === null ||
-        typeof (this.currentSong.programList) === 'undefined') {
-          await SongsService.getSongItems(this.currentSong.id)
-          this.currentSong = await this.songList[0]
-        }
-        console.log('--- Current song ----')
-        console.log(this.currentSong)
-        this.currentProgramIdx = 0
-        this.initFlag = false
+        await this.$store.dispatch('setCurrentSongId', 1)
+
+        // console.log(this.currentSong.programList)
+        // if (this.currentSong.programList === null ||
+        // typeof (this.currentSong.programList) === 'undefined') {
+        //   await SongsService.getSongItems(this.currentSong.id)
+        //   this.currentSong = await this.songList[0]
+        // }
+        // console.log('--- Current song ----')
+        // console.log(this.currentSong)
+        // this.currentProgramIdx = 0
+        // this.initFlag = false
       } catch (ex) {
         console.log(ex)
       }
@@ -332,8 +366,6 @@ export default {
   font-size: 20px;
   font-style: bold;
   text-shadow: 2px 2px 1px rgba(5, 79, 218, 0.83);
-
-  color: lightblue;
   text-transform: uppercase;
   font-weight: bold;
   margin-bottom: -10px;
