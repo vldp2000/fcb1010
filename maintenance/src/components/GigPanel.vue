@@ -140,8 +140,8 @@ export default {
     },
 
     saveGig () {
-      console.log('saveGig () -------')
-      console.log(this.editedItem)
+      // console.log('saveGig () -------')
+      // console.log(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           GigsService.put(this.editedItem)
@@ -158,10 +158,10 @@ export default {
       this.closeDialog()
     },
     async init () {
-      console.log(this.gigList.length)
+      // console.log(this.gigList.length)
       // if (!this.$store.state.gigList || this.$store.state.gigList === undefined || !this.$store.state.gigList.Length) {
       if (this.gigList.length === 0) {
-        console.log('Init gig list storage')
+        // console.log('Init gig list storage')
         let result = await GigsService.getAll()
         let list = await result.data
         // console.log('<< Init Gig List?>>')

@@ -81,7 +81,7 @@ export default {
         if (typeof this.instrumentList === 'undefined' || this.instrumentList === null) {
           console.log('--instrument list is not ready->>')
         } else {
-          console.log(this.currentPreset)
+          // console.log(this.currentPreset)
           // console.log(this.instrumentList)
           if (this.presetControlData.refinstrument > 0) {
             const instrument = this.instrumentList.find(item => item.id === this.currentPreset.refinstrument)
@@ -97,9 +97,9 @@ export default {
   mounted () {
     if (typeof this.presetControlData !== 'undefined' && this.presetControlData !== null) {
       this.currentPreset = this.presetControlData
-      console.log('-----presetControlData was MOUNTED >>>>')
-      console.log(this.presetControlData)
-      console.log(this.currentPreset)
+      // console.log('-----presetControlData was MOUNTED >>>>')
+      // console.log(this.presetControlData)
+      // console.log(this.currentPreset)
     }
   },
 

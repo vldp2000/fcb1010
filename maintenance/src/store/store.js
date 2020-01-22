@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 // import createPersistedState from 'vuex-persistedstate'
 
 import * as types from './mutation-types'
+import _sortBy from 'lodash/sortBy'
+import _pickBy from 'lodash/pickBy'
 
 Vue.use(Vuex)
 
@@ -106,12 +108,40 @@ export default new Vuex.Store({
       // console.log('<State>  gigList populated ß!!!')
       // console.log(list)
     },
+
     [types.ADD_GIG] (state, gig) {
       state.gigList.push(gig)
     },
+
     [types.UPDATE_GIG] (state, gig) {
       const item = state.gigList.find(item => item.id === gig.id)
       Object.assign(item, gig)
+    },
+
+    [types.POPULATE_GIG_SONGS] (state, gigId) {
+      // console.log('>>>>>>----types.ADD_SONG_ITEMS -->>')
+      // console.log(gigId)
+      try {
+        let gig = state.gigList.find(item => item.id === gigId)
+        if (!gig.songList) {
+          let songs = []
+          let items = _sortBy((_pickBy(state.gigsongList, s => s.refgig === gigId)), 'sequencenumber')
+          // console.log(items)
+          items.forEach(item => {
+            if (item.refsong) {
+              let song = state.songList.find(s => s.id === item.refsong)
+              songs.push(song)
+            }
+          })
+
+          Vue.set(gig, 'songList', songs)
+          // console.log(items)
+          // console.log(gig)
+        }
+      } catch (ex) {
+        console.log('types.ADD_GIG_SONGS ')
+        console.log(ex)
+      }
     },
 
     [types.SET_GIGSONGLIST] (state, gigsongList) {
@@ -215,6 +245,12 @@ export default new Vuex.Store({
     updateGig ({ commit }, gig) {
       // console.log('action - updateGig')
       commit(types.UPDATE_GIG, gig)
+    },
+
+    //  populateGigSongs -----------------------------------------------------
+    populateGigSongs ({ commit }, gigId) {
+      // console.log('action - populateGigSongs')
+      commit(types.POPULATE_GIG_SONGS, gigId)
     },
 
     //  Gig Song List -----------------------------------------------------

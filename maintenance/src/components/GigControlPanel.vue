@@ -4,9 +4,10 @@
     <v-row md12no-gutters>
       <v-col md6>
         <v-select
+          v-if="gigList"
           label="Select Gig"
-          v-model="songId"
-          :items="songList"
+          v-model="gigId"
+          :items="gigList"
           required
           item-text="name"
           item-value="id">
@@ -14,9 +15,10 @@
       </v-col>
       <v-col md6>
         <v-select
+          v-if="currentSongList"
           label="Select Song"
           v-model="songId"
-          :items="songList"
+          :items="currentSongList"
           required
           item-text="name"
           item-value="id">
@@ -158,6 +160,7 @@ export default {
       currentGig: null,
       currentSong: null,
       currentProgramIdx: 0,
+      currentSongList: [],
       initFlag: true,
       defaultPreset: {
         id: -1,
@@ -179,48 +182,57 @@ export default {
   },
 
   computed: {
-    currentGigId: state => state.currentGigId,
+    // currentGigId: state => state.currentGigId,
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal', 'currentGigId']),
     songId: {
       get () { return this.currentSongId },
       set (value) { this.$store.dispatch('setCurrentSongId', value) }
+    },
+    gigId: {
+      get () { return this.currentGigId },
+      set (value) { this.$store.dispatch('setCurrentGigId', value) }
     }
   },
 
   watch: {
     currentGigId: async function (id) {
       this.initFlag = true
-      if (typeof this.gigList !== 'undefined') {
-        console.log(id)
-        this.currentSong = await this.songList.find(item => item.id === id)
+      if (id > 0) {
+        if (typeof this.gigList !== 'undefined') {
+          this.currentGig = await this.gigList.find(gig => gig.id === id)
+          // console.log('Gig-Song <<<<<<<')
+          // console.log(this.currentGig)
+          if (!this.currentGig.songList) {
+            await this.$store.dispatch('populateGigSongs', id)
+            this.currentGig = await this.gigList.find(gig => gig.id === id)
+            // console.log(this.currentGig)
+          }
+          this.currentSongList = this.currentGig.songList
 
-        if (this.currentSong.programList === null ||
-        typeof (this.currentSong.programList) === 'undefined') {
-          await SongsService.getSongItems(this.currentSong.id)
+          this.songId = this.currentGig.songList[0].id
         }
-
-        console.log(this.currentSong)
-        this.songId = id
-        console.log('----,,,,, Song Changed')
       }
       this.initFlag = false
     },
 
     currentSongId: async function (id) {
       this.initFlag = true
-      if (typeof this.songList !== 'undefined') {
-        console.log(id)
-        this.currentSong = await this.songList.find(item => item.id === id)
-
-        if (this.currentSong.programList === null ||
-        typeof (this.currentSong.programList) === 'undefined') {
-          await SongsService.getSongItems(this.currentSong.id)
-        }
-
-        console.log(this.currentSong)
-        this.songId = id
-        console.log('----,,,,, Song Changed')
+      this.currentSong = null
+      console.log('>> set Song <<')
+      // console.log(this.currentGig)
+      // console.log(this.currentGigId)
+      console.log(id)
+      if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
+        this.currentSong = await this.currentGig.songList.find(item => item.id === id)
       }
+      if (!this.currentSong) {
+        await this.setSongOutOfGig(id)
+      }
+      if (this.currentSong.programList === null ||
+        typeof (this.currentSong.programList) === 'undefined') {
+        await this.initSongPrograms(id)
+      }
+      console.log(this.currentSong.name)
       this.initFlag = false
     },
 
@@ -241,9 +253,9 @@ export default {
     async init () {
       try {
         this.initFlag = true
-        console.log(' >>> Init all related collections in storage')
+        // console.log(' >>> Init all related collections in storage')
         await SongsService.initAll()
-        console.log(' Finish the Init of all related collections in storage <<< ')
+        // console.log(' Finish the Init of all related collections in storage <<< ')
         await this.$store.dispatch('setCurrentSongId', 1)
 
         // console.log(this.currentSong.programList)
@@ -262,22 +274,26 @@ export default {
     },
 
     getPresetControlData (programIndex, presetIndex) {
+      // console.log('---setpreset')
+      // console.log(this.initFlag)
       if (!this.initFlag) {
         try {
-          console.log(`get program for ${programIndex} ${presetIndex} `)
-          console.log(this.currentSong)
+          // console.log(`get program for ${programIndex} ${presetIndex} `)
+          // console.log(this.currentSong)
           if (typeof (this.currentSong) === 'undefined' || this.currentSong === null) {
-            console.log(programIndex)
+            console.log('default preset')
             return this.defaultPreset
           } else {
             if (this.currentSong.programList === null ||
             typeof (this.currentSong.programList) === 'undefined') {
               // SongsService.getSongItems(this.currentSong.id)
               // this.currentSong = this.songList[]
+              console.log('default preset')
               return this.defaultPreset
             }
 
             const preset = this.currentSong.programList[programIndex].presetList[presetIndex]
+            // console.log(this.currentSong)
             // console.log(preset)
             return preset
           }
@@ -287,6 +303,26 @@ export default {
       } else {
         return this.defaultPreset
       }
+    },
+
+    async setSongOutOfGig (id) {
+      this.gigId = -1
+      this.currentGig = null
+      console.log('--- out of gig')
+      this.currentSong = await this.songList.find(item => item.id === id)
+      console.log(this.currentSong.name)
+      if (this.currentSong && (this.currentSong.programList === null ||
+      typeof (this.currentSong.programList) === 'undefined')) {
+        await this.initSongPrograms(id)
+      }
+
+      this.currentSongList = [this.currentSong]
+      // console.log(this.currentSong)
+      this.songId = id
+    },
+
+    async initSongPrograms (songId) {
+      await SongsService.getSongItems(songId)
     },
 
     btnClickPogram () {

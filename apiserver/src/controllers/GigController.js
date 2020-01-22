@@ -1,4 +1,5 @@
 const {Gig} = require('../models')
+const {GigSong} = require('../models')
 module.exports = {
   async index (req, res) {
     try {
@@ -88,6 +89,22 @@ module.exports = {
       console.log(err)
       res.status(500).send({
         error: 'strange error has occured trying to fetch the gigs'
+      })
+    }
+  },
+
+  async getGigSongs (req, res) {
+    //req.params.songId
+    try {
+      //await reqLogger('== Get ==', req)
+      let gigSongs =  await GigSong.findAll()
+      // console.log('----Gig--Song---')
+      // console.log(gigSongs)
+      res.send(gigSongs)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to get the gig song'
       })
     }
   }

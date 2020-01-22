@@ -50,5 +50,12 @@ export default {
     } catch (ex) {
       console.log(ex)
     }
+  },
+
+  async getGigSongs () {
+    let gigSongs = await Api()('gigSongs')
+    // console.log('// ----------->> get all gigs')
+    // console.log(gigs)
+    return gigSongs
   }
 }

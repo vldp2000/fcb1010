@@ -3,7 +3,7 @@ import store from '@/store/store'
 import InstrumentsService from '@/services/InstrumentsService'
 import InstrumentBankService from '@/services/InstrumentBankService'
 import PresetsService from '@/services/PresetsService'
-
+import GigsService from '@/services/GigsService'
 export default {
 
   async getAll () {
@@ -76,6 +76,17 @@ export default {
   async initAll () {
     try {
       // console.log('// ----------->>init ALL)')
+      if (store.state.gigList.length === 0) {
+        // console.log('Init gig storage')
+        let result = await GigsService.getAll()
+        let list = await result.data
+        // console.log('<< Init Gig List?>>')
+        await store.dispatch('setGigList', list)
+        // console.log(this.$store.state.songList)
+      } else {
+        console.log(' Song List already populated')
+      }
+
       if (store.state.songList.length === 0) {
         // console.log('Init songs storage')
         let result = await this.getAll()
@@ -120,6 +131,16 @@ export default {
         // console.log(this.$store.state.presetList)
       } else {
         console.log(' Preset List already populated')
+      }
+
+      if (store.state.gigSongList.length === 0) {
+        console.log('Init gig song storage')
+        let result = await GigsService.getGigSongs()
+        let list = await result.data
+        await store.dispatch('setGigSongList', list)
+        console.log(list)
+      } else {
+        console.log(' Instrument List already populated')
       }
     } catch (ex) {
       console.log(ex)

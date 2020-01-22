@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true 
     },
     name: DataTypes.STRING,
-    gigdate:  DataTypes.DATEONLY
+    gigdate:  DataTypes.DATEONLY,
+    currentFlag: DataTypes.INTEGER
   },
   {
     reezeTableName: true,
