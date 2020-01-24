@@ -161,7 +161,12 @@ export default new Vuex.Store({
       state.currentGigId = id
     },
     [types.SET_CURRENTSONG_ID] (state, id) {
-      state.currentSongId = id
+      let song = state.songList.find(s => s.id === id)
+      if (song) {
+        state.currentSongId = id
+      } else {
+        state.currentSongId = -1
+      }
     },
     [types.SET_CURRENT_PROGRAMMIDIPEDAL] (state, idx) {
       state.currentProgramMidiPedal = idx

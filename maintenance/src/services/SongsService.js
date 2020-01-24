@@ -134,11 +134,11 @@ export default {
       }
 
       if (store.state.gigSongList.length === 0) {
-        console.log('Init gig song storage')
+        // console.log('Init gig song storage')
         let result = await GigsService.getGigSongs()
         let list = await result.data
         await store.dispatch('setGigSongList', list)
-        console.log(list)
+        // console.log(list)
       } else {
         console.log(' Instrument List already populated')
       }

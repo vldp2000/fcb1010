@@ -29,7 +29,6 @@ Vue.use(Vue2TouchEvents, {
   swipeTolerance: 30,
   longTapTimeInterval: 400
 })
-// sync(store, router)
 
 new Vue({
   router,

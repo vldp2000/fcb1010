@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  port: process.env.PORT || 8081,
+  httpPort: process.env.PORT || 8081,
   db: {
     database: process.env.DB_NAME || 'midigig',
     user: process.env.DB_USER || 'midigig',
@@ -11,5 +11,6 @@ module.exports = {
       host: process.env.HOST || '127.0.0.1',
       storage: path.resolve(__dirname, '../../../Database/midigig.db'),
     }
-  }
+  },
+  messagePort: 8088
 }
