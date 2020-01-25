@@ -13,6 +13,8 @@ module.exports = (app) => {
     SongController.put)
   app.post('/song',
     SongController.post)
+  app.get('/songprogrampreset',
+  SongController.getSongProgramPresetsExtended)
 
   app.get('/instruments',
     InstrumentController.index)
@@ -30,7 +32,9 @@ module.exports = (app) => {
   app.put('/preset/:id',
     PresetController.put)
   app.post('/preset',
-    PresetController.post)    
+    PresetController.post)
+  app.get('/presetextended',     
+    PresetController.getPresetsExtended)
 
   app.get('/instrumentBanks',
     InstrumentBankController.index)
@@ -51,5 +55,7 @@ module.exports = (app) => {
     GigController.post)
   app.get('/gigsongs',
     GigController.getGigSongs)
+  app.get('/currentgig',
+    GigController.currentgig)
 
 }

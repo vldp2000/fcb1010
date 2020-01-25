@@ -1,5 +1,8 @@
 const {Gig} = require('../models')
 const {GigSong} = require('../models')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
+
 module.exports = {
   async index (req, res) {
     try {
@@ -8,8 +11,6 @@ module.exports = {
       let gigs = null
       const search = req.query.search
       console.log(search)
-      const Sequelize = require('sequelize');
-      const Op = Sequelize.Op;
 
       if (search) {
         gigs = await Gig.findAll({
@@ -94,11 +95,24 @@ module.exports = {
   },
 
   async getGigSongs (req, res) {
-    //req.params.songId
     try {
-      //await reqLogger('== Get ==', req)
-      let gigSongs =  await GigSong.findAll()
+      let id = -1
+      let gigSongs = {}
       // console.log('----Gig--Song---')
+      gigId = req.query.id
+      // console.log(gigId)
+      if (gigId > 0) {
+        gigSongs =  await GigSong.findAll({
+          where: {
+            refgig: gigId
+          },
+          order: [
+            ['sequencenumber', 'ASC']
+          ]
+        })
+      } else {
+        gigSongs =  await GigSong.findAll()
+      }
       // console.log(gigSongs)
       res.send(gigSongs)
     } catch (err) {
@@ -107,5 +121,23 @@ module.exports = {
         error: 'an error has occured trying to get the gig song'
       })
     }
-  }
+  },
+  async currentgig (req, res) {
+    try {
+      let gig = null
+      gig = await Gig.findAll({
+        where: {
+          currentFlag: 1
+        }
+      })
+      // console.log('---current gig ---')
+      // console.log(gig)
+      res.send(gig)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'bad error has occured trying to fetch the gigs'
+      })
+    }
+  },
 }

@@ -1,0 +1,7 @@
+#!/bin/bash
+sudo cp /etc/network/interfaces.multi /etc/network/interfaces
+sudo cp /etc/wpa_supplicant/wpa_supplicant.conf.multi /etc/wpa_supplicant/wpa_supplicant.conf
+sudo ifconfig wlan0 down
+sudo sleep 30
+sudo ifconfig wlan0 up
+

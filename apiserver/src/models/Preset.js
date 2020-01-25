@@ -1,4 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
+
+  // const InstrumentBank = require('./InstrumentBank').InstrumentBank
+  // const Instrument = require('./Instrument').Instrument
+  const InstrumentBank = sequelize.import(__dirname + "/InstrumentBank")
+  const Instrument = sequelize.import(__dirname + "/Instrument")
+
   const Preset = sequelize.define('Preset', {
     id: { 
       type: DataTypes.INTEGER,  
@@ -10,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
     refinstrumentbank: DataTypes.INTEGER,
     refinstrument: DataTypes.INTEGER,
     isDefault: DataTypes.INTEGER
-
   },
   {
     underscored: false,
@@ -19,8 +24,30 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'Preset'
   })
 
+  Preset.belongsTo(InstrumentBank, {
+    foreignKey: 'refinstrumentbank'
+  })
+  InstrumentBank.hasMany(Preset, {
+    foreignKey: 'refinstrumentbank',
+  });
+
+  Preset.belongsTo(Instrument, {
+    foreignKey: 'refinstrument'
+  })
+  Instrument.hasMany(Preset, {
+    foreignKey: 'refinstrument',
+  });
+
+
   Preset.associate = function (models) {
   }
 
   return Preset
 }
+
+// Category.hasMany(Ingredient, {
+//   foreignKey: 'category_id',
+// });
+// Ingredient.belongsTo(Category, {
+//   foreignKey: 'category_id',
+// });

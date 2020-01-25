@@ -1,0 +1,414 @@
+{
+    "MidiPrograms": {
+        "banks": [
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 0,
+                            "guitar1volume": "127",
+                            "guitar2": "20",
+                            "guitar2volume": "120",
+                            "name": "Started All New R A",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 1,
+                            "guitar1volume": 127,
+                            "guitar2": "7",
+                            "guitar2volume": "120",
+                            "name": "SAN Verse B",
+                            "synth1": "6",
+                            "synth1volume": "70",
+                            "synth2": "5",
+                            "synth2volume": "70"
+                        },
+                        {
+                            "guitar1": 2,
+                            "guitar1volume": 127,
+                            "guitar2": "3",
+                            "guitar2volume": "110",
+                            "name": "SAN intro C",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "5",
+                            "synth2volume": "30"
+                        },
+                        {
+                            "guitar1": 3,
+                            "guitar1volume": 127,
+                            "guitar2": "20",
+                            "guitar2volume": "127",
+                            "name": "All New 1D",
+                            "synth1": "6",
+                            "synth1volume": "40",
+                            "synth2": "5",
+                            "synth2volume": "30"
+                        }
+                    ],
+                    "name": "1"
+                }
+            },
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 4,
+                            "guitar1volume": "105",
+                            "guitar2": "61",
+                            "guitar2volume": "90",
+                            "name": "Bird Solo A",
+                            "synth1": "1",
+                            "synth1volume": "70",
+                            "synth2": "6",
+                            "synth2volume": "45"
+                        },
+                        {
+                            "guitar1": 5,
+                            "guitar1volume": 127,
+                            "guitar2": "7",
+                            "guitar2volume": "120",
+                            "name": "Bird Verse B",
+                            "synth1": "0",
+                            "synth1volume": 127,
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 6,
+                            "guitar1volume": "127",
+                            "guitar2": "7",
+                            "guitar2volume": "120",
+                            "name": "Bird Chorus C",
+                            "synth1": 0,
+                            "synth1volume": 127,
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 7,
+                            "guitar1volume": 127,
+                            "guitar2": "5",
+                            "guitar2volume": "100",
+                            "name": "Bird Coda D",
+                            "synth1": 0,
+                            "synth1volume": 127,
+                            "synth2": 0,
+                            "synth2volume": 0
+                        }
+                    ],
+                    "name": "2"
+                }
+            },
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 8,
+                            "guitar1volume": "0",
+                            "guitar2": "0",
+                            "guitar2volume": "0",
+                            "name": "Stranger Viola A",
+                            "synth1": "5",
+                            "synth1volume": "127",
+                            "synth2": "14",
+                            "synth2volume": "40"
+                        },
+                        {
+                            "guitar1": 9,
+                            "guitar1volume": 127,
+                            "guitar2": "7",
+                            "guitar2volume": "100",
+                            "name": "Stranger B",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 10,
+                            "guitar1volume": "110",
+                            "guitar2": "7",
+                            "guitar2volume": "90",
+                            "name": "Stranger C",
+                            "synth1": "5",
+                            "synth1volume": "80",
+                            "synth2": "14",
+                            "synth2volume": "70"
+                        },
+                        {
+                            "guitar1": 11,
+                            "guitar1volume": 127,
+                            "guitar2": "7",
+                            "guitar2volume": "100",
+                            "name": "Stranger D",
+                            "synth1": "5",
+                            "synth1volume": "80",
+                            "synth2": "14",
+                            "synth2volume": "60"
+                        }
+                    ],
+                    "name": "3"
+                }
+            },
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 12,
+                            "guitar1volume": 127,
+                            "guitar2": "40",
+                            "guitar2volume": "120",
+                            "name": "Kv Walk bridge1 8A",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "0",
+                            "synth2volume": "0"
+                        },
+                        {
+                            "guitar1": 13,
+                            "guitar1volume": "127",
+                            "guitar2": "40",
+                            "guitar2volume": "120",
+                            "name": "Kv Walk  Vers B",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "0",
+                            "synth2volume": "0"
+                        },
+                        {
+                            "guitar1": 14,
+                            "guitar1volume": "115",
+                            "guitar2": "40",
+                            "guitar2volume": "120",
+                            "name": "Kv Walk Chor OOO C",
+                            "synth1": "6",
+                            "synth1volume": "80",
+                            "synth2": "0",
+                            "synth2volume": "0"
+                        },
+                        {
+                            "guitar1": 15,
+                            "guitar1volume": 127,
+                            "guitar2": "7",
+                            "guitar2volume": "100",
+                            "name": "Kv Walk bridge2 8A",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "0",
+                            "synth2volume": "0"
+                        }
+                    ],
+                    "name": "4"
+                }
+            },
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 16,
+                            "guitar1volume": "127",
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Svoboda Liver A",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": 0,
+                            "synth2volume": "0"
+                        },
+                        {
+                            "guitar1": 17,
+                            "guitar1volume": 127,
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Svoboda Chr B",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "5",
+                            "synth2volume": "70"
+                        },
+                        {
+                            "guitar1": 18,
+                            "guitar1volume": 127,
+                            "guitar2": "7",
+                            "guitar2volume": "100",
+                            "name": "Svoboda Solo C",
+                            "synth1": "4",
+                            "synth1volume": "60",
+                            "synth2": "5",
+                            "synth2volume": "70"
+                        },
+                        {
+                            "guitar1": 19,
+                            "guitar1volume": 127,
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Svoboda D",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": 3,
+                            "synth2volume": 120
+                        }
+                    ],
+                    "name": "5"
+                }
+            },
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 20,
+                            "guitar1volume": 127,
+                            "guitar2": "9",
+                            "guitar2volume": "100",
+                            "name": "Old cnt dance Bass A",
+                            "synth1": "9",
+                            "synth1volume": "100",
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 21,
+                            "guitar1volume": 127,
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Old cnt dance Solo B",
+                            "synth1": "2",
+                            "synth1volume": "100",
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 22,
+                            "guitar1volume": 127,
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "OSD Mt 6C",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 23,
+                            "guitar1volume": "100",
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "OSD Dr 6D",
+                            "synth1": "4",
+                            "synth1volume": "127",
+                            "synth2": "5",
+                            "synth2volume": "127"
+                        }
+                    ],
+                    "name": "6"
+                }
+            },
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 24,
+                            "guitar1volume": 127,
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Oz1 A",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "17",
+                            "synth2volume": "80"
+                        },
+                        {
+                            "guitar1": 25,
+                            "guitar1volume": 127,
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Oz2 B",
+                            "synth1": "41",
+                            "synth1volume": "100",
+                            "synth2": "0",
+                            "synth2volume": "0"
+                        },
+                        {
+                            "guitar1": 26,
+                            "guitar1volume": "115",
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Oz2 C",
+                            "synth1": "6",
+                            "synth1volume": "80",
+                            "synth2": "10",
+                            "synth2volume": "100"
+                        },
+                        {
+                            "guitar1": 27,
+                            "guitar1volume": "100",
+                            "guitar2": 0,
+                            "guitar2volume": 0,
+                            "name": "Oz4 D",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "11",
+                            "synth2volume": "90"
+                        }
+                    ],
+                    "name": "7"
+                }
+            },
+            {
+                "Bank": {
+                    "items": [
+                        {
+                            "guitar1": 28,
+                            "guitar1volume": 127,
+                            "guitar2": "1",
+                            "guitar2volume": "100",
+                            "name": "Faun A",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": 0,
+                            "synth2volume": 0
+                        },
+                        {
+                            "guitar1": 29,
+                            "guitar1volume": 127,
+                            "guitar2": "1",
+                            "guitar2volume": "100",
+                            "name": "Faun B",
+                            "synth1": "0",
+                            "synth1volume": "70",
+                            "synth2": "0",
+                            "synth2volume": "70"
+                        },
+                        {
+                            "guitar1": 30,
+                            "guitar1volume": 127,
+                            "guitar2": "1",
+                            "guitar2volume": "100",
+                            "name": "Faun C",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "0",
+                            "synth2volume": "00"
+                        },
+                        {
+                            "guitar1": 31,
+                            "guitar1volume": 127,
+                            "guitar2": "1",
+                            "guitar2volume": "100",
+                            "name": "Faun D",
+                            "synth1": "0",
+                            "synth1volume": "0",
+                            "synth2": "0",
+                            "synth2volume": "0"
+                        }
+                    ],
+                    "name": "8"
+                }
+            }
+        ]
+    }
+}

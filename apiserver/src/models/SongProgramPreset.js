@@ -1,4 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
+  const InstrumentBank = sequelize.import(__dirname + "/InstrumentBank")
+  const Instrument = sequelize.import(__dirname + "/Instrument")
+  const Preset = sequelize.import(__dirname + "/Preset")
+  const SongProgram = sequelize.import(__dirname + "/SongProgram")
+
   const SongProgramPreset = sequelize.define('SongProgramPreset', {
     id: { 
       type: DataTypes.INTEGER,  
@@ -26,6 +31,34 @@ module.exports = (sequelize, DataTypes) => {
     reezeTableName: true,
     tableName: 'songprogrampreset'
   })
+  // ------------------------------------
+  SongProgramPreset.belongsTo(InstrumentBank, {
+    foreignKey: 'refinstrumentbank'
+  })
+  InstrumentBank.hasMany(SongProgramPreset, {
+    foreignKey: 'refinstrumentbank',
+  });
+  // ------------------------------------
+  SongProgramPreset.belongsTo(Instrument, {
+    foreignKey: 'refinstrument'
+  })
+  Instrument.hasMany(SongProgramPreset, {
+    foreignKey: 'refinstrument',
+  });
+  // ------------------------------------
+  SongProgramPreset.belongsTo(Preset, {
+    foreignKey: 'refpreset'
+  })
+  Preset.hasMany(SongProgramPreset, {
+    foreignKey: 'refpreset',
+  });
+   // ------------------------------------
+   SongProgramPreset.belongsTo(SongProgram, {
+    foreignKey: 'refsongprogram'
+  })
+  SongProgram.hasMany(SongProgramPreset, {
+    foreignKey: 'refsongprogram',
+  }); 
 
   SongProgramPreset.associate = function (models) {
   }

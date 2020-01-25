@@ -1,6 +1,9 @@
 const {Song} = require('../models')
 const {SongProgram} = require('../models')
 const {SongProgramPreset} = require('../models')
+const {Preset} = require('../models')
+const {InstrumentBank} = require('../models')
+const {Instrument} = require('../models')
 
 function reqLogger (name, req) {
   console.log(` << Request >> ${name}`)
@@ -74,7 +77,6 @@ module.exports = {
     }
   },
 
-
   async post (req, res) {
     try {
       let model = req.body
@@ -123,5 +125,39 @@ module.exports = {
         error: 'strange error has occured trying to fetch the songs'
       })
     }
+  },
+  async getSongProgramPresetsExtended (req, res) {
+    try {
+      // console.log('........async getPresetsExtended')
+      const result = await SongProgramPreset.findAll({
+        include: [{
+          model: InstrumentBank,
+          attributes: ['number','id'],
+        }, {
+          model: Instrument,
+          attributes: ['midichannel','id'],
+        }, {
+          model: Preset,
+          attributes: ['midipc','id'],
+        }, {
+          model: SongProgram,
+          attributes: ['name','id', 'midipedal'],
+        }],
+        order: [
+          ['refsong', 'ASC'],
+          [SongProgram, 'midipedal', 'ASC'],
+          [Instrument, 'id', 'ASC']
+        ]
+
+      })
+      // console.log(result)
+      res.send(result)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to getSongProgramPresetsExtended '
+      })
+    }
   }
+
 }

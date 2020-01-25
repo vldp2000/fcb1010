@@ -1,3 +1,4 @@
+
 module.exports = (sequelize, DataTypes) => {
   const InstrumentBank = sequelize.define('InstrumentBank', {
     id: { 

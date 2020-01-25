@@ -1,4 +1,7 @@
 const {Preset} = require('../models')
+const {InstrumentBank} = require('../models')
+const {Instrument} = require('../models')
+
 module.exports = {
   async index (req, res) {
     try {
@@ -88,5 +91,27 @@ module.exports = {
         error: 'strange error has occured trying to fetch the presets'
       })
     }
+  },
+
+  async getPresetsExtended (req, res) {
+    try {
+      //await reqLogger('== Get ==', req)
+      console.log('........async getPresetsExtended')
+      const result = await Preset.findAll({
+        include: [{
+          model: InstrumentBank
+        }, {
+          model: Instrument
+        }]
+      })
+      console.log(result)
+      res.send(result)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to get the extended '
+      })
+    }
   }
+
 }
