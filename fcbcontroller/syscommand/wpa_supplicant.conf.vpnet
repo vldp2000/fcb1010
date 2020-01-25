@@ -1,9 +1,0 @@
-country=AU
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-network={
-   ssid="vpnet24"
-   psk="UlitsaBluxera"
-   key_mgmt=WPA-PSK
-   id_str="vpnet24"
-}
