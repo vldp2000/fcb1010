@@ -1,26 +1,6 @@
-#A MIDI channel voice message consists of a status Byte followed by one or two data Bytes. Click here for a list of
-#currently assigned MIDI controller numbers. 
-#              Status Byte	Data Byte 1	Data Byte 2	Message	Legend 1000nnnn	0kkkkkkk 0vvvvvvv	
-#Note Off	n=channel* k=key # 0-127(60=middle C) v=velocity (0-127) 1001nnnn	0kkkkkkk 0vvvvvvv	
-#Note On	n=channel k=key # 0-127(60=middle C) v=velocity (0-127) 1010nnnn	0kkkkkkk	0ppppppp
-#Poly Key Pressure	n=channel k=key # 0-127(60=middle C) p=pressure (0-127) 1011nnnn	0ccccccc	0vvvvvv
-#Controller Change	n=channel c=controller v=controller value(0-127) 1100nnnn 0ppppp  [none]	
-#Program Change	n=channel p=preset number (0-127) 1101nnnn	0ppppppp	[none]	
-#Channel Pressure	n=channel p=pressure (0-127) 1110nnnn	0fffffff	0ccccccc	
-#Pitch Bend	n=channel c=coarse f=fine (c+f = 14-bit
-#resolution) ----------------------------------------------------------------
 
-## 176 -CC Channel 1
-## 179 -CC Channel 4
-## 181 -CC Channel 6
-## 192 -PC on Channel 1
-## 197 -PC on Channel 6
-
-
-# -*- coding: utf-8 -*-
 import json
 
-# Make it work for Python 2+3 and with Unicode
 import io
 
 import pygame
@@ -44,11 +24,6 @@ def printDebug(message):
   global gMode
   if gMode == 'Debug':
     print(message)
-
-#----------------------------------------------------------------
-class CustomEncoder(json.JSONEncoder):
-  def default(self, o):
-    return {'{}'.format(o.__class__.__name__): o.__dict__}
 
 #----------------------------------------------------------------
 
@@ -80,15 +55,50 @@ def initSongItems():
   global gSongDict
 
   data = dataController.allPresets()
-
+  # Programs are saved as list withing a song
+  # Presets are saved as a list withing a program
   x=0
+  programId = -1
+  presetId = -1
+  songId = -1
+  song = None
   for prg in data:
-    # program = Program(**prg)
-    # song.programs.append(program)
-    print('--------------------')
-    # p = song.programs[x]
-    print(prg)
-    x = x + 1
+    if songId != int(prg["refsong"]):
+      if song != None:
+        print('--------------------')
+        print(song.name)
+      songId = int(prg["refsong"])
+      song = gSongDict[str(songId)]
+      programId = -1
+      presetId = -1
+    if programId != int(prg["refsongprogram"]):
+      presetId = -1
+      programId = prg["refsongprogram"]
+      program = Program(
+        prg["refsongprogram"],
+        prg["SongProgram"]["name"],
+        prg["SongProgram"]["midipedal"] 
+      )
+      print(program.name)
+      song.programs.append(program)
+    if presetId != int(prg["refpreset"]):
+      presetId = int(prg["refpreset"])
+      preset = Preset(
+        prg["id"],
+        prg["delayflag"],
+        prg["delayvalue"],
+        prg["modeflag"],
+        prg["muteflag"],
+        prg["pan"],
+        prg["reverbflag"],
+        prg["reverbvalue"],
+        prg["volume"],
+        prg["Instrument"]["midichannel"],
+        prg["InstrumentBank"]["number"],
+        prg["Preset"]["midipc"]
+      )    
+      print(preset.midipc)
+      program.presets.append(preset)
   
 
     # for prs in songProgramPresets:

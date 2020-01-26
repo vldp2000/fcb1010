@@ -130,6 +130,20 @@ module.exports = {
     try {
       // console.log('........async getPresetsExtended')
       const result = await SongProgramPreset.findAll({
+        attributes:[
+          "id",
+          "refsong",
+          "refsongprogram",
+          "refpreset",
+          "volume",
+          "pan",
+          "muteflag",
+          "reverbflag",
+          "delayflag",
+          "modeflag",
+          "reverbvalue",
+          "delayvalue"
+        ],
         include: [{
           model: InstrumentBank,
           attributes: ['number','id'],

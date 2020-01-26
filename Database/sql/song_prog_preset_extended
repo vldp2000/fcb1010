@@ -1,0 +1,17 @@
+SELECT
+`SongProgramPreset`.`refsong`, 
+`SongProgramPreset`.`refsongprogram`, 
+`SongProgram`.`name` AS `SongProgram.name`,
+`Instrument`.`id` AS `Instrument.id`, 
+`Preset`.`midipc` AS `Preset.midipc`, `Preset`.`id` AS `Preset.id`, 
+`SongProgram`.`name` AS `SongProgram.name`, `SongProgram`.`id` AS `SongProgram.id`, 
+`SongProgram`.`midipedal` AS `SongProgram.midipedal` 
+FROM `songprogrampreset` AS `SongProgramPreset` 
+LEFT OUTER JOIN `InstrumentBank` AS `InstrumentBank` ON `SongProgramPreset`.`refinstrumentbank` = `InstrumentBank`.`id` 
+LEFT OUTER JOIN `Instrument` AS `Instrument` ON `SongProgramPreset`.`refinstrument` = `Instrument`.`id` 
+LEFT OUTER JOIN `Preset` AS `Preset` ON `SongProgramPreset`.`refpreset` = `Preset`.`id` 
+LEFT OUTER JOIN `SongProgram` AS `SongProgram` ON `SongProgramPreset`.`refsongprogram` = `SongProgram`.`id` 
+ORDER BY 
+`SongProgramPreset`.`refsong` ASC, 
+`SongProgram`.`midipedal` ASC, 
+`Instrument`.`id` ASC;

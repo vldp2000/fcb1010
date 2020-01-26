@@ -1,3 +1,4 @@
+import json
 
 #----------------------------------------------------------------
 class Song(object):
@@ -16,15 +17,20 @@ class Song(object):
 #----------------------------------------------------------------
 class Program(object):
   id = -1,
-  name = "",
+  name="",
   midipedal = 0,
   presets = []
+
   def __init__(self, **entries):
     self.__dict__.update(entries)
   def getId(self):
       return self.id
   def getPresets(self):
       return self.presets     
+  def __init__(self, id, name, midipedal):
+    self.id = id
+    self.name = name
+    self.midipedal = midipedal
 
 #----------------------------------------------------------------
 class Preset(object):
@@ -34,21 +40,37 @@ class Preset(object):
   modeflag = 0,
   muteflag = 0,
   pan = 64,
-  refsong = -1,
-  refsongprogram = -1,
   reverbflag = 0,
   reverbvalue = 0,
   volume = 0,
   midichannel = 0,
   bunknumber = 0,
-  midipc = 0,
-  midipedal = 0,
-  peddlnamename = ''
+  midipc = 0
 
   def __init__(self, **entries):
     self.__dict__.update(entries)
+
   def getId(self):
       return self.id
 
+  def __init__(self,id,delayflag,delayvalue,modeflag,muteflag,pan,reverbflag,
+    reverbvalue,volume,midichannel,bunknumber,midipc):
+    self.id = id,
+    self.delayflag = delayflag,
+    self.delayvalue = delayvalue,
+    self.modeflag = modeflag,
+    self.muteflag = muteflag,
+    self.pan = pan,
+    self.reverbflag = reverbflag,
+    self.reverbvalue = reverbvalue,
+    self.volume = volume,
+    self.midichannel = midichannel,
+    self.bunknumber = bunknumber,
+    self.midipc = midipc
+
 #----------------------------------------------------------------
 
+#----------------------------------------------------------------
+class CustomEncoder(json.JSONEncoder):
+  def default(self, o):
+    return {'{}'.format(o.__class__.__name__): o.__dict__}

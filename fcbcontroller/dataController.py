@@ -43,5 +43,5 @@ def allPresets():
   URL = 'http://localhost:8081/songprogrampreset'
   response = requests.get(url = URL)
   data = response.json()
-  pprint.pprint(data)
+  # pprint.pprint(data)
   return data
