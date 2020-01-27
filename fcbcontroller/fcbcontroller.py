@@ -57,7 +57,7 @@ gCorrentProgramIdx = -1
 gResetAllCounter = 0
 gResyncCounter = 0
 
-gMidiSocket = None
+gRaveloxClient = None
 gNotificationMessageClient = None
 
 #default value for second  volume pedal is 176 = 1st channel
@@ -237,8 +237,8 @@ def executeSystemCommand(code):
 #----------------------------------------------------------------
 
 def sendRaveloxCCMessage(message):
-  global gMidiSocket
-  gMidiSocket.send( message )
+  global gRaveloxClient
+  gRaveloxClient.send( message )
   sleep(MIN_DELAY)
   if gMode == 'Debug':
      msg = struct.unpack( "BBBB", message)
@@ -246,8 +246,8 @@ def sendRaveloxCCMessage(message):
 #----------------------------------------------------------------
 
 def sendRaveloxPCMessage(message):
-  global gMidiSocket
-  gMidiSocket.send( message )
+  global gRaveloxClient
+  gRaveloxClient.send( message )
   sleep(MIN_DELAY)
   if gMode == 'Debug':
      msg = struct.unpack( "BBB", message)
@@ -393,20 +393,6 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   printDebug("Send Generic Midi Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
 
 #----------------------------------------------------------------
-def sendBiasFxCommand(msg0, msg1, msg2):
-  printDebug("SEND BIASFX COMMAND")
-  message = struct.pack( "BBBB", 0xaa, 181, msg1, msg2 )
-  sendRaveloxCCMessage( message )
-  printDebug("Send BiasFx Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
-
-#----------------------------------------------------------------
-def prepareSampleTankCommand(msg0, msg1, msg2):
-  printDebug("PREPARE SAMPLE TANK COMMAND")
-  message = struct.pack( "BBBB", 0xaa, msg0, msg1, msg2 )
-  sendRaveloxCCMessage( message )
-  printDebug("Send SampleTank Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
-
-#----------------------------------------------------------------
 
 def selectNextSong():
   printDebug("INCREASE BIASFX BANK")
@@ -487,7 +473,7 @@ def setBankProgram(msg0, msg1, msg2):
 
 
 #----------------------------------------------------------------
-def sendMidiMsg(midiMsg):
+def getActionForReceivedMessage(midiMsg):
   printDebug("SEND MIDI MSG")
   global gResetAllCounter
   global gSynthTest
@@ -498,10 +484,6 @@ def sendMidiMsg(midiMsg):
   msg1 = msg[1]
   msg2 = msg[2]
   msgParameter = midiMsg[1]
-
-  printDebug(midiMsg)
-  printDebug("-----")
-
 
 #System events
 #FCB1010 has 10 banks 0..9
@@ -520,35 +502,39 @@ def sendMidiMsg(midiMsg):
 # Bank 2 will be used to select any song in a dictionary of available songs 
 
   if msg0 == 180:
-     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
-        executeSystemCommand(msg2)
-        printDebug("[[1--" + str(gResetAllCounter))
-        return
-     elif msg1 == 1:
-        checkCurrentBank(msg2)
-        printDebug("[[2--" + str(gResetAllCounter))
-        return
-     elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
-        if msg2 == 12:
-           sendBiasFxCommand(181, msg2, 110)
-           printDebug("[[3--" + str(gResetAllCounter))
-           gResetAllCounter = 0
-        else:
-           setBankProgram(msg0, msg1, msg2)
-           printDebug("[[4--" + str(gResetAllCounter))
-           if msg2 ==11  or msg2 > 14:
-              sendChangeBankProgram()
-              printDebug('[[5--' +str(gResetAllCounter))
-        gSynthTest = 0
-        gPianoTest = 0
+    if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
+      executeSystemCommand(msg2)
+      printDebug(">>1--" + str(gResetAllCounter))
+      return
+    elif msg1 == 1:
+      checkCurrentBank(msg2)
+      printDebug(">>2--" + str(gResetAllCounter))
+      return
+    elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
+      if msg2 == 12:
+          sendBiasFxCommand(181, msg2, 110)
+          printDebug(">>3--" + str(gResetAllCounter))
+          gResetAllCounter = 0
+      else:
+          setBankProgram(msg0, msg1, msg2)
+          printDebug(">>4--" + str(gResetAllCounter))
+          if msg2 ==11  or msg2 > 14:
+            sendChangeBankProgram()
+            printDebug('>>5--' +str(gResetAllCounter))
+      gSynthTest = 0
+      gPianoTest = 0
 
-     else:
-        sendBiasFxCommand(msg0, msg1, msg2)
-        printDebug('[[6--' +str(gResetAllCounter))
-        gResetAllCounter = 0
+  elif msg0 == 176 and msg1 == 7:
+    # Send Volume to Channel 1 or 2 (or both ?)
+    printDebug('>>6--' + msg)
+
+  elif msg0 == 181 and msg1 == 7:
+    # Send Volume to Channel 6 or 7 (or both ?)
+    printDebug('>>7--' + msg)
+
   else:
      sendGenericMidiCommand(msg0, msg1, msg2)
-     printDebug('[[7--' +str(gResetAllCounter))
+     printDebug('>>8--' + msg)
 
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
@@ -563,16 +549,16 @@ def getMidiMsg(midiInput):
       for msg in inp:
         printDebug(">>New Message Received<")
         printDebug(msg)
-        sendMidiMsg(msg)  
+        getActionForReceivedMessage(msg)  
 
 #----------------------------------------------------------------
-def connectRavelox():
-  global gMidiSocket
+def initRaveloxClient():
+  global gRaveloxClient
   try:
-    gMidiSocket = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-    gMidiSocket.connect( ("localhost", 5006 ) )
-    gMidiSocket.send("")
-    gMidiSocket.send("") # have to send twice to throw an error if ravelox not running
+    gRaveloxClient = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
+    gRaveloxClient.connect( RAVELOX_HOST, RAVELOX_PORT )
+    gRaveloxClient.send("")
+    gRaveloxClient.send("") # have to send twice to throw an error if ravelox not running
     return True
   except:
     return False
@@ -603,7 +589,7 @@ portOk = False
 
 while not portOk:
   try:
-    result = connectRavelox()
+    result = initRaveloxClient()
     if result:
       midiInput = pygame.midi.Input(port)
       portOk = True  
@@ -625,8 +611,8 @@ while 1:
   getMidiMsg(midiInput)
 
 #---Close application
-#gMidiSocket.close()
-gMidiSocket.shutdown(2)
+#gRaveloxClient.close()
+gRaveloxClient.shutdown(2)
 del midiInput
 pygame.midi.quit()
 
