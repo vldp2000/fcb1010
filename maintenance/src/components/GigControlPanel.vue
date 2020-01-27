@@ -155,8 +155,6 @@ import SongsService from '@/services/SongsService'
 import io from 'socket.io-client'
 
 const config = require('@/config/config')
-const presetMessage = 'PRESET_MESSAGE'
-const songMessage = 'SONG_MESSAGE'
 
 export default {
   data () {
@@ -268,12 +266,12 @@ export default {
       try {
         this.socket = io(`${config.messageURL}`)
 
-        this.socket.on(presetMessage, (data) => {
+        this.socket.on(config.programMessage, (data) => {
           console.log('-- Preset socket IO message')
           console.log(data)
           this.$store.dispatch('setCurrentProgramMidiPedal', parseInt(data))
         })
-        this.socket.on(songMessage, (data) => {
+        this.socket.on(config.songMessage, (data) => {
           console.log('-- Song socket IO message')
           console.log(data)
           this.$store.dispatch('setCurrentSongId', parseInt(data))
@@ -379,19 +377,19 @@ export default {
       let x = this.currentProgramIdx + 1
       if (x > 3) { x = 0 }
       // this.$store.dispatch('setCurrentProgramMidiPedal', x)
-      this.socket.emit(presetMessage, x)
+      this.socket.emit(config.programMessage, x)
     },
     btnClickSong () {
       let x = this.songId + 1
       if (x > 12) { x = 0 }
       // this.$store.dispatch('setCurrentSongId', x)
-      this.socket.emit(songMessage, x)
+      this.socket.emit(config.songMessage, x)
     },
 
     onProgramClick (idx) {
       // this.$store.dispatch('setCurrentProgramMidiPedal', idx)
       // this.$store.dispatch('setCurrentProgramMidiPedal', 0)
-      this.socket.emit(presetMessage, idx)
+      this.socket.emit(config.programMessage, idx)
     }
   }
 }

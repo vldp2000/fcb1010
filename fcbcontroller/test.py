@@ -18,8 +18,7 @@ import pprint
 import dataController
 from dataClasses import *
 
-import socketio
-
+from messageClient import MessageClient
 
 #----------------------------------------------------------------
 
@@ -116,21 +115,6 @@ def pringSongs():
       separators=(',', ': '), ensure_ascii=False
     ))
 
-def sendNotificationMessage(id):
-  global sio
-  sio.emit('PRESET_MESSAGE', str(id))
-  print('PRESET_MESSAGE ' + str(id))
-
-def imitMessenger():
-  global sio
-  # standard Python
-  sio = socketio.Client()
-  sio.connect('http://localhost:8088')
-  # asyncio
-  #sio = socketio.AsyncClient()
-  #await sio.connect('http://localhost:8088')
-
-
 #----------------------------------------------------------------
 #Main Module 
 #pygame.init()
@@ -151,5 +135,9 @@ initSongs()
 initSongItems()
 
 # pringSongs()  
-imitMessenger()
-sendNotificationMessage(1)
+mc = MessageClient()
+
+mc.initMessenger()
+mc.sendSongNotificationMessage(1)
+mc.sendProgramNotificationMessage(1)
+

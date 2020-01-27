@@ -12,5 +12,8 @@ module.exports = {
       storage: path.resolve(__dirname, '../../../Database/midigig.db'),
     }
   },
-  messagePort: 8088
+  messagePort: 8088,
+  programMessage: 'PROGRAM_MESSAGE',
+  songMessage: 'SONG_MESSAGE',
+  syncMessage: 'SYNC_MESSAGE'
 }
