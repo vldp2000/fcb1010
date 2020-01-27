@@ -248,6 +248,7 @@ export default {
 
     currentProgramMidiPedal: function (idx) {
       this.currentProgramIdx = idx
+      console.log(`currentProgramMidiPedal was changed -> ${this.currentProgramIdx}`)
     }
     // songId: function () {
     //   console.log('----,,,,,try to set setCurrentSongId')
@@ -270,12 +271,12 @@ export default {
         this.socket.on(presetMessage, (data) => {
           console.log('-- Preset socket IO message')
           console.log(data)
-          this.$store.dispatch('setCurrentProgramMidiPedal', data)
+          this.$store.dispatch('setCurrentProgramMidiPedal', parseInt(data))
         })
         this.socket.on(songMessage, (data) => {
           console.log('-- Song socket IO message')
           console.log(data)
-          this.$store.dispatch('setCurrentSongId', data)
+          this.$store.dispatch('setCurrentSongId', parseInt(data))
         })
       } catch (ex) {
         console.log(ex)

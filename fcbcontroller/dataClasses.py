@@ -8,6 +8,7 @@ class Song(object):
   sequencenumber = -1,
   programs = []
   def __init__(self, **entries):
+    self.programs=[]
     self.__dict__.update(entries)
   def getId(self):
       return self.id
@@ -31,6 +32,7 @@ class Program(object):
     self.id = id
     self.name = name
     self.midipedal = midipedal
+    self.presets = []
 
 #----------------------------------------------------------------
 class Preset(object):

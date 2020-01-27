@@ -25,9 +25,13 @@ const io = require('socket.io')(server);
 io.on('connection', function(socket) {
     console.log(socket.id)
     socket.on(presetMessage, function(data) {
-        io.emit(presetMessage, data)
+      console.log(presetMessage)
+      console.log(data)
+      io.emit(presetMessage, data)
     })
     socket.on(songMessage, function(data) {
+      console.log(songMessage)
+      console.log(data)
       io.emit(songMessage, data)
   })
 })

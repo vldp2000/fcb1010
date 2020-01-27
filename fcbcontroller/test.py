@@ -18,12 +18,8 @@ import pprint
 import dataController
 from dataClasses import *
 
-#----------------------------------------------------------------
+import socketio
 
-def printDebug(message):
-  global gMode
-  if gMode == 'Debug':
-    print(message)
 
 #----------------------------------------------------------------
 
@@ -31,8 +27,18 @@ def printDebug(message):
 
 gGigSongList = []
 gSongDict = {}
+sio = None
+
 
 #----------------------------------------------------------------
+
+def printDebug(message):
+  global gMode
+  if gMode == 'Debug':
+    print(message)
+#----------------------------------------------------------------
+
+
 
 def initSongs():
   global gGigSongList
@@ -64,9 +70,6 @@ def initSongItems():
   song = None
   for prg in data:
     if songId != int(prg["refsong"]):
-      if song != None:
-        print('--------------------')
-        print(song.name)
       songId = int(prg["refsong"])
       song = gSongDict[str(songId)]
       programId = -1
@@ -79,7 +82,7 @@ def initSongItems():
         prg["SongProgram"]["name"],
         prg["SongProgram"]["midipedal"] 
       )
-      print(program.name)
+      # print(program.name)
       song.programs.append(program)
     if presetId != int(prg["refpreset"]):
       presetId = int(prg["refpreset"])
@@ -97,11 +100,35 @@ def initSongItems():
         prg["InstrumentBank"]["number"],
         prg["Preset"]["midipc"]
       )    
-      print(preset.midipc)
+      # print(preset.midipc)
       program.presets.append(preset)
   
-
+#----------------------------------------------------------------
     # for prs in songProgramPresets:
+def pringSongs(): 
+  for item in gSongDict:
+    song = gSongDict[item]
+    
+    print('--------------------')
+
+    pprint.pprint( json.dumps(song,
+      indent=4, sort_keys=True, cls=CustomEncoder,
+      separators=(',', ': '), ensure_ascii=False
+    ))
+
+def sendNotificationMessage(id):
+  global sio
+  sio.emit('PRESET_MESSAGE', str(id))
+  print('PRESET_MESSAGE ' + str(id))
+
+def imitMessenger():
+  global sio
+  # standard Python
+  sio = socketio.Client()
+  sio.connect('http://localhost:8088')
+  # asyncio
+  #sio = socketio.AsyncClient()
+  #await sio.connect('http://localhost:8088')
 
 
 #----------------------------------------------------------------
@@ -123,5 +150,6 @@ initSongs()
 
 initSongItems()
 
-
-
+# pringSongs()  
+imitMessenger()
+sendNotificationMessage(1)
