@@ -33,14 +33,14 @@
             knobLabel='Pan'
           />
         </div>
-        <div>
-            <v-checkbox class="ma-0 pa-0" dense hide-details  label="Mute" v-model="presetControlData.muteflag" />
-            <v-checkbox class="ma-0 pa-0" dense hide-details  label="Del" v-model="presetControlData.delayflag" />
-            <v-checkbox class="ma-0 pa-0" dense hide-details  label="Rev" v-model="presetControlData.reverbflag" />
+        <div class="ma=0 pa=0">
+            <v-checkbox class="ma-0 pa-0 checkbox" dense hide-details  label="Mute" v-model="presetControlData.muteflag" />
+            <v-checkbox class="ma-0 pa-0 checkbox" dense hide-details  label="Del" v-model="presetControlData.delayflag" />
+            <v-checkbox class="ma-0 pa-0 checkbox" dense hide-details  label="Rev" v-model="presetControlData.reverbflag" />
         </div>
         <div class="inputpanel">
           <div>
-            <v-checkbox class="ma-0 pa-0" dense hide-details  label="Mode" v-model="presetControlData.reverbflag" />
+            <v-checkbox class="ma-0 pa-0 checkbox" dense hide-details  label="Mode" v-model="presetControlData.reverbflag" />
           </div>
           <div class="valueInput">
             <custom-text-input v-model="presetControlData.delayvalue" />
@@ -122,6 +122,7 @@ export default {
   }
 }
 </script>
+
 <style>
   .customKnob {
     height: 60px;
@@ -132,9 +133,9 @@ export default {
   .customControls {
     height: 60px;
   }
-  .v-label {
-    font-size: 10px;
-  }
+  /* .v-label {
+    font-size: 8px;
+  } */
 
   .presetName {
     display: flex;
@@ -144,7 +145,7 @@ export default {
     height: 40px;
   }
   .custom-text-input {
-    width: 70px;
+    width: 65px;
   }
   .inputpanel {
     margin-left: 10px;
@@ -158,5 +159,14 @@ export default {
     margin-top: 5px;
     margin-left: 5px;
     padding-bottom: -5px;
+  }
+  .checkbox label {
+    font-size: 10px;
+    margin: 0px;
+    padding: 0px;
+  }
+  .checkbox {
+    margin: 0px;
+    padding: 0px;
   }
 </style>

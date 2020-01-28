@@ -395,7 +395,7 @@ export default {
 }
 </script>
 
-<style>
+<style  scoped>
 
 .preset {
   margin: 5px;
@@ -450,6 +450,7 @@ export default {
 }
 
 .v-select  {
+  color:azure;
   font-size: 20px;
   font-style: bold;
   text-shadow: 2px 2px 1px rgba(5, 79, 218, 0.83);

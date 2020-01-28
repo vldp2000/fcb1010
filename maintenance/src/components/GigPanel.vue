@@ -180,7 +180,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .inner-text {
     /* allow the text to take all the available space in the svg on top of the gauge */
     height: 100%;

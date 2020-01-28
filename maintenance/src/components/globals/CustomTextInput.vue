@@ -43,7 +43,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   #main {
     width: 60px;
     height: 24px;
@@ -66,7 +66,7 @@ export default {
   .input-field {
     /* padding: -3px;
     margin: 2px; */
-    font-size: 11px;
+    font-size: 10px;
     /* display: block; */
     -moz-box-shadow: 0px 0px 1px 1px #ccc;
     -webkit-box-shadow: 0px 0px 1px 1px #ccc;
