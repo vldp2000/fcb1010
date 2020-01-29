@@ -1,0 +1,29 @@
+INSERT INTO preset 
+(
+   name,
+   refinstrumentbank,
+   midipc,
+   IsDefault,
+   refinstrument
+)
+VALUES 
+                  
+( '001_DowbTheRiver_Intro' , 2 , 1 , 0 , 4 ),  
+( '002_DownTheRiver_ScarePart' , 2 , 2 , 0 , 4 ),  
+( '003_DownTheRiverVocal' , 2 , 3 , 0 , 4 ),  
+( '004_DownTheRiverCoda' , 2 , 4 , 0 , 4 ),  
+( '005_StartedAllNew' , 2 , 5 , 0 , 4 ),  
+( '006_WBH_Chorus' , 2 , 6 , 0 , 4 ),  
+( '007_WBH_Sppoky' , 2 , 7 , 0 , 4 ),  
+( '008_Marina.1' , 2 , 8 , 0 , 4 ),  
+( '009_Marina.2-1' , 2 , 9 , 0 , 4 ),  
+( '000_Marina.2-2' , 2 , 10 , 0 , 4 ),  
+( '001_Marina.3' , 2 , 11 , 0 , 4 ),  
+( '002_MamaSolo' , 2 , 12 , 0 , 4 ),  
+( '003_MamaFinal' , 2 , 13 , 0 , 4 ),  
+( '004_Sacred Strings' , 2 , 14 , 0 , 4 ),  
+( '005_Osc Stack' , 2 , 15 , 0 , 4 ),  
+( '006_BeautifulUniverse' , 2 , 16 , 0 , 4 ),  
+( '007_Southern Utopia' , 2 , 17 , 0 , 4 );
+
+

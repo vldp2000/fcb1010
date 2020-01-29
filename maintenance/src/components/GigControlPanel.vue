@@ -1,6 +1,7 @@
 <template>
   <v-container grid-list-md text-md-center fluid class="darkBackgroud">
  <!-- <v-container fluid  class="darkBackgroud"> -->
+  <div class="selector-panel">
     <v-row md12no-gutters>
       <v-col md6>
         <v-select
@@ -25,7 +26,7 @@
         </v-select>
       </v-col>
     </v-row>
-
+  </div>
 <!-------PROFRAM A----------->
     <v-row md12 ma-0 pa-0 no-gutters>
 
@@ -448,7 +449,9 @@ export default {
   margin-right: 2px;
   padding: 0px;
 }
-
+.selector-panel {
+  height: 45px;
+}
 .v-select  {
   color:azure;
   font-size: 20px;
@@ -456,10 +459,11 @@ export default {
   text-shadow: 2px 2px 1px rgba(5, 79, 218, 0.83);
   text-transform: uppercase;
   font-weight: bold;
-  margin-bottom: -10px;
-  margin-bottom: -20px;
-  padding-top: -5px;
-  padding-bottom: -20px;
+  margin: 0px;
+  /* margin-bottom: -10px;
+  margin-bottom: -20px; */
+  margin-top: -20px;
+  padding-bottom: 40px;
   padding-left: 60px;
   padding-right: 20px;
 }

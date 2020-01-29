@@ -23,7 +23,7 @@ export default {
   },
 
   async post (preset) {
-    console.log('// ----------->>return Api().post(preset)')
+    console.log('// ----------->>call Api().post(preset)')
     console.log(preset)
     let result = await Api().post('preset', preset)
     let newPreset = await result.data

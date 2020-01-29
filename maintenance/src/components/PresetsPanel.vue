@@ -3,6 +3,7 @@
     <v-flex class="ml-2">
       <custom-panel title="Presets">
         <v-data-table
+          v-if ="presetList.length > 0"
           @pagination="pagination = $event"
           :headers="headers"
           :items="presetList"
@@ -11,11 +12,11 @@
         >
 
           <template v-slot:item.instrument="{ item }">
-            <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip>
+            <v-chip color="blue" dark>{{ getInstrument(item.refinstrument) }}</v-chip>
           </template>
 
           <template v-slot:item.bank="{ item }">
-            <v-chip color="blue" dark>{{ instrumentBankList.find(i => i.id === item.refinstrumentbank).name }}</v-chip>
+            <v-chip color="blue" dark>{{ getInstrumentBank(item.refinstrumentbank) }}</v-chip>
           </template>
 
           <template v-slot:item.pc="{ item }">
@@ -55,6 +56,31 @@
                           <v-text-field v-model="editedItem.midipc" label="Midi PC"></v-text-field>
                         </v-col>
                       </v-row>
+                       <v-row>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-select
+                            v-if="instrumentList"
+                            label="Select Instrument"
+                            v-model="instrumentId"
+                            :items="instrumentList"
+                            required
+                            item-text="name"
+                            item-value="id">
+                          </v-select>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                          <v-select
+
+                            label="Select Bank"
+                            v-model="editedItem.refinstrumentbank"
+                            :items="bankList"
+                            required
+                            item-text="name"
+                            item-value="id">
+                          </v-select>
+                        </v-col>
+                      </v-row>
+
                     </v-container>
                   </v-card-text>
 
@@ -135,7 +161,9 @@ export default {
         // pageCount: number
         itemsLength: 128
       },
-      selected: []
+      selected: [],
+      instrumentId: -1,
+      bankList: []
     }
   },
 
@@ -156,6 +184,15 @@ export default {
     },
     dialog: function (val) {
       val || this.closeDialog()
+    },
+    instrumentId: function () {
+      console.log(`-- Instrument ${this.instrumentId}`)
+      if (this.instrumentId && this.instrumentId > 0) {
+        this.editedItem.refinstrument = this.instrumentId
+        this.bankList = this.getBankList(this.instrumentId)
+      } else {
+        this.bankList = []
+      }
     }
   },
 
@@ -200,6 +237,7 @@ export default {
     editItem (item) {
       this.editedIndex = this.presetList.indexOf(item)
       this.editedItem = Object.assign({}, item)
+      this.instrumentId = item.refinstrument
       console.log(this.editedItem)
       this.dialog = true
     },
@@ -214,6 +252,8 @@ export default {
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+        this.instrumentId = -1
+        this.bankList = []
       }, 300)
     },
 
@@ -234,7 +274,40 @@ export default {
         }
       }
       this.closeDialog()
+    },
+    getBankList (id) {
+      console.log(' -----getBankList======== ')
+      let result = []
+      console.log(id)
+      if (id > -1 && this.editedItem.refinstrument && this.editedItem.refinstrument > -1) {
+        result = this.instrumentBankList.filter(item => item.refinstrument === id)
+      }
+      console.log(result)
+      return result
+    },
+    getInstrument (id) {
+      let instrument = null
+      if (id > 0 && this.instrumentList.length > 0) {
+        instrument = this.instrumentList.find(i => i.id === id)
+      }
+      if (instrument) {
+        return instrument.name
+      } else {
+        return ''
+      }
+    },
+    getInstrumentBank (id) {
+      let bank = null
+      if (id > 0 && this.instrumentBankList.length > 0) {
+        bank = this.instrumentBankList.find(i => i.id === id)
+      }
+      if (bank) {
+        return bank.name
+      } else {
+        return ''
+      }
     }
+
   }
 }
 </script>

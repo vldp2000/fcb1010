@@ -49,7 +49,6 @@ module.exports = {
     try {
       let model = req.body
       delete model.id
-      delete model.refinstrumentbank
       //console.log(model)
       const preset = await Preset.create(model)
       console.log(preset)

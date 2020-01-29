@@ -17,14 +17,14 @@ export default {
         refinstrument: 1,
         refinstrumentbank: 1,
         refpreset: 1,
-        volume: 100,
-        pan: 50,
+        volume: 1,
+        pan: 10,
         muteflag: 1,
         reverbflag: 0,
         delayflag: 1,
         modeflag: 0,
-        reverbvalue: 101,
-        delayvalue: 200
+        reverbvalue: 1,
+        delayvalue: 1
       }
     }
   }

@@ -1,7 +1,4 @@
 module.exports = (sequelize, DataTypes) => {
-
-  // const InstrumentBank = require('./InstrumentBank').InstrumentBank
-  // const Instrument = require('./Instrument').Instrument
   const InstrumentBank = sequelize.import(__dirname + "/InstrumentBank")
   const Instrument = sequelize.import(__dirname + "/Instrument")
 
@@ -11,10 +8,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true 
     },
+    refinstrument: DataTypes.INTEGER,
+    refinstrumentbank: DataTypes.INTEGER,
+
     name: DataTypes.STRING,
     midipc:  DataTypes.INTEGER,
-    refinstrumentbank: DataTypes.INTEGER,
-    refinstrument: DataTypes.INTEGER,
     isDefault: DataTypes.INTEGER
   },
   {
@@ -44,10 +42,3 @@ module.exports = (sequelize, DataTypes) => {
 
   return Preset
 }
-
-// Category.hasMany(Ingredient, {
-//   foreignKey: 'category_id',
-// });
-// Ingredient.belongsTo(Category, {
-//   foreignKey: 'category_id',
-// });

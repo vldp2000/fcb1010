@@ -4,22 +4,21 @@
     class="mx-auto"
     max-width="400"
   >
-  <v-container class="pa-0 ma-0" fluid>
-    <v-row no-gutters>
-      <v-col cols=3>
-        <div class="instrumentImage">
-          <v-img :src="imageURL"/>
-        </div>
-      </v-col>
-      <v-col cols=9>
-        <div class="presetName">
-          <b>{{ getPresetName() }}</b>
-        </div>
-      </v-col>
-    </v-row>
+    <v-container class="pa-0 ma-0" fluid>
+      <v-row no-gutters>
+          <v-col cols=3>
+            <div class="instrumentImage">
+              <v-img :src="imageURL"/>
+            </div>
+          </v-col>
+          <v-col cols=9>
+            <div class="presetName">
+              <b>{{ getPresetName() }}</b>
+            </div>
+          </v-col>
+      </v-row>
 
       <v-row no-gutters>
-
         <div class="customKnob">
           <custom-knob
             :value='parseInt(presetControlData.volume,10)'
@@ -50,7 +49,6 @@
           </div>
         </div>
       </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -165,12 +163,7 @@ export default {
     margin-left: -10px!important;
     padding: 0px!important;
   }
-  /* .checkbox {
-    margin: 0px;
-    padding: 0px;
-  } */
-  /* .checkbox input {
-    margin: 0px;
-    padding: 0px;
-  } */
+  .preset-header {
+    /* height: 100%; */
+  }
 </style>
