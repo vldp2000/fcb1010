@@ -70,9 +70,9 @@
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
                           <v-select
-
+                            v-if="bankList"
                             label="Select Bank"
-                            v-model="editedItem.refinstrumentbank"
+                            v-model="bankId"
                             :items="bankList"
                             required
                             item-text="name"
@@ -157,13 +157,12 @@ export default {
         page: 1,
         itemsPerPage: 20,
         pageStart: 1,
-        // pageStop: 2,
-        // pageCount: number
         itemsLength: 128
       },
       selected: [],
       instrumentId: -1,
-      bankList: []
+      bankList: [],
+      bankId: -1
     }
   },
 
@@ -186,21 +185,28 @@ export default {
       val || this.closeDialog()
     },
     instrumentId: function () {
-      console.log(`-- Instrument ${this.instrumentId}`)
+      // console.log(`-- on InstrumentId change ${this.instrumentId}`)
       if (this.instrumentId && this.instrumentId > 0) {
         this.editedItem.refinstrument = this.instrumentId
         this.bankList = this.getBankList(this.instrumentId)
       } else {
         this.bankList = []
       }
+
+      if (this.dialog && this.editedIndex > -1 && this.bankList.length > 0) {
+        this.bankId = this.editedItem.refinstrumentbank
+      }
+    },
+    bankId: function () {
+      this.editedItem.refinstrumentbank = this.bankId
     }
   },
 
   methods: {
     async init () {
-      console.log(this.presetList.length)
+      // console.log(this.presetList.length)
       if (this.presetList.length === 0) {
-        console.log('Init presets storage')
+        // console.log('Init presets storage')
         let result = await PresetsService.getAll()
         let list = await result.data
         // console.log('<< Init preset List?>>')
@@ -208,11 +214,11 @@ export default {
         // console.log(this.$store.state.presetList)
       } else {
         console.log(' Preset List already populated')
-        console.log(this.$store.state.presetList)
+        // console.log(this.$store.state.presetList)
       }
 
       if (this.instrumentList.length === 0) {
-        console.log('Init instrument storage')
+        // console.log('Init instrument storage')
         let result = await InstrumentsService.getAll()
         let list = await result.data
         await this.$store.dispatch('setInstrumentList', list)
@@ -222,7 +228,7 @@ export default {
       }
 
       if (this.instrumentBankList.length === 0) {
-        console.log('Init instrument Banks storage')
+        // console.log('Init instrument Banks storage')
         let result = await InstrumentBankService.getAll()
         let list = await result.data
         // console.log('<< Init instrument bank List?>>')
@@ -235,11 +241,12 @@ export default {
     },
 
     editItem (item) {
+      // console.log(`-------start editItem (item)  ${item.id}`)
       this.editedIndex = this.presetList.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.instrumentId = item.refinstrument
-      console.log(this.editedItem)
       this.dialog = true
+      this.instrumentId = item.refinstrument
+      // console.log(`-------finish editItem (item)  ${item.id}`)
     },
 
     deleteItem (item) {
@@ -254,12 +261,13 @@ export default {
         this.editedIndex = -1
         this.instrumentId = -1
         this.bankList = []
+        this.bankId = -1
       }, 300)
     },
 
     savePreset () {
-      console.log('savePreset () -------')
-      console.log(this.editedItem)
+      // console.log('savePreset () -------')
+      // console.log(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           PresetsService.put(this.editedItem)
@@ -276,13 +284,16 @@ export default {
       this.closeDialog()
     },
     getBankList (id) {
-      console.log(' -----getBankList======== ')
+      // console.log(' -----getBankList======== ')
       let result = []
-      console.log(id)
+      // console.log(id)
       if (id > -1 && this.editedItem.refinstrument && this.editedItem.refinstrument > -1) {
         result = this.instrumentBankList.filter(item => item.refinstrument === id)
+        if (result && result.length === 1) {
+          this.bankId = result.id
+        }
       }
-      console.log(result)
+      // console.log(result)
       return result
     },
     getInstrument (id) {

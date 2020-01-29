@@ -6,6 +6,8 @@ import store from '@/store/store'
 import vuetify from './plugins/vuetify'
 import CustomPanel from '@/components/globals/CustomPanel'
 import CustomKnob from '@/components/globals/CustomKnob'
+import MyKnob from '@/components/globals/MyKnob'
+
 import PresetControl from '@/components/globals/PresetControl'
 import CustomTextInput from '@/components/globals/CustomTextInput'
 // import { sync } from 'vuex-router-sync'
@@ -17,6 +19,7 @@ Vue.component('CustomPanel', CustomPanel)
 Vue.component('CustomKnob', CustomKnob)
 Vue.component('PresetControl', PresetControl)
 Vue.component('CustomTextInput', CustomTextInput)
+Vue.component('MyKnob', MyKnob)
 
 Vue.config.productionTip = false
 Vue.use(VueSvgGauge)

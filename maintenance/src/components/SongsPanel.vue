@@ -73,7 +73,7 @@
                   <v-row>
                     <v-col>
                       <div class="gauge">
-                        <span v-touch:swipe="swipeHandler">
+                        <span>
                         <vue-svg-gauge
                           :start-angle="-110"
                           :end-angle="110"
@@ -84,7 +84,9 @@
                           :gauge-color="[{ offset: 0, color: '#347AB0'}, { offset: 100, color: '#8CDFAD'}]"
                           :scale-interval="0.5">
                           <div class="inner-text">
-                            <span> {{ editedItem.tempo }}</span>
+                            <span>
+                              {{ editedItem.tempo }}
+                            </span>
                           </div>
                         </vue-svg-gauge>
                         </span>
@@ -182,6 +184,9 @@ export default {
     }
   },
 
+  mounted () {
+    this.init()
+  },
   watch: {
     songList: function (newValue, oldValue) {
       this.songs = newValue
@@ -244,36 +249,9 @@ export default {
       await SongsService.initAll()
       await this.showLoading(false)
       console.log(' Finish Init all relted to songs storage <<< ')
-      // console.log(this.songList.length)
-      // // if (!this.$store.state.songList || this.$store.state.songList === undefined || !this.$store.state.songList.Length) {
-      // if (this.$store.state.songList.length === 0) {
-      //   console.log('Init songs storage')
-      //   let result = await SongsService.getAll()
-      //   let list = await result.data
-      //   // console.log('<< Init Song List?>>')
-      //   await this.$store.dispatch('setSongList', list)
-      //   // console.log(this.$store.state.songList)
-      //   await this.showLoading(false)
-      // } else {
-      //   console.log(' Song List already populated')
-      //   await this.showLoading(false)
-      // }
     },
-    swipeHandler (direction) {
-      console.log(direction)
-      // May be left right top bottom
-      if (direction === 'left' || direction === 'bottom') {
-        this.editedItem.tempo--
-      } else {
-        this.editedItem.tempo++
-      }
-    },
+
     customDataTableItemsFilter (value, search, items) {
-      /*
-      Filter for individual words in search string. Filters
-      all object values rather than just the keys included
-      in the data table headers.
-       */
       const wordArray = search
         .toString()
         .toLowerCase()
@@ -303,11 +281,7 @@ export default {
       this.expanded.push(value)
       console.log(this.selectedProgramList)
     }
-  },
-  mounted () {
-    this.init()
   }
-
 }
 </script>
 
