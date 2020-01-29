@@ -147,7 +147,8 @@ export default {
           { icon: 'mdi-settings', text: 'Instrument Banks', link: '/instrumentBanks' },
           { icon: 'mdi-settings', text: 'Presets', link: '/presets' },
           { icon: 'mdi-settings', text: 'Song Programs', link: '/songPrograms' },
-          { icon: 'mdi-settings', text: 'Preset', link: '/preset' }
+          { icon: 'mdi-settings', text: 'Preset', link: '/preset' },
+          { icon: 'mdi-settings', text: 'Test', link: '/test' }
         ]
       }
     ]
@@ -160,10 +161,9 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   /* color: #2c3e50; */
-
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
 
 .danger-alert {

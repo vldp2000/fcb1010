@@ -9,7 +9,7 @@ import SongPrograms from '@/components/SongProgramsPanel'
 import About from '@/components/About'
 import Gigs from '@/components/GigPanel'
 import Preset from '@/components/globals/PresetControl'
-
+import Test from '@/components/TestPanel'
 Vue.use(VueRouter)
 
 const routes = [
@@ -62,8 +62,12 @@ const routes = [
     path: '/preset',
     name: 'preset',
     component: Preset
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: Test
   }
-
 ]
 
 const router = new VueRouter({

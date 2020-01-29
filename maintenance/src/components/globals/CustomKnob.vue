@@ -10,10 +10,14 @@
       :max='max'
       :gauge-color='gaugeColor'
       :scale-interval='scaleInterval'>
+      <div>
         <div class="inner-text">
-          <b class="label1">{{ value }}</b>
-          <label class="label2">{{ knobLabel }}</label>
+          <b class="custom-label1 custom-label">{{ value }}</b>
         </div>
+        <div class="inner-text">
+          <b class="custom-label2 custom-label">{{ knobLabel }}</b>
+        </div>
+      </div>
     </vue-svg-gauge>
   </div>
 </template>
@@ -108,21 +112,25 @@ export default {
 
 <!--  change style to calculate the position of the inner text automatically  -->
 <style scoped>
-.inner-text {
+
+.custom-label {
   display: flex;
-  /* justify-content: flex-start; */
-  /* align-items: flex-end; */
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  display: -webkit-flex;
+  -webkit-box-align: center;
+
+  display: -ms-flexbox;
+  -ms-flex-align: center;
 }
-.label1 {
-  padding-top: 50px !important;
-  font-size: 45px !important;
-  /* background-color: hsl(219, 100%, 54%); */
+.custom-label1 {
+  padding-top: 50px!important;
+  font-size: 45px!important;
+  /* -webkit-padding-start: 0px; */
 }
-.label2 {
-  /* background-color: hsl(123, 100%, 54%); */
-  /* color: #000; */
-  margin-top: -15px;
-  font-size: 30px !important;
+.custom-label2 {
+  margin-top: -15px!important;
+  font-size: 30px!important;
 }
  </style>

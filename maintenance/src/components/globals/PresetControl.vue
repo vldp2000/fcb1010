@@ -161,12 +161,16 @@ export default {
     padding-bottom: -5px;
   }
   .checkbox label {
-    font-size: 10px;
+    font-size: 10px!important;
+    margin-left: -10px!important;
+    padding: 0px!important;
+  }
+  /* .checkbox {
     margin: 0px;
     padding: 0px;
-  }
-  .checkbox {
+  } */
+  /* .checkbox input {
     margin: 0px;
     padding: 0px;
-  }
+  } */
 </style>
