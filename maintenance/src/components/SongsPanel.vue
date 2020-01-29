@@ -34,11 +34,11 @@
 
       <template v-slot:item.tempo="{ item }">
         <div class="customKnob">
-          <custom-knob
+          <my-knob
             :value="parseInt(item.tempo,10)"
             :max=200
           >
-          </custom-knob>
+          </my-knob>
         </div>
       </template>
 

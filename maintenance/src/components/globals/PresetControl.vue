@@ -20,14 +20,14 @@
 
       <v-row no-gutters>
         <div class="customKnob">
-          <custom-knob
+          <my-knob
             :value='parseInt(presetControlData.volume,10)'
             knobLabel='Vol'
           />
         </div>
 
         <div class="customKnob">
-          <custom-knob
+          <my-knob
             :value="parseInt(presetControlData.pan,10)"
             knobLabel='Pan'
           />

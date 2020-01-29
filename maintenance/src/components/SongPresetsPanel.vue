@@ -31,19 +31,19 @@
 
     <template v-slot:item.volume="{ item }">
       <div class="customKnob">
-        <custom-knob
+        <my-knob
           :value="parseInt(item.volume,10)"
         >
-        </custom-knob>
+        </my-knob>
       </div>
     </template>
 
     <template v-slot:item.pan="{ item }">
       <div class="customKnob">
-        <custom-knob
+        <my-knob
           :value="parseInt(item.pan,10)"
         >
-        </custom-knob>
+        </my-knob>
       </div>
     </template>
 
@@ -57,10 +57,10 @@
 
     <template v-slot:item.reverbvalue="{ item }">
       <div class="customKnob">
-        <custom-knob
+        <my-knob
           :value="parseInt(item.reverbvalue,10)"
         >
-        </custom-knob>
+        </my-knob>
       </div>
     </template>
 
@@ -70,10 +70,10 @@
 
     <template v-slot:item.delayvalue="{ item }">
       <div class="customKnob">
-        <custom-knob
+        <my-knob
           :value="parseInt(item.delayvalue,10)"
         >
-        </custom-knob>
+        </my-knob>
       </div>
     </template>
 

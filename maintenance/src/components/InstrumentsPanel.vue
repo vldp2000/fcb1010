@@ -22,10 +22,10 @@
 
           <template v-slot:item.channel="{ item }">
             <div class="customKnob">
-              <custom-knob
+              <my-knob
                 :value="parseInt(item.midichannel,10)"
               >
-              </custom-knob>
+              </my-knob>
             </div>
           </template>
 
