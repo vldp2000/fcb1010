@@ -34,7 +34,6 @@ export default {
 
   data () {
     return {
-
       flag: false,
       size: 0,
       currentValue: 0,
@@ -46,6 +45,10 @@ export default {
   },
 
   props: {
+    editMode: {
+      type: Boolean,
+      default: false
+    },
     min: {
       type: Number,
       default: 0
@@ -247,9 +250,11 @@ export default {
       this.setValueOnPos(pos)
     },
     moveStart (e, index) {
-      if (!this.draggable) return false
-      this.flag = true
-      this.$emit('dragStart', this)
+      if (this.editMode) {
+        if (!this.draggable) return false
+        this.flag = true
+        this.$emit('dragStart', this)
+      }
     },
     moving (e) {
       if (!this.flag || !this.draggable) return false

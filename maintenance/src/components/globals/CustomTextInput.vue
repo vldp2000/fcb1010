@@ -1,7 +1,9 @@
 <template>
   <div id="main">
     <!-- <label class='label-input' v-bind:for="fieldId">{{labelName}}</label> -->
-    <input v-bind:id="fieldId"
+    <input
+      :id="fieldId"
+      :readonly="!editMode"
       class="input-field"
       :placeholder="placeHolder"
       :value="value"
@@ -12,6 +14,10 @@
 <script>
 export default {
   props: {
+    editMode: {
+      type: Boolean,
+      default: false
+    },
     labelName: {
       type: String,
       default: '',
