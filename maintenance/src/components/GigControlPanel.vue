@@ -152,8 +152,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import SongsService from '@/services/SongsService'
-import io from 'socket.io-client'
+// import SongsService from '@/services/SongsService'
+// import io from 'socket.io-client'
 
 const config = require('@/config/config')
 
@@ -188,7 +188,9 @@ export default {
 
   computed: {
     // currentGigId: state => state.currentGigId,
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal', 'currentGigId']),
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList',
+      'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal',
+      'currentGigId', 'allInitialized']),
     songId: {
       get () { return this.currentSongId },
       set (value) { this.$store.dispatch('setCurrentSongId', value) }
@@ -200,20 +202,25 @@ export default {
   },
 
   watch: {
+    allInitialized: async function () {
+      console.log(`-- received allInitialized -- ${this.allInitialized}`)
+      if (this.allInitialized) {
+        this.setGigSong()
+      }
+    },
     currentGigId: async function (id) {
       this.initFlag = true
       if (id > 0) {
         if (typeof this.gigList !== 'undefined') {
           this.currentGig = await this.gigList.find(gig => gig.id === id)
-          // console.log('Gig-Song <<<<<<<')
-          // console.log(this.currentGig)
+          console.log(`currentGig <<<<<<< ${this.currentGig}`)
           if (!this.currentGig.songList) {
+            console.log(` Need to populate Gig Songs ${this.currentGig}`)
             await this.$store.dispatch('populateGigSongs', id)
             this.currentGig = await this.gigList.find(gig => gig.id === id)
-            // console.log(this.currentGig)
+            console.log(this.currentGig)
           }
           this.currentSongList = this.currentGig.songList
-
           this.songId = this.currentGig.songList[0].id
         }
       }
@@ -224,21 +231,7 @@ export default {
       this.initFlag = true
       this.currentSong = null
       try {
-        // console.log('>> set Song <<')
-        // console.log(this.currentGig)
-        // console.log(this.currentGigId)
-        // console.log(id)
-        if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
-          this.currentSong = await this.currentGig.songList.find(item => item.id === id)
-        }
-        if (!this.currentSong) {
-          await this.setSongOutOfGig(id)
-        }
-        if (this.currentSong.programList === null ||
-          typeof (this.currentSong.programList) === 'undefined') {
-          await this.initSongPrograms(id)
-        }
-        console.log(this.currentSong.name)
+        await this.initSong(id)
       } catch (ex) {
         console.log(ex)
       }
@@ -249,10 +242,6 @@ export default {
       this.currentProgramIdx = idx
       console.log(`currentProgramMidiPedal was changed -> ${this.currentProgramIdx}`)
     }
-    // songId: function () {
-    //   console.log('----,,,,,try to set setCurrentSongId')
-    //   this.$store.dispatch('setCurrentSongId', this.songId)
-    // }
   },
   created () {
     this.initMessageSocket()
@@ -263,40 +252,52 @@ export default {
   },
 
   methods: {
+    async initSong (id) {
+      console.log(this.currentGig)
+      if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
+        this.currentSong = await this.currentGig.songList.find(item => item.id === id)
+        if (this.currentSong) {
+          console.log(` found song in current gig >>  ${this.currentSong.name}`)
+        } else {
+          console.log(`NOT found song in current gig >>  ${this.currentSong.name}`)
+          await this.setSongOutOfGig(id)
+        }
+        console.log(this.currentSong.name)
+        if (this.currentSong && (this.currentSong.programList === null ||
+          typeof (this.currentSong.programList) === 'undefined')) {
+          await this.initSongPrograms(id)
+        }
+      }
+    },
+
     initMessageSocket () {
       try {
-        this.socket = io(`${config.messageURL}`)
-
-        this.socket.on(config.programMessage, (data) => {
-          console.log('-- Preset socket IO message')
-          console.log(data)
-          this.$store.dispatch('setCurrentProgramMidiPedal', parseInt(data))
-        })
-        this.socket.on(config.songMessage, (data) => {
-          console.log('-- Song socket IO message')
-          console.log(data)
-          this.$store.dispatch('setCurrentSongId', parseInt(data))
-        })
+        this.$store.dispatch('socketClientInitialize', 'socketClientInitialize')
       } catch (ex) {
         console.log(ex)
       }
     },
+
+    async setGigSong () {
+      console.log(` Lenght of gigList  = ${this.gigList.length}`)
+      // console.log(this.gigList)
+      var gId = -1
+      gId = this.gigList.find(g => g.currentFlag === 1).id
+      if (gId > 0) {
+        this.gigId = gId
+      } else {
+        this.gigId = -1
+        this.songId = -1
+      }
+      console.log(gId)
+    },
+
     async init () {
       try {
         this.initFlag = true
         console.log(' >>> Init all related collections in storage1')
-        await SongsService.initAll()
-        console.log(' >>> Init all related collections in storage2')
-        console.log(this.gigList)
-        var gId = -1
-        gId = this.gigList.find(g => g.currentFlag === 1).id
-        if (gId > 0) {
-          this.gigId = gId
-        } else {
-          this.gigId = -1
-          this.songId = -1
-        }
-        console.log(gId)
+        await this.$store.dispatch('initAll', 'initAll')
+
         // console.log(this.currentSong.programList)
         // if (this.currentSong.programList === null ||
         // typeof (this.currentSong.programList) === 'undefined') {
@@ -306,7 +307,7 @@ export default {
         // console.log('--- Current song ----')
         // console.log(this.currentSong)
         // this.currentProgramIdx = 0
-        // this.initFlag = false
+        this.initFlag = false
       } catch (ex) {
         console.log(ex)
       }
@@ -321,7 +322,7 @@ export default {
           // console.log(this.currentSong)
           if (typeof (this.currentSong) === 'undefined' || this.currentSong === null ||
             this.currentSongId === -1) {
-            // console.log('default preset')
+            // console.log('-- show default preset')
             return this.defaultPreset
           } else {
             if (this.currentSong.programList === null ||
@@ -331,10 +332,7 @@ export default {
               // console.log('default preset')
               return this.defaultPreset
             }
-
             const preset = this.currentSong.programList[programIndex].presetList[presetIndex]
-            // console.log(this.currentSong)
-            // console.log(preset)
             return preset
           }
         } catch (ex) {
@@ -352,15 +350,10 @@ export default {
         console.log('--- out of gig')
         this.currentSong = await this.songList.find(item => item.id === id)
         if (this.currentSong) {
-          console.log(this.currentSong.name)
-          if (this.currentSong && (this.currentSong.programList === null ||
-          typeof (this.currentSong.programList) === 'undefined')) {
-            await this.initSongPrograms(id)
-          }
 
-          this.currentSongList = [this.currentSong]
+          // this.currentSongList = [this.currentSong]
           // console.log(this.currentSong)
-          this.songId = id
+          // this.songId = id
         } else {
           this.currentSong = null
           this.songId = -1
@@ -371,26 +364,23 @@ export default {
     },
 
     async initSongPrograms (songId) {
-      await SongsService.getSongItems(songId)
+      this.$store.dispatch('addSongItems', songId)
     },
 
     btnClickPogram () {
       let x = this.currentProgramIdx + 1
       if (x > 3) { x = 0 }
-      // this.$store.dispatch('setCurrentProgramMidiPedal', x)
-      this.socket.emit(config.programMessage, x)
+
+      this.$socket.client.emit(config.controllerProgramMessage, x)
     },
     btnClickSong () {
       let x = this.songId + 1
       if (x > 12) { x = 0 }
-      // this.$store.dispatch('setCurrentSongId', x)
-      this.socket.emit(config.songMessage, x)
+      this.$socket.client.emit(config.controllerSongMessage, x)
     },
 
     onProgramClick (idx) {
-      // this.$store.dispatch('setCurrentProgramMidiPedal', idx)
-      // this.$store.dispatch('setCurrentProgramMidiPedal', 0)
-      this.socket.emit(config.programMessage, idx)
+      this.$socket.client.emit(config.controllerProgramMessage, idx)
     }
   }
 }

@@ -51,7 +51,7 @@ module.exports = {
       delete model.id
       //console.log(model)
       const preset = await Preset.create(model)
-      console.log(preset)
+      // console.log(preset)
       res.send(preset)
     } catch (err) {
       console.log(err)
@@ -63,7 +63,7 @@ module.exports = {
 
   async put (req, res) {
     try {
-      console.log(req.body)
+      // console.log(req.body)
       await Preset.update(req.body, {
         where: {
           id: req.params.id
@@ -80,7 +80,7 @@ module.exports = {
 
   async selectAll (req, res) {
     try {
-      console.log("Select>>>>>>>>>All preseta:")
+      // console.log("Select>>>>>>>>>All preseta:")
       let presetList = null
       presetList = await Preset.findAll()
       res.send(presetList)

@@ -1,13 +1,14 @@
 import Api from '@/services/Api'
-import store from '@/store/store'
+// import store from '@/store/store'
 
 export default {
   async getAll () {
     let gigs = await Api()('gigs')
-    // console.log('// ----------->> get all gigs')
-    // console.log(gigs)
-    return gigs
+    console.log('// Gig Service ----->> get all gigs')
+    console.log(gigs.data)
+    return gigs.data
   },
+
   index (search) {
     let gigs = Api().get('gigs', {
       params: {
@@ -15,8 +16,8 @@ export default {
       }
     })
     console.log('// ----------->> get all gigs')
-    console.log(gigs)
-    return gigs
+    console.log(gigs.data)
+    return gigs.data
   },
 
   show (gigId) {
@@ -31,7 +32,7 @@ export default {
       let newGig = await result.data
       console.log('// -----------result')
       console.log(newGig)
-      await store.dispatch('addGig', newGig)
+      // await store.dispatch('addGig', newGig)
     } catch (ex) {
       console.log(ex)
     }
@@ -46,7 +47,7 @@ export default {
       let newGig = await result.data
       console.log('// -----------result')
       console.log(newGig)
-      await store.dispatch('updateGig', newGig)
+      // await store.dispatch('updateGig', newGig)
     } catch (ex) {
       console.log(ex)
     }
@@ -56,6 +57,6 @@ export default {
     let gigSongs = await Api()('gigSongs')
     // console.log('// ----------->> get all gigs')
     // console.log(gigs)
-    return gigSongs
+    return gigSongs.data
   }
 }

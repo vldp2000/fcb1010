@@ -13,7 +13,10 @@ module.exports = {
     }
   },
   messagePort: 8088,
-  programMessage: 'PROGRAM_MESSAGE',
-  songMessage: 'SONG_MESSAGE',
-  syncMessage: 'SYNC_MESSAGE'
+  
+  viewProgramMessage: 'VIEW_PROGRAM_MESSAGE',
+  viewSongMessage: 'VIEW_SONG_MESSAGE',
+  controllerProgramMessage: 'CONTROLLER_PROGRAM_MESSAGE',
+  controllerSongMessage: 'CONTROLLER_SONG_MESSAGE',
+  controllerSyncMessage: 'CONTROLLER_SYNC_MESSAGE'
 }

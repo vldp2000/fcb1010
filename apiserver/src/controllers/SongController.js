@@ -77,6 +77,42 @@ module.exports = {
     }
   },
 
+  async postSongProgramPreset (req, res) {
+    try {
+      let model = req.body
+      delete model.id
+      delete model.createdAt
+      delete model.updatedAt
+      //console.log(model)
+      const songProgramPreset = await SongProgramPreset.create(model)
+      //console.log(song)
+      res.send(songProgramPreset)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to create the SongProgramPreset'
+      })
+    }
+  },
+  // ------------------------------------- 
+  async putSongProgramPreset (req, res) {
+    try {
+      //console.log(req.body)
+      await SongProgramPreset.update(req.body, {
+        where: {
+          id: req.params.id
+        }
+      })
+      res.send(req.body)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to update the SongProgramPreset'
+      })
+    }
+  },
+
+  // ------------------------------------- 
   async post (req, res) {
     try {
       let model = req.body

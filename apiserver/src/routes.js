@@ -14,7 +14,11 @@ module.exports = (app) => {
   app.post('/song',
     SongController.post)
   app.get('/songprogrampreset',
-  SongController.getSongProgramPresetsExtended)
+    SongController.getSongProgramPresetsExtended)
+  app.post('/songprogrampreset',
+    SongController.postSongProgramPreset)
+  app.put('/songprogrampreset/:id',
+    SongController.putSongProgramPreset)
 
   app.get('/instruments',
     InstrumentController.index)

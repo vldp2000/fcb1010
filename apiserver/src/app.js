@@ -18,26 +18,43 @@ app.use(bodyParser.json())
 
 app.use(cors())
 
+// const io = require('socket.io')(server);
 const io = require('socket.io')(server);
+try {
+  io.on('connection', function(socket) {
+    console.log(`--- socket connected ---client ${socket.id}`)
+    // console.log(socket)
+    socket.on(`${config.viewProgramMessage}`, function(data) {
+      console.log(config.viewProgramMessage)
+      console.log(data)
+      io.emit(`${config.viewProgramMessage}`, data)
+    })
 
-io.on('connection', function(socket) {
-  console.log(socket.id)
-  socket.on(config.programMessage, function(data) {
-    console.log(config.programMessage)
-    console.log(data)
-    io.emit(config.programMessage, data)
+    socket.on(`${config.viewSongMessage}`, function(data) {
+      console.log(config.viewSongMessage)
+      console.log(data)
+      io.emit(`${config.viewSongMessage}`, data)
+    })
+
+    socket.on(`${config.controllerProgramMessage}`, function(data) {
+      console.log(config.controllerProgramMessage)
+      console.log(data)
+      io.emit(`${config.controllerProgramMessage}`, data)
+    })
+    socket.on(`${config.controllerSongMessage}`, function(data) {
+      console.log(config.controllerSongMessage)
+      console.log(data)
+      io.emit(`${config.controllerSongMessage}`, data)
+    })
+    socket.on(`${config.controllerSyncMessage}`, function(data) {
+      console.log(config.controllerSyncMessage)
+      console.log(data)
+      io.emit(`${config.controllerSyncMessage}`, data)
+    })
   })
-  socket.on(config.songMessage, function(data) {
-    console.log(config.songMessage)
-    console.log(data)
-    io.emit(config.songMessage, data)
-  })
-  socket.on(config.syncMessage, function(data) {
-    console.log(config.syncMessage)
-    console.log(data)
-    io.emit(config.syncMessage, data)
-  })
-})
+} catch (ex) {
+  console.log(ex)
+}
 
 require('./routes')(app)
 

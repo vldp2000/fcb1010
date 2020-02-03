@@ -156,16 +156,17 @@ export default {
   },
 
   methods: {
-    async init () {
+    init () {
       // console.log(this.instrumentList.length)
       if (this.instrumentList.length === 0) {
+        this.$store.dispatch('initAll', 'initAll')
         // console.log('Init instruments storage')
-        let result = await InstrumentsService.getAll()
-        let list = await result.data
+        // let result = await InstrumentsService.getAll()
+        // let list = await result.data
         // console.log('<< Init instrument List?>>')
-        await this.$store.dispatch('setInstrumentList', list)
+        // await this.$store.dispatch('setInstrumentList', list)
         // console.log(this.$store.state.instrumentList)
-        await this.importAll(require.context('../assets/', false, /\.png$/))
+        // await this.importAll(require.context('../assets/', false, /\.png$/))
       } else {
         console.log(' Instrument List already populated')
         // console.log(this.$store.state.instrumentList)
@@ -209,25 +210,25 @@ export default {
         }
       }
       this.closeDialog()
-    },
-
-    importAll (files) {
-      try {
-        files.keys().forEach(key => {
-          const pathLong = files(key)
-          const pathShort = key
-          let id = -1
-          if (pathShort.includes('image_')) {
-            id = key.substring(8, 10)
-            const payload = { 'id': parseInt(id, 10), 'url': pathLong }
-            this.$store.dispatch('setInstrumentImage', payload)
-          }
-        })
-        // console.log(this.instrumentList)
-      } catch (ex) {
-        console.log(ex)
-      }
     }
+
+    // importAll (files) {
+    //   try {
+    //     files.keys().forEach(key => {
+    //       const pathLong = files(key)
+    //       const pathShort = key
+    //       let id = -1
+    //       if (pathShort.includes('image_')) {
+    //         id = key.substring(8, 10)
+    //         const payload = { 'id': parseInt(id, 10), 'url': pathLong }
+    //         this.$store.dispatch('setInstrumentImage', payload)
+    //       }
+    //     })
+    //     // console.log(this.instrumentList)
+    //   } catch (ex) {
+    //     console.log(ex)
+    //   }
+    // }
   }
 }
 </script>

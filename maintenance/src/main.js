@@ -2,8 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
-import store from '@/store/store'
+import Store from './store'
 import vuetify from './plugins/vuetify'
+
+import VueSocketIOExt from 'vue-socket.io-extended'
+// import socket from './store/socket-instance'
+import io from 'socket.io-client'
+
 import CustomPanel from '@/components/globals/CustomPanel'
 import CustomKnob from '@/components/globals/CustomKnob'
 import MyKnob from '@/components/globals/MyKnob'
@@ -21,7 +26,14 @@ Vue.component('PresetControl', PresetControl)
 Vue.component('CustomTextInput', CustomTextInput)
 Vue.component('MyKnob', MyKnob)
 
+const store = Store
+
+const config = require('@/config/config')
+const socket = io(`${config.messageURL}`)
+Vue.use(VueSocketIOExt, socket, { store })
+
 Vue.config.productionTip = false
+
 Vue.use(VueSvgGauge)
 // Vue.use(Vue2TouchEvents)
 Vue.use(Vue2TouchEvents, {
@@ -33,7 +45,7 @@ Vue.use(Vue2TouchEvents, {
   longTapTimeInterval: 400
 })
 
-new Vue({
+export default new Vue({
   router,
   store,
   vuetify,

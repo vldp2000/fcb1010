@@ -14,7 +14,7 @@
               <v-icon
                 v-if="editMode"
                 class="mr-2 ma-0 pa-0"
-                @click="savePreset()"
+                @click="saveSongPreset()"
               >
               save
               </v-icon>
@@ -101,6 +101,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import SongsService from '@/services/SongsService'
 
 export default {
   props: {
@@ -112,37 +113,50 @@ export default {
     return {
       editMode: false,
       dialog: false,
-      currentPreset: null,
+      songPreset: null,
       imageURL: '',
-      presets: {}
+      presets: {},
+      presetId: -1
     }
   },
+
+  created () {
+    if (this.presetControlData.id > 0) {
+      this.songPreset = Object.assign({}, this.presetControlData)
+      // console.log('==== created =====')
+      // console.log(this.songPreset)
+    } else {
+      console.log('==== created  bad preset=====')
+      // console.log(this.presetControlData)
+    }
+  },
+
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList']),
-    presetId: {
-      get () { return this.currentPreset.refpreset },
-      set (value) { this.currentPreset.refpreset = value }
-    }
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList'])
   },
+
   watch: {
-    presetControlData: function () {
-      if (typeof this.presetControlData !== 'undefined' && this.presetControlData.refpreset > -1) {
-        // console.log('--WATCH presetControlData<<<-->>')
-        this.currentPreset = this.presetControlData
-        this.getPresets(this.currentPreset.refinstrument)
-        this.presetId = this.currentPreset.refpreset
-        // console.log(this.currentPreset)
-        // console.log(this.currentPreset.refinstrument)
+    // presetId: function () {
+    //   this.songPreset.refpreset = this.presetId
+    // },
+    songPreset: function () {
+      if (typeof this.songPreset !== 'undefined' && this.songPreset.refpreset > -1) {
+        console.log('--WATCH songPreset<<<-->>')
+
+        this.getPresets(this.songPreset.refinstrument)
+        // this.presetId = this.songPreset.refpreset
+        // console.log(this.songPreset)
+        // console.log(this.songPreset.refinstrument)
         // console.log(this.presetId)
         // console.log(this.presetList)
 
         if (typeof this.instrumentList === 'undefined' || this.instrumentList === null) {
           console.log('--instrument list is not ready->>')
         } else {
-          // console.log(this.currentPreset)
+          // console.log(this.songPreset)
           // console.log(this.instrumentList)
-          if (this.presetControlData.refinstrument > 0) {
-            const instrument = this.instrumentList.find(item => item.id === this.currentPreset.refinstrument)
+          if (this.songPreset.refinstrument > 0) {
+            const instrument = this.instrumentList.find(item => item.id === this.songPreset.refinstrument)
             // console.log(instrument)
             this.imageURL = instrument.imageURL
             // console.log(this.imageURL)
@@ -156,54 +170,56 @@ export default {
     getPresetName () {
       // const pr = this.getPresetById(this.preset.id)
       if (typeof this.presetList === 'undefined' || this.presetList === null ||
-        typeof this.presetControlData === 'undefined' || this.presetControlData === null ||
+        typeof this.songPreset === 'undefined' || this.songPreset === null ||
         typeof this.instrumentList === 'undefined' || this.instrumentList === null) {
         return {}
       }
-
-      // console.log(this.preset)
-      const pr = this.presetList.find(item => item.id === this.presetControlData.refpreset)
+      console.log('---get--preset-name-------------')
+      const pr = this.presetList.find(item => item.id === this.songPreset.refpreset)
       if (typeof pr === 'undefined') {
         return {}
       }
+      console.log(pr.name)
       return pr.name
     },
 
     getPresets (id) {
       if (typeof this.presetList !== 'undefined' && this.presetList !== null &&
-        typeof this.presetControlData !== 'undefined' && this.presetControlData !== null) {
-        console.log('-------------------')
+        typeof this.songPreset !== 'undefined' && this.songPreset !== null) {
+        console.log('---get--preset--------------')
         this.presets = this.presetList.filter(item => item.refinstrument === id)
         console.log(this.presets)
       }
     },
     setPreset () {
       const preset = this.presetList.find(item => item.id === this.presetId)
+      console.log('---set-preset---------------')
       console.log(preset)
       if (preset) {
-        this.presetControlData.refpreset = this.presetId
-        this.presetControlData.refinstrumentbank = preset.refinstrumentbank
-        this.presetControlData.refinstrument = preset.refinstrument
-        this.presetControlData.volume = 127
-        this.presetControlData.pan = 64
-        this.presetControlData.muteflag = 1
-        this.presetControlData.reverbflag = 1
-        this.presetControlData.delayflag = 1
-        this.presetControlData.modeflag = 1
-        this.presetControlData.reverbvalue = 0
-        this.presetControlData.delayvalue = 0
+        this.songPreset.refpreset = this.presetId
+        this.songPreset.refinstrumentbank = preset.refinstrumentbank
+        this.songPreset.refinstrument = preset.refinstrument
+        this.songPreset.volume = 127
+        this.songPreset.pan = 64
+        this.songPreset.muteflag = 1
+        this.songPreset.reverbflag = 1
+        this.songPreset.delayflag = 1
+        this.songPreset.modeflag = 1
+        this.songPreset.reverbvalue = 0
+        this.songPreset.delayvalue = 0
         this.dialog = false
       }
     },
     saveSongPreset () {
-      const preset = this.presetControlData
-      console.log(preset)
+      console.log('---save-preset---------------')
+      console.log(this.songPreset)
       // save song preset
+      SongsService.putSongPreset(this.songPreset)
       this.dialog = false
     },
     onIconClick () {
       this.editMode = !this.editMode
-      this.presetId = this.presetControlData.refpreset
+      this.presetId = this.songPreset.refpreset
     },
     onPresetClick () {
       if (this.editMode) {

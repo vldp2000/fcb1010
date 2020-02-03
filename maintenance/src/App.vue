@@ -152,7 +152,10 @@ export default {
         ]
       }
     ]
-  })
+  }),
+  moumted () {
+    // this.$store.dispatch('initAll', 'initAll')
+  }
 }
 </script>
 

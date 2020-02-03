@@ -129,9 +129,9 @@ def pringSongs():
 #   if str(sys.argv[1]) == 'Init':
 #     runInit = True
 
-initSongs()
+# initSongs()
 
-initSongItems()
+# initSongItems()
 
 # pringSongs()  
 mc = MessageClient()
@@ -139,4 +139,6 @@ mc = MessageClient()
 mc.initMessenger()
 mc.sendSongNotificationMessage(1)
 mc.sendProgramNotificationMessage(1)
+# mc.sendSyncNotificationMessage(1,1)
 
+quit

@@ -1,12 +1,12 @@
 import Api from '@/services/Api'
-import store from '@/store/store'
+// import store from '@/store/store'
 
 export default {
   async getAll () {
     let presets = await Api()('presets')
     // console.log('// ----------->> get all presets')
-    // console.log(presets)
-    return presets
+    console.log(presets.data)
+    return presets.data
   },
   index (search) {
     let presets = Api().get('presets', {
@@ -15,11 +15,13 @@ export default {
       }
     })
     console.log('// ----------->> get all presets')
-    console.log(presets)
-    return presets
+    console.log(presets.data)
+    return presets.data
   },
+
   show (presetId) {
-    return Api().get(`presets/${presetId}`)
+    let result = Api().get(`presets/${presetId}`)
+    return result.data
   },
 
   async post (preset) {
@@ -29,7 +31,7 @@ export default {
     let newPreset = await result.data
     console.log('// -----------result')
     console.log(newPreset)
-    await store.dispatch('addPreset', newPreset)
+    // await store.dispatch('addPreset', newPreset)
   },
 
   async put (preset) {
@@ -40,6 +42,6 @@ export default {
     let newPreset = await result.data
     console.log('// -----------result')
     console.log(newPreset)
-    await store.dispatch('updatePreset', newPreset)
+    // await store.dispatch('updatePreset', newPreset)
   }
 }

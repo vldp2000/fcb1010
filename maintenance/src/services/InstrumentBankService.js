@@ -1,13 +1,13 @@
 import Api from '@/services/Api'
-import store from '@/store/store'
+// import store from '@/store/store'
 
 export default {
 
   async getAll () {
     let instrumentBanks = await Api()('instrumentBanks')
-    console.log('// ----------->> get all instrumentBank records')
-    console.log(instrumentBanks)
-    return instrumentBanks
+    console.log('// ---//-----//--->> get all instrumentBank records')
+    console.log(instrumentBanks.data)
+    return instrumentBanks.data
   },
 
   async index (search) {
@@ -22,7 +22,8 @@ export default {
   },
 
   show (id) {
-    return Api().get(`instrumentBank/${id}`)
+    let result = Api().get(`instrumentBank/${id}`)
+    return result.data
   },
 
   async post (instrumentBank) {
@@ -32,7 +33,7 @@ export default {
     let newObj = await result.data
     console.log('// -----------result')
     console.log(newObj)
-    store.dispatch('addInstrumentBank', newObj)
+    // store.dispatch('addInstrumentBank', newObj)
   },
 
   async put (instrumentBank) {
@@ -43,6 +44,6 @@ export default {
     let newObj = await result.data
     console.log('// -----------result')
     console.log(newObj)
-    store.dispatch('updateInstrumentBank', newObj)
+    // store.dispatch('updateInstrumentBank', newObj)
   }
 }

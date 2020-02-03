@@ -1,6 +1,7 @@
 import socketio
 from config import *
 from dataClasses import *
+import pprint 
 
 class MessageClient(object):
   socketIOClinet: None
@@ -11,7 +12,8 @@ class MessageClient(object):
   def initMessenger(self):
     self.socketIOClinet = socketio.Client()
     self.socketIOClinet.connect(MESSAGE_URL)
-    print(self.socketIOClinet)
+    print('---------------socket--------------------')
+    pprint.pprint(self.socketIOClinet)
 
   def sendProgramNotificationMessage(self,id):
     self.socketIOClinet.emit(PROGRAM_MESSAGE, str(id))
