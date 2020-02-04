@@ -5,7 +5,7 @@ export default {
   async getAll () {
     let presets = await Api()('presets')
     // console.log('// ----------->> get all presets')
-    console.log(presets.data)
+    // console.log(presets.data)
     return presets.data
   },
   index (search) {
@@ -14,8 +14,8 @@ export default {
         search: search
       }
     })
-    console.log('// ----------->> get all presets')
-    console.log(presets.data)
+    // console.log('// ----------->> get all presets')
+    // console.log(presets.data)
     return presets.data
   },
 

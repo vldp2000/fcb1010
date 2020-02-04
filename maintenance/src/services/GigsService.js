@@ -4,8 +4,8 @@ import Api from '@/services/Api'
 export default {
   async getAll () {
     let gigs = await Api()('gigs')
-    console.log('// Gig Service ----->> get all gigs')
-    console.log(gigs.data)
+    // console.log('// Gig Service ----->> get all gigs')
+    // console.log(gigs.data)
     return gigs.data
   },
 
@@ -15,8 +15,8 @@ export default {
         search: search
       }
     })
-    console.log('// ----------->> get all gigs')
-    console.log(gigs.data)
+    // console.log('// ----------->> get all gigs')
+    // console.log(gigs.data)
     return gigs.data
   },
 

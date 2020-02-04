@@ -5,8 +5,8 @@ export default {
 
   async getAll () {
     let instrumentBanks = await Api()('instrumentBanks')
-    console.log('// ---//-----//--->> get all instrumentBank records')
-    console.log(instrumentBanks.data)
+    // console.log('// ---//-----//--->> get all instrumentBank records')
+    // console.log(instrumentBanks.data)
     return instrumentBanks.data
   },
 
@@ -16,8 +16,8 @@ export default {
         search: search
       }
     })
-    console.log('// ----------->> get all instrumentBank')
-    console.log(instrumentBank.data)
+    // console.log('// ----------->> get all instrumentBank')
+    // console.log(instrumentBank.data)
     return instrumentBank.data
   },
 

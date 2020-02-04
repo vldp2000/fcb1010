@@ -120,17 +120,6 @@ export default {
     }
   },
 
-  created () {
-    if (this.presetControlData.id > 0) {
-      this.songPreset = Object.assign({}, this.presetControlData)
-      // console.log('==== created =====')
-      // console.log(this.songPreset)
-    } else {
-      console.log('==== created  bad preset=====')
-      // console.log(this.presetControlData)
-    }
-  },
-
   computed: {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList'])
   },
@@ -139,7 +128,9 @@ export default {
     // presetId: function () {
     //   this.songPreset.refpreset = this.presetId
     // },
-    songPreset: function () {
+    presetControlData: function () {
+      this.songPreset = this.presetControlData
+
       if (typeof this.songPreset !== 'undefined' && this.songPreset.refpreset > -1) {
         console.log('--WATCH songPreset<<<-->>')
 
@@ -157,11 +148,14 @@ export default {
           // console.log(this.instrumentList)
           if (this.songPreset.refinstrument > 0) {
             const instrument = this.instrumentList.find(item => item.id === this.songPreset.refinstrument)
-            // console.log(instrument)
+            console.log(instrument)
             this.imageURL = instrument.imageURL
-            // console.log(this.imageURL)
+            console.log(this.imageURL)
           }
         }
+      } else {
+        console.log('------------- empty -----')
+        console.log(this.songPreset)
       }
     }
   },
@@ -169,32 +163,33 @@ export default {
   methods: {
     getPresetName () {
       // const pr = this.getPresetById(this.preset.id)
+      // console.log(this.songPreset)
       if (typeof this.presetList === 'undefined' || this.presetList === null ||
         typeof this.songPreset === 'undefined' || this.songPreset === null ||
         typeof this.instrumentList === 'undefined' || this.instrumentList === null) {
         return {}
       }
-      console.log('---get--preset-name-------------')
+      // console.log('---get--preset-name-------------')
       const pr = this.presetList.find(item => item.id === this.songPreset.refpreset)
       if (typeof pr === 'undefined') {
         return {}
       }
-      console.log(pr.name)
+      // console.log(pr.name)
       return pr.name
     },
 
     getPresets (id) {
       if (typeof this.presetList !== 'undefined' && this.presetList !== null &&
         typeof this.songPreset !== 'undefined' && this.songPreset !== null) {
-        console.log('---get--preset--------------')
+        // console.log('---get--preset--------------')
         this.presets = this.presetList.filter(item => item.refinstrument === id)
-        console.log(this.presets)
+        // console.log(this.presets)
       }
     },
     setPreset () {
       const preset = this.presetList.find(item => item.id === this.presetId)
-      console.log('---set-preset---------------')
-      console.log(preset)
+      // console.log('---set-preset---------------')
+      // console.log(preset)
       if (preset) {
         this.songPreset.refpreset = this.presetId
         this.songPreset.refinstrumentbank = preset.refinstrumentbank

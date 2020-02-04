@@ -93,7 +93,8 @@ const Store = new Vuex.Store({
     currentSongId: 0,
     currentProgramMidiPedal: 0,
     currentGigId: 0,
-    allInitialized: false
+    allInitialized: false,
+    refreshSong: false
   },
   actions,
   mutations,

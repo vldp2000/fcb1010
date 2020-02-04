@@ -5,6 +5,7 @@ export const ADD_SONG = 'ADD_SONG'
 export const UPDATE_SONG = 'UPDATE_SONG'
 export const ADD_SONG_ITEMS = 'ADD_SONG_ITEMS'
 export const UPDATE_SONGPRESET = 'UPDATE_SONGPRESET'
+export const REFRESH_SONG = 'REFRESH_SONG'
 
 export const SET_PRESETLIST = 'SET_PRESETLIST'
 export const ADD_PRESET = 'ADD_PRESET'

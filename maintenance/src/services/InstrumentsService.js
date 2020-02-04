@@ -5,8 +5,8 @@ export default {
 
   async getAll () {
     let instruments = await Api()('instruments')
-    console.log('// ----------->> get all instruments')
-    console.log(instruments.data)
+    // console.log('// ----------->> get all instruments')
+    // console.log(instruments.data)
     return instruments.data
   },
 
@@ -16,8 +16,8 @@ export default {
         search: search
       }
     })
-    console.log('// ----------->> get all instrument')
-    console.log(instruments.data)
+    // console.log('// ----------->> get all instrument')
+    // console.log(instruments.data)
     return instruments.data
   },
 
@@ -60,7 +60,7 @@ export default {
           result.push(item)
         }
       })
-      console.log(result)
+      // console.log(result)
       return result
     } catch (ex) {
       console.log(ex)

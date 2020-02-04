@@ -152,8 +152,6 @@
 
 <script>
 import { mapState } from 'vuex'
-// import SongsService from '@/services/SongsService'
-// import io from 'socket.io-client'
 
 const config = require('@/config/config')
 
@@ -166,6 +164,7 @@ export default {
       currentProgramIdx: 0,
       currentSongList: [],
       initFlag: true,
+
       defaultPreset: {
         id: -1,
         refsong: -1,
@@ -181,8 +180,7 @@ export default {
         modeflag: 0,
         reverbvalue: 0,
         delayvalue: 0
-      },
-      socket: {}
+      }
     }
   },
 
@@ -190,10 +188,20 @@ export default {
     // currentGigId: state => state.currentGigId,
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList',
       'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal',
-      'currentGigId', 'allInitialized']),
+      'currentGigId', 'allInitialized', 'instrumentListImagesInitialized',
+      'refreshSong']),
     songId: {
-      get () { return this.currentSongId },
-      set (value) { this.$store.dispatch('setCurrentSongId', value) }
+      get () {
+        // console.log(` SongId GETTER is fired ---((( ${this.currentSongId}`)
+        return this.currentSongId
+      },
+      set (value) {
+        // console.log(` SongId setter  old=${this.currentSongId}  nwew=${value} `)
+        if (this.currentSongId !== value && value > 0) {
+          // console.log(` SongId setter is fired ---))) -- ${value}`)
+          this.$store.dispatch('setCurrentSongId', value)
+        }
+      }
     },
     gigId: {
       get () { return this.currentGigId },
@@ -203,39 +211,53 @@ export default {
 
   watch: {
     allInitialized: async function () {
-      console.log(`-- received allInitialized -- ${this.allInitialized}`)
+      console.log(`-- >>>>  received allInitialized <<<-- ${this.allInitialized}`)
+      console.log(this.instrumentListImagesInitialized)
       if (this.allInitialized) {
         this.setGigSong()
+        this.initFlag = false
+      }
+    },
+    refreshSong: async function () {
+      if (this.currentSongId > 0) {
+        if (typeof this.songList !== 'undefined') {
+          this.currentSong = await this.songList.find(song => song.id === this.currentSongId)
+          // console.log(`currentSong <<<<<<< ${this.currentSong.name}`)
+          // if (!this.currentGig.songList) {
+          //   console.log(` Need to populate Gig Songs ${this.currentGig}`)
+          //   await this.$store.dispatch('populateGigSongs', id)
+          //   this.currentGig = await this.gigList.find(gig => gig.id === id)
+          //   console.log(this.currentGig)
+          // }
+          // this.currentSongList = this.currentGig.songList
+          this.songId = this.currentSong.id
+        }
       }
     },
     currentGigId: async function (id) {
-      this.initFlag = true
+      // this.initFlag = true
       if (id > 0) {
         if (typeof this.gigList !== 'undefined') {
           this.currentGig = await this.gigList.find(gig => gig.id === id)
-          console.log(`currentGig <<<<<<< ${this.currentGig}`)
+          // console.log(`currentGig <<<<<<< ${this.currentGig}`)
           if (!this.currentGig.songList) {
-            console.log(` Need to populate Gig Songs ${this.currentGig}`)
+            // console.log(` Need to populate Gig Songs ${this.currentGig}`)
             await this.$store.dispatch('populateGigSongs', id)
             this.currentGig = await this.gigList.find(gig => gig.id === id)
-            console.log(this.currentGig)
+            // console.log(this.currentGig)
           }
           this.currentSongList = this.currentGig.songList
           this.songId = this.currentGig.songList[0].id
         }
       }
-      this.initFlag = false
+      // this.initFlag = false
     },
 
-    currentSongId: async function (id) {
-      this.initFlag = true
-      this.currentSong = null
-      try {
-        await this.initSong(id)
-      } catch (ex) {
-        console.log(ex)
+    currentSongId: async function () {
+      // console.log('-- current Song id was changed')
+      if (!this.currentSong || this.currentSong.id !== this.currentSongId.id) {
+        this.setCurrentSong()
       }
-      this.initFlag = false
     },
 
     currentProgramMidiPedal: function (idx) {
@@ -248,25 +270,37 @@ export default {
   },
 
   mounted () {
-    this.init()
+    this.initAllData()
   },
 
   methods: {
-    async initSong (id) {
-      console.log(this.currentGig)
+    setCurrentSong () {
+      const id = this.currentSongId
+      // console.log('initCurrentSong')
+      // console.log(this.currentGig)
       if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
-        this.currentSong = await this.currentGig.songList.find(item => item.id === id)
-        if (this.currentSong) {
-          console.log(` found song in current gig >>  ${this.currentSong.name}`)
-        } else {
-          console.log(`NOT found song in current gig >>  ${this.currentSong.name}`)
-          await this.setSongOutOfGig(id)
+        this.currentSong = this.currentGig.songList.find(item => item.id === id)
+
+        if (!this.currentSong) {
+          // console.log(`NOT found song in current gig >>  ${this.currentSong.name}`)
+          this.setSongOutOfGig(id)
         }
-        console.log(this.currentSong.name)
+        // console.log(this.currentSong.name)
         if (this.currentSong && (this.currentSong.programList === null ||
           typeof (this.currentSong.programList) === 'undefined')) {
-          await this.initSongPrograms(id)
+          this.initSongPrograms(id)
         }
+      }
+    },
+
+    async setSongOutOfGig (id) {
+      try {
+        this.gigId = -1
+        this.currentGig = null
+        console.log('--- out of gig')
+        this.currentSong = await this.songList.find(item => item.id === this.currentSongId)
+      } catch (ex) {
+        console.log(ex)
       }
     },
 
@@ -292,22 +326,10 @@ export default {
       console.log(gId)
     },
 
-    async init () {
+    async initAllData () {
       try {
-        this.initFlag = true
-        console.log(' >>> Init all related collections in storage1')
+        // console.log(' >>> Init all related collections in storage1')
         await this.$store.dispatch('initAll', 'initAll')
-
-        // console.log(this.currentSong.programList)
-        // if (this.currentSong.programList === null ||
-        // typeof (this.currentSong.programList) === 'undefined') {
-        //   await SongsService.getSongItems(this.currentSong.id)
-        //   this.currentSong = await this.songList[0]
-        // }
-        // console.log('--- Current song ----')
-        // console.log(this.currentSong)
-        // this.currentProgramIdx = 0
-        this.initFlag = false
       } catch (ex) {
         console.log(ex)
       }
@@ -315,52 +337,33 @@ export default {
 
     getPresetControlData (programIndex, presetIndex) {
       // console.log('---setpreset')
-      // console.log(this.initFlag)
-      if (!this.initFlag) {
-        try {
-          // console.log(`get program for ${programIndex} ${presetIndex} `)
-          // console.log(this.currentSong)
-          if (typeof (this.currentSong) === 'undefined' || this.currentSong === null ||
-            this.currentSongId === -1) {
-            // console.log('-- show default preset')
-            return this.defaultPreset
-          } else {
-            if (this.currentSong.programList === null ||
-            typeof (this.currentSong.programList) === 'undefined') {
-              // SongsService.getSongItems(this.currentSong.id)
-              // this.currentSong = this.songList[]
-              // console.log('default preset')
-              return this.defaultPreset
-            }
-            const preset = this.currentSong.programList[programIndex].presetList[presetIndex]
-            return preset
-          }
-        } catch (ex) {
-          console.log(ex)
-        }
-      } else {
-        return this.defaultPreset
-      }
-    },
-
-    async setSongOutOfGig (id) {
+      // console.log(this.currentSong)
+      // if (!this.initFlag) {
       try {
-        this.gigId = -1
-        this.currentGig = null
-        console.log('--- out of gig')
-        this.currentSong = await this.songList.find(item => item.id === id)
-        if (this.currentSong) {
-
-          // this.currentSongList = [this.currentSong]
-          // console.log(this.currentSong)
-          // this.songId = id
+        // console.log(`get program for ${programIndex} ${presetIndex} `)
+        // console.log(this.currentSong)
+        if (typeof (this.currentSong) === 'undefined' || this.currentSong === null ||
+          this.currentSongId === -1) {
+          // console.log('-- show default preset')
+          return this.defaultPreset
         } else {
-          this.currentSong = null
-          this.songId = -1
+          if (this.currentSong.programList === null ||
+          typeof (this.currentSong.programList) === 'undefined') {
+            // SongsService.getSongItems(this.currentSong.id)
+            // this.currentSong = this.songList[]
+            // console.log('default preset')
+            return this.defaultPreset
+          }
+          const preset = this.currentSong.programList[programIndex].presetList[presetIndex]
+          // console.log(preset)
+          return preset
         }
       } catch (ex) {
         console.log(ex)
       }
+      // } else {
+      //   return this.defaultPreset
+      // }
     },
 
     async initSongPrograms (songId) {
@@ -370,12 +373,11 @@ export default {
     btnClickPogram () {
       let x = this.currentProgramIdx + 1
       if (x > 3) { x = 0 }
-
       this.$socket.client.emit(config.controllerProgramMessage, x)
     },
     btnClickSong () {
       let x = this.songId + 1
-      if (x > 12) { x = 0 }
+      if (x > 12) { x = 1 }
       this.$socket.client.emit(config.controllerSongMessage, x)
     },
 

@@ -9,8 +9,8 @@ const mutations = {
   },
   [types.SET_SONGLIST] (state, songList) {
     state.songList = songList
-    console.log('<State>  songList populated!!!')
-    console.log(songList)
+    // console.log('<State>  songList populated!!!')
+    // console.log(songList)
   },
   [types.ADD_SONG] (state, song) {
     state.songList.push(song)
@@ -21,18 +21,16 @@ const mutations = {
     // JSON.parse(JSON.stringify(obj)); // <- could be a better option to make a deep copy of an object
     // people recon that Object.assign does the shallow copy
   },
-
+  [types.REFRESH_SONG] (state, payload) {
+    state.refreshSong = !state.refreshSong
+  },
   [types.ADD_SONG_ITEMS] (state, songPrograms) {
     console.log('Mutation... types.ADD_SONG_ITEMS ....')
-    console.log(songPrograms)
     try {
       let song = state.songList.find(sn => sn.id === songPrograms.songId)
+      // console.log(` add itens to song list -> ${song.name}`)
       if (song && !song.programList) {
-        // console.log('types.ADD_SONG_ITEMS -->>')
-        // console.log(payload.id)
         Vue.set(song, 'programList', songPrograms.programs)
-      } else {
-        console.log('there is no song found')
       }
     } catch (ex) {
       console.log('Error. Mutation [types.ADD_SONG_ITEMS] (state, { id, programs })')
@@ -76,11 +74,11 @@ const mutations = {
   },
   [types.SET_INSTRUMENT_IMAGE] (state, payload) {
     try {
-      console.log(payload)
+      // console.log('SET_INSTRUMENT_IMAGE ............----->>>')
+      // console.log(payload)
       payload.forEach(item => {
         let instrument = state.instrumentList.find(i => i.id === item.id)
         if (!instrument.imageURL) {
-          // console.log('SET_INSTRUMENT_IMAGE ............----->>>')
           Vue.set(instrument, 'imageURL', item.url)
           // console.log(url)
         }
@@ -91,8 +89,8 @@ const mutations = {
   },
   [types.SET_PRESETLIST] (state, presetList) {
     state.presetList = presetList
-    console.log('<State>  presetList populated !!!')
-    console.log(presetList)
+    // console.log('<State>  presetList populated !!!')
+    // console.log(presetList)
   },
   [types.ADD_PRESET] (state, preset) {
     state.presetList.push(preset)
@@ -103,7 +101,7 @@ const mutations = {
   },
 
   [types.SET_INSTRUMENTBANKLIST] (state, instrumentBankList) {
-    console.log('mutations - SET InstrumentBank')
+    // console.log('mutations - SET InstrumentBank')
     state.instrumentBankList = instrumentBankList
   },
   [types.ADD_INSTRUMENTBANK] (state, instrumentBank) {
@@ -117,9 +115,9 @@ const mutations = {
 
   [types.SET_GIGLIST] (state, gigList) {
     state.gigList = gigList
-    console.log('<State>  gigList populated ß!!!')
-    console.log(gigList)
-    console.log(state.gigList)
+    // console.log('<State>  gigList populated ß!!!')
+    // console.log(gigList)
+    // console.log(state.gigList)
   },
 
   [types.ADD_GIG] (state, gig) {
@@ -180,7 +178,7 @@ const mutations = {
     } else {
       state.currentSongId = -1
     }
-    console.log(`> Mutation >> ${id}`)
+    console.log(`> Mutation SET_CURRENTSONG_ID >> ${id}`)
   },
   [types.SET_CURRENT_PROGRAMMIDIPEDAL] (state, idx) {
     state.currentProgramMidiPedal = idx
