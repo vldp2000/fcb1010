@@ -4,7 +4,7 @@
       @pagination="pagination = $event"
       :headers="headers"
       :items="gigList"
-      sort-by="name"
+      sort-by="gigdate"
       class="elevation-1"
       :single-expand="singleExpand"
       :expanded.sync="expanded"
@@ -15,9 +15,7 @@
       <template v-slot:expanded-item="{ headers }">
         <td :colspan="headers.length">
           <div>
-            <gig-song-panel v-bind:gigSongList="selectedSongList" >
-
-            </gig-song-panel>
+            <gig-song-panel v-bind:gigSongList="selectedSongList" />
           </div>
         </td>
       </template>
@@ -79,13 +77,16 @@
 
 import { mapState } from 'vuex'
 import GigsService from '@/services/GigsService'
+
 import GigSongPanel from '@/components/GigSongPanel'
+
 export default {
+  name: 'GigPanel',
+  components: {
+    GigSongPanel
+  },
   data () {
     return {
-      components: {
-        GigSongPanel
-      },
       dialog: false,
       expanded: [],
       singleExpand: true,
@@ -193,16 +194,20 @@ export default {
     },
     async rowClicked (value) {
       console.log(`<Gig row clicked> ${value.id}`)
-      if (this.expanded.length > 0) {
+      let oldGigId = -1
+      if (this.expanded.length === 1) {
+        oldGigId = this.expanded[0].id
         this.expanded.pop()
       }
-      let gig = this.gigList.find(g => g.id === value.id)
-      console.log(gig)
-      if (gig.songList || gig.songList.lenght > 0) {
-        this.selectedSongList = gig.songList
+      if (oldGigId !== value.id) {
+        let gig = this.gigList.find(g => g.id === value.id)
+        if (gig.songList || gig.songList.lenght > 0) {
+          this.selectedSongList = gig.songList
+          this.expanded.push(value)
+          console.log(gig)
+          console.log(this.selectedSongList)
+        }
       }
-      this.expanded.push(value)
-      console.log(this.selectedSongList)
     }
 
   },

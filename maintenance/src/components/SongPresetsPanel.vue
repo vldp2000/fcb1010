@@ -128,8 +128,8 @@ export default {
 
   mounted () {
   //   this.programList = this.selectedSong.programList
-    console.log('----->SongPresetsPanel')
-    console.log(this.songPresetList)
+    // console.log('----->SongPresetsPanel')
+    // console.log(this.songPresetList)
   },
   methods: {
     onClick (item) {

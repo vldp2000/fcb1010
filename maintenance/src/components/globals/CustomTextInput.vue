@@ -49,7 +49,6 @@ export default {
 
   beforeDestroy () {
     this.isComponentInitialised = false
-    this.unbindEvents()
   }
 }
 </script>

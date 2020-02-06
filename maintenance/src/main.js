@@ -10,7 +10,7 @@ import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client'
 
 import CustomPanel from '@/components/globals/CustomPanel'
-import CustomKnob from '@/components/globals/CustomKnob'
+// import CustomKnob from '@/components/globals/CustomKnob'
 import MyKnob from '@/components/globals/MyKnob'
 
 import PresetControl from '@/components/globals/PresetControl'
@@ -21,7 +21,7 @@ import VueSvgGauge from 'vue-svg-gauge'
 import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.component('CustomPanel', CustomPanel)
-Vue.component('CustomKnob', CustomKnob)
+// Vue.component('CustomKnob', CustomKnob)
 Vue.component('PresetControl', PresetControl)
 Vue.component('CustomTextInput', CustomTextInput)
 Vue.component('MyKnob', MyKnob)
