@@ -200,6 +200,15 @@ const actions = {
     // console.log('STORE. Set current Gig Id-------------------------------')
     // console.log(id)
   },
+  //  setGigAsCurrent -----------------------------------------------------
+  setGigAsCurrent ({ commit, getters }, id) {
+    getters.gigList.forEach(gig => {
+      gig.currentFlag = (gig.id === id)
+      GigsService.put(gig)
+      commit(types.UPDATE_GIG, gig)
+    })
+  },
+
   //  Set current Song Id-----------------------------------------------------
   setCurrentSongId ({ commit }, id) {
     commit(types.SET_CURRENTSONG_ID, id)

@@ -16,8 +16,8 @@
       <v-col cols="12" md="1">
         <div>
           <v-icon large
-          v-bind:class="(getGigDefault()) ? 'defaultGigHighighted' : 'defaultGig'"
-            @click="saveGigAsDefault()"
+          v-bind:class="(checkIfGigIsCurrent()) ? 'defaultGigHighighted' : 'defaultGig'"
+            @click="saveGigAsCurrent()"
           >
           grade
           </v-icon>
@@ -372,18 +372,19 @@ export default {
     onProgramClick (idx) {
       this.$socket.client.emit(config.controllerProgramMessage, idx)
     },
-    getGigDefault () {
+    checkIfGigIsCurrent () {
       return (this.currentGig && this.currentGig.currentFlag)
     },
 
-    saveGigAsDefault () {
+    saveGigAsCurrent () {
       if (this.currentGig) {
-        console.log('saveGigAsDefault')
-        this.currentGig.currentFlag = true
+        console.log('setGigAsCurrent')
+        this.$store.dispatch('setGigAsCurrent', this.currentGig.id)
       }
     },
     clearGig () {
       console.log('clearGig')
+      this.currentGig = null
       this.$store.dispatch('setCurrentGigId', -1)
     }
   }
