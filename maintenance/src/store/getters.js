@@ -16,6 +16,7 @@ const getters = {
   currentProgramMidiPedal: state => state.currentProgramMidiPedal,
   allInitialized: state => state.allInitialized,
   instrumentListImagesInitialized: state => state.instrumentList[0].imageURL.length > 0,
-  refreshSong: state => state.refreshSong
+  refreshSong: state => state.refreshSong,
+  defaultPreset: state => state.defaultPreset
 }
 export default getters

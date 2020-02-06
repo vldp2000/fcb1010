@@ -1,7 +1,6 @@
 <template>
   <custom-panel title="Songs">
     <v-data-table
-      @pagination="pagination = $event"
       :headers="headers"
       :items="songList"
       :single-expand="singleExpand"
@@ -12,6 +11,8 @@
       item-key="id"
       sort-by="id"
       class="elevation-1"
+      hide-actions
+      ref="sortableTable"
     >
       <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
 

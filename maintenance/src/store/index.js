@@ -94,7 +94,23 @@ const Store = new Vuex.Store({
     currentProgramMidiPedal: 0,
     currentGigId: 0,
     allInitialized: false,
-    refreshSong: false
+    refreshSong: false,
+    defaultPreset: {
+      id: -1,
+      refsong: -1,
+      refsongprogram: -1,
+      refinstrument: -1,
+      refinstrumentbank: -1,
+      refpreset: -1,
+      volume: 0,
+      pan: 0,
+      muteflag: 0,
+      reverbflag: 0,
+      delayflag: 0,
+      modeflag: 0,
+      reverbvalue: 0,
+      delayvalue: 0
+    }
   },
   actions,
   mutations,

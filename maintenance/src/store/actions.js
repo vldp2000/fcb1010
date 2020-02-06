@@ -115,8 +115,12 @@ const actions = {
     }
   },
 
-  updateSongProgramPreset ({ commit }, payload) {
-    commit(types.UPDATE_SONGPRESET, payload)
+  updateSongProgramPreset ({ commit }, songPreset) {
+    console.log('--- action >> updateSongProgramPreset')
+    SongsService.putSongPreset(songPreset)
+    console.log('--- action >> SongsService.putSongPreset')
+    commit(types.UPDATE_SONGPROGRAMPRESET, songPreset)
+    console.log('--- action >> commit(types.UPDATE_SONGPROGRAMPRESET')
   },
 
   //  Instrument List -----------------------------------------------------

@@ -9,7 +9,7 @@
     <vue-svg-gauge
       :start-angle='startAngle'
       :end-angle='endAngle'
-      :value='parseInt(currentValue,10)'
+      :value='currentValue'
       :separator-step='separatorStep'
       :min='min'
       :max='max'
@@ -28,10 +28,8 @@
 </template>
 
 <script>
-
 export default {
   name: 'MyKnob',
-
   data () {
     return {
       flag: false,
@@ -43,8 +41,11 @@ export default {
       realTime: false
     }
   },
-
   props: {
+    value: {
+      type: [String, Number],
+      default: 0
+    },
     editMode: {
       type: Boolean,
       default: false
@@ -65,18 +66,12 @@ export default {
       type: Number,
       default: 110
     },
-    innerRadius: {
-      type: Number,
-      default: 60
-    },
+
     separatorStep: {
       type: Number,
       default: 10
     },
-    separatorThickness: {
-      type: Number,
-      default: 4
-    },
+
     gaugeColor: {
       type: [Array, String],
       default: () => ([
@@ -84,27 +79,16 @@ export default {
         { offset: 50, color: 'blue' }
       ])
     },
-    baseColor: {
-      type: String,
-      default: '#DDDDDD'
-    },
-    easing: {
-      type: String,
-      default: 'Circular.Out'
-    },
+
     scaleInterval: {
       type: Number,
       default: 5
     },
-    transitionDuration: {
-      type: Number,
-      default: 800
-    },
+
     knobLabel: {
       type: String,
       default: ''
     },
-
     // --------- swipe
     data: {
       type: Array,
@@ -122,10 +106,6 @@ export default {
       type: Number,
       default: 0.5
     },
-    value: {
-      type: [String, Number],
-      default: 0
-    },
     isDisabled: {
       type: Boolean,
       default: false
@@ -138,11 +118,9 @@ export default {
       type: Boolean,
       default: false
     }
-
   },
   watch: {
     immediate: true,
-
     value (val) {
       if (this.flag) this.setValue(val)
       else this.setValue(val, this.speed)
@@ -164,9 +142,7 @@ export default {
       this.refresh()
     }
   },
-
   computed: {
-
     val: {
       get () {
         return this.data ? this.data[this.currentValue] : this.currentValue
@@ -175,10 +151,10 @@ export default {
         if (this.data) {
           let index = this.data.indexOf(val)
           if (index > -1) {
-            this.currentValue = index
+            this.setCurrentValue(index, true)
           }
         } else {
-          this.currentValue = val
+          this.setCurrentValue(val, true)
         }
       }
     },
@@ -222,7 +198,6 @@ export default {
       return [this.minimum, this.maximum]
     }
   },
-
   methods: {
     bindEvents () {
       document.addEventListener('touchmove', this.moving, { passive: false })
@@ -296,6 +271,7 @@ export default {
         if (this.isDiff(this.currentValue, val)) {
           this.currentValue = val
         }
+        this.$emit('input', this.currentValue)
       }
     },
     setIndex (val) {
@@ -308,7 +284,6 @@ export default {
         this.val = resetVal
       }
     },
-
     limitValue (val) {
       if (this.data) {
         return val
@@ -363,21 +338,17 @@ export default {
     this.isComponentExists = false
     this.unbindEvents()
   }
-
 }
 </script>
 
 <!--  change style to calculate the position of the inner text automatically  -->
 <style scoped>
-
 .custom-label {
   display: flex;
   align-items: center;
   justify-content: center;
-
   display: -webkit-flex;
   -webkit-box-align: center;
-
   display: -ms-flexbox;
   -ms-flex-align: center;
 }

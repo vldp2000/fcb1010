@@ -6,7 +6,21 @@
       :items="gigList"
       sort-by="name"
       class="elevation-1"
+      :single-expand="singleExpand"
+      :expanded.sync="expanded"
+      item-key="id"
+      @click:row="rowClicked"
     >
+
+      <template v-slot:expanded-item="{ headers }">
+        <td :colspan="headers.length">
+          <div>
+            <gig-song-panel v-bind:gigSongList="selectedSongList" >
+
+            </gig-song-panel>
+          </div>
+        </td>
+      </template>
 
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -65,11 +79,16 @@
 
 import { mapState } from 'vuex'
 import GigsService from '@/services/GigsService'
-
+import GigSongPanel from '@/components/GigSongPanel'
 export default {
   data () {
     return {
+      components: {
+        GigSongPanel
+      },
       dialog: false,
+      expanded: [],
+      singleExpand: true,
       headers: [
         {
           text: 'Name',
@@ -102,7 +121,8 @@ export default {
       },
       selected: [],
       landscape: true,
-      reactive: true
+      reactive: true,
+      selectedSongList: []
     }
   },
   computed: {
@@ -170,6 +190,19 @@ export default {
       } else {
         console.log(' Gig List already populated')
       }
+    },
+    async rowClicked (value) {
+      console.log(`<Gig row clicked> ${value.id}`)
+      if (this.expanded.length > 0) {
+        this.expanded.pop()
+      }
+      let gig = this.gigList.find(g => g.id === value.id)
+      console.log(gig)
+      if (gig.songList || gig.songList.lenght > 0) {
+        this.selectedSongList = gig.songList
+      }
+      this.expanded.push(value)
+      console.log(this.selectedSongList)
     }
 
   },

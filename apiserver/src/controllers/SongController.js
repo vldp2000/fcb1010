@@ -35,7 +35,9 @@ module.exports = {
         })
       } else {
         songs = await Song.findAll({
-          limit: 128
+          order: [
+            ['ordernumber', 'ASC']
+          ]
         })
       }
       res.send(songs)

@@ -1,9 +1,8 @@
 <template>
   <v-container grid-list-md text-md-center fluid class="darkBackgroud">
- <!-- <v-container fluid  class="darkBackgroud"> -->
   <div class="selector-panel">
-    <v-row md12no-gutters>
-      <v-col md6>
+    <v-row md12 no-gutters>
+      <v-col cols="12" md="5">
         <v-select
           v-if="gigList"
           label="Select Gig"
@@ -14,7 +13,22 @@
           item-value="id">
         </v-select>
       </v-col>
-      <v-col md6>
+      <v-col cols="12" md="1">
+        <div>
+          <v-icon large
+          v-bind:class="(getGigDefault()) ? 'defaultGigHighighted' : 'defaultGig'"
+            @click="saveGigAsDefault()"
+          >
+          grade
+          </v-icon>
+          <v-icon large class="clearGigBbutton"
+            @click="clearGig()"
+          >
+          cancel
+          </v-icon>
+        </div>
+      </v-col>
+      <v-col md6 lg6 xl6>
         <v-select
           v-if="currentSongList"
           label="Select Song"
@@ -163,24 +177,7 @@ export default {
       currentSong: null,
       currentProgramIdx: 0,
       currentSongList: [],
-      initFlag: true,
-
-      defaultPreset: {
-        id: -1,
-        refsong: -1,
-        refsongprogram: -1,
-        refinstrument: -1,
-        refinstrumentbank: -1,
-        refpreset: -1,
-        volume: 0,
-        pan: 0,
-        muteflag: 0,
-        reverbflag: 0,
-        delayflag: 0,
-        modeflag: 0,
-        reverbvalue: 0,
-        delayvalue: 0
-      }
+      initFlag: true
     }
   },
 
@@ -189,7 +186,7 @@ export default {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList',
       'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal',
       'currentGigId', 'allInitialized', 'instrumentListImagesInitialized',
-      'refreshSong']),
+      'refreshSong', 'defaultPreset']),
     songId: {
       get () {
         // console.log(` SongId GETTER is fired ---((( ${this.currentSongId}`)
@@ -249,8 +246,11 @@ export default {
           this.currentSongList = this.currentGig.songList
           this.songId = this.currentGig.songList[0].id
         }
+      } else {
+        if (this.songList && this.songList.length > 0) {
+          this.currentSongList = this.songList
+        }
       }
-      // this.initFlag = false
     },
 
     currentSongId: async function () {
@@ -336,34 +336,22 @@ export default {
     },
 
     getPresetControlData (programIndex, presetIndex) {
-      // console.log('---setpreset')
-      // console.log(this.currentSong)
-      // if (!this.initFlag) {
       try {
-        // console.log(`get program for ${programIndex} ${presetIndex} `)
-        // console.log(this.currentSong)
         if (typeof (this.currentSong) === 'undefined' || this.currentSong === null ||
           this.currentSongId === -1) {
-          // console.log('-- show default preset')
           return this.defaultPreset
         } else {
           if (this.currentSong.programList === null ||
           typeof (this.currentSong.programList) === 'undefined') {
-            // SongsService.getSongItems(this.currentSong.id)
-            // this.currentSong = this.songList[]
-            // console.log('default preset')
             return this.defaultPreset
           }
-          const preset = this.currentSong.programList[programIndex].presetList[presetIndex]
-          // console.log(preset)
+          let preset = {}
+          Object.assign(preset, this.currentSong.programList[programIndex].presetList[presetIndex])
           return preset
         }
       } catch (ex) {
         console.log(ex)
       }
-      // } else {
-      //   return this.defaultPreset
-      // }
     },
 
     async initSongPrograms (songId) {
@@ -383,6 +371,20 @@ export default {
 
     onProgramClick (idx) {
       this.$socket.client.emit(config.controllerProgramMessage, idx)
+    },
+    getGigDefault () {
+      return (this.currentGig && this.currentGig.currentFlag)
+    },
+
+    saveGigAsDefault () {
+      if (this.currentGig) {
+        console.log('saveGigAsDefault')
+        this.currentGig.currentFlag = true
+      }
+    },
+    clearGig () {
+      console.log('clearGig')
+      this.$store.dispatch('setCurrentGigId', -1)
     }
   }
 }
@@ -407,7 +409,7 @@ export default {
 
 .darkBackgroud {
   /* background-color:rgba(50, 31, 119, 0.83) */
-  background-color:rgba(36, 34, 34, 0.830)
+  background-color:rgba(8, 8, 8, 0.83)
 }
 
 .progLabel {
@@ -420,7 +422,7 @@ export default {
   width: 50px;
   height: 50px;
   /* margin: 50px, 10px, 0px, -10px; */
-  margin-top: 40px;
+  margin-top: 50px;
   margin-left: -10px;
   margin-right: 2px;
   padding: 0px;
@@ -436,7 +438,7 @@ export default {
   width: 50px;
   height: 50px;
   /* margin: 50px, 10px, 0px, -10px; */
-  margin-top: 40px;
+  margin-top: 50px;
   margin-left: -10px;
   margin-right: 2px;
   padding: 0px;
@@ -448,16 +450,35 @@ export default {
   color:azure;
   font-size: 20px;
   font-style: bold;
-  text-shadow: 2px 2px 1px rgba(5, 79, 218, 0.83);
+  text-shadow: 1px 1px 1px rgba(5, 79, 218, 0.83);
   text-transform: uppercase;
   font-weight: bold;
   margin: 0px;
   /* margin-bottom: -10px;
   margin-bottom: -20px; */
-  margin-top: -20px;
+  margin-top: 0px;
   padding-bottom: 40px;
   padding-left: 60px;
   padding-right: 20px;
+}
+
+.defaultGigHighighted {
+  margin-left: -10px;
+  margin-top: 5px;
+  color: darkblue;
+  font-size: 36px;
+}
+.defaultGig {
+  margin-left: -10px;
+  margin-top: 5px;
+  color: rgb(103, 103, 109);
+  font-size: 36px;
+}
+.clearGigBbutton {
+  margin-left: 10px;
+  margin-top: 5px;
+  color: rgb(103, 103, 109);
+  font-size: 36px;
 }
 
 </style>

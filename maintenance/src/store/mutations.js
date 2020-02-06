@@ -37,13 +37,13 @@ const mutations = {
       console.log(ex)
     }
   },
-  [types.UPDATE_SONGPRESET] (state, payload) {
+  [types.UPDATE_SONGPROGRAMPRESET] (state, payload) {
     try {
       let song = state.songList.find(sn => sn.id === payload.refsong)
       let program = song.programList.find(pr => pr.id === payload.refsongprogram)
       let preset = program.presetList.find(pr => pr.id === payload.refpreset)
-      if (!preset) {
-        console.log('types.UPDATE_SONGPRESET -->>')
+      if (preset) {
+        console.log('types.UPDATE_SONGPROGRAMPRESET -->>')
         console.log(payload.id)
         console.log(payload)
         preset.refpreset = payload.refpreset
@@ -57,7 +57,7 @@ const mutations = {
         preset.delayvalue = payload.delayvalue
       }
     } catch (ex) {
-      console.log('[types.UPDATE_SONGPRESET] (state, payload)')
+      console.log('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
       console.log(ex)
     }
   },

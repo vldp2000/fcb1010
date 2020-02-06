@@ -36,7 +36,7 @@ export default {
       default: ''
     },
     value: {
-      type: Number,
+      type: [String, Number],
       default: 0
     }
   },
@@ -45,6 +45,11 @@ export default {
     updateValue: function (value) {
       this.$emit('input', value)
     }
+  },
+
+  beforeDestroy () {
+    this.isComponentInitialised = false
+    this.unbindEvents()
   }
 }
 </script>

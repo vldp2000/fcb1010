@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     tempo:  DataTypes.INTEGER ,
     lirycs: DataTypes.TEXT,
-    tabs: DataTypes.TEXT
+    tabs: DataTypes.TEXT,
+    ordernumber: DataTypes.INTEGER,
   },
   {
     reezeTableName: true,

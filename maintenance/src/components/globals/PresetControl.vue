@@ -18,7 +18,6 @@
               >
               save
               </v-icon>
-
             </div>
           </v-col>
           <v-col cols=10>
@@ -31,7 +30,7 @@
       <v-row no-gutters>
         <div class="customKnob">
           <my-knob
-            :value='parseInt(presetControlData.volume,10)'
+            v-model='volume'
             :editMode='editMode'
             knobLabel='Vol'
           />
@@ -39,25 +38,25 @@
 
         <div class="customKnob">
           <my-knob
-            :value="parseInt(presetControlData.pan,10)"
+            v-model='pan'
             :editMode='editMode'
             knobLabel='Pan'
           />
         </div>
         <div class="ma=0 pa=0">
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Mute" v-model="presetControlData.muteflag" />
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Del" v-model="presetControlData.delayflag" />
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Rev" v-model="presetControlData.reverbflag" />
+            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Mute" v-model="songPreset.muteflag" />
+            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Del" v-model="songPreset.delayflag" />
+            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Rev" v-model="songPreset.reverbflag" />
         </div>
         <div class="inputpanel">
           <div>
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Mode" v-model="presetControlData.reverbflag" />
+            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Mode" v-model="songPreset.modeflag" />
           </div>
           <div class="valueInput">
-            <custom-text-input :editMode='editMode' v-model="presetControlData.delayvalue" />
+            <custom-text-input :editMode='editMode' v-model="songPreset.delayvalue" />
           </div>
           <div class="valueInput">
-            <custom-text-input :editMode='editMode' v-model="presetControlData .reverbvalue" />
+            <custom-text-input :editMode='editMode' v-model="songPreset.reverbvalue" />
           </div>
         </div>
           <v-dialog v-if="editMode"  v-model="dialog" persistent max-width="600px">
@@ -101,7 +100,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import SongsService from '@/services/SongsService'
 
 export default {
   props: {
@@ -113,63 +111,80 @@ export default {
     return {
       editMode: false,
       dialog: false,
-      songPreset: null,
+
       imageURL: '',
       presets: {},
-      presetId: -1
+      presetId: -1,
+
+      songPreset: {
+        id: -1,
+        refsong: -1,
+        refsongprogram: -1,
+        refinstrument: -1,
+        refinstrumentbank: -1,
+        refpreset: -1,
+        volume: 0,
+        pan: 0,
+        muteflag: 0,
+        reverbflag: 0,
+        delayflag: 0,
+        modeflag: 0,
+        reverbvalue: 0,
+        delayvalue: 0
+      }
+    }
+  },
+  // created () {
+  //   Object.assign(this.songPreset, this.presetControlData)
+  // },
+
+  computed: {
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList']),
+
+    volume: {
+      get () {
+        return this.songPreset.volume
+      },
+      set (val) {
+        this.songPreset.volume = val
+      }
+    },
+    pan: {
+      get () {
+        return this.songPreset.pan
+      },
+      set (val) {
+        this.songPreset.pan = val
+      }
     }
   },
 
-  computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList'])
-  },
-
   watch: {
-    // presetId: function () {
-    //   this.songPreset.refpreset = this.presetId
-    // },
     presetControlData: function () {
-      this.songPreset = this.presetControlData
-
-      if (typeof this.songPreset !== 'undefined' && this.songPreset.refpreset > -1) {
-        console.log('--WATCH songPreset<<<-->>')
-
-        this.getPresets(this.songPreset.refinstrument)
-        // this.presetId = this.songPreset.refpreset
-        // console.log(this.songPreset)
-        // console.log(this.songPreset.refinstrument)
-        // console.log(this.presetId)
-        // console.log(this.presetList)
-
-        if (typeof this.instrumentList === 'undefined' || this.instrumentList === null) {
-          console.log('--instrument list is not ready->>')
-        } else {
-          // console.log(this.songPreset)
-          // console.log(this.instrumentList)
-          if (this.songPreset.refinstrument > 0) {
+      if (this.presetControlData && this.presetControlData.id > -1) {
+        Object.assign(this.songPreset, this.presetControlData)
+        if (typeof this.songPreset !== 'undefined' && this.songPreset.refpreset > -1) {
+          if (typeof this.instrumentList !== 'undefined' && this.instrumentList &&
+            this.songPreset.refinstrument > 0) {
             const instrument = this.instrumentList.find(item => item.id === this.songPreset.refinstrument)
-            console.log(instrument)
             this.imageURL = instrument.imageURL
-            console.log(this.imageURL)
+            this.populatePresetList(this.songPreset.refinstrument)
           }
+        } else {
+          console.log('------------- empty -----')
+          console.log(this.songPreset)
         }
-      } else {
-        console.log('------------- empty -----')
-        console.log(this.songPreset)
       }
     }
   },
 
   methods: {
     getPresetName () {
-      // const pr = this.getPresetById(this.preset.id)
-      // console.log(this.songPreset)
       if (typeof this.presetList === 'undefined' || this.presetList === null ||
         typeof this.songPreset === 'undefined' || this.songPreset === null ||
         typeof this.instrumentList === 'undefined' || this.instrumentList === null) {
         return {}
       }
-      // console.log('---get--preset-name-------------')
       const pr = this.presetList.find(item => item.id === this.songPreset.refpreset)
       if (typeof pr === 'undefined') {
         return {}
@@ -178,7 +193,7 @@ export default {
       return pr.name
     },
 
-    getPresets (id) {
+    populatePresetList (id) {
       if (typeof this.presetList !== 'undefined' && this.presetList !== null &&
         typeof this.songPreset !== 'undefined' && this.songPreset !== null) {
         // console.log('---get--preset--------------')
@@ -194,23 +209,13 @@ export default {
         this.songPreset.refpreset = this.presetId
         this.songPreset.refinstrumentbank = preset.refinstrumentbank
         this.songPreset.refinstrument = preset.refinstrument
-        this.songPreset.volume = 127
-        this.songPreset.pan = 64
-        this.songPreset.muteflag = 1
-        this.songPreset.reverbflag = 1
-        this.songPreset.delayflag = 1
-        this.songPreset.modeflag = 1
-        this.songPreset.reverbvalue = 0
-        this.songPreset.delayvalue = 0
         this.dialog = false
       }
     },
     saveSongPreset () {
-      console.log('---save-preset---------------')
       console.log(this.songPreset)
-      // save song preset
-      SongsService.putSongPreset(this.songPreset)
-      this.dialog = false
+      this.$store.dispatch('updateSongProgramPreset', this.songPreset)
+      this.editMode = false
     },
     onIconClick () {
       this.editMode = !this.editMode
@@ -218,7 +223,7 @@ export default {
     },
     onPresetClick () {
       if (this.editMode) {
-        console.log(this.presets)
+        // console.log(this.presets)
         this.dialog = true
       }
     }
