@@ -1,17 +1,16 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="gigSongList"
-    item-key="id"
-    class="elevation-1"
-    hide-default-footer
-  >
-
-  </v-data-table>
+  <v-data-table :items="codes"
+                      hide-actions
+                      hide-headers
+                      class="elevation-1 ml-5"
+                      no-data-text="No codes found"
+                      v-sortable-table
+                      @sorted="saveOrder"
+        />
 </template>
 
 <script>
-// import { mapState } from 'vuex'
+// import SortableTable from '@/plugins/SortableTable'
 
 export default {
   name: 'GigSongPanel',
@@ -26,23 +25,21 @@ export default {
     return {
       headers: [
         {
-          text: 'name',
+          text: 'Name',
           align: 'left',
           sortable: false,
           value: 'name'
-        }
+        },
+        { text: 'Id', sortable: false, value: 'id' }
       ]
     }
   },
 
-  // computed: {
-  //   ...mapState(['songList'])
-  // }
-
-  mounted () {
-  //   this.programList = this.selectedSong.programList
-    console.log('-----> SongProgramsPanel')
-    console.log(this.gigSongList)
+  methods: {
+    saveOrder: function () {
+      console.log(' order changed')
+    }
   }
 }
+
 </script>

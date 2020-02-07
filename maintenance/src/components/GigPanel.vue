@@ -1,13 +1,13 @@
 <template>
   <custom-panel title="Gigs">
     <v-data-table
-      @pagination="pagination = $event"
       :headers="headers"
       :items="gigList"
       sort-by="gigdate"
       class="elevation-1"
       :single-expand="singleExpand"
       :expanded.sync="expanded"
+      hide-default-footer
       item-key="id"
       @click:row="rowClicked"
     >

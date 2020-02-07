@@ -107,6 +107,7 @@
           </v-dialog>
         </v-toolbar>
       </template>
+
       <template v-slot:item.action="{ item }">
         <v-icon
           class="mr-2"
@@ -115,6 +116,7 @@
           edit
         </v-icon>
       </template>
+
     </v-data-table>
   </custom-panel>
 </template>
