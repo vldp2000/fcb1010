@@ -94,6 +94,7 @@ const Store = new Vuex.Store({
     currentProgramMidiPedal: 0,
     currentGigId: 0,
     allInitialized: false,
+    initialisingIsInProgress: false,
     refreshSong: false,
     defaultPreset: {
       id: -1,

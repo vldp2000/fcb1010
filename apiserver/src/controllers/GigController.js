@@ -122,6 +122,40 @@ module.exports = {
       })
     }
   },
+
+  async putGigSong (req, res) {
+    try {
+      console.log(req.body)
+      await GigSong.update(req.body, {
+        where: {
+          id: req.params.id
+        }
+      })
+      res.send(req.body)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to update the GigSong'
+      })
+    }
+  },
+
+  async postGigSong (req, res) {
+    try {
+      let model = req.body
+      delete model.id
+      
+      //console.log(model)
+      const gigSong = await GigSong.create(model)
+      console.log(gigSong)
+      res.send(gigSong)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to create the GigSong'
+      })
+    }
+  },
   async currentgig (req, res) {
     try {
       let gig = null

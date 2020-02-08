@@ -15,7 +15,10 @@
       <template v-slot:expanded-item="{ headers }">
         <td :colspan="headers.length">
           <div>
-            <gig-song-panel v-bind:gigSongList="selectedSongList" />
+            <gig-song-panel
+              :gig="selectedGig"
+              :allSongs="songList"
+            />
           </div>
         </td>
       </template>
@@ -123,20 +126,17 @@ export default {
       selected: [],
       landscape: true,
       reactive: true,
-      selectedSongList: []
+      selectedGig: []
     }
   },
   computed: {
-    ...mapState(['gigList']),
+    ...mapState(['gigList', 'songList', 'allInitialized']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     }
   },
 
   watch: {
-    // gigList: function (newValue, oldValue) {
-    // this.gigs = newValue
-    // },
     dialog: function (val) {
       val || this.closeDialog()
     }
@@ -178,43 +178,24 @@ export default {
       }
       this.closeDialog()
     },
-    async init () {
-      // console.log(this.gigList.length)
-      // if (!this.$store.state.gigList || this.$store.state.gigList === undefined || !this.$store.state.gigList.Length) {
-      if (this.gigList.length === 0) {
-        // console.log('Init gig list storage')
-        let result = await GigsService.getAll()
-        let list = await result.data
-        // console.log('<< Init Gig List?>>')
-        await this.$store.dispatch('setGigList', list)
-        // console.log(this.$store.state.gigList)
-      } else {
-        console.log(' Gig List already populated')
-      }
-    },
+
     async rowClicked (value) {
-      console.log(`<Gig row clicked> ${value.id}`)
       let oldGigId = -1
       if (this.expanded.length === 1) {
         oldGigId = this.expanded[0].id
         this.expanded.pop()
       }
-      if (oldGigId !== value.id) {
-        let gig = this.gigList.find(g => g.id === value.id)
-        if (gig.songList || gig.songList.lenght > 0) {
-          this.selectedSongList = gig.songList
-          this.expanded.push(value)
-          console.log(gig)
-          console.log(this.selectedSongList)
-        }
+      console.log(`(${oldGigId} !== ${value.id} && ${value.songList.length} )`)
+      console.log(value.songList)
+      if (oldGigId === value.id || !value.songList || value.songList.lenght === 0) {
+        console.log('empty ----')
+      } else {
+        console.log('expand ----')
+        this.selectedGig = value
+        this.expanded.push(value)
       }
     }
-
-  },
-  mounted () {
-    this.init()
   }
-
 }
 </script>
 

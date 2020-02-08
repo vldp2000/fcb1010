@@ -128,10 +128,14 @@
 </template>
 
 <script>
+
+import { mapState } from 'vuex'
+
 export default {
   props: {
     source: String
   },
+
   data: () => ({
     drawer: null,
     items: [
@@ -153,8 +157,27 @@ export default {
       }
     ]
   }),
-  moumted () {
-    // this.$store.dispatch('initAll', 'initAll')
+  created () {
+    console.log('VUE is mounted')
+    this.initAllData()
+  },
+
+  computed: {
+    // currentGigId: state => state.currentGigId,
+    ...mapState(['allInitialized', 'initialisingIsInProgress'])
+  },
+
+  methods: {
+    async initAllData () {
+      try {
+        if (!this.allInitialized && !this.initialisingIsInProgress) {
+          // console.log(' >>> Init all related collections in storage1')
+          this.$store.dispatch('initAll', true)
+        }
+      } catch (ex) {
+        console.log(ex)
+      }
+    }
   }
 }
 </script>

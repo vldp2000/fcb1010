@@ -4,6 +4,8 @@ import SongsService from '@/services/SongsService'
 import InstrumentsService from '@/services/InstrumentsService'
 import InstrumentBankService from '@/services/InstrumentBankService'
 import PresetsService from '@/services/PresetsService'
+import _sortBy from 'lodash/sortBy'
+import _pickBy from 'lodash/pickBy'
 
 const config = require('@/config/config')
 let clientInitialized = false
@@ -14,7 +16,9 @@ async function setInstrumentIcons (commit) {
   // console.log(result)
   await commit(types.SET_INSTRUMENT_IMAGE, result)
 }
+
 async function initAllLists (commit, getters) {
+  await commit(types.INIT_INPROGRESS, true)
   console.log('<<<Mutation. Init ALLS>>')
   if (!getters.gigList || getters.gigList.length === 0) {
     let list = await GigsService.getAll()
@@ -65,7 +69,7 @@ async function initAllLists (commit, getters) {
   }
   // console.log(`getters. Lenght of presetList  = ${getters.presetList.length}`)
 
-  if (!getters.gigsongList || getters.gigsongList.length === 0) {
+  if (!getters.gigSongList || getters.gigSongList.length === 0) {
     let list = await GigsService.getGigSongs()
     if (list.length > 0) {
       commit(types.SET_GIGSONGLIST, list)
@@ -77,12 +81,15 @@ async function initAllLists (commit, getters) {
       commit(types.POPULATE_GIG_SONGS, gig.id)
     }
   })
-
   await setInstrumentIcons(commit)
-  commit(types.INIT_ALL)
 
+  //  Init Is Complete
+  commit(types.INIT_ALL)
+  commit(types.INIT_INPROGRESS, false)
   console.log('<<<Mutation. Finish Init ALL>>')
 }
+
+// ------------------------------
 
 const actions = {
   initAll ({ commit, getters }, payload) {
@@ -194,6 +201,33 @@ const actions = {
     // console.log('action - updateGigSong')
     commit(types.UPDATE_GIGSONG, gigsong)
   },
+
+  resetGigSongs ({ commit, getters }, payload) { // {}  gigId, songList)
+    try {
+      // console.log('resetGigSongs')
+      let items2 = _pickBy(getters.gigSongList, gs => gs.refgig === payload.gigId)
+      let items = _sortBy(items2, 'sequencenumber')
+      // console.log(items2)
+      // console.log(items)
+      let i = 1
+      payload.songList.forEach(song => {
+        let gs = items.find(s => s.refsong === song.id)
+        if (gs && i <= items.length) {
+          if (i !== gs.sequencenumber) {
+            let gigSong = Object.assign({}, gs)
+            gigSong.sequencenumber = i
+            // console.log(gigSong)
+            GigsService.putGigSong(gigSong)
+          }
+        }
+        // console.log('---------------------------------------')
+        i = i + 1
+      })
+    } catch (ex) {
+      console.log(ex)
+    }
+  },
+
   //  Set current Song Id-----------------------------------------------------
   setCurrentGigId ({ commit }, id) {
     commit(types.SET_CURRENTGIG_ID, id)

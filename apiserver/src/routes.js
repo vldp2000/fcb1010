@@ -59,6 +59,10 @@ module.exports = (app) => {
     GigController.post)
   app.get('/gigsongs',
     GigController.getGigSongs)
+  app.put('/gigSong/:id',
+    GigController.putGigSong)
+  app.post('/gigSong',
+    GigController.postGigSong)    
   app.get('/currentgig',
     GigController.currentgig)
 

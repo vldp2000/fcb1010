@@ -58,5 +58,33 @@ export default {
     // console.log('// ----------->> get all gigs')
     // console.log(gigs)
     return gigSongs.data
+  },
+
+  async putGigSong (gigSong) {
+    try {
+      console.log('// ----------->>return Api().putGigSong')
+      console.log(gigSong)
+      await Api().put(`gigSong/${gigSong.id}`, gigSong)
+      // let newGigSong = await result.data
+      console.log('// -----------result')
+      // console.log(newGigSong)
+    } catch (ex) {
+      console.log(ex)
+    }
+  },
+  async postGigSong (gigSong) {
+    try {
+      console.log('// ----------->>return Api().gigSong(gigSong)')
+      console.log(gigSong)
+      let result = await Api().gigSong('gigSong', gigSong)
+      let newGigSong = await result.data
+      console.log('// -----------result')
+      console.log(newGigSong)
+      return newGigSong
+      // await store.dispatch('addGig', newGig)
+    } catch (ex) {
+      console.log(ex)
+    }
   }
+
 }

@@ -1,5 +1,5 @@
 export const INIT_ALL = 'INIT_ALL'
-
+export const INIT_INPROGRESS = 'INIT_INPROGRESS'
 export const SET_SONGLIST = 'SET_SONGLIST'
 export const ADD_SONG = 'ADD_SONG'
 export const UPDATE_SONG = 'UPDATE_SONG'

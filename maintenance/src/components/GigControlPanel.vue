@@ -186,7 +186,7 @@ export default {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList',
       'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal',
       'currentGigId', 'allInitialized', 'instrumentListImagesInitialized',
-      'refreshSong', 'defaultPreset']),
+      'refreshSong', 'initialisingIsInProgress', 'defaultPreset']),
     songId: {
       get () {
         // console.log(` SongId GETTER is fired ---((( ${this.currentSongId}`)
@@ -328,8 +328,10 @@ export default {
 
     async initAllData () {
       try {
-        // console.log(' >>> Init all related collections in storage1')
-        await this.$store.dispatch('initAll', 'initAll')
+        if (!this.allInitialized && !this.initialisingIsInProgress) {
+          // console.log(' >>> Init all related collections in storage1')
+          await this.$store.dispatch('initAll', 'initAll')
+        }
       } catch (ex) {
         console.log(ex)
       }

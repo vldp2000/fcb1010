@@ -15,6 +15,7 @@ const getters = {
   currentSongId: state => state.currentSongId,
   currentProgramMidiPedal: state => state.currentProgramMidiPedal,
   allInitialized: state => state.allInitialized,
+  initialisingIsInProgress: state => state.initialisingIsInProgress,
   instrumentListImagesInitialized: state => state.instrumentList[0].imageURL.length > 0,
   refreshSong: state => state.refreshSong,
   defaultPreset: state => state.defaultPreset

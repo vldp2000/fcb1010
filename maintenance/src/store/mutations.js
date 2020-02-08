@@ -7,6 +7,10 @@ const mutations = {
   [types.INIT_ALL] (state) {
     state.allInitialized = true
   },
+  [types.INIT_INPROGRESS] (state, value) {
+    state.initialisingIsInProgress = value
+  },
+
   [types.SET_SONGLIST] (state, songList) {
     state.songList = songList
     // console.log('<State>  songList populated!!!')
@@ -136,7 +140,7 @@ const mutations = {
       let gig = state.gigList.find(item => item.id === gigId)
       if (!gig.songList) {
         let songs = []
-        let items = _sortBy((_pickBy(state.gigsongList, s => s.refgig === gigId)), 'sequencenumber')
+        let items = _sortBy((_pickBy(state.gigSongList, s => s.refgig === gigId)), 'sequencenumber')
         // console.log(items)
         items.forEach(item => {
           if (item.refsong) {
@@ -155,16 +159,16 @@ const mutations = {
     }
   },
 
-  [types.SET_GIGSONGLIST] (state, gigsongList) {
-    state.gigsongList = gigsongList
-    // console.log('<State>  gigsongList populated ß!!!')
+  [types.SET_GIGSONGLIST] (state, gigSongList) {
+    state.gigSongList = gigSongList
+    // console.log('<State>  gigSongList populated ß!!!')
     // console.log(list)
   },
   [types.ADD_GIGSONG] (state, gigsong) {
-    state.gigsongList.push(gigsong)
+    state.gigSongList.push(gigsong)
   },
   [types.UPDATE_GIGSONG] (state, gigsong) {
-    const item = state.gigsongList.find(item => item.id === gigsong.id)
+    const item = state.gigSongList.find(item => item.id === gigsong.id)
     Object.assign(item, gigsong)
   },
 
