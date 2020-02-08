@@ -204,21 +204,24 @@ const actions = {
 
   resetGigSongs ({ commit, getters }, payload) { // {}  gigId, songList)
     try {
-      // console.log('resetGigSongs')
+      console.log('resetGigSongs')
       let items2 = _pickBy(getters.gigSongList, gs => gs.refgig === payload.gigId)
       let items = _sortBy(items2, 'sequencenumber')
       // console.log(items2)
-      // console.log(items)
+      console.log(items)
       let i = 1
       payload.songList.forEach(song => {
         let gs = items.find(s => s.refsong === song.id)
-        if (gs && i <= items.length) {
+        if (gs) {
           if (i !== gs.sequencenumber) {
             let gigSong = Object.assign({}, gs)
             gigSong.sequencenumber = i
-            // console.log(gigSong)
+            console.log(gigSong)
             GigsService.putGigSong(gigSong)
           }
+        } else {
+          let newGS = { 'id': -1, 'refgig': payload.gigId, 'refsong': song.id, 'sequencenumber': i, 'currentFlag': 0 }
+          GigsService.postGigSong(newGS)
         }
         // console.log('---------------------------------------')
         i = i + 1

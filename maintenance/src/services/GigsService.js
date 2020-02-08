@@ -76,7 +76,7 @@ export default {
     try {
       console.log('// ----------->>return Api().gigSong(gigSong)')
       console.log(gigSong)
-      let result = await Api().gigSong('gigSong', gigSong)
+      let result = await Api().post('gigSong', gigSong)
       let newGigSong = await result.data
       console.log('// -----------result')
       console.log(newGigSong)

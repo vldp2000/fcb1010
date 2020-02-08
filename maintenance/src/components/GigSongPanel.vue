@@ -14,10 +14,11 @@
                 </tr>
               </thead>
               <draggable
-                v-model="list"
+                v-model="gigSonglist"
                 tag="tbody"
+                group="songs"
               >
-                <tr v-for="item in list" :key="item.id">
+                <tr v-for="item in gigSonglist" :key="item.id">
                   <td scope="row">{{ item.id }}</td>
                   <td>{{ item.name }}</td>
                 </tr>
@@ -39,14 +40,14 @@
                 </tr>
               </thead>
               <draggable
-                v-model="allSongs"
+                v-model="allSongList"
                 tag="tbody"
+                group="songs"
               >
-                <tr v-for="item in allSongs" :key="item.id">
+                <tr v-for="item in allSongList" :key="item.id">
                   <td scope="row">{{ item.id }}</td>
                   <td>{{ item.name }}</td>
                 </tr>
-                <button slot="footer" @click="saveOrder">Save </button>
               </draggable>
             </table>
           </div>
@@ -74,27 +75,34 @@ export default {
       default: null
     },
     allSongs: {
-      type: Array,
-      default: null
+      type: Array
     }
   },
 
   data () {
     return {
       dragging: false,
-      list: []
+      gigSonglist: [],
+      allSongList: []
     }
   },
   mounted () {
-    // console.log(this.gig)
+    console.log(this.allSongs)
     if (this.gig) {
-      this.list = this.gig.songList
+      this.gigSonglist = this.gig.songList
+    }
+    if (this.allSongs) {
+      let list = Object.assign([], this.allSongs)
+      this.gigSonglist.forEach(song => {
+        list = list.filter(item => item.id !== song.id)
+      })
+      this.allSongList = list
     }
   },
 
   methods: {
     saveOrder: function () {
-      const result = { 'gigId': this.gig.id, 'songList': this.list }
+      const result = { 'gigId': this.gig.id, 'songList': this.gigSonglist }
       this.$store.dispatch('resetGigSongs', result)
     },
     checkMove: function (e) {
@@ -105,6 +113,11 @@ export default {
 </script>
 
 <style scoped>
+  .handle {
+    float: left;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
   .buttons {
     margin-top: 35px;
   }
