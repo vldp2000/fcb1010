@@ -46,7 +46,8 @@ export default {
           sortable: false,
           value: 'name'
         },
-        { text: 'midipedal', value: 'midipedal' }
+        { text: 'midipedal', value: 'midipedal' },
+        { text: 'tytle', value: 'tytle' }
       ],
       selectedPresetList: [],
       expanded: [],
@@ -65,15 +66,27 @@ export default {
   },
   methods: {
     async rowClicked (value) {
-      console.log(`<SongProgramPanel row clicked> ${value.id}`)
-      console.log(value)
-
-      if (this.expanded.length > 0) {
+      // console.log(`<SongProgramPanel row clicked> ${value.id}`)
+      // console.log(value)
+      let oldId = -1
+      if (this.expanded.length === 1) {
+        oldId = this.expanded[0].id
         this.expanded.pop()
       }
-      this.selectedPresetList = value.presetList
-      this.expanded.push(value)
-      console.log(this.selectedPresetList)
+      if (oldId === value.id || !value.presetList || value.presetList.lenght === 0) {
+        console.log('empty ----')
+      } else {
+        console.log('expand ----')
+        this.selectedPresetList = value.presetList
+        this.expanded.push(value)
+      }
+
+      // if (this.expanded.length > 0) {
+      //   this.expanded.pop()
+      // }
+      // this.selectedPresetList = value.presetList
+      // this.expanded.push(value)
+      // console.log(this.selectedPresetList)
     }
   }
 

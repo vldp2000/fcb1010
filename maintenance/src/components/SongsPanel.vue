@@ -270,20 +270,40 @@ export default {
 
     async rowClicked (value) {
       console.log(`<SongPanel row clicked> ${value.id}`)
-      if (this.expanded.length > 0) {
+      let oldId = -1
+
+      if (this.expanded.length === 1) {
+        oldId = this.expanded[0].id
         this.expanded.pop()
       }
+
       let song = this.songList.find(sn => sn.id === value.id)
       console.log(song)
+
       if (!song.programList || song.programList.lenght === 0) {
         await this.$store.dispatch('addSongItems', value.id)
-        // await SongsService.getSongItems(value.id)
-        this.selectedProgramList = this.songList.find(sn => sn.id === value.id).programList
-      } else {
-        this.selectedProgramList = song.programList
       }
-      this.expanded.push(value)
-      console.log(this.selectedProgramList)
+      if (oldId === value.id || !value.programList || value.programList.lenght === 0) {
+        console.log('empty ----')
+      } else {
+        console.log('expand ----')
+        this.selectedProgramList = song.programList
+        this.expanded.push(value)
+      }
+      //   console.log('expand ----')
+      //   this.selectedProgramList = song.programList
+      //   this.expanded.push(value)
+      // }
+
+      // if (!song.programList || song.programList.lenght === 0) {
+      //   await this.$store.dispatch('addSongItems', value.id)
+      //   // await SongsService.getSongItems(value.id)
+      //   this.selectedProgramList = this.songList.find(sn => sn.id === value.id).programList
+      // } else {
+      //   this.selectedProgramList = song.programList
+      // }
+      // this.expanded.push(value)
+      // console.log(this.selectedProgramList)
     }
   }
 }
