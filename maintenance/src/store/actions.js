@@ -89,7 +89,57 @@ async function initAllLists (commit, getters) {
   console.log('<<<Mutation. Finish Init ALL>>')
 }
 
-// ------------------------------
+// ---addNewSong-------
+async function addNewSong (getters, song) {
+  let newSong = await SongsService.postSong(song)
+  // console.log('1. __ New SOng__')
+  // console.log(newSong)
+
+  const pList = ['A', 'B', 'C', 'D']
+  let pr = {}
+  let i = 1
+  for (let p of pList) {
+  // pList.forEach(async p => {
+    pr = {
+      'id': -1,
+      'name': p,
+      'midipedal': i,
+      'refsong': newSong.id,
+      'tytle': p
+    }
+    let newProg = await SongsService.postSongProgram(pr)
+    // console.log('2. ---createNewSongProgram-------', newProg)
+
+    // to simplify the creating new song preset there is the default setup enforset
+    // each Instrument has the InstrumentBank and Preset records
+    // with the same Ids as instrumnent.id
+    for (let instrument of getters.instrumentList) {
+      let preset = {
+        'id': -1,
+        'refsong': newSong.id,
+        'refsongprogram': newProg.id,
+        'refinstrument': instrument.id,
+        'refinstrumentbank': instrument.id, // todo
+        'refpreset': instrument.id, // todo
+        'volume': 0,
+        'pan': 64,
+        'muteflag': 0,
+        'reverbflag': 0,
+        'delayflag': 0,
+        'modeflag': 0,
+        'reverbvalue': 0,
+        'delayvalue': 0
+      }
+      // let newPreset =
+      await SongsService.postSongPreset(preset)
+      // console.log('3. ---new preset -------', newPreset)
+    }
+    i = i + 1
+  }
+  // console.log(' --- new song ---- ', newSong)
+  return newSong
+}
+// ----------A C T I O N S--------------------
 
 const actions = {
   initAll ({ commit, getters }, payload) {
@@ -99,45 +149,12 @@ const actions = {
   setSongList ({ commit }, payload) {
     commit(types.SET_SONGLIST, payload)
   },
+
   addSong ({ commit, getters }, song) {
-    const pList = ['A', 'B', 'C', 'D']
-    let i = 1
-    pList.forEach(p => {
-      const prog = SongsService.postSongProgram(
-        {
-          'id': -1,
-          'name': p,
-          'midipedal': i,
-          'refsong': song.id,
-          'tytle': p
-        }
-      )
-      // to simplify the creating new song preset there is the default setup enforset
-      // each Instrument has the InstrumentBank and Preset records
-      // with the same Ids as instrumnent.id
-      getters.instrumentList.forEach(instrument => {
-        SongsService.postSongPreset({
-          'id': -1,
-          'refsong': song.id,
-          'refsongprogram': prog.id,
-          'refinstrument': instrument.id,
-          'refinstrumentbank': instrument.id, // todo
-          'refpreset': instrument.id, // todo
-          'volume': 0,
-          'pan': 64,
-          'muteflag': 0,
-          'reverbflag': 0,
-          'delayflag': 0,
-          'modeflag': 0,
-          'reverbvalue': 0,
-          'delayvalue': 0
-        })
-      })
-      i = i + 1
-    })
-    const newSong = SongsService.postSong(song)
+    const newSong = addNewSong(getters, song)
     commit(types.ADD_SONG, newSong)
   },
+
   updateSong ({ commit }, song) {
     // console.log('action - updateSong')
     SongsService.putSong(song)

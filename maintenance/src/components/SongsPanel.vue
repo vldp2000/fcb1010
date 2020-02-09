@@ -11,7 +11,6 @@
       item-key="id"
       sort-by="id"
       class="elevation-1"
-      hide-default-footer
       ref="sortableTable"
     >
       <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
@@ -20,7 +19,6 @@
         <td :colspan="headers.length">
           <div>
             <song-programs-panel v-bind:programList="selectedProgramList" >
-
             </song-programs-panel>
           </div>
         </td>
@@ -124,7 +122,7 @@
 <script>
 
 import { mapState } from 'vuex'
-import SongsService from '@/services/SongsService'
+// import SongsService from '@/services/SongsService'
 import SongProgramsPanel from '@/components/SongProgramsPanel'
 
 export default {
@@ -206,7 +204,7 @@ export default {
     },
 
     editItem (item) {
-      console.log(item)
+      console.log('... Edit Item', item)
       this.editedIndex = this.songs.indexOf(item)
       console.log(this.editedIndex)
       this.editedItem = Object.assign({}, item)
@@ -278,7 +276,8 @@ export default {
       let song = this.songList.find(sn => sn.id === value.id)
       console.log(song)
       if (!song.programList || song.programList.lenght === 0) {
-        await SongsService.getSongItems(value.id)
+        await this.$store.dispatch('addSongItems', value.id)
+        // await SongsService.getSongItems(value.id)
         this.selectedProgramList = this.songList.find(sn => sn.id === value.id).programList
       } else {
         this.selectedProgramList = song.programList

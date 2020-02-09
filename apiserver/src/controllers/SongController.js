@@ -107,11 +107,12 @@ module.exports = {
  async postSongProgram (req, res) {
   try {
     let model = req.body
+    console.log(model)
     delete model.id
-
-    //console.log(model)
+    console.log('------ SongProgram.create(model) -------------')
+    console.log(model)
     const songProgram = await SongProgram.create(model)
-    //console.log(song)
+    console.log(songProgram)
     res.send(songProgram)
   } catch (err) {
     console.log(err)
@@ -173,11 +174,13 @@ async putSongProgram (req, res) {
 
   async postSongProgramPreset (req, res) {
     try {
+      console.log('=======  postSongProgramPreset ======= = ')
       let model = req.body
+      console.log(model)
       delete model.id
-      delete model.createdAt
-      delete model.updatedAt
-      //console.log(model)
+      // delete model.createdAt
+      // delete model.updatedAt
+      console.log(model)
       const songProgramPreset = await SongProgramPreset.create(model)
       //console.log(song)
       res.send(songProgramPreset)

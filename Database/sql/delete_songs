@@ -1,0 +1,8 @@
+delete from songprogrampreset 
+where refsongprogram > 49;
+
+delete from songprogram
+where id > 49;
+
+delete from song
+where id > 13;
