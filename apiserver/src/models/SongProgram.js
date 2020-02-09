@@ -7,8 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     midipedal: DataTypes.INTEGER,
-    refsong: DataTypes.INTEGER
+    refsong: DataTypes.INTEGER,
+    tytle: DataTypes.STRING
   },
+  
   {
     underscored: false,
     timestamps: false,

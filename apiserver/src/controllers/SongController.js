@@ -15,6 +15,7 @@ function reqLogger (name, req) {
 
 module.exports = {
 
+  // SONG ------------------------------------- 
   async index (req, res) {
     try {
 
@@ -49,6 +50,97 @@ module.exports = {
     }
   },
 
+   // ------------------------------------- 
+   async post (req, res) {
+    try {
+      let model = req.body
+      delete model.id
+      delete model.createdAt
+      delete model.updatedAt
+      //console.log(model)
+      const song = await Song.create(model)
+      //console.log(song)
+      res.send(song)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to create the song'
+      })
+    }
+  },
+
+  async put (req, res) {
+    try {
+      //console.log(req.body)
+      await Song.update(req.body, {
+        where: {
+          id: req.params.id
+        }
+      })
+      res.status(200).send({
+        message: 'Ok'
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to update the song'
+      })
+    }
+  },
+
+  async selectAll (req, res) {
+    try {
+      //reqLogger('== select All == ', req)
+
+      let songList = null
+      songList = await Song.findAll()
+      res.send(songList)
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'strange error has occured trying to fetch the songs'
+      })
+    }
+  },
+
+ // SONG PROGRAM------------------------------------- 
+ async postSongProgram (req, res) {
+  try {
+    let model = req.body
+    delete model.id
+
+    //console.log(model)
+    const songProgram = await SongProgram.create(model)
+    //console.log(song)
+    res.send(songProgram)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({
+      error: 'an error has occured trying to create the song'
+    })
+  }
+},
+
+async putSongProgram (req, res) {
+  try {
+    //console.log(req.body)
+    await SongProgram.update(req.body, {
+      where: {
+        id: req.params.id
+      }
+    })
+    res.status(200).send({
+      message: 'Ok'
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({
+      error: 'an error has occured trying to update the song'
+    })
+  }
+},
+
+  // ------- Song Items -------------------------------
   async getSongItems (req, res) {
     req.params.songId
     try {
@@ -105,7 +197,9 @@ module.exports = {
           id: req.params.id
         }
       })
-      res.send(req.body)
+      res.status(200).send({
+        message: 'Ok'
+      })
     } catch (err) {
       console.log(err)
       res.status(500).send({
@@ -114,56 +208,7 @@ module.exports = {
     }
   },
 
-  // ------------------------------------- 
-  async post (req, res) {
-    try {
-      let model = req.body
-      delete model.id
-      delete model.createdAt
-      delete model.updatedAt
-      //console.log(model)
-      const song = await Song.create(model)
-      //console.log(song)
-      res.send(song)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'an error has occured trying to create the song'
-      })
-    }
-  },
-
-  async put (req, res) {
-    try {
-      //console.log(req.body)
-      await Song.update(req.body, {
-        where: {
-          id: req.params.id
-        }
-      })
-      res.send(req.body)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'an error has occured trying to update the song'
-      })
-    }
-  },
-
-  async selectAll (req, res) {
-    try {
-      //reqLogger('== select All == ', req)
-
-      let songList = null
-      songList = await Song.findAll()
-      res.send(songList)
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'strange error has occured trying to fetch the songs'
-      })
-    }
-  },
+ 
   async getSongProgramPresetsExtended (req, res) {
     try {
       // console.log('........async getPresetsExtended')

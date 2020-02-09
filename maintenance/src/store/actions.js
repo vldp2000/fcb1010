@@ -4,8 +4,8 @@ import SongsService from '@/services/SongsService'
 import InstrumentsService from '@/services/InstrumentsService'
 import InstrumentBankService from '@/services/InstrumentBankService'
 import PresetsService from '@/services/PresetsService'
-import _sortBy from 'lodash/sortBy'
-import _pickBy from 'lodash/pickBy'
+// import _sortBy from 'lodash/sortBy'
+// import _pickBy from 'lodash/pickBy'
 
 const config = require('@/config/config')
 let clientInitialized = false
@@ -99,11 +99,48 @@ const actions = {
   setSongList ({ commit }, payload) {
     commit(types.SET_SONGLIST, payload)
   },
-  addSong ({ commit }, song) {
-    commit(types.ADD_SONG, song)
+  addSong ({ commit, getters }, song) {
+    const pList = ['A', 'B', 'C', 'D']
+    let i = 1
+    pList.forEach(p => {
+      const prog = SongsService.postSongProgram(
+        {
+          'id': -1,
+          'name': p,
+          'midipedal': i,
+          'refsong': song.id,
+          'tytle': p
+        }
+      )
+      // to simplify the creating new song preset there is the default setup enforset
+      // each Instrument has the InstrumentBank and Preset records
+      // with the same Ids as instrumnent.id
+      getters.instrumentList.forEach(instrument => {
+        SongsService.postSongPreset({
+          'id': -1,
+          'refsong': song.id,
+          'refsongprogram': prog.id,
+          'refinstrument': instrument.id,
+          'refinstrumentbank': instrument.id, // todo
+          'refpreset': instrument.id, // todo
+          'volume': 0,
+          'pan': 64,
+          'muteflag': 0,
+          'reverbflag': 0,
+          'delayflag': 0,
+          'modeflag': 0,
+          'reverbvalue': 0,
+          'delayvalue': 0
+        })
+      })
+      i = i + 1
+    })
+    const newSong = SongsService.postSong(song)
+    commit(types.ADD_SONG, newSong)
   },
   updateSong ({ commit }, song) {
     // console.log('action - updateSong')
+    SongsService.putSong(song)
     commit(types.UPDATE_SONG, song)
   },
   refreshSong ({ commit }, songId) {
@@ -205,13 +242,13 @@ const actions = {
   resetGigSongs ({ commit, getters }, payload) { // {}  gigId, songList)
     try {
       console.log('resetGigSongs')
-      let items2 = _pickBy(getters.gigSongList, gs => gs.refgig === payload.gigId)
-      let items = _sortBy(items2, 'sequencenumber')
-      // console.log(items2)
-      console.log(items)
+      // let oldList = Object.assign([], _pickBy(getters.gigSongList, gs => gs.refgig === payload.gigId))
+      let oldList = Object.assign([], getters.gigSongList.filter(gs => gs.refgig === payload.gigId))
+      console.log(oldList)
       let i = 1
       payload.songList.forEach(song => {
-        let gs = items.find(s => s.refsong === song.id)
+        let gs = oldList.find(item => (item.refsong === song.id))
+        console.log(gs)
         if (gs) {
           if (i !== gs.sequencenumber) {
             let gigSong = Object.assign({}, gs)
@@ -219,6 +256,8 @@ const actions = {
             console.log(gigSong)
             GigsService.putGigSong(gigSong)
           }
+          oldList = oldList.filter(item => item.id !== gs.id)
+          console.log(oldList)
         } else {
           let newGS = { 'id': -1, 'refgig': payload.gigId, 'refsong': song.id, 'sequencenumber': i, 'currentFlag': 0 }
           GigsService.postGigSong(newGS)
@@ -226,6 +265,8 @@ const actions = {
         // console.log('---------------------------------------')
         i = i + 1
       })
+      console.log(oldList)
+      oldList.forEach(s => GigsService.deleteGigSong(s.id))
     } catch (ex) {
       console.log(ex)
     }

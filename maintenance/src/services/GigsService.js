@@ -85,6 +85,17 @@ export default {
     } catch (ex) {
       console.log(ex)
     }
+  },
+  async deleteGigSong (gigSongId) {
+    try {
+      console.log('// ----------->>return Api().deleteGigSong')
+      console.log(gigSongId)
+      await Api().delete(`gigSong/${gigSongId}`)
+      // let newGigSong = await result.data
+      console.log('// -----------result')
+      // console.log(newGigSong)
+    } catch (ex) {
+      console.log(ex)
+    }
   }
-
 }

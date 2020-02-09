@@ -11,7 +11,7 @@
       item-key="id"
       sort-by="id"
       class="elevation-1"
-      hide-actions
+      hide-default-footer
       ref="sortableTable"
     >
       <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
@@ -233,13 +233,15 @@ export default {
       console.log(this.editedItem)
       if (this.editedIndex > -1) {
         try {
-          SongsService.put(this.editedItem)
+          // SongsService.put(this.editedItem)
+          this.$store.dispatch('updateSong', this.editedItem)
         } catch (err) {
           console.log(err)
         }
       } else {
         try {
-          SongsService.post(this.editedItem)
+          // SongsService.post(this.editedItem)
+          this.$store.dispatch('addSong', this.editedItem)
         } catch (err) {
           console.log(err)
         }
@@ -249,7 +251,7 @@ export default {
     },
     async init () {
       console.log(' >>> Init all relted to songs storage')
-      await SongsService.initAll()
+      // await SongsService.initAll()
       await this.showLoading(false)
       console.log(' Finish Init all relted to songs storage <<< ')
     },

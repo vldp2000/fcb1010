@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout align-start justify-center>
-      <v-data-table :headers="headers" :items="desserts" hide-actions class="elevation-2">
+      <v-data-table :headers="headers" :items="desserts" hide-default-footer class="elevation-2">
         <template slot="items" slot-scope="props">
           <td class="handle" style="max-width: 28px;">::</td>
           <td>{{ props.item.name }}</td>

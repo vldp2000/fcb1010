@@ -156,6 +156,28 @@ module.exports = {
       })
     }
   },
+
+  async deleteGigSong (req, res) {
+    try {
+      console.log(' --- delete ---')
+      console.log(req.params.id)
+      console.log(req.body)
+      await GigSong.destroy({
+        where: {
+          id: req.params.id
+        }
+      })
+      res.status(200).send({
+        messager: 'GigSong deleted'
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'an error has occured trying to update the GigSong'
+      })
+    }
+  },
+
   async currentgig (req, res) {
     try {
       let gig = null

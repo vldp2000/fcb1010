@@ -23,7 +23,7 @@ export default {
     return result.data
   },
 
-  async post (song) {
+  async postSong (song) {
     try {
       // console.log('// ----------->>return Api().post(song)')
       // console.log(song)
@@ -38,7 +38,7 @@ export default {
     }
   },
 
-  async put (song) {
+  async putSong (song) {
     try {
       // console.log('// ----------->>return Api().put(song{song.id}, song)')
       // console.log(song)
@@ -53,9 +53,9 @@ export default {
       console.log(ex)
     }
   },
-
+  // -- SONG PROGRAM PRESET -------
   async getSongItems (songId) {
-    // console.log(`// ----------->> get songitems by id ${songId}`)
+    console.log(`// ----------->> get songitems by id ${songId}`)
     try {
       let items = await Api().get(`songitems/${songId}`)
       let programs = await items.data.songPrograms
@@ -69,7 +69,7 @@ export default {
         program.presetList.push(item)
       })
       const songPrograms = { 'songId': songId, 'programs': programs }
-      // console.log(songPrograms)
+      console.log(songPrograms)
       return songPrograms
     } catch (ex) {
       console.log(ex)
@@ -80,7 +80,7 @@ export default {
     try {
       console.log('// ----------->>return Api().postSongPreset')
       console.log(songPreset)
-      let result = await Api().postSongPreset('songprogrampreset', songPreset)
+      let result = await Api().post('songprogrampreset', songPreset)
       let newSongPreset = await result.data
       console.log('// -----------result')
       console.log(newSongPreset)
@@ -99,6 +99,33 @@ export default {
       console.log('// -----------result')
       console.log(newSongPreset)
       // await store.dispatch('updateSongPreset', newSongPreset)
+    } catch (ex) {
+      console.log(ex)
+    }
+  },
+
+  // -- SONG PROGRAM PRESET -------
+  async postSongProgram (songProgram) {
+    try {
+      console.log('// ----------->>return Api().postSongProgram')
+      console.log(songProgram)
+      let result = await Api().post('songprogram', songProgram)
+      let newSongProgram = await result.data
+      console.log('// -----------result')
+      console.log(newSongProgram)
+      return newSongProgram
+    } catch (ex) {
+      console.log(ex)
+    }
+  },
+  async putSongProgram (songProgram) {
+    try {
+      console.log('// --->>Api().putSongProgram')
+      console.log(songProgram.id)
+      let result = await Api().put(`songprogram/${songProgram.id}`, songProgram)
+      let newSongProgram = await result.data
+      console.log('// -----------result')
+      console.log(newSongProgram)
     } catch (ex) {
       console.log(ex)
     }
