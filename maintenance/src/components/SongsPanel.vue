@@ -13,7 +13,6 @@
       class="elevation-1"
       ref="sortableTable"
     >
-      <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
 
       <template v-slot:expanded-item="{ headers }">
         <td :colspan="headers.length">
@@ -50,10 +49,12 @@
             vertical
           ></v-divider>
           <v-spacer></v-spacer>
+
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
             </template>
+
             <v-card>
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
@@ -290,20 +291,6 @@ export default {
         this.selectedProgramList = song.programList
         this.expanded.push(value)
       }
-      //   console.log('expand ----')
-      //   this.selectedProgramList = song.programList
-      //   this.expanded.push(value)
-      // }
-
-      // if (!song.programList || song.programList.lenght === 0) {
-      //   await this.$store.dispatch('addSongItems', value.id)
-      //   // await SongsService.getSongItems(value.id)
-      //   this.selectedProgramList = this.songList.find(sn => sn.id === value.id).programList
-      // } else {
-      //   this.selectedProgramList = song.programList
-      // }
-      // this.expanded.push(value)
-      // console.log(this.selectedProgramList)
     }
   }
 }

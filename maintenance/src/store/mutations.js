@@ -28,6 +28,7 @@ const mutations = {
   [types.REFRESH_SONG] (state, payload) {
     state.refreshSong = !state.refreshSong
   },
+
   [types.ADD_SONG_ITEMS] (state, songPrograms) {
     console.log('Mutation... types.ADD_SONG_ITEMS ....')
     try {
@@ -65,6 +66,21 @@ const mutations = {
       console.log(ex)
     }
   },
+
+  [types.UPDATE_SONGPROGRAM] (state, songProgram) {
+    try {
+      let song = state.songList.find(sn => sn.id === songProgram.refsong)
+      let program = song.programList.find(pr => pr.id === songProgram.id)
+      console.log('types.UPDATE_SONGPROGRAMPRESET -->>')
+      console.log(songProgram.tytle)
+      program.tytle = songProgram.tytle
+      console.log(songProgram.tytle)
+    } catch (ex) {
+      console.log('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
+      console.log(ex)
+    }
+  },
+
   [types.SET_INSTRUMENTLIST] (state, instrumentList) {
     state.instrumentList = instrumentList
   },

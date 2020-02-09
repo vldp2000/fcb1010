@@ -185,8 +185,8 @@ export default {
         oldGigId = this.expanded[0].id
         this.expanded.pop()
       }
-      console.log(`(${oldGigId} !== ${value.id} && ${value.songList.length} )`)
-      console.log(value.songList)
+      // console.log(`(${oldGigId} !== ${value.id} && ${value.songList.length} )`)
+      // console.log(value.songList)
       if (oldGigId === value.id || !value.songList || value.songList.lenght === 0) {
         console.log('empty ----')
       } else {

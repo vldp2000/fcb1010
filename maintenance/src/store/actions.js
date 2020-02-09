@@ -175,6 +175,10 @@ const actions = {
       console.log(ex)
     }
   },
+  updateSongProgram ({ commit }, songProgram) {
+    SongsService.putSongProgram(songProgram)
+    commit(types.UPDATE_SONGPROGRAM, songProgram)
+  },
 
   updateSongProgramPreset ({ commit }, songPreset) {
     console.log('--- action >> updateSongProgramPreset')

@@ -47,7 +47,9 @@
       <div id="Proram0" v-bind:class="(currentProgramIdx === 0) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(0)">
         <h1>A</h1>
       </div>
-
+      <div class="programTytle">
+        <b>{{ getProgramTytle(0) }}</b>
+      </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control :presetControlData='getPresetControlData(0, 0)'/>
@@ -68,7 +70,6 @@
           <preset-control :presetControlData='getPresetControlData(0, 3)' />
         </v-card>
       </v-col>
-
     </v-row>
 
 <!-------PROFRAM B----------->
@@ -77,7 +78,9 @@
       <div id="Proram1" v-bind:class="(currentProgramIdx === 1) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(1)" >
         <h1>B</h1>
       </div>
-
+      <div class="programTytle">
+        <b>{{ getProgramTytle(1) }}</b>
+      </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control :presetControlData='getPresetControlData(1, 0)' />
@@ -106,7 +109,9 @@
       <div id="Proram2"  v-bind:class="(currentProgramIdx === 2) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(2)">
         <h1>C</h1>
       </div>
-
+      <div class="programTytle">
+        <b>{{ getProgramTytle(2) }}</b>
+      </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control :presetControlData='getPresetControlData(2, 0)' />
@@ -135,7 +140,9 @@
       <div id="Proram3"  v-bind:class="(currentProgramIdx === 3) ? 'progLabelSelected' : 'progLabel'" @click="onProgramClick(3)">
         <h1>D</h1>
       </div>
-
+      <div class="programTytle">
+        <b>{{ getProgramTytle(3) }}</b>
+      </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control  :presetControlData='getPresetControlData(3, 0)'/>
@@ -157,10 +164,10 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row md12 ma-0 pa-0 no-gutters>
+    <!-- <v-row md12 ma-0 pa-0 no-gutters>
       <v-btn large @click="btnClickPogram()" > change current program </v-btn>
       <v-btn large @click="btnClickSong()" > change current song </v-btn>
-    </v-row>
+    </v-row> -->
   </v-container>
 </template>
 
@@ -355,7 +362,11 @@ export default {
         console.log(ex)
       }
     },
-
+    getProgramTytle (idx) {
+      if (this.currentSong && this.currentSong.programList) {
+        return this.currentSong.programList[idx].tytle
+      }
+    },
     async initSongPrograms (songId) {
       this.$store.dispatch('addSongItems', songId)
     },
@@ -412,7 +423,7 @@ export default {
 
 .darkBackgroud {
   /* background-color:rgba(50, 31, 119, 0.83) */
-  background-color:rgba(8, 8, 8, 0.83)
+  background-color:rgba(12, 12, 12, 0.884)
 }
 
 .progLabel {
@@ -482,6 +493,41 @@ export default {
   margin-top: 5px;
   color: rgb(103, 103, 109);
   font-size: 36px;
+}
+.programTytle {
+
+  -ms-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  filter: none; /* Mandatory for IE9 to show the vertical text correctly */
+  margin-top: 110px;
+  margin-left: 5px;
+  padding-left: 10px;
+  padding-top: 5px;
+  width: 10px;
+  color: rgb(99, 98, 96);
+  -ms-transform-origin: center center 0;
+  -moz-transform-origin: center center 0;
+  -webkit-transform-origin: center center  0;
+  transform-origin: center center 0;
+  display: block;
+  position: relative;
+  text-align: center;
+  white-space: nowrap !important;
+  font-size: 14px;
+/*
+  border: 1px solid red; */
+  /* transform-origin:left top; */
+}
+
+.rotated {
+  /* border: 1px solid red;
+  writing-mode: sideways-lr;
+  -webkit-writing-mode: sideways-lr;
+  -ms-writing-mode: sideways-lr; */
+  writing-mode: vertical-rl;
+  text-orientation: upright;
 }
 
 </style>
