@@ -185,7 +185,7 @@ export default {
       val || this.closeDialog()
     },
     instrumentId: function () {
-      // console.log(`-- on InstrumentId change ${this.instrumentId}`)
+      // this.$log.debug(`-- on InstrumentId change ${this.instrumentId}`)
       if (this.instrumentId && this.instrumentId > 0) {
         this.editedItem.refinstrument = this.instrumentId
         this.bankList = this.getBankList(this.instrumentId)
@@ -204,49 +204,49 @@ export default {
 
   methods: {
     async init () {
-      // console.log(this.presetList.length)
+      // this.$log.debug(this.presetList.length)
       if (this.presetList.length === 0) {
-        // console.log('Init presets storage')
+        // this.$log.debug('Init presets storage')
         let result = await PresetsService.getAll()
         let list = await result.data
-        // console.log('<< Init preset List?>>')
+        // this.$log.debug('<< Init preset List?>>')
         await this.$store.dispatch('setPresetList', list)
-        // console.log(this.$store.state.presetList)
+        // this.$log.debug(this.$store.state.presetList)
       } else {
-        console.log(' Preset List already populated')
-        // console.log(this.$store.state.presetList)
+        this.$log.debug(' Preset List already populated')
+        // this.$log.debug(this.$store.state.presetList)
       }
 
       if (this.instrumentList.length === 0) {
-        // console.log('Init instrument storage')
+        // this.$log.debug('Init instrument storage')
         let result = await InstrumentsService.getAll()
         let list = await result.data
         await this.$store.dispatch('setInstrumentList', list)
       } else {
-        console.log(' Instrument Bank already populated')
-        // console.log(this.$store.state.instrumentBankList)
+        this.$log.debug(' Instrument Bank already populated')
+        // this.$log.debug(this.$store.state.instrumentBankList)
       }
 
       if (this.instrumentBankList.length === 0) {
-        // console.log('Init instrument Banks storage')
+        // this.$log.debug('Init instrument Banks storage')
         let result = await InstrumentBankService.getAll()
         let list = await result.data
-        // console.log('<< Init instrument bank List?>>')
+        // this.$log.debug('<< Init instrument bank List?>>')
         await this.$store.dispatch('setInstrumentBankList', list)
-        // console.log(this.$store.state.instrumentBankList)
+        // this.$log.debug(this.$store.state.instrumentBankList)
       } else {
-        console.log(' Instrument Bank List already populated')
-        // console.log(this.$store.state.instrumentBankList)
+        this.$log.debug(' Instrument Bank List already populated')
+        // this.$log.debug(this.$store.state.instrumentBankList)
       }
     },
 
     editItem (item) {
-      // console.log(`-------start editItem (item)  ${item.id}`)
+      // this.$log.debug(`-------start editItem (item)  ${item.id}`)
       this.editedIndex = this.presetList.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
       this.instrumentId = item.refinstrument
-      // console.log(`-------finish editItem (item)  ${item.id}`)
+      // this.$log.debug(`-------finish editItem (item)  ${item.id}`)
     },
 
     deleteItem (item) {
@@ -266,34 +266,34 @@ export default {
     },
 
     savePreset () {
-      // console.log('savePreset () -------')
-      // console.log(this.editedItem)
+      // this.$log.debug('savePreset () -------')
+      // this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           PresetsService.put(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       } else {
         try {
           PresetsService.post(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       }
       this.closeDialog()
     },
     getBankList (id) {
-      // console.log(' -----getBankList======== ')
+      // this.$log.debug(' -----getBankList======== ')
       let result = []
-      // console.log(id)
+      // this.$log.debug(id)
       if (id > -1 && this.editedItem.refinstrument && this.editedItem.refinstrument > -1) {
         result = this.instrumentBankList.filter(item => item.refinstrument === id)
         if (result && result.length === 1) {
           this.bankId = result.id
         }
       }
-      // console.log(result)
+      // this.$log.debug(result)
       return result
     },
     getInstrument (id) {

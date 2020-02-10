@@ -158,7 +158,7 @@ export default {
     ]
   }),
   created () {
-    console.log('VUE is mounted')
+    this.$log.debug('VUE is mounted')
     this.initAllData()
   },
 
@@ -171,11 +171,11 @@ export default {
     async initAllData () {
       try {
         if (!this.allInitialized && !this.initialisingIsInProgress) {
-          // console.log(' >>> Init all related collections in storage1')
+          // this.$log.debug(' >>> Init all related collections in storage1')
           this.$store.dispatch('initAll', true)
         }
       } catch (ex) {
-        console.log(ex)
+        this.$log.debug(ex)
       }
     }
   }

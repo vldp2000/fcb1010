@@ -16,6 +16,6 @@ export function singleOrDoubleRowClick (item, singleClickFunc, doubleClickFunc) 
       doubleClickFunc(item)
     }
   } catch (ex) {
-    console.log(ex)
+    this.$log.debug(ex)
   }
 }

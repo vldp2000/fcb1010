@@ -6,11 +6,11 @@ const Op = Sequelize.Op
 module.exports = {
   async index (req, res) {
     try {
-      console.log("Select>>>>>>>>>Search")
-      console.log(req.query.search)
+      // this.$log.debug("Select>>>>>>>>>Search")
+      // this.$log.debug(req.query.search)
       let gigs = null
       const search = req.query.search
-      console.log(search)
+      // this.$log.debug(search)
 
       if (search) {
         gigs = await Gig.findAll({
@@ -27,7 +27,7 @@ module.exports = {
       }
       res.send(gigs)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'bad error has occured trying to fetch the gigs'
       })
@@ -39,7 +39,7 @@ module.exports = {
       const gig = await Gig.findById(req.params.gigId)
       res.send(gig)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to show the gigs'
       })
@@ -51,12 +51,12 @@ module.exports = {
       let model = req.body
       delete model.id
       
-      //console.log(model)
+      // this.$log.debug(model)
       const gig = await Gig.create(model)
-      console.log(gig)
+      // this.$log.debug(gig)
       res.send(gig)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to create the gig'
       })
@@ -65,7 +65,7 @@ module.exports = {
 
   async put (req, res) {
     try {
-      console.log(req.body)
+      // this.$log.debug(req.body)
       await Gig.update(req.body, {
         where: {
           id: req.params.id
@@ -73,7 +73,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to update the gig'
       })
@@ -82,12 +82,12 @@ module.exports = {
 
   async selectAll (req, res) {
     try {
-      console.log("Select>>>>>>>>>All giga:")
+      // this.$log.debug("Select>>>>>>>>>All giga:")
       let gigList = null
       gigList = await Gig.findAll()
       res.send(gigList)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'strange error has occured trying to fetch the gigs'
       })
@@ -98,9 +98,9 @@ module.exports = {
     try {
       let id = -1
       let gigSongs = {}
-      // console.log('----Gig--Song---')
+      // this.$log.debug('----Gig--Song---')
       gigId = req.query.id
-      // console.log(gigId)
+      // this.$log.debug(gigId)
       if (gigId > 0) {
         gigSongs =  await GigSong.findAll({
           where: {
@@ -113,10 +113,10 @@ module.exports = {
       } else {
         gigSongs =  await GigSong.findAll()
       }
-      // console.log(gigSongs)
+      // this.$log.debug(gigSongs)
       res.send(gigSongs)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to get the gig song'
       })
@@ -125,7 +125,7 @@ module.exports = {
 
   async putGigSong (req, res) {
     try {
-      console.log(req.body)
+      // this.$log.debug(req.body)
       await GigSong.update(req.body, {
         where: {
           id: req.params.id
@@ -133,7 +133,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to update the GigSong'
       })
@@ -145,12 +145,12 @@ module.exports = {
       let model = req.body
       delete model.id
       
-      //console.log(model)
+      // this.$log.debug(model)
       const gigSong = await GigSong.create(model)
-      console.log(gigSong)
+      // this.$log.debug(gigSong)
       res.send(gigSong)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to create the GigSong'
       })
@@ -159,9 +159,9 @@ module.exports = {
 
   async deleteGigSong (req, res) {
     try {
-      console.log(' --- delete ---')
-      console.log(req.params.id)
-      console.log(req.body)
+      // this.$log.debug(' --- delete ---')
+      // this.$log.debug(req.params.id)
+      // this.$log.debug(req.body)
       await GigSong.destroy({
         where: {
           id: req.params.id
@@ -171,7 +171,7 @@ module.exports = {
         messager: 'GigSong deleted'
       })
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to update the GigSong'
       })
@@ -186,11 +186,11 @@ module.exports = {
           currentFlag: 1
         }
       })
-      // console.log('---current gig ---')
-      // console.log(gig)
+      // this.$log.debug('---current gig ---')
+      // this.$log.debug(gig)
       res.send(gig)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'bad error has occured trying to fetch the gigs'
       })

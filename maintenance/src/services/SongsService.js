@@ -1,20 +1,16 @@
 import Api from '@/services/Api'
-// import store from '@/store/store'
-// import InstrumentsService from '@/services/InstrumentsService'
-// import InstrumentBankService from '@/services/InstrumentBankService'
-// import PresetsService from '@/services/PresetsService'
-// import GigsService from '@/services/GigsService'
+import Vue from 'vue'
 
 export default {
 
   async getAll () {
     try {
-      // console.log('// ----------->> get all songs')
+      // Vue.$log.debug('// ----------->> get all songs')
       let songs = await Api()('songs')
-      // console.log(songs.data)
+      // Vue.$log.debug(songs.data)
       return songs.data
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
@@ -27,28 +23,28 @@ export default {
     try {
       let result = await Api().post('song', song)
       let newSong = await result.data
-      // console.log(newSong)
+      // Vue.$log.debug(newSong)
       return newSong
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
   async putSong (song) {
     try {
       let result = await Api().put(`song/${song.id}`, song)
-      // console.log('// -----------result')
-      console.log(result.data)
+      // Vue.$log.debug('// -----------result')
+      Vue.$log.debug(result.data)
       return result
       // await store.dispatch('updateSong', newSong)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
   // -- SONG PROGRAM PRESET -------
   async getSongItems (songId) {
-    console.log(`// ----------->> get songitems by id ${songId}`)
+    Vue.$log.debug(`// ----------->> get songitems by id ${songId}`)
     try {
       let items = await Api().get(`songitems/${songId}`)
       let programs = await items.data.songPrograms
@@ -62,65 +58,65 @@ export default {
         program.presetList.push(item)
       })
       const songPrograms = { 'songId': songId, 'programs': programs }
-      console.log(songPrograms)
+      Vue.$log.debug(songPrograms)
       return songPrograms
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
   async postSongPreset (songPreset) {
     try {
-      // console.log('// ----------->>return Api().postSongPreset')
-      // console.log(songPreset)
+      // Vue.$log.debug('// ----------->>return Api().postSongPreset')
+      // Vue.$log.debug(songPreset)
       let result = await Api().post('songprogrampreset', songPreset)
       let newSongPreset = await result.data
-      // console.log('// -----------result')
-      // console.log(newSongPreset)
+      // Vue.$log.debug('// -----------result')
+      // Vue.$log.debug(newSongPreset)
       return newSongPreset
       // await store.dispatch('addSongPreset', newSongPreset)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
   async putSongPreset (songPreset) {
     try {
-      // console.log('// --->>Api().putSongPreset')
-      // console.log(songPreset.id)
+      // Vue.$log.debug('// --->>Api().putSongPreset')
+      // Vue.$log.debug(songPreset.id)
       let result = await Api().put(`songprogrampreset/${songPreset.id}`, songPreset)
       let newSongPreset = await result.data
       return newSongPreset
-      // console.log(newSongPreset)
+      // Vue.$log.debug(newSongPreset)
       // await store.dispatch('updateSongPreset', newSongPreset)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
   // -- SONG PROGRAM  -------
   async postSongProgram (songProgram) {
     try {
-      // console.log('// ----------->>return Api().postSongProgram')
-      // console.log(songProgram)
+      // Vue.$log.debug('// ----------->>return Api().postSongProgram')
+      // Vue.$log.debug(songProgram)
       let result = await Api().post('songprogram', songProgram)
       let newSongProgram = await result.data
-      // console.log('// -----------result = ', newSongProgram)
+      // Vue.$log.debug('// -----------result = ', newSongProgram)
       return newSongProgram
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
   async putSongProgram (songProgram) {
     try {
-      // console.log('// --->>Api().putSongProgram')
-      // console.log(songProgram.id)
+      // Vue.$log.debug('// --->>Api().putSongProgram')
+      // Vue.$log.debug(songProgram.id)
       let result = await Api().put(`songprogram/${songProgram.id}`, songProgram)
       let newSongProgram = await result.data
       return newSongProgram
-      // console.log(newSongProgram)
+      // Vue.$log.debug(newSongProgram)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   }
 }

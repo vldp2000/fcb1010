@@ -13,8 +13,8 @@ const mutations = {
 
   [types.SET_SONGLIST] (state, songList) {
     state.songList = songList
-    // console.log('<State>  songList populated!!!')
-    // console.log(songList)
+    // Vue.$log.debug('<State>  songList populated!!!')
+    // Vue.$log.debug(songList)
   },
   [types.ADD_SONG] (state, song) {
     state.songList.push(song)
@@ -30,16 +30,16 @@ const mutations = {
   },
 
   [types.ADD_SONG_ITEMS] (state, songPrograms) {
-    console.log('Mutation... types.ADD_SONG_ITEMS ....')
+    Vue.$log.debug('Mutation... types.ADD_SONG_ITEMS ....')
     try {
       let song = state.songList.find(sn => sn.id === songPrograms.songId)
-      // console.log(` add itens to song list -> ${song.name}`)
+      // Vue.$log.debug(` add itens to song list -> ${song.name}`)
       if (song && !song.programList) {
         Vue.set(song, 'programList', songPrograms.programs)
       }
     } catch (ex) {
-      console.log('Error. Mutation [types.ADD_SONG_ITEMS] (state, { id, programs })')
-      console.log(ex)
+      Vue.$log.debug('Error. Mutation [types.ADD_SONG_ITEMS] (state, { id, programs })')
+      Vue.$log.debug(ex)
     }
   },
   [types.UPDATE_SONGPROGRAMPRESET] (state, payload) {
@@ -48,9 +48,9 @@ const mutations = {
       let program = song.programList.find(pr => pr.id === payload.refsongprogram)
       let preset = program.presetList.find(pr => pr.id === payload.refpreset)
       if (preset) {
-        console.log('types.UPDATE_SONGPROGRAMPRESET -->>')
-        console.log(payload.id)
-        console.log(payload)
+        Vue.$log.debug('types.UPDATE_SONGPROGRAMPRESET -->>')
+        Vue.$log.debug(payload.id)
+        Vue.$log.debug(payload)
         preset.refpreset = payload.refpreset
         preset.volume = payload.volume
         preset.pan = payload.pan
@@ -62,8 +62,8 @@ const mutations = {
         preset.delayvalue = payload.delayvalue
       }
     } catch (ex) {
-      console.log('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
-      console.log(ex)
+      Vue.$log.debug('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
+      Vue.$log.debug(ex)
     }
   },
 
@@ -71,13 +71,13 @@ const mutations = {
     try {
       let song = state.songList.find(sn => sn.id === songProgram.refsong)
       let program = song.programList.find(pr => pr.id === songProgram.id)
-      console.log('types.UPDATE_SONGPROGRAMPRESET -->>')
-      console.log(songProgram.tytle)
+      Vue.$log.debug('types.UPDATE_SONGPROGRAMPRESET -->>')
+      Vue.$log.debug(songProgram.tytle)
       program.tytle = songProgram.tytle
-      console.log(songProgram.tytle)
+      Vue.$log.debug(songProgram.tytle)
     } catch (ex) {
-      console.log('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
-      console.log(ex)
+      Vue.$log.debug('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
+      Vue.$log.debug(ex)
     }
   },
 
@@ -88,29 +88,29 @@ const mutations = {
     state.instrumentList.push(instrument)
   },
   [types.UPDATE_INSTRUMENT] (state, instrument) {
-    // console.log('mutations - updateInstrument')
+    // Vue.$log.debug('mutations - updateInstrument')
     const item = state.instrumentList.find(item => item.id === instrument.id)
     Object.assign(item, instrument)
   },
   [types.SET_INSTRUMENT_IMAGE] (state, payload) {
     try {
-      // console.log('SET_INSTRUMENT_IMAGE ............----->>>')
-      // console.log(payload)
+      // Vue.$log.debug('SET_INSTRUMENT_IMAGE ............----->>>')
+      // Vue.$log.debug(payload)
       payload.forEach(item => {
         let instrument = state.instrumentList.find(i => i.id === item.id)
         if (!instrument.imageURL) {
           Vue.set(instrument, 'imageURL', item.url)
-          // console.log(url)
+          // Vue.$log.debug(url)
         }
       })
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
   [types.SET_PRESETLIST] (state, presetList) {
     state.presetList = presetList
-    // console.log('<State>  presetList populated !!!')
-    // console.log(presetList)
+    // Vue.$log.debug('<State>  presetList populated !!!')
+    // Vue.$log.debug(presetList)
   },
   [types.ADD_PRESET] (state, preset) {
     state.presetList.push(preset)
@@ -121,23 +121,23 @@ const mutations = {
   },
 
   [types.SET_INSTRUMENTBANKLIST] (state, instrumentBankList) {
-    // console.log('mutations - SET InstrumentBank')
+    // Vue.$log.debug('mutations - SET InstrumentBank')
     state.instrumentBankList = instrumentBankList
   },
   [types.ADD_INSTRUMENTBANK] (state, instrumentBank) {
     state.instrumentBankList.push(instrumentBank)
   },
   [types.UPDATE_INSTRUMENTBANK] (state, instrumentBank) {
-    // console.log('mutations - updateInstrumentBank')
+    // Vue.$log.debug('mutations - updateInstrumentBank')
     const item = state.instrumentBankList.find(item => item.id === instrumentBank.id)
     Object.assign(item, instrumentBank)
   },
 
   [types.SET_GIGLIST] (state, gigList) {
     state.gigList = gigList
-    // console.log('<State>  gigList populated ß!!!')
-    // console.log(gigList)
-    // console.log(state.gigList)
+    // Vue.$log.debug('<State>  gigList populated ß!!!')
+    // Vue.$log.debug(gigList)
+    // Vue.$log.debug(state.gigList)
   },
 
   [types.ADD_GIG] (state, gig) {
@@ -150,14 +150,14 @@ const mutations = {
   },
 
   [types.POPULATE_GIG_SONGS] (state, gigId) {
-    // console.log('>>>>>>----types.POPULATE_GIG_SONGS -->>')
-    // console.log(gigId)
+    // Vue.$log.debug('>>>>>>----types.POPULATE_GIG_SONGS -->>')
+    // Vue.$log.debug(gigId)
     try {
       let gig = state.gigList.find(item => item.id === gigId)
       if (!gig.songList) {
         let songs = []
         let items = _sortBy((_pickBy(state.gigSongList, s => s.refgig === gigId)), 'sequencenumber')
-        // console.log(items)
+        // Vue.$log.debug(items)
         items.forEach(item => {
           if (item.refsong) {
             let song = state.songList.find(s => s.id === item.refsong)
@@ -166,19 +166,19 @@ const mutations = {
         })
 
         Vue.set(gig, 'songList', songs)
-        // console.log(items)
-        // console.log(gig)
+        // Vue.$log.debug(items)
+        // Vue.$log.debug(gig)
       }
     } catch (ex) {
-      console.log('types.ADD_GIG_SONGS ')
-      console.log(ex)
+      Vue.$log.debug('types.ADD_GIG_SONGS ')
+      Vue.$log.debug(ex)
     }
   },
 
   [types.SET_GIGSONGLIST] (state, gigSongList) {
     state.gigSongList = gigSongList
-    // console.log('<State>  gigSongList populated ß!!!')
-    // console.log(list)
+    // Vue.$log.debug('<State>  gigSongList populated ß!!!')
+    // Vue.$log.debug(list)
   },
   [types.ADD_GIGSONG] (state, gigsong) {
     state.gigSongList.push(gigsong)
@@ -198,7 +198,7 @@ const mutations = {
     } else {
       state.currentSongId = -1
     }
-    console.log(`> Mutation SET_CURRENTSONG_ID >> ${id}`)
+    Vue.$log.debug(`> Mutation SET_CURRENTSONG_ID >> ${id}`)
   },
   [types.SET_CURRENT_PROGRAMMIDIPEDAL] (state, idx) {
     state.currentProgramMidiPedal = idx

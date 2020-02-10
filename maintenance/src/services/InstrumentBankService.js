@@ -1,12 +1,12 @@
 import Api from '@/services/Api'
-// import store from '@/store/store'
+import Vue from 'vue'
 
 export default {
 
   async getAll () {
     let instrumentBanks = await Api()('instrumentBanks')
-    // console.log('// ---//-----//--->> get all instrumentBank records')
-    // console.log(instrumentBanks.data)
+    // Vue.$log.debug('// ---//-----//--->> get all instrumentBank records')
+    // Vue.$log.debug(instrumentBanks.data)
     return instrumentBanks.data
   },
 
@@ -16,8 +16,8 @@ export default {
         search: search
       }
     })
-    // console.log('// ----------->> get all instrumentBank')
-    // console.log(instrumentBank.data)
+    // Vue.$log.debug('// ----------->> get all instrumentBank')
+    // Vue.$log.debug(instrumentBank.data)
     return instrumentBank.data
   },
 
@@ -27,23 +27,23 @@ export default {
   },
 
   async post (instrumentBank) {
-    console.log('// ----------->>return Api().post(instrumentBank)')
-    console.log(instrumentBank)
+    Vue.$log.debug('// ----------->>return Api().post(instrumentBank)')
+    Vue.$log.debug(instrumentBank)
     let result = await Api().post('instrumentBank', instrumentBank)
     let newObj = await result.data
-    console.log('// -----------result')
-    console.log(newObj)
+    Vue.$log.debug('// -----------result')
+    Vue.$log.debug(newObj)
     // store.dispatch('addInstrumentBank', newObj)
   },
 
   async put (instrumentBank) {
-    console.log('// ----------->>return Api().put(instrumentBank{instrumentBannk.id}, instrumentBank)')
-    console.log(instrumentBank)
-    console.log(instrumentBank.id)
+    Vue.$log.debug('// ----------->>return Api().put(instrumentBank{instrumentBannk.id}, instrumentBank)')
+    Vue.$log.debug(instrumentBank)
+    Vue.$log.debug(instrumentBank.id)
     let result = await Api().put(`instrumentBank/${instrumentBank.id}`, instrumentBank)
     let newObj = await result.data
-    console.log('// -----------result')
-    console.log(newObj)
+    Vue.$log.debug('// -----------result')
+    Vue.$log.debug(newObj)
     // store.dispatch('updateInstrumentBank', newObj)
   }
 }

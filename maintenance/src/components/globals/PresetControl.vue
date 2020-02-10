@@ -171,8 +171,8 @@ export default {
             this.populatePresetList(this.songPreset.refinstrument)
           }
         } else {
-          console.log('------------- empty -----')
-          console.log(this.songPreset)
+          this.$log.debug('------------- empty -----')
+          this.$log.debug(this.songPreset)
         }
       }
     }
@@ -189,22 +189,22 @@ export default {
       if (typeof pr === 'undefined') {
         return {}
       }
-      // console.log(pr.name)
+      // this.$log.debug(pr.name)
       return pr.name
     },
 
     populatePresetList (id) {
       if (typeof this.presetList !== 'undefined' && this.presetList !== null &&
         typeof this.songPreset !== 'undefined' && this.songPreset !== null) {
-        // console.log('---get--preset--------------')
+        // this.$log.debug('---get--preset--------------')
         this.presets = this.presetList.filter(item => item.refinstrument === id)
-        // console.log(this.presets)
+        // this.$log.debug(this.presets)
       }
     },
     setPreset () {
       const preset = this.presetList.find(item => item.id === this.presetId)
-      // console.log('---set-preset---------------')
-      // console.log(preset)
+      // this.$log.debug('---set-preset---------------')
+      // this.$log.debug(preset)
       if (preset) {
         this.songPreset.refpreset = this.presetId
         this.songPreset.refinstrumentbank = preset.refinstrumentbank
@@ -213,7 +213,7 @@ export default {
       }
     },
     saveSongPreset () {
-      console.log(this.songPreset)
+      this.$log.debug(this.songPreset)
       this.$store.dispatch('updateSongProgramPreset', this.songPreset)
       this.editMode = false
     },
@@ -223,7 +223,7 @@ export default {
     },
     onPresetClick () {
       if (this.editMode) {
-        // console.log(this.presets)
+        // this.$log.debug(this.presets)
         this.dialog = true
       }
     }

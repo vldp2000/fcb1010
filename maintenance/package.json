@@ -24,6 +24,7 @@
     "vue-swipe-actions": "^2.0.0-beta.19",
     "vue2-touch-events": "^2.1.0",
     "vuedraggable": "^2.23.2",
+    "vuejs-logger": "1.5.4",
     "vuetify": "^2.2.8",
     "vuex": "^3.1.2",
     "vuex-persistedstate": "^2.7.0",

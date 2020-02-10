@@ -21,8 +21,8 @@ sequelize.sync({force: true})
 
     await Promise.all(
       song.map(song => {
-        console.log('>>>> map song<<<<<<<<<')
-        console.log(song)
+        this.$log.debug('>>>> map song<<<<<<<<<')
+        this.$log.debug(song)
         Song.create(song)
       })
     )

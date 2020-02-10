@@ -148,37 +148,37 @@ export default {
   methods: {
     async init () {
       try {
-        console.log(this.instrumentBankList.length)
+        this.$log.debug(this.instrumentBankList.length)
         if (this.instrumentBankList.length === 0) {
-          console.log('Init instrument Banks storage')
+          this.$log.debug('Init instrument Banks storage')
           let result = await InstrumentBankService.getAll()
           let list = await result.data
-          // console.log('<< Init instrument bank List?>>')
+          // this.$log.debug('<< Init instrument bank List?>>')
           await this.$store.dispatch('setInstrumentBankList', list)
-          // console.log(this.$store.state.instrumentBankList)
+          // this.$log.debug(this.$store.state.instrumentBankList)
         } else {
-          console.log(' Instrument Bank List already populated')
-          // console.log(this.$store.state.instrumentBankList)
+          this.$log.debug(' Instrument Bank List already populated')
+          // this.$log.debug(this.$store.state.instrumentBankList)
         }
 
         if (this.instrumentList.length === 0) {
-          console.log('Init instrument storage')
+          this.$log.debug('Init instrument storage')
           let result = await InstrumentsService.getAll()
           let list = await result.data
           await this.$store.dispatch('setInstrumentList', list)
         } else {
-          console.log(' Instrument Bank already populated')
-          // console.log(this.$store.state.instrumentBankList)
+          this.$log.debug(' Instrument Bank already populated')
+          // this.$log.debug(this.$store.state.instrumentBankList)
         }
       } catch (err) {
-        console.log(err)
+        this.$log.debug(err)
       }
     },
 
     editItem (item) {
       this.editedIndex = this.instrumentBankList.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      console.log(this.editedItem)
+      this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -196,19 +196,19 @@ export default {
     },
 
     save () {
-      console.log('save Instrument bank -------')
-      console.log(this.editedItem)
+      this.$log.debug('save Instrument bank -------')
+      this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           InstrumentBankService.put(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       } else {
         try {
           InstrumentBankService.post(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       }
       this.closeDialog()

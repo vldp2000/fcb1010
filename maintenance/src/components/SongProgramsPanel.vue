@@ -114,9 +114,9 @@ export default {
         this.expanded.pop()
       }
       if (oldId === value.id || !value.presetList || value.presetList.lenght === 0) {
-        console.log('empty ----')
+        this.$log.debug('empty ----')
       } else {
-        console.log('expand ----')
+        this.$log.debug('expand ----')
         this.selectedPresetList = value.presetList
         this.expanded.push(value)
       }
@@ -126,15 +126,15 @@ export default {
       // }
       // this.selectedPresetList = value.presetList
       // this.expanded.push(value)
-      // console.log(this.selectedPresetList)
+      // this.$log.debug(this.selectedPresetList)
     },
 
     editItem (item) {
-      console.log('... Edit Item', item)
+      this.$log.debug('... Edit Item', item)
       this.editedIndex = this.programList.indexOf(item)
-      console.log(this.editedIndex)
+      this.$log.debug(this.editedIndex)
       this.editedItem = Object.assign({}, item)
-      console.log(this.editedItem)
+      this.$log.debug(this.editedItem)
       this.dialog = true
     },
     closeDialog () {
@@ -145,17 +145,17 @@ export default {
     },
 
     saveSongProgram () {
-      console.log('() saveSongProgram () -------')
-      console.log(this.editedItem)
+      this.$log.debug('() saveSongProgram () -------')
+      this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           // SongsService.put(this.editedItem)
           this.$store.dispatch('updateSongProgram', this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       } else {
-        console.log('User is not allowed to create Song Program records manually')
+        this.$log.debug('User is not allowed to create Song Program records manually')
       }
       this.closeDialog()
     }

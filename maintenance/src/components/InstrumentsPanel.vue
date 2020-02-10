@@ -157,26 +157,26 @@ export default {
 
   methods: {
     init () {
-      // console.log(this.instrumentList.length)
+      // this.$log.debug(this.instrumentList.length)
       if (this.instrumentList.length === 0) {
         this.$store.dispatch('initAll', 'initAll')
-        // console.log('Init instruments storage')
+        // this.$log.debug('Init instruments storage')
         // let result = await InstrumentsService.getAll()
         // let list = await result.data
-        // console.log('<< Init instrument List?>>')
+        // this.$log.debug('<< Init instrument List?>>')
         // await this.$store.dispatch('setInstrumentList', list)
-        // console.log(this.$store.state.instrumentList)
+        // this.$log.debug(this.$store.state.instrumentList)
         // await this.importAll(require.context('../assets/', false, /\.png$/))
       } else {
-        console.log(' Instrument List already populated')
-        // console.log(this.$store.state.instrumentList)
+        this.$log.debug(' Instrument List already populated')
+        // this.$log.debug(this.$store.state.instrumentList)
       }
     },
 
     editItem (item) {
       this.editedIndex = this.instrumentList.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      console.log(this.editedItem)
+      this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -194,19 +194,19 @@ export default {
     },
 
     saveInstrument () {
-      console.log('saveInstrument () -------')
-      console.log(this.editedItem)
+      this.$log.debug('saveInstrument () -------')
+      this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           InstrumentsService.put(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       } else {
         try {
           InstrumentsService.post(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       }
       this.closeDialog()
@@ -224,9 +224,9 @@ export default {
     //         this.$store.dispatch('setInstrumentImage', payload)
     //       }
     //     })
-    //     // console.log(this.instrumentList)
+    //     // this.$log.debug(this.instrumentList)
     //   } catch (ex) {
-    //     console.log(ex)
+    //     this.$log.debug(ex)
     //   }
     // }
   }

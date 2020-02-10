@@ -144,11 +144,11 @@ export default {
 
   methods: {
     editItem (item) {
-      console.log(item)
+      this.$log.debug(item)
       this.editedIndex = this.gigList.indexOf(item)
-      console.log(this.editedIndex)
+      this.$log.debug(this.editedIndex)
       this.editedItem = Object.assign({}, item)
-      console.log(this.editedItem)
+      this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -161,19 +161,19 @@ export default {
     },
 
     saveGig () {
-      // console.log('saveGig () -------')
-      // console.log(this.editedItem)
+      // this.$log.debug('saveGig () -------')
+      // this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           GigsService.put(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       } else {
         try {
           GigsService.post(this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       }
       this.closeDialog()
@@ -185,12 +185,12 @@ export default {
         oldGigId = this.expanded[0].id
         this.expanded.pop()
       }
-      // console.log(`(${oldGigId} !== ${value.id} && ${value.songList.length} )`)
-      // console.log(value.songList)
+      // this.$log.debug(`(${oldGigId} !== ${value.id} && ${value.songList.length} )`)
+      // this.$log.debug(value.songList)
       if (oldGigId === value.id || !value.songList || value.songList.lenght === 0) {
-        console.log('empty ----')
+        this.$log.debug('empty ----')
       } else {
-        console.log('expand ----')
+        this.$log.debug('expand ----')
         this.selectedGig = value
         this.expanded.push(value)
       }

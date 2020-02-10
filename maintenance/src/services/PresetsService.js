@@ -1,11 +1,11 @@
 import Api from '@/services/Api'
-// import store from '@/store/store'
+import Vue from 'vue'
 
 export default {
   async getAll () {
     let presets = await Api()('presets')
-    // console.log('// ----------->> get all presets')
-    // console.log(presets.data)
+    // Vue.$log.debug('// ----------->> get all presets')
+    // Vue.$log.debug(presets.data)
     return presets.data
   },
   index (search) {
@@ -14,8 +14,8 @@ export default {
         search: search
       }
     })
-    // console.log('// ----------->> get all presets')
-    // console.log(presets.data)
+    // Vue.$log.debug('// ----------->> get all presets')
+    // Vue.$log.debug(presets.data)
     return presets.data
   },
 
@@ -25,23 +25,23 @@ export default {
   },
 
   async post (preset) {
-    console.log('// ----------->>call Api().post(preset)')
-    console.log(preset)
+    Vue.$log.debug('// ----------->>call Api().post(preset)')
+    Vue.$log.debug(preset)
     let result = await Api().post('preset', preset)
     let newPreset = await result.data
-    console.log('// -----------result')
-    console.log(newPreset)
+    Vue.$log.debug('// -----------result')
+    Vue.$log.debug(newPreset)
     // await store.dispatch('addPreset', newPreset)
   },
 
   async put (preset) {
-    console.log('// ----------->>return Api().put(preset{preset.id}, preset)')
-    console.log(preset)
-    console.log(preset.id)
+    Vue.$log.debug('// ----------->>return Api().put(preset{preset.id}, preset)')
+    Vue.$log.debug(preset)
+    Vue.$log.debug(preset.id)
     let result = await Api().put(`preset/${preset.id}`, preset)
     let newPreset = await result.data
-    console.log('// -----------result')
-    console.log(newPreset)
+    Vue.$log.debug('// -----------result')
+    Vue.$log.debug(newPreset)
     // await store.dispatch('updatePreset', newPreset)
   }
 }

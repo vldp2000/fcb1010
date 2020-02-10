@@ -1,11 +1,11 @@
 import Api from '@/services/Api'
-// import store from '@/store/store'
+import Vue from 'vue'
 
 export default {
   async getAll () {
     let gigs = await Api()('gigs')
-    // console.log('// Gig Service ----->> get all gigs')
-    // console.log(gigs.data)
+    // Vue.$log.debug('// Gig Service ----->> get all gigs')
+    // Vue.$log.debug(gigs.data)
     return gigs.data
   },
 
@@ -15,8 +15,8 @@ export default {
         search: search
       }
     })
-    // console.log('// ----------->> get all gigs')
-    // console.log(gigs.data)
+    // Vue.$log.debug('// ----------->> get all gigs')
+    // Vue.$log.debug(gigs.data)
     return gigs.data
   },
 
@@ -26,76 +26,76 @@ export default {
 
   async post (gig) {
     try {
-      console.log('// ----------->>return Api().post(gig)')
-      console.log(gig)
+      Vue.$log.debug('// ----------->>return Api().post(gig)')
+      Vue.$log.debug(gig)
       let result = await Api().post('gig', gig)
       let newGig = await result.data
-      console.log('// -----------result')
-      console.log(newGig)
+      Vue.$log.debug('// -----------result')
+      Vue.$log.debug(newGig)
       // await store.dispatch('addGig', newGig)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
   async put (gig) {
     try {
-      console.log('// ----------->>return Api().put(gig{gig.id}, gig)')
-      console.log(gig)
-      console.log(gig.id)
+      Vue.$log.debug('// ----------->>return Api().put(gig{gig.id}, gig)')
+      Vue.$log.debug(gig)
+      Vue.$log.debug(gig.id)
       let result = await Api().put(`gig/${gig.id}`, gig)
       let newGig = await result.data
-      console.log('// -----------result')
-      console.log(newGig)
+      Vue.$log.debug('// -----------result')
+      Vue.$log.debug(newGig)
       // await store.dispatch('updateGig', newGig)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
 
   async getGigSongs () {
     let gigSongs = await Api()('gigSongs')
-    // console.log('// ----------->> get all gigs')
-    // console.log(gigs)
+    // Vue.$log.debug('// ----------->> get all gigs')
+    // Vue.$log.debug(gigs)
     return gigSongs.data
   },
 
   async putGigSong (gigSong) {
     try {
-      console.log('// ----------->>return Api().putGigSong')
-      console.log(gigSong)
+      Vue.$log.debug('// ----------->>return Api().putGigSong')
+      Vue.$log.debug(gigSong)
       await Api().put(`gigSong/${gigSong.id}`, gigSong)
       // let newGigSong = await result.data
-      console.log('// -----------result')
-      // console.log(newGigSong)
+      Vue.$log.debug('// -----------result')
+      // Vue.$log.debug(newGigSong)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
   async postGigSong (gigSong) {
     try {
-      console.log('// ----------->>return Api().gigSong(gigSong)')
-      console.log(gigSong)
+      Vue.$log.debug('// ----------->>return Api().gigSong(gigSong)')
+      Vue.$log.debug(gigSong)
       let result = await Api().post('gigSong', gigSong)
       let newGigSong = await result.data
-      console.log('// -----------result')
-      console.log(newGigSong)
+      Vue.$log.debug('// -----------result')
+      Vue.$log.debug(newGigSong)
       return newGigSong
       // await store.dispatch('addGig', newGig)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   },
   async deleteGigSong (gigSongId) {
     try {
-      console.log('// ----------->>return Api().deleteGigSong')
-      console.log(gigSongId)
+      Vue.$log.debug('// ----------->>return Api().deleteGigSong')
+      Vue.$log.debug(gigSongId)
       await Api().delete(`gigSong/${gigSongId}`)
       // let newGigSong = await result.data
-      console.log('// -----------result')
-      // console.log(newGigSong)
+      Vue.$log.debug('// -----------result')
+      // Vue.$log.debug(newGigSong)
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   }
 }

@@ -87,7 +87,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.allSongs)
+    this.$log.debug(this.allSongs)
     if (this.gig) {
       this.gigSonglist = this.gig.songList
     }
@@ -106,7 +106,7 @@ export default {
       this.$store.dispatch('resetGigSongs', result)
     },
     checkMove: function (e) {
-      console.log(`Future index:  ${e.draggedContext.futureIndex}`)
+      this.$log.debug(`Future index:  ${e.draggedContext.futureIndex}`)
     }
   }
 }

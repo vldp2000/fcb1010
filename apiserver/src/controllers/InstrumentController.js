@@ -2,11 +2,11 @@ const {Instrument} = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      console.log("Select>>>>>>>>>Search")
-      console.log(req.query.search)
+      // this.$log.debug("Select>>>>>>>>>Search")
+      // this.$log.debug(req.query.search)
       let instruments = null
       const search = req.query.search
-      console.log(search)
+      // this.$log.debug(search)
       const Sequelize = require('sequelize');
       const Op = Sequelize.Op;
 
@@ -46,9 +46,9 @@ module.exports = {
     try {
       let model = req.body
       delete model.id
-      //console.log(model)
+      //this.$log.debug(model)
       const instrument = await Instrument.create(model)
-      console.log(instrument)
+      // this.$log.debug(instrument)
       res.send(instrument)
     } catch (err) {
       res.status(500).send({
@@ -59,7 +59,7 @@ module.exports = {
 
   async put (req, res) {
     try {
-      console.log(req.body)
+      // this.$log.debug(req.body)
       await Instrument.update(req.body, {
         where: {
           id: req.params.id

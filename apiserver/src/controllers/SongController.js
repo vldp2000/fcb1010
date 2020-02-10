@@ -6,11 +6,11 @@ const {InstrumentBank} = require('../models')
 const {Instrument} = require('../models')
 
 function reqLogger (name, req) {
-  console.log(` << Request >> ${name}`)
-  console.log(req.method)
-  console.log(req.url)
-  console.log(req.query)
-  console.log(req.params)
+  // this.$log.debug(` << Request >> ${name}`)
+  // this.$log.debug(req.method)
+  // this.$log.debug(req.url)
+  // this.$log.debug(req.query)
+  // this.$log.debug(req.params)
 }
 
 module.exports = {
@@ -43,7 +43,7 @@ module.exports = {
       }
       res.send(songs)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'bad error has occured trying to fetch the songs'
       })
@@ -57,12 +57,12 @@ module.exports = {
       delete model.id
       delete model.createdAt
       delete model.updatedAt
-      //console.log(model)
+      //this.$log.debug(model)
       const song = await Song.create(model)
-      //console.log(song)
+      //this.$log.debug(song)
       res.send(song)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to create the song'
       })
@@ -71,7 +71,7 @@ module.exports = {
 
   async put (req, res) {
     try {
-      //console.log(req.body)
+      //this.$log.debug(req.body)
       await Song.update(req.body, {
         where: {
           id: req.params.id
@@ -81,7 +81,7 @@ module.exports = {
         message: 'Ok'
       })
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to update the song'
       })
@@ -96,7 +96,7 @@ module.exports = {
       songList = await Song.findAll()
       res.send(songList)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'strange error has occured trying to fetch the songs'
       })
@@ -107,15 +107,15 @@ module.exports = {
  async postSongProgram (req, res) {
   try {
     let model = req.body
-    console.log(model)
+    // this.$log.debug(model)
     delete model.id
-    console.log('------ SongProgram.create(model) -------------')
-    console.log(model)
+    // this.$log.debug('------ SongProgram.create(model) -------------')
+    // this.$log.debug(model)
     const songProgram = await SongProgram.create(model)
-    console.log(songProgram)
+    // this.$log.debug(songProgram)
     res.send(songProgram)
   } catch (err) {
-    console.log(err)
+    // this.$log.debug(err)
     res.status(500).send({
       error: 'an error has occured trying to create the song'
     })
@@ -124,7 +124,7 @@ module.exports = {
 
 async putSongProgram (req, res) {
   try {
-    //console.log(req.body)
+    //this.$log.debug(req.body)
     await SongProgram.update(req.body, {
       where: {
         id: req.params.id
@@ -134,7 +134,7 @@ async putSongProgram (req, res) {
       message: 'Ok'
     })
   } catch (err) {
-    console.log(err)
+    // this.$log.debug(err)
     res.status(500).send({
       error: 'an error has occured trying to update the song'
     })
@@ -165,7 +165,7 @@ async putSongProgram (req, res) {
 
       res.send(requestedItems)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to get the song items'
       })
@@ -174,18 +174,18 @@ async putSongProgram (req, res) {
 
   async postSongProgramPreset (req, res) {
     try {
-      console.log('=======  postSongProgramPreset ======= = ')
+      // this.$log.debug('=======  postSongProgramPreset ======= = ')
       let model = req.body
-      console.log(model)
+      // this.$log.debug(model)
       delete model.id
       // delete model.createdAt
       // delete model.updatedAt
-      console.log(model)
+      // this.$log.debug(model)
       const songProgramPreset = await SongProgramPreset.create(model)
-      //console.log(song)
+      //this.$log.debug(song)
       res.send(songProgramPreset)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to create the SongProgramPreset'
       })
@@ -194,7 +194,7 @@ async putSongProgram (req, res) {
   // ------------------------------------- 
   async putSongProgramPreset (req, res) {
     try {
-      //console.log(req.body)
+      //this.$log.debug(req.body)
       await SongProgramPreset.update(req.body, {
         where: {
           id: req.params.id
@@ -204,7 +204,7 @@ async putSongProgram (req, res) {
         message: 'Ok'
       })
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to update the SongProgramPreset'
       })
@@ -214,7 +214,7 @@ async putSongProgram (req, res) {
  
   async getSongProgramPresetsExtended (req, res) {
     try {
-      // console.log('........async getPresetsExtended')
+      // this.$log.debug('........async getPresetsExtended')
       const result = await SongProgramPreset.findAll({
         attributes:[
           "id",
@@ -250,10 +250,10 @@ async putSongProgram (req, res) {
         ]
 
       })
-      // console.log(result)
+      // this.$log.debug(result)
       res.send(result)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to getSongProgramPresetsExtended '
       })

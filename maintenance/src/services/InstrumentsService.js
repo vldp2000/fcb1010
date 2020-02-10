@@ -1,12 +1,12 @@
 import Api from '@/services/Api'
-// import store from '@/store/store'
+import Vue from 'vue'
 
 export default {
 
   async getAll () {
     let instruments = await Api()('instruments')
-    // console.log('// ----------->> get all instruments')
-    // console.log(instruments.data)
+    // Vue.$log.debug('// ----------->> get all instruments')
+    // Vue.$log.debug(instruments.data)
     return instruments.data
   },
 
@@ -16,8 +16,8 @@ export default {
         search: search
       }
     })
-    // console.log('// ----------->> get all instrument')
-    // console.log(instruments.data)
+    // Vue.$log.debug('// ----------->> get all instrument')
+    // Vue.$log.debug(instruments.data)
     return instruments.data
   },
 
@@ -27,23 +27,23 @@ export default {
   },
 
   async post (instrument) {
-    console.log('// ----------->>return Api().post(instrument)')
-    console.log(instrument)
+    Vue.$log.debug('// ----------->>return Api().post(instrument)')
+    Vue.$log.debug(instrument)
     let result = await Api().post('instrument', instrument)
     let newObj = await result.data
-    console.log('// -----------result')
-    console.log(newObj)
+    Vue.$log.debug('// -----------result')
+    Vue.$log.debug(newObj)
     // store.dispatch('addInstrument', newObj)
   },
 
   async put (instrument) {
-    console.log('// ----------->>return Api().put(instrument{instrument.id}, instrument)')
-    console.log(instrument)
-    console.log(instrument.id)
+    Vue.$log.debug('// ----------->>return Api().put(instrument{instrument.id}, instrument)')
+    Vue.$log.debug(instrument)
+    Vue.$log.debug(instrument.id)
     let result = await Api().put(`instrument/${instrument.id}`, instrument)
     let newObj = await result.data
-    console.log('// -----------result')
-    console.log(newObj)
+    Vue.$log.debug('// -----------result')
+    Vue.$log.debug(newObj)
     // store.dispatch('updateInstrument', newObj)
   },
 
@@ -60,10 +60,10 @@ export default {
           result.push(item)
         }
       })
-      // console.log(result)
+      // Vue.$log.debug(result)
       return result
     } catch (ex) {
-      console.log(ex)
+      Vue.$log.debug(ex)
     }
   }
 }

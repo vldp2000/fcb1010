@@ -205,11 +205,11 @@ export default {
     },
 
     editItem (item) {
-      console.log('... Edit Item', item)
+      this.$log.debug('... Edit Item', item)
       this.editedIndex = this.songs.indexOf(item)
-      console.log(this.editedIndex)
+      this.$log.debug(this.editedIndex)
       this.editedItem = Object.assign({}, item)
-      console.log(this.editedItem)
+      this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -228,31 +228,31 @@ export default {
 
     saveSong () {
       this.showLoading(true)
-      console.log('saveSong () -------')
-      console.log(this.editedItem)
+      this.$log.debug('saveSong () -------')
+      this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           // SongsService.put(this.editedItem)
           this.$store.dispatch('updateSong', this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       } else {
         try {
           // SongsService.post(this.editedItem)
           this.$store.dispatch('addSong', this.editedItem)
         } catch (err) {
-          console.log(err)
+          this.$log.debug(err)
         }
       }
       this.showLoading(false)
       this.closeDialog()
     },
     async init () {
-      console.log(' >>> Init all relted to songs storage')
+      this.$log.debug(' >>> Init all relted to songs storage')
       // await SongsService.initAll()
       await this.showLoading(false)
-      console.log(' Finish Init all relted to songs storage <<< ')
+      this.$log.debug(' Finish Init all relted to songs storage <<< ')
     },
 
     customDataTableItemsFilter (value, search, items) {
@@ -270,7 +270,7 @@ export default {
     },
 
     async rowClicked (value) {
-      console.log(`<SongPanel row clicked> ${value.id}`)
+      this.$log.debug(`<SongPanel row clicked> ${value.id}`)
       let oldId = -1
 
       if (this.expanded.length === 1) {
@@ -279,15 +279,15 @@ export default {
       }
 
       let song = this.songList.find(sn => sn.id === value.id)
-      console.log(song)
+      this.$log.debug(song)
 
       if (!song.programList || song.programList.lenght === 0) {
         await this.$store.dispatch('addSongItems', value.id)
       }
       if (oldId === value.id || !value.programList || value.programList.lenght === 0) {
-        console.log('empty ----')
+        this.$log.debug('empty ----')
       } else {
-        console.log('expand ----')
+        this.$log.debug('expand ----')
         this.selectedProgramList = song.programList
         this.expanded.push(value)
       }

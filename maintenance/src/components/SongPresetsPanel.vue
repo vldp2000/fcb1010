@@ -128,22 +128,22 @@ export default {
 
   mounted () {
   //   this.programList = this.selectedSong.programList
-    // console.log('----->SongPresetsPanel')
-    // console.log(this.songPresetList)
+    // this.$log.debug('----->SongPresetsPanel')
+    // this.$log.debug(this.songPresetList)
   },
   methods: {
     onClick (item) {
       try {
         singleOrDoubleRowClick(item,
           function singleCLick (item) {
-            console.log('Single Click')
+            this.$log.debug('Single Click')
           },
           function doubleCLick (item) {
-            console.log('Double Click')
+            this.$log.debug('Double Click')
           }
         )
       } catch (ex) {
-        console.log(ex)
+        this.$log.debug(ex)
       }
     }
   }

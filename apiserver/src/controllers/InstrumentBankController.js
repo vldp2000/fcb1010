@@ -2,11 +2,11 @@ const {InstrumentBank} = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      console.log("Select>>>>>>>>>Search")
-      console.log(req.query.search)
+      // this.$log.debug("Select>>>>>>>>>Search")
+      // this.$log.debug(req.query.search)
       let instrumentBanks = null
       const search = req.query.search
-      console.log(search)
+      // this.$log.debug(search)
       const Sequelize = require('sequelize');
       const Op = Sequelize.Op;
 
@@ -25,7 +25,7 @@ module.exports = {
       }
       res.send(instrumentBanks)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to fetch the instrumentBanks'
       })
@@ -37,7 +37,7 @@ module.exports = {
       const instrumentBank = await InstrumentBank.findById(req.params.instrumentBankId)
       res.send(instrumentBank)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to show the instrumentBanks'
       })
@@ -47,14 +47,14 @@ module.exports = {
   async post (req, res) {
     try {
       let model = req.body
-      console.log(model)
+      // this.$log.debug(model)
       delete model.id
-      console.log(model)
+      // this.$log.debug(model)
       const instrumentBank = await InstrumentBank.create(model)
-      console.log(instrumentBank)
+      // this.$log.debug(instrumentBank)
       res.send(instrumentBank)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to create the instrumentBank'
       })
@@ -63,7 +63,7 @@ module.exports = {
 
   async put (req, res) {
     try {
-      console.log(req.body)
+      // this.$log.debug(req.body)
       await InstrumentBank.update(req.body, {
         where: {
           id: req.params.id
@@ -71,7 +71,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to update the instrumentBank'
       })

@@ -19,14 +19,14 @@ module.exports = {
           }
         })
       } else {
-        console.log("Select all presets")
+        // this.$log.debug("Select all presets")
         presets = await Preset.findAll({
           limit: 128
         })
       }
       res.send(presets)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'bad error has occured trying to fetch the presets'
       })
@@ -38,7 +38,7 @@ module.exports = {
       const preset = await Preset.findById(req.params.presetId)
       res.send(preset)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to show the presets'
       })
@@ -49,12 +49,12 @@ module.exports = {
     try {
       let model = req.body
       delete model.id
-      //console.log(model)
+      //this.$log.debug(model)
       const preset = await Preset.create(model)
-      // console.log(preset)
+      // this.$log.debug(preset)
       res.send(preset)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to create the preset'
       })
@@ -63,7 +63,7 @@ module.exports = {
 
   async put (req, res) {
     try {
-      // console.log(req.body)
+      // this.$log.debug(req.body)
       await Preset.update(req.body, {
         where: {
           id: req.params.id
@@ -71,7 +71,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to update the preset'
       })
@@ -80,12 +80,12 @@ module.exports = {
 
   async selectAll (req, res) {
     try {
-      // console.log("Select>>>>>>>>>All preseta:")
+      // this.$log.debug("Select>>>>>>>>>All preseta:")
       let presetList = null
       presetList = await Preset.findAll()
       res.send(presetList)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'strange error has occured trying to fetch the presets'
       })
@@ -95,7 +95,7 @@ module.exports = {
   async getPresetsExtended (req, res) {
     try {
       //await reqLogger('== Get ==', req)
-      console.log('........async getPresetsExtended')
+      // this.$log.debug('........async getPresetsExtended')
       const result = await Preset.findAll({
         include: [{
           model: InstrumentBank
@@ -103,10 +103,10 @@ module.exports = {
           model: Instrument
         }]
       })
-      console.log(result)
+      // this.$log.debug(result)
       res.send(result)
     } catch (err) {
-      console.log(err)
+      // this.$log.debug(err)
       res.status(500).send({
         error: 'an error has occured trying to get the extended '
       })

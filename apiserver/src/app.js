@@ -8,7 +8,7 @@ const config = require('./config/config')
 const app = express()
 
 const server = app.listen(config.messagePort, function() {
-  console.log(`listening on *:${config.messagePort}`);
+  // this.$log.debug(`listening on *:${config.messagePort}`);
 });
 
 app.use(morgan('combined'))
@@ -22,47 +22,47 @@ app.use(cors())
 const io = require('socket.io')(server);
 try {
   io.on('connection', function(socket) {
-    console.log(`--- socket connected ---client ${socket.id}`)
-    // console.log(socket)
+    // this.$log.debug(`--- socket connected ---client ${socket.id}`)
+    // this.$log.debug(socket)
     socket.on(`${config.viewProgramMessage}`, function(data) {
-      console.log(config.viewProgramMessage)
-      console.log(data)
+      // this.$log.debug(config.viewProgramMessage)
+      // this.$log.debug(data)
       io.emit(`${config.viewProgramMessage}`, data)
     })
 
     socket.on(`${config.viewSongMessage}`, function(data) {
-      console.log(config.viewSongMessage)
-      console.log(data)
+      // this.$log.debug(config.viewSongMessage)
+      // this.$log.debug(data)
       io.emit(`${config.viewSongMessage}`, data)
     })
 
     socket.on(`${config.controllerProgramMessage}`, function(data) {
-      console.log(config.controllerProgramMessage)
-      console.log(data)
+      // this.$log.debug(config.controllerProgramMessage)
+      // this.$log.debug(data)
       io.emit(`${config.controllerProgramMessage}`, data)
     })
     socket.on(`${config.controllerSongMessage}`, function(data) {
-      console.log(config.controllerSongMessage)
-      console.log(data)
+      // this.$log.debug(config.controllerSongMessage)
+      // this.$log.debug(data)
       io.emit(`${config.controllerSongMessage}`, data)
     })
     socket.on(`${config.controllerSyncMessage}`, function(data) {
-      console.log(config.controllerSyncMessage)
-      console.log(data)
+      // this.$log.debug(config.controllerSyncMessage)
+      // this.$log.debug(data)
       io.emit(`${config.controllerSyncMessage}`, data)
     })
   })
 } catch (ex) {
-  console.log(ex)
+  // this.$log.debug(ex)
 }
 
 require('./routes')(app)
 
 sequelize.sync({
   force: false,
-  logging: console.log
+  // logging: this.$log.debug
 })
   .then(() => {
     app.listen(config.httpPort)
-    console.log(`Server started on port ${config.httpPort}`)
+    // this.$log.debug(`Server started on port ${config.httpPort}`)
   })
