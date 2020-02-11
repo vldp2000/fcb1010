@@ -49,11 +49,11 @@ const routes = [
     name: 'gigs',
     component: Gigs
   },
-  {
-    path: '/',
-    name: 'home',
-    component: GigControl
-  },
+  // {
+  //   path: '/',
+  //   name: 'home',
+  //   component: GigControl
+  // },
   {
     path: '/about',
     name: 'about',
@@ -68,6 +68,10 @@ const routes = [
     path: '/test',
     name: 'test',
     component: TestPanel2
+  },
+  {
+    path: '*',
+    redirect: '/gigcontrol'
   }
 ]
 

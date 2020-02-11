@@ -48,8 +48,6 @@ Vue.use(Vue2TouchEvents, {
   longTapTimeInterval: 400
 })
 
-// Vue.use(logger)
-
 export default new Vue({
   router,
   store,

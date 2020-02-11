@@ -28,6 +28,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'MyKnob',
   data () {
@@ -318,7 +319,7 @@ export default {
       }
     },
     printError (msg) {
-      console.error(msg)
+      this.$log.error(msg)
     }
   },
   mounted () {

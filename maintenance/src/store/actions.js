@@ -320,10 +320,6 @@ const actions = {
 
   //  Socket Io-----------------------------------------------------
   socketClientInitialize ({ commit }, payload) {
-    console.log(';;;;;; socketClientIniotialize ;;;;;;;;')
-    console.log(this._vm)
-    console.log(this._vm$log)
-
     Vue.$log.debug(';;;;;; socketClientIniotialize ;;;;;;;;')
     Vue.$log.debug(this._vm)
     Vue.$log.debug(this._vm.$socket)
