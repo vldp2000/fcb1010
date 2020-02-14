@@ -1,0 +1,51 @@
+const config = require('../config/config')
+const fs = require('fs')
+
+function getFileName (objName, id) {    
+  const result = config.filePath + objName + '/' + id + '.json'
+  console.log(  `Get file name  ==>> ${result}`)
+  showFiles(config.filePath) 
+  return result
+}
+function showFiles(dir) {
+  console.log('-----------')
+  console.log(dir)
+
+  fs.readdir(dir, function (err, files) {
+    //handling error
+    if (err) {
+        return console.log('Unable to scan directory: ' + err)
+    } 
+    //listing all files using forEach
+    files.forEach(function (file) {
+        // Do whatever you want to do with the file
+        console.log(file)
+    })
+  })
+}
+
+module.exports = {
+
+  async saveDataToFile (req, res) {
+ 
+    console.log(' ---->>> Save Data <<<<< ')
+    console.log(req.url)
+    const objName = req.url.split("/")[1]
+    const fileName = getFileName(objName, req.params.id)
+
+    // stringify JSON Object
+    var jsonContent = JSON.stringify(req.body)
+    
+    fs.writeFile(fileName, jsonContent, 'utf8', function (err) {
+      if (err) {
+        console.log("An error occured while writing JSON Object to File.")
+        res.status(500).send({
+          error: `an error has occured trying to save data ${err}`
+        })
+      }
+    })
+    res.status(200).send({
+      message: 'OK'
+    })
+  }
+}

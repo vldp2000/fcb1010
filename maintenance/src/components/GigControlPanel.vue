@@ -200,9 +200,9 @@ export default {
         return this.currentSongId
       },
       set (value) {
-        // this.$log.debug(` SongId setter  old=${this.currentSongId}  nwew=${value} `)
+        this.$log.debug(` >>>> SongId setter  old=${this.currentSongId}  new=${value} `)
         if (this.currentSongId !== value && value > 0) {
-          // this.$log.debug(` SongId setter is fired ---))) -- ${value}`)
+          this.$log.debug(` >>> SongId setter is fired ---))) -- ${value}`)
           this.$store.dispatch('setCurrentSongId', value)
         }
       }
@@ -215,7 +215,7 @@ export default {
 
   watch: {
     allInitialized: async function () {
-      this.$log.debug(`-- >>>>  received allInitialized <<<-- ${this.allInitialized}`)
+      this.$log.debug(`-- ... received allInitialized ....-- ${this.allInitialized}`)
       this.$log.debug(this.instrumentListImagesInitialized)
       if (this.allInitialized) {
         this.setGigSong()
@@ -225,6 +225,7 @@ export default {
     refreshSong: async function () {
       if (this.currentSongId > 0) {
         if (typeof this.songList !== 'undefined') {
+          //  this.setCurrentSong()
           this.currentSong = await this.songList.find(song => song.id === this.currentSongId)
           // this.$log.debug(`currentSong <<<<<<< ${this.currentSong.name}`)
           // if (!this.currentGig.songList) {
@@ -261,8 +262,8 @@ export default {
     },
 
     currentSongId: async function () {
-      // this.$log.debug('-- current Song id was changed')
       if (!this.currentSong || this.currentSong.id !== this.currentSongId.id) {
+        this.$log.debug('-- >>>>> current Song id was changed')
         this.setCurrentSong()
       }
     },
@@ -283,20 +284,20 @@ export default {
   methods: {
     setCurrentSong () {
       const id = this.currentSongId
-      // this.$log.debug('initCurrentSong')
+      this.$log.debug(' --- setCurrentSong ---')
       // this.$log.debug(this.currentGig)
       if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
         this.currentSong = this.currentGig.songList.find(item => item.id === id)
+      }
 
-        if (!this.currentSong) {
-          // this.$log.debug(`NOT found song in current gig >>  ${this.currentSong.name}`)
-          this.setSongOutOfGig(id)
-        }
-        // this.$log.debug(this.currentSong.name)
-        if (this.currentSong && (this.currentSong.programList === null ||
-          typeof (this.currentSong.programList) === 'undefined')) {
-          this.initSongPrograms(id)
-        }
+      if (!this.currentSong) {
+        this.$log.debug(`NOT found song in current gig >>  ${this.currentSong.name}`)
+        this.setSongOutOfGig(id)
+      }
+      // this.$log.debug(this.currentSong.name)
+      if (this.currentSong && (this.currentSong.programList === null ||
+        typeof (this.currentSong.programList) === 'undefined')) {
+        this.initSongPrograms(id)
       }
     },
 
@@ -307,7 +308,7 @@ export default {
         this.$log.debug('--- out of gig')
         this.currentSong = await this.songList.find(item => item.id === this.currentSongId)
       } catch (ex) {
-        this.$log.debug(ex)
+        this.$log.error(ex)
       }
     },
 

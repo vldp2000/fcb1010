@@ -13,6 +13,7 @@ module.exports = {
     }
   },
   messagePort: 8088,
+  filePath: './data/',
   
   viewProgramMessage: 'VIEW_PROGRAM_MESSAGE',
   viewSongMessage: 'VIEW_SONG_MESSAGE',

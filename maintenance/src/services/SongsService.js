@@ -32,7 +32,13 @@ export default {
 
   async putSong (song) {
     try {
-      let result = await Api().put(`song/${song.id}`, song)
+      let songObj = Object.assign({}, song)
+      delete songObj.ordernumber
+      delete songObj.createdAt
+      delete songObj.updatedAt
+
+      Vue.$log.debug('// --async putSong (song)')
+      let result = await Api().put(`song/${songObj.id}`, songObj)
       // Vue.$log.debug('// -----------result')
       Vue.$log.debug(result.data)
       return result
