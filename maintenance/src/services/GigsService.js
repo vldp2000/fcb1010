@@ -10,7 +10,29 @@ export default {
   async getId () {
     let result = await Api().get('id/gig')
     console.log(result.data)
-    return result.data
+    return result.data.id
+  },
+  async putGig (gig) {
+    try {
+      Vue.$log.debug('->> SAve Gig')
+      let gigObj = Object.assign({}, gig)
+      for (let song of gigObj.songList) {
+        delete song.name
+        delete song.tempo
+        delete song.lirycs
+        delete song.tabs
+        delete song.createdAt
+        delete song.updatedAt
+        delete song.programList
+      }
+
+      let result = await Api().put(`gig/${gig.id}`, gigObj)
+      // let result2 = await Api().put(`savegig/${gig.id}`, gig)
+      Vue.$log.debug(result)
+      // await store.dispatch('updateGig', newGig)
+    } catch (ex) {
+      Vue.$log.debug(ex)
+    }
   },
 
   async getAll () {
@@ -44,29 +66,6 @@ export default {
       Vue.$log.debug('// -----------result')
       Vue.$log.debug(newGig)
       // await store.dispatch('addGig', newGig)
-    } catch (ex) {
-      Vue.$log.debug(ex)
-    }
-  },
-
-  async put (gig) {
-    try {
-      Vue.$log.debug('->> SAve Gig')
-      let gigObj = Object.assign({}, gig)
-      for (let song of gigObj.songList) {
-        delete song.name
-        delete song.tempo
-        delete song.lirycs
-        delete song.tabs
-        delete song.createdAt
-        delete song.updatedAt
-        delete song.programList
-      }
-
-      let result = await Api().put(`gig/${gig.id}`, gigObj)
-      // let result2 = await Api().put(`savegig/${gig.id}`, gig)
-      Vue.$log.debug(result)
-      // await store.dispatch('updateGig', newGig)
     } catch (ex) {
       Vue.$log.debug(ex)
     }

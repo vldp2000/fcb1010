@@ -79,8 +79,6 @@
 <script>
 
 import { mapState } from 'vuex'
-import GigsService from '@/services/GigsService'
-
 import GigSongPanel from '@/components/GigSongPanel'
 
 export default {
@@ -106,14 +104,16 @@ export default {
 
       editedIndex: -1,
       editedItem: {
+        id: -1,
         name: '',
         gigdate: '',
-        id: -1
+        songList: []
       },
       defaultItem: {
+        id: -1,
         name: '',
         gigdate: '',
-        id: -1
+        songList: []
       },
       pagination: {
         page: 1,
@@ -166,13 +166,13 @@ export default {
       if (this.editedIndex > -1) {
         try {
           // GigsService.put(this.editedItem)
-          GigsService.getId()
+          this.$store.dispatch('updateGig', this.editedItem)
         } catch (err) {
           this.$log.debug(err)
         }
       } else {
         try {
-          GigsService.post(this.editedItem)
+          this.$store.dispatch('addGig', this.editedItem)
         } catch (err) {
           this.$log.debug(err)
         }

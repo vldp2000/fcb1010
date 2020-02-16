@@ -90,31 +90,32 @@ async function initAllLists (commit, getters) {
 
 // ---addNewSong-------
 async function addNewSong (getters, song) {
-  let newSong = await SongsService.postSong(song)
   // Vue.$log.debug('1. __ New SOng__')
-  // Vue.$log.debug(newSong)
+  song.id = await SongsService.getId()
 
+  Vue.set(song, 'programList', [])
   const pList = ['A', 'B', 'C', 'D']
-  let pr = {}
   let i = 1
+  let j = 1
   for (let p of pList) {
-    pr = {
-      'id': -1,
+    let pr = {
+      'id': i,
       'name': p,
       'midipedal': i,
-      'refsong': newSong.id,
-      'tytle': p
+      'refsong': song.id,
+      'tytle': p,
+      'presetList': []
     }
-    let newProg = await SongsService.postSongProgram(pr)
-    // Vue.$log.debug('2. ---createNewSongProgram-------', newProg)
-    // to simplify the creating new song preset there is the default setup enforset
+
+    // to simplify the creating new song preset there is the default setup enforsed
     // each Instrument has the InstrumentBank and Preset records
     // with the same Ids as instrumnent.id
+
     for (let instrument of getters.instrumentList) {
       let preset = {
-        'id': -1,
-        'refsong': newSong.id,
-        'refsongprogram': newProg.id,
+        'id': j,
+        'refsong': song.id,
+        'refsongprogram': pr.id,
         'refinstrument': instrument.id,
         'refinstrumentbank': instrument.id, // todo
         'refpreset': instrument.id, // todo
@@ -127,13 +128,17 @@ async function addNewSong (getters, song) {
         'reverbvalue': 0,
         'delayvalue': 0
       }
+      pr.presetList.push(preset)
+      j = j + 1
       // let newPreset =
-      await SongsService.postSongPreset(preset)
+      // await SongsService.postSongPreset(preset)
       // Vue.$log.debug('3. ---new preset -------', newPreset)
     }
+    song.programList.push(pr)
     i = i + 1
   }
-  // Vue.$log.debug(' --- new song ---- ', newSong)
+  const newSong = await SongsService.putSong(song)
+  Vue.$log.debug(' --- new song ---- ', newSong)
   return newSong
 }
 
@@ -302,11 +307,17 @@ const actions = {
   setGigList ({ commit }, payload) {
     commit(types.SET_GIGLIST, payload)
   },
-  addGig ({ commit }, gig) {
+  async addGig ({ commit }, gig) {
+    const id = await GigsService.getId()
+    gig.id = id
+    console.log(gig)
+    await GigsService.putGig(gig)
+
     commit(types.ADD_GIG, gig)
   },
   updateGig ({ commit }, gig) {
     // Vue.$log.debug('action - updateGig')
+    GigsService.putGig(gig)
     commit(types.UPDATE_GIG, gig)
   },
 
@@ -330,32 +341,23 @@ const actions = {
 
   resetGigSongs ({ commit, getters }, payload) { // {}  gigId, songList)
     try {
+      console.log('=========================')
+      var gig = Object.assign({}, payload.gig)
       Vue.$log.debug('resetGigSongs')
-      // let oldList = Object.assign([], _pickBy(getters.gigSongList, gs => gs.refgig === payload.gigId))
-      let oldList = Object.assign([], getters.gigSongList.filter(gs => gs.refgig === payload.gigId))
-      Vue.$log.debug(oldList)
+      gig.songList = []
+      console.log(gig)
+      console.log(getters.songList)
+
       let i = 1
-      payload.songList.forEach(song => {
-        let gs = oldList.find(item => (item.refsong === song.id))
-        Vue.$log.debug(gs)
-        if (gs) {
-          if (i !== gs.sequencenumber) {
-            let gigSong = Object.assign({}, gs)
-            gigSong.sequencenumber = i
-            Vue.$log.debug(gigSong)
-            GigsService.putGigSong(gigSong)
-          }
-          oldList = oldList.filter(item => item.id !== gs.id)
-          Vue.$log.debug(oldList)
-        } else {
-          let newGS = { 'id': -1, 'refgig': payload.gigId, 'refsong': song.id, 'sequencenumber': i, 'currentFlag': 0 }
-          GigsService.postGigSong(newGS)
-        }
-        // Vue.$log.debug('---------------------------------------')
+      for (let item of payload.songList) {
+        var song = getters.songList.find(s => s.id === item.id)
+        song.sequencenumber = i
+        gig.songList.push(song)
         i = i + 1
-      })
-      Vue.$log.debug(oldList)
-      oldList.forEach(s => GigsService.deleteGigSong(s.id))
+      }
+      GigsService.putGig(gig)
+      console.log(gig)
+      commit(types.updateGig, gig)
     } catch (ex) {
       Vue.$log.debug(ex)
     }

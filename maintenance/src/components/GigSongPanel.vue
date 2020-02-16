@@ -87,25 +87,30 @@ export default {
     }
   },
   mounted () {
+    console.log(this.allSongs)
     // this.$log.debug(this.allSongs)
     if (this.gig) {
-      this.gigSonglist = this.gig.songList
-      console.log(this.gigSonglist)
+      this.gigSonglist = Object.assign([], this.gig.songList)
+      // console.log(this.gigSonglist)
     }
     if (this.allSongs) {
-      let list = Object.assign([], this.allSongs)
+      let list = []
+      for (let song of this.allSongs) {
+        list.push(Object.assign([], song))
+      }
+
       this.gigSonglist.forEach(song => {
         list = list.filter(item => item.id !== song.id)
       })
       this.allSongList = list
-      console.log(list)
+      // console.log(list)
     }
   },
 
   methods: {
     saveOrder: function () {
-      const result = { 'gigId': this.gig.id, 'songList': this.gigSonglist }
-      this.$store.dispatch('resetGigSongs', result)
+      const payload = { 'gig': this.gig, 'songList': this.gigSonglist }
+      this.$store.dispatch('resetGigSongs', payload)
     },
     checkMove: function (e) {
       this.$log.debug(`Future index:  ${e.draggedContext.futureIndex}`)

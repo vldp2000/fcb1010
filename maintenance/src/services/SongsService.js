@@ -11,7 +11,24 @@ export default {
   async getId () {
     let result = await Api().get('id/song')
     console.log(result.data)
-    return result.data
+    return result.data.id
+  },
+
+  async putSong (song) {
+    try {
+      let songObj = Object.assign({}, song)
+      delete songObj.ordernumber
+      delete songObj.createdAt
+      delete songObj.updatedAt
+
+      Vue.$log.debug('// --async putSong (song)')
+      let result = await Api().put(`song/${songObj.id}`, songObj)
+      // Vue.$log.debug('// -----------result')
+      Vue.$log.debug(result.data)
+      return result
+    } catch (ex) {
+      Vue.$log.debug(ex)
+    }
   },
 
   async getAll () {
@@ -36,24 +53,6 @@ export default {
       let newSong = await result.data
       // Vue.$log.debug(newSong)
       return newSong
-    } catch (ex) {
-      Vue.$log.debug(ex)
-    }
-  },
-
-  async putSong (song) {
-    try {
-      let songObj = Object.assign({}, song)
-      delete songObj.ordernumber
-      delete songObj.createdAt
-      delete songObj.updatedAt
-
-      Vue.$log.debug('// --async putSong (song)')
-      let result = await Api().put(`song/${songObj.id}`, songObj)
-      // Vue.$log.debug('// -----------result')
-      Vue.$log.debug(result.data)
-      return result
-      // await store.dispatch('updateSong', newSong)
     } catch (ex) {
       Vue.$log.debug(ex)
     }
