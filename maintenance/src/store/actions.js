@@ -98,7 +98,6 @@ async function addNewSong (getters, song) {
   let pr = {}
   let i = 1
   for (let p of pList) {
-  // pList.forEach(async p => {
     pr = {
       'id': -1,
       'name': p,
@@ -108,7 +107,6 @@ async function addNewSong (getters, song) {
     }
     let newProg = await SongsService.postSongProgram(pr)
     // Vue.$log.debug('2. ---createNewSongProgram-------', newProg)
-
     // to simplify the creating new song preset there is the default setup enforset
     // each Instrument has the InstrumentBank and Preset records
     // with the same Ids as instrumnent.id
@@ -138,9 +136,80 @@ async function addNewSong (getters, song) {
   // Vue.$log.debug(' --- new song ---- ', newSong)
   return newSong
 }
+
+async function initializeAllLists (commit, getters) {
+  // console.log('----------- load All ---- New---')
+  await commit(types.INIT_INPROGRESS, true)
+  if (!getters.gigList || getters.gigList.length === 0) {
+    let gigs = await GigsService.getAllData()
+    // console.log(gigs)
+    if (gigs.length > 0) {
+      // Vue.$log.debug('action -  types.SET_GIGLIST')
+      await commit(types.SET_GIGLIST, gigs)
+    }
+    // console.log('----gig---')
+  }
+
+  if (!getters.songList || getters.songList.length === 0) {
+    let songs = await SongsService.getAllData()
+    // console.log(songs)
+    if (songs.length > 0) {
+      // Vue.$log.debug('action -  types.SET_SONGLIST')
+      await commit(types.SET_SONGLIST, songs)
+    }
+    // console.log('----songs ---')
+  }
+
+  if (!getters.instrumentList || getters.instrumentList.length === 0) {
+    let instruments = await InstrumentsService.getAllData()
+    if (instruments.length > 0) {
+      await commit(types.SET_INSTRUMENTLIST, instruments)
+    }
+    // console.log(instruments)
+    // console.log('----instruments ---')
+  }
+
+  if (!getters.instrumentBankList || getters.instrumentBankList.length === 0) {
+    let instrumentBanks = await InstrumentBankService.getAllData()
+    if (instrumentBanks.length > 0) {
+      await commit(types.SET_INSTRUMENTBANKLIST, instrumentBanks)
+    }
+    // console.log(instrumentBanks)
+    // console.log('----instrumentBanks ---')
+  }
+
+  if (!getters.presetList || getters.presetList.length === 0) {
+    let presets = await PresetsService.getAllData()
+    if (presets.length > 0) {
+      await commit(types.SET_PRESETLIST, presets)
+    }
+    // console.log(presets)
+    // console.log('----presets ---')
+  }
+
+  for (let gig of getters.gigList) {
+    // console.log(gig)
+    if (gig.songList || gig.songList > 0) {
+      await commit(types.POPULATE_GIG_SONGS, gig.id)
+    }
+  }
+
+  await setInstrumentIcons(commit)
+  //  Init Is Complete
+  commit(types.INIT_ALL)
+  commit(types.INIT_INPROGRESS, false)
+  Vue.$log.debug('<<<Mutation. Finish Init ALL>>')
+}
+
 // ----------A C T I O N S--------------------
 
 const actions = {
+  newInitAllLists ({ commit, getters }, payload) {
+    // console.log('----------- load All ---- start---')
+    initializeAllLists(commit, getters)
+    console.log('----------- load All ---- end---')
+  },
+
   initAll ({ commit, getters }, payload) {
     initAllLists(commit, getters)
   },

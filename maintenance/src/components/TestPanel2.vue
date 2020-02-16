@@ -20,7 +20,9 @@
         </draggable>
       </table>
     </div>
-
+    <div>
+     <button class="btn" @click="loadAll">Load All</button>
+    </div>
   </div>
 </template>
 
@@ -43,6 +45,11 @@ export default {
         { id: 4, name: 'David', sport: 'rugby' }
       ],
       dragging: false
+    }
+  },
+  methods: {
+    loadAll () {
+      this.$store.dispatch('newInitAllLists', 'Load All')
     }
   }
 }

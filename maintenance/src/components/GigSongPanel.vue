@@ -87,9 +87,10 @@ export default {
     }
   },
   mounted () {
-    this.$log.debug(this.allSongs)
+    // this.$log.debug(this.allSongs)
     if (this.gig) {
       this.gigSonglist = this.gig.songList
+      console.log(this.gigSonglist)
     }
     if (this.allSongs) {
       let list = Object.assign([], this.allSongs)
@@ -97,6 +98,7 @@ export default {
         list = list.filter(item => item.id !== song.id)
       })
       this.allSongList = list
+      console.log(list)
     }
   },
 

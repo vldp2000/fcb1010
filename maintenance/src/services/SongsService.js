@@ -3,6 +3,17 @@ import Vue from 'vue'
 
 export default {
 
+  async getAllData () {
+    let result = await Api().get('all/song')
+    // console.log(songs)
+    return result.data
+  },
+  async getId () {
+    let result = await Api().get('id/song')
+    console.log(result.data)
+    return result.data
+  },
+
   async getAll () {
     try {
       // Vue.$log.debug('// ----------->> get all songs')

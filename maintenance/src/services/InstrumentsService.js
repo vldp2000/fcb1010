@@ -3,6 +3,16 @@ import Vue from 'vue'
 
 export default {
 
+  async getAllData () {
+    let result = await Api().get('all/instrument')
+    // console.log(data)
+    return result.data
+  },
+  async getId () {
+    let result = await Api().get('id/instrument')
+    console.log(result.data)
+    return result.data
+  },
   async getAll () {
     let instruments = await Api()('instruments')
     // Vue.$log.debug('// ----------->> get all instruments')

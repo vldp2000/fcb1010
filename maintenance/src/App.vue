@@ -172,7 +172,7 @@ export default {
       try {
         if (!this.allInitialized && !this.initialisingIsInProgress) {
           // this.$log.debug(' >>> Init all related collections in storage1')
-          this.$store.dispatch('initAll', true)
+          this.$store.dispatch('newInitAllLists', true)
         }
       } catch (ex) {
         this.$log.debug(ex)

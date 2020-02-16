@@ -165,7 +165,8 @@ export default {
       // this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
-          GigsService.put(this.editedItem)
+          // GigsService.put(this.editedItem)
+          GigsService.getId()
         } catch (err) {
           this.$log.debug(err)
         }
@@ -186,7 +187,7 @@ export default {
         this.expanded.pop()
       }
       // this.$log.debug(`(${oldGigId} !== ${value.id} && ${value.songList.length} )`)
-      // this.$log.debug(value.songList)
+      this.$log.debug(value)
       if (oldGigId === value.id || !value.songList || value.songList.lenght === 0) {
         this.$log.debug('empty ----')
       } else {

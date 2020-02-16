@@ -2,6 +2,17 @@ import Api from '@/services/Api'
 import Vue from 'vue'
 
 export default {
+  async getAllData () {
+    let result = await Api().get('all/preset')
+    // console.log(data)
+    return result.data
+  },
+  async getId () {
+    let result = await Api().get('id/preset')
+    console.log(result.data)
+    return result.data
+  },
+
   async getAll () {
     let presets = await Api()('presets')
     // Vue.$log.debug('// ----------->> get all presets')

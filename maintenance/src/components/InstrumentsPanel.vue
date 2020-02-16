@@ -159,7 +159,7 @@ export default {
     init () {
       // this.$log.debug(this.instrumentList.length)
       if (this.instrumentList.length === 0) {
-        this.$store.dispatch('initAll', 'initAll')
+        this.$store.dispatch('newInitAllLists', 'initAll')
         // this.$log.debug('Init instruments storage')
         // let result = await InstrumentsService.getAll()
         // let list = await result.data
