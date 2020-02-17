@@ -60,6 +60,7 @@
 <script>
 // import SortableTable from '@/plugins/SortableTable'
 import draggable from 'vuedraggable'
+import { mapState } from 'vuex'
 
 export default {
   name: 'GigSongPanel',
@@ -73,9 +74,6 @@ export default {
     gig: {
       type: Object,
       default: null
-    },
-    allSongs: {
-      type: Array
     }
   },
 
@@ -86,29 +84,52 @@ export default {
       allSongList: []
     }
   },
+  computed: {
+    ...mapState(['songList'])
+  },
   mounted () {
-    console.log(this.allSongs)
-    // this.$log.debug(this.allSongs)
-    if (this.gig) {
-      this.gigSonglist = Object.assign([], this.gig.songList)
-      // console.log(this.gigSonglist)
-    }
-    if (this.allSongs) {
-      let list = []
-      for (let song of this.allSongs) {
-        list.push(Object.assign([], song))
-      }
-
-      this.gigSonglist.forEach(song => {
-        list = list.filter(item => item.id !== song.id)
-      })
-      this.allSongList = list
-      // console.log(list)
-    }
+    console.log('-- mounted start ---')
+    this.init()
+    console.log('-- mounted end ---')
   },
 
   methods: {
+    init: async function () {
+      console.log(this.songList)
+      // this.$log.debug(this.songList)
+      if (this.gig) {
+        this.gigSonglist = []
+        for (let item of this.gig.songList) {
+          const song = await Object.assign({}, item)
+          await this.gigSonglist.push(song)
+        }
+      }
+      if (this.songList) {
+        let list = []
+        for (let song of this.songList) {
+          let sn = await Object.assign({}, song)
+          await list.push(sn)
+        }
+
+        for (let song of this.gigSonglist) {
+          list = await list.filter(item => item.id !== song.id)
+        }
+        this.allSongList = list
+        console.log(this.gigSonglist)
+        console.log(' -------------------')
+        console.log(this.songList)
+        console.log(' -------------------')
+        console.log(this.gig)
+        console.log(' -------------------')
+      }
+    },
+
     saveOrder: function () {
+      console.log('------ save -----------')
+      console.log(this.gigSonglist)
+      console.log(this.songList)
+      console.log(this.gig)
+      console.log('------ save -----------')
       const payload = { 'gig': this.gig, 'songList': this.gigSonglist }
       this.$store.dispatch('resetGigSongs', payload)
     },

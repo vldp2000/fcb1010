@@ -11,13 +11,11 @@
       item-key="id"
       @click:row="rowClicked"
     >
-
       <template v-slot:expanded-item="{ headers }">
         <td :colspan="headers.length">
           <div>
             <gig-song-panel
               :gig="selectedGig"
-              :allSongs="songList"
             />
           </div>
         </td>
@@ -130,7 +128,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['gigList', 'songList', 'allInitialized']),
+    ...mapState(['gigList', 'allInitialized']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     }
@@ -186,7 +184,6 @@ export default {
         oldGigId = this.expanded[0].id
         this.expanded.pop()
       }
-      // this.$log.debug(`(${oldGigId} !== ${value.id} && ${value.songList.length} )`)
       this.$log.debug(value)
       if (oldGigId === value.id || !value.songList || value.songList.lenght === 0) {
         this.$log.debug('empty ----')

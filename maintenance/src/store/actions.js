@@ -5,6 +5,7 @@ import InstrumentsService from '@/services/InstrumentsService'
 import InstrumentBankService from '@/services/InstrumentBankService'
 import PresetsService from '@/services/PresetsService'
 import Vue from 'vue'
+import _sortBy from 'lodash/sortBy'
 
 const config = require('@/config/config')
 let clientInitialized = false
@@ -75,11 +76,11 @@ async function initAllLists (commit, getters) {
     }
   }
 
-  getters.gigList.forEach(gig => {
-    if (!gig.songList || gig.songList === 0) {
-      commit(types.POPULATE_GIG_SONGS, gig.id)
+  for (let gig in getters.gigList) {
+    if (gig.songList || gig.songList > 0) {
+      await commit(types.POPULATE_GIG_SONGS, gig.id)
     }
-  })
+  }
   await setInstrumentIcons(commit)
 
   //  Init Is Complete
@@ -142,12 +143,33 @@ async function addNewSong (getters, song) {
   return newSong
 }
 
+async function updateGigSongCollection (getters, gig) {
+  if (gig && gig.songList && gig.songList.length > 0) {
+    let gsongs = Object.assign([], gig.songList)
+    let items = await _sortBy(gsongs, 'sequencenumber')
+    console.log(items)
+
+    let songs = []
+    for (let item of items) {
+      let song = await getters.songList.find(s => s.id === item.id)
+      if (song) {
+        await songs.push(song)
+      } else {
+        console.log(` !!!!!!! --- no song ${item.id} `)
+      }
+    }
+    return songs
+  } else {
+    console.log('gggopppppaaaaaaaaa   00000000000 ')
+    return []
+  }
+}
 async function initializeAllLists (commit, getters) {
   // console.log('----------- load All ---- New---')
   await commit(types.INIT_INPROGRESS, true)
+  console.log(getters.gigList)
   if (!getters.gigList || getters.gigList.length === 0) {
     let gigs = await GigsService.getAllData()
-    // console.log(gigs)
     if (gigs.length > 0) {
       // Vue.$log.debug('action -  types.SET_GIGLIST')
       await commit(types.SET_GIGLIST, gigs)
@@ -191,14 +213,23 @@ async function initializeAllLists (commit, getters) {
     // console.log(presets)
     // console.log('----presets ---')
   }
+  console.log(' ----- before POPULATE_GIG_SONGS')
+  console.log(getters.gigList.length)
 
   for (let gig of getters.gigList) {
     // console.log(gig)
-    if (gig.songList || gig.songList > 0) {
-      await commit(types.POPULATE_GIG_SONGS, gig.id)
+    if (gig.songList && gig.songList.length > 0) {
+      console.log(gig.id)
+      const songs = await updateGigSongCollection(getters, gig)
+      const payload = { 'gigId': gig.id, 'songs': songs }
+      await commit(types.POPULATE_GIG_SONGS, payload)
+    } else {
+      console.log(' sho za GGGG ?????? ')
+      console.log(gig.songList)
     }
   }
-
+  console.log(' ----- after POPULATE_GIG_SONGS')
+  console.log(getters.gigList)
   await setInstrumentIcons(commit)
   //  Init Is Complete
   commit(types.INIT_ALL)
@@ -210,7 +241,7 @@ async function initializeAllLists (commit, getters) {
 
 const actions = {
   newInitAllLists ({ commit, getters }, payload) {
-    // console.log('----------- load All ---- start---')
+    console.log('----------- load All ---- start---')
     initializeAllLists(commit, getters)
     console.log('----------- load All ---- end---')
   },
@@ -322,9 +353,9 @@ const actions = {
   },
 
   //  populateGigSongs -----------------------------------------------------
-  populateGigSongs ({ commit }, gigId) {
+  populateGigSongs ({ commit }, payload) {
     // Vue.$log.debug('action - populateGigSongs')
-    commit(types.POPULATE_GIG_SONGS, gigId)
+    commit(types.POPULATE_GIG_SONGS, payload)
   },
 
   //  Gig Song List -----------------------------------------------------
@@ -342,22 +373,27 @@ const actions = {
   resetGigSongs ({ commit, getters }, payload) { // {}  gigId, songList)
     try {
       console.log('=========================')
-      var gig = Object.assign({}, payload.gig)
-      Vue.$log.debug('resetGigSongs')
-      gig.songList = []
-      console.log(gig)
-      console.log(getters.songList)
+      console.log(payload.gig)
+      console.log(payload.songList)
+      console.log('=========================')
 
+      var gig = Object.assign({}, payload.gig)
+      gig.songList = []
       let i = 1
       for (let item of payload.songList) {
-        var song = getters.songList.find(s => s.id === item.id)
-        song.sequencenumber = i
+        const song = { 'id': item.id, 'sequencenumber': i }
         gig.songList.push(song)
         i = i + 1
       }
       GigsService.putGig(gig)
+
+      gig.songList = []
+      for (let item of payload.songList) {
+        const song = getters.songList.find(s => s.id === item.id)
+        gig.songList.push(song)
+      }
       console.log(gig)
-      commit(types.updateGig, gig)
+      commit(types.UPDATE_GIG, gig)
     } catch (ex) {
       Vue.$log.debug(ex)
     }

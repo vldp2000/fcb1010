@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import * as types from './mutation-types'
-import _sortBy from 'lodash/sortBy'
+// import _sortBy from 'lodash/sortBy'
 // import _pickBy from 'lodash/pickBy'
 
 const mutations = {
@@ -149,30 +149,15 @@ const mutations = {
     Object.assign(item, gig)
   },
 
-  [types.POPULATE_GIG_SONGS] (state, gigId) {
-    // Vue.$log.debug('>>>>>>----types.POPULATE_GIG_SONGS -->>')
-    // Vue.$log.debug(gigId)
+  [types.POPULATE_GIG_SONGS] (state, payload) {
+    console.log('>>>>>>----types.POPULATE_GIG_SONGS -->>')
     try {
-      let gig = state.gigList.find(item => item.id === gigId)
-      if (gig.songList) {
-        let items = _sortBy(gig.songList, 'sequencenumber')
-        let songs = []
-        Vue.$log.debug(items)
-        for (let item of items) {
-          if (item.id) {
-            let song = state.songList.find(s => s.id === item.id)
-            if (song) {
-              songs.push(song)
-            } else {
-              console.log(` !!!!!!! --- no song ${item.id} `)
-            }
-          }
-        }
-
-        Vue.set(gig, 'songList', songs)
-        Vue.$log.debug(songs)
-        Vue.$log.debug('--------------')
-      }
+      console.log(`>>>  gig Id = ${payload.gigId}`)
+      let gig = state.gigList.find(item => item.id === payload.gigId)
+      console.log(gig)
+      Vue.set(gig, 'songList', payload.songs)
+      console.log(gig)
+      console.log('--------------')
     } catch (ex) {
       Vue.$log.debug('types.POPULATE_GIG_SONGS ')
       Vue.$log.debug(ex)
