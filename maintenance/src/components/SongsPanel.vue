@@ -100,7 +100,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="cyan darken-1" text @click="closeDialog">Cancel</v-btn>
-                <v-btn color="cyan darken-1" text @click="saveSong">Save</v-btn>
+                <v-btn color="cyan darken-1" text @click="saveSong(null)">Save</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -109,10 +109,19 @@
 
       <template v-slot:item.action="{ item }">
         <v-icon
-          class="mr-2"
+          class="mr-1"
           @click="editItem(item)"
         >
           edit
+        </v-icon>
+      </template>
+
+      <template v-slot:item.save="{ item }">
+        <v-icon
+          class="mr-1"
+          @click="saveSong(item)"
+        >
+          save
         </v-icon>
       </template>
 
@@ -145,7 +154,8 @@ export default {
           value: 'name'
         },
         { text: 'Tempo', value: 'tempo' },
-        { text: 'Actions', value: 'action', sortable: false }
+        { text: 'Actions', value: 'action', sortable: false },
+        { text: 'Save', value: 'save', sortable: false }
       ],
 
       editedIndex: -1,
@@ -226,28 +236,33 @@ export default {
       }, 300)
     },
 
-    saveSong () {
-      this.showLoading(true)
-      this.$log.debug('saveSong () -------')
-      this.$log.debug(this.editedItem)
-      if (this.editedIndex > -1) {
-        try {
-          // SongsService.put(this.editedItem)
-          this.$store.dispatch('updateSong', this.editedItem)
-        } catch (err) {
-          this.$log.debug(err)
+    saveSong (value) {
+      if (value === null) {
+        this.showLoading(true)
+        this.$log.debug('saveSong () -------')
+        this.$log.debug(this.editedItem)
+        if (this.editedIndex > -1) {
+          try {
+            // SongsService.put(this.editedItem)
+            this.$store.dispatch('updateSong', this.editedItem)
+          } catch (err) {
+            this.$log.debug(err)
+          }
+        } else {
+          try {
+            // SongsService.post(this.editedItem)
+            this.$store.dispatch('addSong', this.editedItem)
+          } catch (err) {
+            this.$log.error(err)
+          }
         }
       } else {
-        try {
-          // SongsService.post(this.editedItem)
-          this.$store.dispatch('addSong', this.editedItem)
-        } catch (err) {
-          this.$log.debug(err)
-        }
+        console.log(value)
       }
       this.showLoading(false)
       this.closeDialog()
     },
+
     async init () {
       this.$log.debug(' >>> Init all relted to songs storage')
       // await SongsService.initAll()

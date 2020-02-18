@@ -39,7 +39,7 @@
             <v-container>
               <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItem.tytle" label="Name"></v-text-field>
+                  <v-text-field v-model="editedItem.tytle" label="Tytle"></v-text-field>
                 </v-col>
               </v-row>
             </v-container>

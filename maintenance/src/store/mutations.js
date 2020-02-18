@@ -44,13 +44,18 @@ const mutations = {
   },
   [types.UPDATE_SONGPROGRAMPRESET] (state, payload) {
     try {
+      console.log(payload)
       let song = state.songList.find(sn => sn.id === payload.refsong)
+      console.log(song)
       let program = song.programList.find(pr => pr.id === payload.refsongprogram)
-      let preset = program.presetList.find(pr => pr.id === payload.refpreset)
+      console.log(program)
+      let preset = program.presetList.find(pr => pr.id === payload.id)
+      console.log(preset)
+
       if (preset) {
-        Vue.$log.debug('types.UPDATE_SONGPROGRAMPRESET -->>')
-        Vue.$log.debug(payload.id)
-        Vue.$log.debug(payload)
+        // Vue.$log.debug('types.UPDATE_SONGPROGRAMPRESET -->>')
+        // Vue.$log.debug(payload.id)
+        // Vue.$log.debug(payload)
         preset.refpreset = payload.refpreset
         preset.volume = payload.volume
         preset.pan = payload.pan
@@ -60,10 +65,11 @@ const mutations = {
         preset.modeflag = payload.modeflag
         preset.reverbvalue = payload.reverbvalue
         preset.delayvalue = payload.delayvalue
+        console.log(song)
       }
     } catch (ex) {
-      Vue.$log.debug('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
-      Vue.$log.debug(ex)
+      Vue.$log.error('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
+      Vue.$log.error(ex)
     }
   },
 
@@ -71,13 +77,11 @@ const mutations = {
     try {
       let song = state.songList.find(sn => sn.id === songProgram.refsong)
       let program = song.programList.find(pr => pr.id === songProgram.id)
-      Vue.$log.debug('types.UPDATE_SONGPROGRAMPRESET -->>')
-      Vue.$log.debug(songProgram.tytle)
       program.tytle = songProgram.tytle
       Vue.$log.debug(songProgram.tytle)
     } catch (ex) {
-      Vue.$log.debug('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
-      Vue.$log.debug(ex)
+      Vue.$log.error('[types.UPDATE_SONGPROGRAM] (state, payload)')
+      Vue.$log.error(ex)
     }
   },
 
@@ -159,8 +163,8 @@ const mutations = {
       console.log(gig)
       console.log('--------------')
     } catch (ex) {
-      Vue.$log.debug('types.POPULATE_GIG_SONGS ')
-      Vue.$log.debug(ex)
+      Vue.$log.error('types.POPULATE_GIG_SONGS ')
+      Vue.$log.error(ex)
     }
   },
 

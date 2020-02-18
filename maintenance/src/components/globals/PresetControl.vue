@@ -216,6 +216,7 @@ export default {
       this.$log.debug(this.songPreset)
       this.$store.dispatch('updateSongProgramPreset', this.songPreset)
       this.editMode = false
+      this.$emit('changed', true)
     },
     onIconClick () {
       this.editMode = !this.editMode

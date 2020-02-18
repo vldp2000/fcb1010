@@ -144,13 +144,9 @@ async function addNewSong (getters, song) {
 }
 
 async function updateGigSongCollection (getters, gig) {
-  if (gig && gig.songList && gig.songList.length > 0) {
-    let gsongs = Object.assign([], gig.songList)
-    let items = await _sortBy(gsongs, 'sequencenumber')
-    console.log(items)
-
+  if (gig && gig.shortSongList && gig.shortSongList.length > 0) {
     let songs = []
-    for (let item of items) {
+    for (let item of gig.shortSongList) {
       let song = await getters.songList.find(s => s.id === item.id)
       if (song) {
         await songs.push(song)
@@ -171,6 +167,18 @@ async function initializeAllLists (commit, getters) {
   if (!getters.gigList || getters.gigList.length === 0) {
     let gigs = await GigsService.getAllData()
     if (gigs.length > 0) {
+      for (let gig of gigs) {
+        // console.log(gig)
+        if (!gig.shortSongList) {
+          Vue.set(gig, 'shortSongList', [])
+        } else {
+          let sortedList = await _sortBy(gig.shortSongList, 'sequencenumber')
+          Vue.set(gig, 'shortSongList', sortedList)
+        }
+        if (!gig.songList) {
+          Vue.set(gig, 'songList', [])
+        }
+      }
       // Vue.$log.debug('action -  types.SET_GIGLIST')
       await commit(types.SET_GIGLIST, gigs)
     }
@@ -218,14 +226,10 @@ async function initializeAllLists (commit, getters) {
 
   for (let gig of getters.gigList) {
     // console.log(gig)
-    if (gig.songList && gig.songList.length > 0) {
-      console.log(gig.id)
+    if (gig.shortSongList && gig.shortSongList.length > 0) {
       const songs = await updateGigSongCollection(getters, gig)
       const payload = { 'gigId': gig.id, 'songs': songs }
       await commit(types.POPULATE_GIG_SONGS, payload)
-    } else {
-      console.log(' sho za GGGG ?????? ')
-      console.log(gig.songList)
     }
   }
   console.log(' ----- after POPULATE_GIG_SONGS')
@@ -285,9 +289,10 @@ const actions = {
   },
 
   updateSongProgramPreset ({ commit }, songPreset) {
-    Vue.$log.debug('--- action >> updateSongProgramPreset')
-    SongsService.putSongPreset(songPreset)
-    Vue.$log.debug('--- action >> SongsService.putSongPreset')
+    // Vue.$log.debug('--- action >> updateSongProgramPreset')
+    // SongsService.putSongPreset(songPreset)
+    // Vue.$log.debug('--- action >> SongsService.putSongPreset')
+    console.log(songPreset)
     commit(types.UPDATE_SONGPROGRAMPRESET, songPreset)
     Vue.$log.debug('--- action >> commit(types.UPDATE_SONGPROGRAMPRESET')
   },
@@ -378,11 +383,15 @@ const actions = {
       console.log('=========================')
 
       var gig = Object.assign({}, payload.gig)
-      gig.songList = []
+      if (!gig.shortSongList) {
+        Vue.set(gig, 'shortSongList', [])
+      } else {
+        gig.shortSongList = []
+      }
       let i = 1
       for (let item of payload.songList) {
         const song = { 'id': item.id, 'sequencenumber': i }
-        gig.songList.push(song)
+        gig.shortSongList.push(song)
         i = i + 1
       }
       GigsService.putGig(gig)

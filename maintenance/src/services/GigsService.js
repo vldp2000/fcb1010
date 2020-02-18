@@ -16,15 +16,7 @@ export default {
     try {
       Vue.$log.debug('->> SAve Gig')
       let gigObj = Object.assign({}, gig)
-      for (let song of gigObj.songList) {
-        delete song.name
-        delete song.tempo
-        delete song.lirycs
-        delete song.tabs
-        delete song.createdAt
-        delete song.updatedAt
-        delete song.programList
-      }
+      delete gigObj.songList
 
       let result = await Api().put(`gig/${gig.id}`, gigObj)
       // let result2 = await Api().put(`savegig/${gig.id}`, gig)

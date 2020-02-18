@@ -16,7 +16,7 @@
       <v-col cols="12" md="1">
         <div>
           <v-icon large
-          v-bind:class="(checkIfGigIsCurrent()) ? 'defaultGigHighighted' : 'defaultGig'"
+            v-bind:class="(checkIfGigIsCurrent()) ? 'defaultGigHighighted' : 'defaultGig'"
             @click="saveGigAsCurrent()"
           >
           grade
@@ -28,7 +28,7 @@
           </v-icon>
         </div>
       </v-col>
-      <v-col md6 lg6 xl6>
+      <v-col cols="12" md="5">
         <v-select
           v-if="currentSongList"
           label="Select Song"
@@ -38,6 +38,16 @@
           item-text="name"
           item-value="id">
         </v-select>
+      </v-col>
+       <v-col cols="12" md="1">
+        <div>
+          <v-icon large class="saveSongBbutton"
+            v-bind:class="(dataChanged) ? 'saveSongButtonHighighted' : 'saveSongButton'"
+            @click="saveSong()"
+          >
+          save
+          </v-icon>
+        </div>
       </v-col>
     </v-row>
   </div>
@@ -52,22 +62,30 @@
       </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(0, 0)'/>
+          <preset-control
+            :presetControlData='getPresetControlData(0, 0)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(0, 1)'/>
+          <preset-control
+            :presetControlData='getPresetControlData(0, 1)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(0, 2)' />
+          <preset-control
+            :presetControlData='getPresetControlData(0, 2)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(0, 3)' />
+          <preset-control
+            :presetControlData='getPresetControlData(0, 3)'
+            @changed="OnControlDataChanged()"/>
         </v-card>
       </v-col>
     </v-row>
@@ -83,22 +101,30 @@
       </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(1, 0)' />
+          <preset-control
+            :presetControlData='getPresetControlData(1, 0)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(1, 1)' />
+          <preset-control
+            :presetControlData='getPresetControlData(1, 1)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(1, 2)' />
+          <preset-control
+            :presetControlData='getPresetControlData(1, 2)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(1, 3)' />
+          <preset-control
+            :presetControlData='getPresetControlData(1, 3)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
 
@@ -114,22 +140,30 @@
       </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(2, 0)' />
+          <preset-control
+            :presetControlData='getPresetControlData(2, 0)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(2, 1)' />
+          <preset-control
+          :presetControlData='getPresetControlData(2, 1)'
+          @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(2, 2)' />
+          <preset-control
+            :presetControlData='getPresetControlData(2, 2)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(2, 3)' />
+          <preset-control
+            :presetControlData='getPresetControlData(2, 3)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
     </v-row>
@@ -145,22 +179,30 @@
       </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control  :presetControlData='getPresetControlData(3, 0)'/>
+          <preset-control
+            :presetControlData='getPresetControlData(3, 0)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(3, 1)' />
+          <preset-control
+            :presetControlData='getPresetControlData(3, 1)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(3, 2)' />
+          <preset-control
+            :presetControlData='getPresetControlData(3, 2)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <preset-control :presetControlData='getPresetControlData(3, 3)' />
+          <preset-control
+            :presetControlData='getPresetControlData(3, 3)'
+            @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
     </v-row>
@@ -184,7 +226,8 @@ export default {
       currentSong: null,
       currentProgramIdx: 0,
       currentSongList: [],
-      initFlag: true
+      initFlag: true,
+      dataChanged: false
     }
   },
 
@@ -282,6 +325,9 @@ export default {
   },
 
   methods: {
+    OnControlDataChanged () {
+      this.dataChanged = true
+    },
     setCurrentSong () {
       const id = this.currentSongId
       this.$log.debug(' --- setCurrentSong ---')
@@ -400,6 +446,11 @@ export default {
       this.$log.debug('clearGig')
       this.currentGig = null
       this.$store.dispatch('setCurrentGigId', -1)
+    },
+    saveSong () {
+      this.$log.debug('save song')
+      this.$store.dispatch('updateSong', this.currentSong)
+      this.dataChanged = false
     }
   }
 }
@@ -477,6 +528,12 @@ export default {
   padding-right: 20px;
 }
 
+.saveSongButtonHighighted {
+  color: darkblue;
+}
+.saveSongButton {
+  color:  rgb(103, 103, 109);
+}
 .defaultGigHighighted {
   margin-left: -10px;
   margin-top: 5px;
