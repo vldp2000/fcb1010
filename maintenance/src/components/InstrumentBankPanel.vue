@@ -79,8 +79,8 @@
 <script>
 
 import { mapState } from 'vuex'
-import InstrumentBankService from '@/services/InstrumentBankService'
-import InstrumentsService from '@/services/InstrumentsService'
+// import InstrumentBankService from '@/services/InstrumentBankService'
+// import InstrumentsService from '@/services/InstrumentsService'
 
 export default {
   data () {
@@ -125,9 +125,9 @@ export default {
     }
   },
 
-  mounted () {
-    this.init()
-  },
+  // mounted () {
+  //   this.init()
+  // },
 
   computed: {
     ...mapState(['instrumentBankList', 'instrumentList']),
@@ -146,34 +146,13 @@ export default {
   },
 
   methods: {
-    async init () {
-      try {
-        this.$log.debug(this.instrumentBankList.length)
-        if (this.instrumentBankList.length === 0) {
-          this.$log.debug('Init instrument Banks storage')
-          let result = await InstrumentBankService.getAll()
-          let list = await result.data
-          // this.$log.debug('<< Init instrument bank List?>>')
-          await this.$store.dispatch('setInstrumentBankList', list)
-          // this.$log.debug(this.$store.state.instrumentBankList)
-        } else {
-          this.$log.debug(' Instrument Bank List already populated')
-          // this.$log.debug(this.$store.state.instrumentBankList)
-        }
+    // async init () {
+    //   try {
 
-        if (this.instrumentList.length === 0) {
-          this.$log.debug('Init instrument storage')
-          let result = await InstrumentsService.getAll()
-          let list = await result.data
-          await this.$store.dispatch('setInstrumentList', list)
-        } else {
-          this.$log.debug(' Instrument Bank already populated')
-          // this.$log.debug(this.$store.state.instrumentBankList)
-        }
-      } catch (err) {
-        this.$log.debug(err)
-      }
-    },
+    //   } catch (err) {
+    //     this.$log.debug(err)
+    //   }
+    // },
 
     editItem (item) {
       this.editedIndex = this.instrumentBankList.indexOf(item)
@@ -200,13 +179,13 @@ export default {
       this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
-          InstrumentBankService.put(this.editedItem)
+          this.$store.dispatch('updateInstrumentBank', this.editedItem)
         } catch (err) {
           this.$log.debug(err)
         }
       } else {
         try {
-          InstrumentBankService.post(this.editedItem)
+          this.$store.dispatch('addInstrumentBank', this.editedItem)
         } catch (err) {
           this.$log.debug(err)
         }

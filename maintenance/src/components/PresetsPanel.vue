@@ -113,9 +113,9 @@
 <script>
 
 import { mapState } from 'vuex'
-import PresetsService from '@/services/PresetsService'
-import InstrumentsService from '@/services/InstrumentsService'
-import InstrumentBankService from '@/services/InstrumentBankService'
+// import PresetsService from '@/services/PresetsService'
+// import InstrumentsService from '@/services/InstrumentsService'
+// import InstrumentBankService from '@/services/InstrumentBankService'
 
 export default {
   data () {
@@ -166,9 +166,9 @@ export default {
     }
   },
 
-  mounted () {
-    this.init()
-  },
+  // mounted () {
+  //   this.init()
+  // },
 
   computed: {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList']),
@@ -203,42 +203,8 @@ export default {
   },
 
   methods: {
-    async init () {
-      // this.$log.debug(this.presetList.length)
-      if (this.presetList.length === 0) {
-        // this.$log.debug('Init presets storage')
-        let result = await PresetsService.getAll()
-        let list = await result.data
-        // this.$log.debug('<< Init preset List?>>')
-        await this.$store.dispatch('setPresetList', list)
-        // this.$log.debug(this.$store.state.presetList)
-      } else {
-        this.$log.debug(' Preset List already populated')
-        // this.$log.debug(this.$store.state.presetList)
-      }
-
-      if (this.instrumentList.length === 0) {
-        // this.$log.debug('Init instrument storage')
-        let result = await InstrumentsService.getAll()
-        let list = await result.data
-        await this.$store.dispatch('setInstrumentList', list)
-      } else {
-        this.$log.debug(' Instrument Bank already populated')
-        // this.$log.debug(this.$store.state.instrumentBankList)
-      }
-
-      if (this.instrumentBankList.length === 0) {
-        // this.$log.debug('Init instrument Banks storage')
-        let result = await InstrumentBankService.getAll()
-        let list = await result.data
-        // this.$log.debug('<< Init instrument bank List?>>')
-        await this.$store.dispatch('setInstrumentBankList', list)
-        // this.$log.debug(this.$store.state.instrumentBankList)
-      } else {
-        this.$log.debug(' Instrument Bank List already populated')
-        // this.$log.debug(this.$store.state.instrumentBankList)
-      }
-    },
+    // async init () {
+    // },
 
     editItem (item) {
       // this.$log.debug(`-------start editItem (item)  ${item.id}`)
@@ -270,13 +236,13 @@ export default {
       // this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
-          PresetsService.put(this.editedItem)
+          this.$store.dispatch('updatePreset', this.editedItem)
         } catch (err) {
           this.$log.debug(err)
         }
       } else {
         try {
-          PresetsService.post(this.editedItem)
+          this.$store.dispatch('addPreset', this.editedItem)
         } catch (err) {
           this.$log.debug(err)
         }

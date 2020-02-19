@@ -17,78 +17,42 @@ async function setInstrumentIcons (commit) {
   await commit(types.SET_INSTRUMENT_IMAGE, result)
 }
 
-async function initAllLists (commit, getters) {
-  await commit(types.INIT_INPROGRESS, true)
-  Vue.$log.debug('<<<Mutation. Init ALLS>>')
-  if (!getters.gigList || getters.gigList.length === 0) {
-    let list = await GigsService.getAll()
-    // Vue.$log.debug(list.length)
-    if (list.length > 0) {
-      // Vue.$log.debug('action -  types.SET_GIGLIST')
-      await commit(types.SET_GIGLIST, list)
-    }
-  }
-  // Vue.$log.debug(`getters. Lenght of gigList  = ${getters.gigList.length}`)
+async function validateSong (song) {
+  // console.log(`-- validateSong ${song}`)
+  const pList = ['A', 'B', 'C', 'D']
+  let i = 0
 
-  if (!getters.songList || getters.songList.length === 0) {
-    let list = await SongsService.getAll()
-    if (list.length > 0) {
-      // Vue.$log.debug('action -  types.SET_SONGLIST')
-      await commit(types.SET_SONGLIST, list)
-    }
-  }
-  // Vue.$log.debug(`getters. Lenght of songList  = ${getters.songList.length}`)
-
-  // Vue.$log.debug('populate -  instrumentList')
-  if (!getters.instrumentList || getters.instrumentList.length === 0) {
-    let list = await InstrumentsService.getAll()
-    // Vue.$log.debug(list)
-    if (list.length > 0) {
-      await commit(types.SET_INSTRUMENTLIST, list)
-    }
-  }
-  // Vue.$log.debug(`getters. Lenght of instrumentList  = ${getters.instrumentList.length}`)
-
-  // Vue.$log.debug('populate -  instrumentBANKList')
-  if (!getters.instrumentBankList || getters.instrumentBankList.length === 0) {
-    let list = await InstrumentBankService.getAll()
-    // Vue.$log.debug(list)
-    if (list.length > 0) {
-      await commit(types.SET_INSTRUMENTBANKLIST, list)
-    } else {
-      Vue.$log.debug('>>>  populate -  instrumentBANKList>>> !!!  instrumentBankList is empty')
-    }
-  }
-  // Vue.$log.debug(`getters. Lenght of instrumentBankList  = ${getters.instrumentBankList.length}`)
-
-  if (!getters.presetList || getters.presetList.length === 0) {
-    let list = await PresetsService.getAll()
-    if (list.length > 0) {
-      await commit(types.SET_PRESETLIST, list)
-    }
-  }
-  // Vue.$log.debug(`getters. Lenght of presetList  = ${getters.presetList.length}`)
-
-  if (!getters.gigSongList || getters.gigSongList.length === 0) {
-    let list = await GigsService.getGigSongs()
-    if (list.length > 0) {
-      commit(types.SET_GIGSONGLIST, list)
-    }
+  if (song.programList || song.programList.length !== 4) {
+    return false
   }
 
-  for (let gig in getters.gigList) {
-    if (gig.songList || gig.songList > 0) {
-      await commit(types.POPULATE_GIG_SONGS, gig.id)
+  for (let p of pList) {
+    const program = song.programList[i]
+    if (program.name !== p || program.refsong !== song.id || program.midipedal !== i + 1 || !program.presetList || program.presetList.length !== 4) {
+      console.log(`-- Program ${program}`)
+      return false
     }
-  }
-  await setInstrumentIcons(commit)
+    let instList = []
+    let instBankList = []
+    let presetList = []
+    for (let preset of program.presetList) {
+      if (preset.refsong !== song.id || preset.refsongprogram !== program.id) {
+        console.log(`-- Preset ${preset}`)
+        return false
+      }
+      if (instList.includes(preset.refinstrument)) return false
+      instList.push(preset.refinstrument)
 
-  //  Init Is Complete
-  commit(types.INIT_ALL)
-  commit(types.INIT_INPROGRESS, false)
-  Vue.$log.debug('<<<Mutation. Finish Init ALL>>')
+      if (instBankList.includes(preset.refinstrumentbank)) return false
+      instBankList.push(preset.refinstrumentbank)
+
+      if (presetList.includes(preset.refpreset)) return false
+      presetList.push(preset.refpreset)
+    }
+    i = i + 1
+  }
+  return true
 }
-
 // ---addNewSong-------
 async function addNewSong (getters, song) {
   // Vue.$log.debug('1. __ New SOng__')
@@ -163,33 +127,17 @@ async function updateGigSongCollection (getters, gig) {
 async function initializeAllLists (commit, getters) {
   // console.log('----------- load All ---- New---')
   await commit(types.INIT_INPROGRESS, true)
-  console.log(getters.gigList)
-  if (!getters.gigList || getters.gigList.length === 0) {
-    let gigs = await GigsService.getAllData()
-    if (gigs.length > 0) {
-      for (let gig of gigs) {
-        // console.log(gig)
-        if (!gig.shortSongList) {
-          Vue.set(gig, 'shortSongList', [])
-        } else {
-          let sortedList = await _sortBy(gig.shortSongList, 'sequencenumber')
-          Vue.set(gig, 'shortSongList', sortedList)
-        }
-        if (!gig.songList) {
-          Vue.set(gig, 'songList', [])
-        }
-      }
-      // Vue.$log.debug('action -  types.SET_GIGLIST')
-      await commit(types.SET_GIGLIST, gigs)
-    }
-    // console.log('----gig---')
-  }
 
   if (!getters.songList || getters.songList.length === 0) {
     let songs = await SongsService.getAllData()
     // console.log(songs)
     if (songs.length > 0) {
       // Vue.$log.debug('action -  types.SET_SONGLIST')
+      for (let song of songs) {
+        if (!validateSong(song)) {
+          Vue.$log.error(`Error. Song Invalid ${song.id}`)
+        }
+      }
       await commit(types.SET_SONGLIST, songs)
     }
     // console.log('----songs ---')
@@ -221,6 +169,29 @@ async function initializeAllLists (commit, getters) {
     // console.log(presets)
     // console.log('----presets ---')
   }
+
+  console.log(getters.gigList)
+  if (!getters.gigList || getters.gigList.length === 0) {
+    let gigs = await GigsService.getAllData()
+    if (gigs.length > 0) {
+      for (let gig of gigs) {
+        // console.log(gig)
+        if (!gig.shortSongList) {
+          Vue.set(gig, 'shortSongList', [])
+        } else {
+          let sortedList = await _sortBy(gig.shortSongList, 'sequencenumber')
+          Vue.set(gig, 'shortSongList', sortedList)
+        }
+        if (!gig.songList) {
+          Vue.set(gig, 'songList', [])
+        }
+      }
+      // Vue.$log.debug('action -  types.SET_GIGLIST')
+      await commit(types.SET_GIGLIST, gigs)
+    }
+    // console.log('----gig---')
+  }
+
   console.log(' ----- before POPULATE_GIG_SONGS')
   console.log(getters.gigList.length)
 
@@ -244,15 +215,15 @@ async function initializeAllLists (commit, getters) {
 // ----------A C T I O N S--------------------
 
 const actions = {
-  newInitAllLists ({ commit, getters }, payload) {
-    console.log('----------- load All ---- start---')
+  initAllLists ({ commit, getters }, payload) {
+    // console.log('----------- load All ---- start---')
     initializeAllLists(commit, getters)
-    console.log('----------- load All ---- end---')
+    // console.log('----------- load All ---- end---')
   },
 
-  initAll ({ commit, getters }, payload) {
-    initAllLists(commit, getters)
-  },
+  // initAll ({ commit, getters }, payload) {
+  //   initAllLists(commit, getters)
+  // },
   //  Song List -----------------------------------------------------
   setSongList ({ commit }, payload) {
     commit(types.SET_SONGLIST, payload)
@@ -301,11 +272,16 @@ const actions = {
   setInstrumentList ({ commit }, payload) {
     commit(types.SET_INSTRUMENTLIST, payload)
   },
-  addInstrument ({ commit }, instrument) {
+  async addInstrument ({ commit }, instrument) {
+    const id = await InstrumentsService.getId()
+    console.log(id)
+    instrument.id = id
+    await InstrumentsService.put(instrument)
     commit(types.ADD_INSTRUMENT, instrument)
   },
   updateInstrument ({ commit }, instrument) {
     // Vue.$log.debug('action - updateInstrument')
+    InstrumentsService.put(this.instrument)
     commit(types.UPDATE_INSTRUMENT, instrument)
   },
 
@@ -319,11 +295,16 @@ const actions = {
     // Vue.$log.debug('action - setPresetList')
     commit(types.SET_PRESETLIST, payload)
   },
-  addPreset ({ commit }, preset) {
+  async addPreset ({ commit }, preset) {
+    const id = await PresetsService.getId()
+    console.log(id)
+    preset.id = id
+    await PresetsService.put(preset)
     commit(types.ADD_PRESET, preset)
   },
   updatePreset ({ commit }, preset) {
     // Vue.$log.debug('action - updatePreset')
+    PresetsService.put(preset)
     commit(types.UPDATE_PRESET, preset)
   },
 
@@ -331,11 +312,16 @@ const actions = {
   setInstrumentBankList ({ commit }, payload) {
     commit(types.SET_INSTRUMENTBANKLIST, payload)
   },
-  addInstrumentBank ({ commit }, instrumentBank) {
+  async addInstrumentBank ({ commit }, instrumentBank) {
+    const id = await InstrumentBankService.getId()
+    console.log(id)
+    instrumentBank.id = id
+    await InstrumentBankService.put(instrumentBank)
     commit(types.ADD_INSTRUMENTBANK, instrumentBank)
   },
   updateInstrumentBank ({ commit }, instrumentBank) {
     // Vue.$log.debug('action - updateInstrumentBank')
+    InstrumentBankService.put(instrumentBank)
     commit(types.UPDATE_INSTRUMENTBANK, instrumentBank)
   },
 

@@ -134,12 +134,13 @@ export default {
   methods: {
     onClick (item) {
       try {
+        let that = this
         singleOrDoubleRowClick(item,
           function singleCLick (item) {
-            this.$log.debug('Single Click')
+            that.$log.debug('Single Click')
           },
           function doubleCLick (item) {
-            this.$log.debug('Double Click')
+            that.$log.debug('Double Click')
           }
         )
       } catch (ex) {

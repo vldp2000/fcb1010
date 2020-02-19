@@ -9,42 +9,9 @@ export default {
   },
   async getId () {
     let result = await Api().get('id/preset')
-    console.log(result.data)
-    return result.data
+    console.log(result.data.id)
+    return result.data.id
   },
-
-  async getAll () {
-    let presets = await Api()('presets')
-    // Vue.$log.debug('// ----------->> get all presets')
-    // Vue.$log.debug(presets.data)
-    return presets.data
-  },
-  index (search) {
-    let presets = Api().get('presets', {
-      params: {
-        search: search
-      }
-    })
-    // Vue.$log.debug('// ----------->> get all presets')
-    // Vue.$log.debug(presets.data)
-    return presets.data
-  },
-
-  show (presetId) {
-    let result = Api().get(`presets/${presetId}`)
-    return result.data
-  },
-
-  async post (preset) {
-    Vue.$log.debug('// ----------->>call Api().post(preset)')
-    Vue.$log.debug(preset)
-    let result = await Api().post('preset', preset)
-    let newPreset = await result.data
-    Vue.$log.debug('// -----------result')
-    Vue.$log.debug(newPreset)
-    // await store.dispatch('addPreset', newPreset)
-  },
-
   async put (preset) {
     Vue.$log.debug('// ----------->>return Api().put(preset{preset.id}, preset)')
     Vue.$log.debug(preset)
@@ -55,4 +22,37 @@ export default {
     Vue.$log.debug(newPreset)
     // await store.dispatch('updatePreset', newPreset)
   }
+
+  // async getAll () {
+  //   let presets = await Api()('presets')
+  //   // Vue.$log.debug('// ----------->> get all presets')
+  //   // Vue.$log.debug(presets.data)
+  //   return presets.data
+  // },
+  // index (search) {
+  //   let presets = Api().get('presets', {
+  //     params: {
+  //       search: search
+  //     }
+  //   })
+  //   // Vue.$log.debug('// ----------->> get all presets')
+  //   // Vue.$log.debug(presets.data)
+  //   return presets.data
+  // },
+
+  // show (presetId) {
+  //   let result = Api().get(`presets/${presetId}`)
+  //   return result.data
+  // },
+
+  // async post (preset) {
+  //   Vue.$log.debug('// ----------->>call Api().post(preset)')
+  //   Vue.$log.debug(preset)
+  //   let result = await Api().post('preset', preset)
+  //   let newPreset = await result.data
+  //   Vue.$log.debug('// -----------result')
+  //   Vue.$log.debug(newPreset)
+  //   // await store.dispatch('addPreset', newPreset)
+  // },
+
 }

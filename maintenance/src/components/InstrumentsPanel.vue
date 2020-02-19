@@ -86,11 +86,7 @@
 <script>
 
 import { mapState } from 'vuex'
-import InstrumentsService from '@/services/InstrumentsService'
-// import image1 from "./assets/1_image.png"
-// import image2 from "./assets/1_image.png"
-// import image3 from "./assets/1_image.png"
-// import image4 from "./assets/1_image.png"
+// import InstrumentsService from '@/services/InstrumentsService'
 
 export default {
   data () {
@@ -157,19 +153,10 @@ export default {
 
   methods: {
     init () {
-      // this.$log.debug(this.instrumentList.length)
       if (this.instrumentList.length === 0) {
-        this.$store.dispatch('newInitAllLists', 'initAll')
-        // this.$log.debug('Init instruments storage')
-        // let result = await InstrumentsService.getAll()
-        // let list = await result.data
-        // this.$log.debug('<< Init instrument List?>>')
-        // await this.$store.dispatch('setInstrumentList', list)
-        // this.$log.debug(this.$store.state.instrumentList)
-        // await this.importAll(require.context('../assets/', false, /\.png$/))
+        this.$store.dispatch('initAllLists', 'initAll')
       } else {
         this.$log.debug(' Instrument List already populated')
-        // this.$log.debug(this.$store.state.instrumentList)
       }
     },
 
@@ -194,19 +181,18 @@ export default {
     },
 
     saveInstrument () {
-      this.$log.debug('saveInstrument () -------')
-      this.$log.debug(this.editedItem)
+      console.log('saveInstrument () -------')
       if (this.editedIndex > -1) {
         try {
-          InstrumentsService.put(this.editedItem)
+          this.$store.dispatch('updateInstrument', this.editedItem)
         } catch (err) {
-          this.$log.debug(err)
+          this.$log.error(err)
         }
       } else {
         try {
-          InstrumentsService.post(this.editedItem)
+          this.$store.dispatch('addInstrument', this.editedItem)
         } catch (err) {
-          this.$log.debug(err)
+          this.$log.error(err)
         }
       }
       this.closeDialog()

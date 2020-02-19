@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     loadAll () {
-      this.$store.dispatch('newInitAllLists', 'Load All')
+      this.$store.dispatch('initAllLists', 'Load All')
     }
   }
 }

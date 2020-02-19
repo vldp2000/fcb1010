@@ -108,6 +108,7 @@ export default {
 
   methods: {
     async rowClicked (value) {
+      console.log(value)
       let oldId = -1
       if (this.expanded.length === 1) {
         oldId = this.expanded[0].id
@@ -116,7 +117,7 @@ export default {
       if (oldId === value.id || !value.presetList || value.presetList.lenght === 0) {
         this.$log.debug('empty ----')
       } else {
-        this.$log.debug('expand ----')
+        // this.$log.debug('expand ----')
         this.selectedPresetList = value.presetList
         this.expanded.push(value)
       }

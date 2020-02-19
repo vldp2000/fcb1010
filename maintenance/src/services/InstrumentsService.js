@@ -10,46 +10,13 @@ export default {
   },
   async getId () {
     let result = await Api().get('id/instrument')
-    console.log(result.data)
-    return result.data
-  },
-  async getAll () {
-    let instruments = await Api()('instruments')
-    // Vue.$log.debug('// ----------->> get all instruments')
-    // Vue.$log.debug(instruments.data)
-    return instruments.data
-  },
-
-  async index (search) {
-    let instruments = await Api().get('instruments', {
-      params: {
-        search: search
-      }
-    })
-    // Vue.$log.debug('// ----------->> get all instrument')
-    // Vue.$log.debug(instruments.data)
-    return instruments.data
-  },
-
-  show (id) {
-    let result = Api().get(`instruments/${id}`)
-    return result.data
-  },
-
-  async post (instrument) {
-    Vue.$log.debug('// ----------->>return Api().post(instrument)')
-    Vue.$log.debug(instrument)
-    let result = await Api().post('instrument', instrument)
-    let newObj = await result.data
-    Vue.$log.debug('// -----------result')
-    Vue.$log.debug(newObj)
-    // store.dispatch('addInstrument', newObj)
+    console.log(result.data.id)
+    return result.data.id
   },
 
   async put (instrument) {
-    Vue.$log.debug('// ----------->>return Api().put(instrument{instrument.id}, instrument)')
-    Vue.$log.debug(instrument)
-    Vue.$log.debug(instrument.id)
+    console.log('// ----------->>return Api().put(instrument{instrument.id}, instrument)')
+    console.log(instrument)
     let result = await Api().put(`instrument/${instrument.id}`, instrument)
     let newObj = await result.data
     Vue.$log.debug('// -----------result')
@@ -76,4 +43,37 @@ export default {
       Vue.$log.debug(ex)
     }
   }
+
+  // async getAll () {
+  //   let instruments = await Api()('instruments')
+  //   // Vue.$log.debug('// ----------->> get all instruments')
+  //   // Vue.$log.debug(instruments.data)
+  //   return instruments.data
+  // },
+
+  // async index (search) {
+  //   let instruments = await Api().get('instruments', {
+  //     params: {
+  //       search: search
+  //     }
+  //   })
+  //   // Vue.$log.debug('// ----------->> get all instrument')
+  //   // Vue.$log.debug(instruments.data)
+  //   return instruments.data
+  // },
+
+  // show (id) {
+  //   let result = Api().get(`instruments/${id}`)
+  //   return result.data
+  // },
+
+  // async post (instrument) {
+  //   Vue.$log.debug('// ----------->>return Api().post(instrument)')
+  //   Vue.$log.debug(instrument)
+  //   let result = await Api().post('instrument', instrument)
+  //   let newObj = await result.data
+  //   Vue.$log.debug('// -----------result')
+  //   Vue.$log.debug(newObj)
+  //   // store.dispatch('addInstrument', newObj)
+  // },
 }
