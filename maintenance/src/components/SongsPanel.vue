@@ -229,6 +229,7 @@ export default {
     },
 
     closeDialog () {
+      console.log('closeDialog')
       this.dialog = false
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem)

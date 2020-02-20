@@ -1,19 +1,33 @@
 import json
 
 #----------------------------------------------------------------
+class Gig(object):
+  id = -1,
+  name = "",
+  gigdate = "",
+  shortSongList = []
+  def __init__(self, **entries):
+    self.shortSongList=[]
+    self.__dict__.update(entries)
+  def getId(self):
+      return self.id
+  def getSongs(self):
+      return self.shortSongList    
+
+#----------------------------------------------------------------
 class Song(object):
   id = -1,
   name = "",
   tempo = 0,
   sequencenumber = -1,
-  programs = []
+  programList = []
   def __init__(self, **entries):
-    self.programs=[]
+    self.programList=[]
     self.__dict__.update(entries)
   def getId(self):
       return self.id
   def getPrograms(self):
-      return self.programs     
+      return self.programList     
 
 #----------------------------------------------------------------
 class Program(object):
@@ -35,7 +49,7 @@ class Program(object):
     self.presets = []
 
 #----------------------------------------------------------------
-class Preset(object):
+class SongPreset(object):
   id = -1,
   delayflag = 0,
   delayvalue = 0,
@@ -71,7 +85,28 @@ class Preset(object):
     self.midipc = midipc
 
 #----------------------------------------------------------------
+class Preset(object):
+  id = -1,
+  name = "",
+  midichannel = 0,
+  midipc = 0
 
+  def __init__(self, **entries):
+    self.__dict__.update(entries)
+
+  def getId(self):
+      return self.id
+#----------------------------------------------------------------
+class Instrument(object):
+  id = -1,
+  name = "",
+  midichannel = 0
+
+  def __init__(self, **entries):
+    self.__dict__.update(entries)
+
+  def getId(self):
+      return self.id
 #----------------------------------------------------------------
 class CustomEncoder(json.JSONEncoder):
   def default(self, o):

@@ -51,6 +51,9 @@ module.exports = (app) => {
 
   app.get('/all/gig', ReadDataController.readDataFromFile)
   app.get('/id/gig', ReadDataController.getId)
+  app.get('/gig/:id', ReadDataController.readDataByIdFromFile)
+
+  app.get('/currentgig', ReadDataController.getCurrentGigId)
 
   // app.get('/gigsongs', GigController.getGigSongs)
   // app.put('/gigSong/:id', GigController.putGigSong)

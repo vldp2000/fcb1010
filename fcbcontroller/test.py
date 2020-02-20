@@ -7,7 +7,7 @@ import pygame
 import pygame.midi
 import time
 import sys
-import socket
+# import socket
 import struct
 import subprocess
 from array import *
@@ -16,7 +16,9 @@ from time import sleep
 import pprint
 
 import dataController
+import dataHelper
 from dataClasses import *
+
 from messageClient import MessageClient
 
 #----------------------------------------------------------------
@@ -134,11 +136,25 @@ def pringSongs():
 # initSongItems()
 
 # pringSongs()  
-mc = MessageClient()
+# mc = MessageClient()
 
-mc.initMessenger()
-mc.sendSongNotificationMessage(1)
-mc.sendProgramNotificationMessage(1)
+# mc.initMessenger()
+# mc.sendSongNotificationMessage(1)
+# mc.sendProgramNotificationMessage(1)
 # mc.sendSyncNotificationMessage(1,1)
+
+# pprint.pprint(len(gig.shortSongList))
+# for item in gig.shortSongList:
+#   print(item['id'])
+gSongDict = {}
+gGig = dataHelper.loadCurrentGig()
+gSongDict = dataHelper.loadSongs()
+gSongList = dataHelper.initAllSongs(gSongDict)
+gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
+pprint.pprint(gSongList)
+gInstrumentDict = dataHelper.initInstruments()
+gPresetDict = dataHelper.initPresets()
+gInstrumentBankDict = dataHelper.initInstrumentBanks()
+print (gInstrumentBankDict)
 
 quit

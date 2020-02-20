@@ -19,8 +19,6 @@
 
 # -*- coding: utf-8 -*-
 import json
-
-# Make it work for Python 2+3 and with Unicode
 import io
 
 import pygame
@@ -36,6 +34,7 @@ from time import sleep
 import pprint
 
 import dataController
+import dataHelper
 from dataClasses import *
 from messageClient import MessageClient
 from config import *
@@ -44,9 +43,13 @@ from config import *
 
 
 #Global Variables
-
+gGig = {}
 gSongList = []
 gSongDict = {}
+gGigSongList = []
+gInstrumentDict = {}
+gPresetDict= {}
+gInstrumentBankDict = {}
 
 gMode = 'Live'
 gPlaySongFromSelectedGigOnly = True
@@ -84,89 +87,7 @@ def printDebug(message):
   global gMode
   if gMode == 'Debug':
     print(message)
-
-#----------------------------------------------------------------
-def loadAllSongs():
-  global gSongDict
-  global gSongList
-
-  # Init All Songs Dictionary
-  gSongDict = dataController.getSongList()
-
-  #get all thresets
-  data = dataController.allPresets()
-  # Programs are saved as list withing a song
-  # Presets are saved as a list withing a program
-  x=0
-  programId = -1
-  presetId = -1
-  songId = -1
-  song = None
-  for prg in data:
-    if songId != int(prg["refsong"]):
-      songId = int(prg["refsong"])
-      song = gSongDict[str(songId)]
-      programId = -1
-      presetId = -1
-    if programId != int(prg["refsongprogram"]):
-      presetId = -1
-      programId = prg["refsongprogram"]
-      program = Program(
-        prg["refsongprogram"],
-        prg["SongProgram"]["name"],
-        prg["SongProgram"]["midipedal"] 
-      )
-      # print(program.name)
-      song.programs.append(program)
-    if presetId != int(prg["refpreset"]):
-      presetId = int(prg["refpreset"])
-      preset = Preset(
-        prg["id"],
-        prg["delayflag"],
-        prg["delayvalue"],
-        prg["modeflag"],
-        prg["muteflag"],
-        prg["pan"],
-        prg["reverbflag"],
-        prg["reverbvalue"],
-        prg["volume"],
-        prg["Instrument"]["midichannel"],
-        prg["InstrumentBank"]["number"],
-        prg["Preset"]["midipc"]
-      )    
-      # print(preset.midipc)
-      program.presets.append(preset)
-#----------------------------------------------------------------
-
-def initGigSongs():  
-  ## Init Gig Songs
-  global gSongList
-  global gSongDict
-
-  gSongList.clear()
-  gigId = dataController.getCurrentGig()
-  data = dataController.getGigSongs(gigId)
-
-  for item in data:
-    id = item['refsong']
-    song = gSongDict[str(id)]
-    song.sequencenumber = item['sequencenumber']
-    gSongList.append(song)
-  print( len(gSongList))  
-#----------------------------------------------------------------
-def initAllSongs():
-  global gSongList
-  global gSongDict
-  ## Init Gig Songs
-  gSongList.clear()
-  for item in gSongDict:
-    gSongList.append(gSongDict[item])
-  print( len(gSongList))  
-
-
-
-  
-  
+ 
 #----------------------------------------------------------------
 #     # for prs in songProgramPresets:
 # def pringSongs(): 
@@ -181,17 +102,34 @@ def initAllSongs():
 #     ))
 
 #----------------------------------------------------------------
+def reloadAllData():
+  global gGig
+  global gSongDict
+  global gSongList
+  global gGigSongList
+  global gInstrumentDict
+  global gPresetDict
+  global gInstrumentBankDict
+
+  gGig = dataHelper.loadCurrentGig()
+  gSongDict = dataHelper.loadSongs()
+  gSongList = dataHelper.initAllSongs(gSongDict)
+  gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
+  gInstrumentDict = dataHelper.initInstruments()
+  gPresetDict = dataHelper.initPresets()
+  gInstrumentBankDict = dataHelper.initInstrumentBanks()
+#----------------------------------------------------------------
 
 def checkCurrentBank(bank):
   if gCurrentBank != bank:
     if bank == 1:
       gPlaySongFromSelectedGigOnly = True
       gCurrentBank = bank
-      initGigSongs()
+      # initGigSongs()
     else:
       gPlaySongFromSelectedGigOnly = False
       gCurrentBank = 2
-      initAllSongs()
+      # initAllSongs()
 #----------------------------------------------------------------
 
 def resyncWithGigController():
@@ -493,8 +431,7 @@ gNotificationMessageClient.initMessenger()
 # gNotificationMessageClient.sendSongNotificationMessage(1)
 # gNotificationMessageClient.sendProgramNotificationMessage(1)
 
-loadAllSongs()
-initGigSongs()
+reloadAllData()
 
 port = MIDI_PORT
 portOk = False

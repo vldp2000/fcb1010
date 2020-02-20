@@ -255,7 +255,7 @@ const actions = {
     }
   },
   updateSongProgram ({ commit }, songProgram) {
-    SongsService.putSongProgram(songProgram)
+    // SongsService.putSongProgram(songProgram)
     commit(types.UPDATE_SONGPROGRAM, songProgram)
   },
 

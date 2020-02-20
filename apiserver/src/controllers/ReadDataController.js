@@ -80,7 +80,7 @@ module.exports = {
 
   async readDataFromFile (req, res) {
     const objName = req.url.split("/")[2]
-    // console.log(objName)
+    // console.log(req)
     if (req.params.id) {
       const fileName = getFileName(objName, req.params.id)
       const result = readFromFile(fileName)
@@ -95,10 +95,32 @@ module.exports = {
     }
   },
 
+  async readDataByIdFromFile (req, res) {
+    const objName = req.url.split("/")[1]
+    console.log(req.url)
+    if (req.params.id) {
+      const fileName = getFileName(objName, req.params.id)
+      console.log(fileName)
+      const result = await readFromFile(fileName)
+      console.log(result)
+      res.send(result)
+    }
+  },
+
+
   async getId (req, res) {
     const objName = req.url.split("/")[2]
     const folder = config.filePath + objName 
     result = await getNewId(folder)
+    res.send(result)
+  },
+
+  async getCurrentGigId (req, res) {
+    const fileName = config.filePath + 'gig/id/currentGig.json'
+    console.log(fileName)
+    const file = await readFile(fileName, 'utf8')
+    const result = await JSON.parse(file)
+    console.log(result)
     res.send(result)
   }
 }
