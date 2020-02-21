@@ -58,7 +58,7 @@ gCurrentBank = 1
 gCurrentSongIdx = -1
 gCurrentProgramIdx = -1
 
-gResetAllCounter = 0
+gReloadCounter = 0
 gResyncCounter = 0
 
 gRaveloxClient = None
@@ -102,7 +102,7 @@ def printDebug(message):
 #     ))
 
 #----------------------------------------------------------------
-def reloadAllData():
+def loadAllData():
   global gGig
   global gSongDict
   global gSongList
@@ -110,6 +110,22 @@ def reloadAllData():
   global gInstrumentDict
   global gPresetDict
   global gInstrumentBankDict
+
+  if gGig != None and hasattr('gGig', 'shortSongList') :
+    gGig.shortSongList.clear()
+    gGig = None
+  if gInstrumentDict != None:
+    gInstrumentDict.clear()
+  if gInstrumentBankDict != None:
+    gInstrumentBankDict.clear()
+  if gPresetDict != None:
+    gPresetDict.clear()
+  if gGigSongList != None:
+    gGigSongList.clear()
+  if gSongList != None:
+    gSongList.clear()  
+  if gSongDict != None:
+    gSongDict.clear()
 
   gGig = dataHelper.loadCurrentGig()
   gSongDict = dataHelper.loadSongs()
@@ -143,18 +159,19 @@ def resyncWithGigController():
     gResyncCounter = 0
 #----------------------------------------------------------------
 
-def reloadAllData():
-  global gResetAllCounter
+def isReloadRequired():
+  global gReloadCounter
 
-  if gResetAllCounter < 2:
-    gResetAllCounter = gResetAllCounter + 1
+  if gReloadCounter < 2:
+    gReloadCounter = gReloadCounter + 1
   else:
-    initAllSongs()
-    gResetAllCounter = 0
-    if gPlaySongFromSelectedGigOnly:
-      initGigSongs()
-    else:
-      initAllSongs()
+    loadAllData()
+    gReloadCounter = 0
+
+    # if gPlaySongFromSelectedGigOnly:
+    #   initGigSongs()
+    # else:
+    #   initAllSongs()
 #----------------------------------------------------------------
 
 def executeSystemCommand(code):
@@ -255,13 +272,15 @@ def setSongProgram(idx):
 #----------------------------------------------------------------
 def setPreset(preset):
 
+  channel = gPresetDict[preset['id']]
+  PC = gInstrumentDict[preset['refinstrument']]
   if preset.muteflag:
-    muteChannel(preset.midichannel, preset.volume, 0.01, 10)
+    muteChannel(channel, preset.volume, 0.01, 10)
   
-  sendRaveloxPCMessage(preset.midichannel, preset.midipc)
+  sendRaveloxPCMessage(channel, PC)
 
   if preset.muteflag:
-    unmuteChannel(preset.midichannel, preset.volume, 0.01, 10)
+    unmuteChannel(channel, preset.volume, 0.01, 10)
 
 #----------------------------------------------------------------
 def sendGenericMidiCommand(msg0, msg1, msg2):
@@ -309,7 +328,7 @@ def selectPreviousSong():
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
   printDebug("SEND MIDI MSG")
-  global gResetAllCounter
+  global gReloadCounter
   global gSynthTest
   global gPianoTest
 
@@ -338,17 +357,17 @@ def getActionForReceivedMessage(midiMsg):
   if msg0 == 180:
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
       executeSystemCommand(msg2)
-      printDebug(">>1--" + str(gResetAllCounter))
+      printDebug(">>1--")
       return
     elif msg1 == 1:
       checkCurrentBank(msg2)
-      printDebug(">>2--" + str(gResetAllCounter))
+      printDebug(">>2--")
       return
     elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
       if msg2 == 11:
         resyncWithGigController()  ## press pedal 3 times to resync
       elif msg2 == 12:
-        reloadAllData()  ## press pedal 3 times to resync
+        isReloadRequired()  ## press pedal 3 times to resync
       elif msg2 == 13: #pedal 3 #Second Volume pedal sends messages to ch 1
         gPedal2_Channel = gChannel1
       elif  msg2 == 14: #pedal 4 #Second Volume pedal sends messages to ch 2
@@ -431,7 +450,7 @@ gNotificationMessageClient.initMessenger()
 # gNotificationMessageClient.sendSongNotificationMessage(1)
 # gNotificationMessageClient.sendProgramNotificationMessage(1)
 
-reloadAllData()
+loadAllData()
 
 port = MIDI_PORT
 portOk = False
