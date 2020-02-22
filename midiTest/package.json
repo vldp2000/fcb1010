@@ -1,0 +1,17 @@
+{
+  "name": "miditest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon test.js --exec  \"npm run node\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "easymidi": "^1.0.3",
+    "midi": "^1.0.0",
+    "rtpmidi": "^1.0.0"
+  }
+}

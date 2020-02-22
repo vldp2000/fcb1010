@@ -41,6 +41,8 @@ from config import *
 
 #----------------------------------------------------------------
 
+gProcessRaveloxMidi = False
+gMidiDevice = 1  # Input MIDI device
 
 #Global Variables
 gGig = {}
@@ -216,8 +218,9 @@ def executeSystemCommand(code):
 def sendRaveloxCCMessage(channel, CC, value):
   global gRaveloxClient
   message = struct.pack( "BBB", 0xaa, 176 - channel + 1, CC, value)
-  gRaveloxClient.send( message )
-  sleep(MIN_DELAY)
+  if gProcessRaveloxMidi:
+    gRaveloxClient.send( message )
+    sleep(MIN_DELAY)
   if gMode == 'Debug':
      msg = struct.unpack( "BBBB", message)
      printDebug("SEND RAVELOX CC  MESSAGE  %d %d %d %d" % (msg[0],msg[1],msg[2],msg[3]))
@@ -229,8 +232,9 @@ def sendRaveloxCCMessage(channel, CC, value):
 def sendRaveloxPCMessage( channel, PC):
   message = struct.pack( "BBB", 0xaa, 192 - channel + 1, PC)
   global gRaveloxClient
-  gRaveloxClient.send( message )
-  sleep(MIN_DELAY)
+  if gProcessRaveloxMidi:
+    gRaveloxClient.send( message )
+    sleep(MIN_DELAY)
   if gMode == 'Debug':
      msg = struct.unpack( "BBB", message)
      printDebug("SEND RAVELOX PC  MESSAGE  %d %d %d" % (msg[0],msg[1],msg[2]))
@@ -262,25 +266,28 @@ def setSongProgram(idx):
   gCurrentProgramIdx = idx
 
   song = gSongList[gCurrentSongIdx]
-  program = song.program
+  program = song.programList[idx]
 
-  for preset in program.presets:
+  for preset in program['presetList']:
     setPreset(preset)
 
   gNotificationMessageClient.sendProgramNotificationMessage(idx)
 
 #----------------------------------------------------------------
 def setPreset(preset):
+  pprint.pprint(preset)
+  pc = int( gPresetDict[str(preset['refpreset'])] )
 
-  channel = gPresetDict[preset['id']]
-  PC = gInstrumentDict[preset['refinstrument']]
-  if preset.muteflag:
-    muteChannel(channel, preset.volume, 0.01, 10)
+  channel = int( gInstrumentDict[str(preset['refinstrument'])] )
+  mute = preset['muteflag']
   
-  sendRaveloxPCMessage(channel, PC)
+  if mute:
+    muteChannel(channel, preset['volume'], 0.01, 10)
+  
+  sendRaveloxPCMessage(channel, pc)
 
-  if preset.muteflag:
-    unmuteChannel(channel, preset.volume, 0.01, 10)
+  if mute:
+    unmuteChannel(channel, preset['volume'], 0.01, 10)
 
 #----------------------------------------------------------------
 def sendGenericMidiCommand(msg0, msg1, msg2):
@@ -289,7 +296,7 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
     msg0 = gPedal2_Channel
   printDebug("SEND GENERIC MIDI COMMAND")
   message = struct.pack( "BBBB", 0xaa, msg0, msg1, msg2 )
-  sendRaveloxCCMessage( message )
+  #sendRaveloxCCMessage( message )
 
   printDebug("Send Generic Midi Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
 
@@ -367,7 +374,7 @@ def getActionForReceivedMessage(midiMsg):
       if msg2 == 11:
         resyncWithGigController()  ## press pedal 3 times to resync
       elif msg2 == 12:
-        isReloadRequired()  ## press pedal 3 times to resync
+        isReloadRequired()  ## press pedal 3 times to reload data
       elif msg2 == 13: #pedal 3 #Second Volume pedal sends messages to ch 1
         gPedal2_Channel = gChannel1
       elif  msg2 == 14: #pedal 4 #Second Volume pedal sends messages to ch 2
@@ -392,15 +399,15 @@ def getActionForReceivedMessage(midiMsg):
 
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1 or 2 (or both ?)
-    printDebug('>>6--' + msg)
+    printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
     # Send Volume to Channel 6 or 7 (or both ?)
-    printDebug('>>7--' + msg)
+    printDebug('>>7--' + str(msg))
 
   else:
      sendGenericMidiCommand(msg0, msg1, msg2)
-     printDebug('>>8--' + msg)
+     printDebug('>>8--' + str(msg))
 
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
@@ -413,6 +420,7 @@ def getMidiMsg(midiInput):
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
+        print(msg)
         printDebug(">>New Message Received<")
         printDebug(msg)
         getActionForReceivedMessage(msg)  
@@ -420,14 +428,17 @@ def getMidiMsg(midiInput):
 #----------------------------------------------------------------
 def initRaveloxClient():
   global gRaveloxClient
-  try:
-    gRaveloxClient = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-    gRaveloxClient.connect( RAVELOX_HOST, RAVELOX_PORT )
-    gRaveloxClient.send("")
-    gRaveloxClient.send("") # have to send twice to throw an error if ravelox not running
+  if gProcessRaveloxMidi:
+    try:
+      gRaveloxClient = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
+      gRaveloxClient.connect( RAVELOX_HOST, RAVELOX_PORT )
+      gRaveloxClient.send("")
+      gRaveloxClient.send("") # have to send twice to throw an error if ravelox not running
+      return True
+    except:
+      return False
+  else:
     return True
-  except:
-    return False
 
 #----------------------------------------------------------------
 #Main Module 
@@ -440,6 +451,7 @@ if len(sys.argv) > 1:
     gMode = 'Debug'
 
 #Show the list of available midi devices
+print(pygame.midi.get_count())
 if gMode == 'Debug':
   for id in range(pygame.midi.get_count()):
     printDebug( "Id=%d Device=%s" % (id,pygame.midi.get_device_info(id)) )
@@ -452,14 +464,15 @@ gNotificationMessageClient.initMessenger()
 
 loadAllData()
 
-port = MIDI_PORT
+# port = MIDI_PORT
 portOk = False
+midiInput = None
 
 while not portOk:
   try:
     result = initRaveloxClient()
     if result:
-      midiInput = pygame.midi.Input(port)
+      midiInput = pygame.midi.Input(gMidiDevice)
       portOk = True  
     else:
       printDebug("waiting for raveloxmidi...")
@@ -479,7 +492,9 @@ while 1:
 
 #---Close application
 #gRaveloxClient.close()
-gRaveloxClient.shutdown(2)
+if gProcessRaveloxMidi:
+  gRaveloxClient.shutdown(2)
+
 del midiInput
 pygame.midi.quit()
 

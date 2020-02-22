@@ -34,19 +34,19 @@ class Program(object):
   id = -1,
   name="",
   midipedal = 0,
-  presets = []
+  presetList = []
 
   def __init__(self, **entries):
     self.__dict__.update(entries)
   def getId(self):
       return self.id
   def getPresets(self):
-      return self.presets     
+      return self.presetList     
   def __init__(self, id, name, midipedal):
     self.id = id
     self.name = name
     self.midipedal = midipedal
-    self.presets = []
+    self.presetList = []
 
 #----------------------------------------------------------------
 class SongPreset(object):
