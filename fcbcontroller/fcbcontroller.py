@@ -42,7 +42,7 @@ from config import *
 #----------------------------------------------------------------
 
 gProcessRaveloxMidi = False
-gMidiDevice = 1  # Input MIDI device
+gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
 gGig = {}
@@ -68,7 +68,7 @@ gNotificationMessageClient = None
 
 #default value for second  volume pedal is 176 = 1st channel
 gPedal2_Channel = 176
-gChannel1 = 176 
+gChannel1 = 176
 gChannel2 = 177
 
 gLastSynth1Program = 0
@@ -89,13 +89,13 @@ def printDebug(message):
   global gMode
   if gMode == 'Debug':
     print(message)
- 
+
 #----------------------------------------------------------------
 #     # for prs in songProgramPresets:
-# def pringSongs(): 
+# def pringSongs():
 #   for item in gSongDict:
 #     song = gSongDict[item]
-    
+
 #     print('--------------------')
 
 #     pprint.pprint( json.dumps(song,
@@ -139,6 +139,7 @@ def loadAllData():
 #----------------------------------------------------------------
 
 def checkCurrentBank(bank):
+  global gCurrentBank
   if gCurrentBank != bank:
     if bank == 1:
       gPlaySongFromSelectedGigOnly = True
@@ -154,6 +155,9 @@ def resyncWithGigController():
   global gResyncCounter
   global gCurrentSongIdx
   global gCurrentProgramIdx
+
+  print('== song ==',gCurrentSongIdx)
+  print('-- Prog --',gCurrentProgramIdx) 
   if gResyncCounter < 2:
     gResyncCounter = gResyncCounter + 1
   else:
@@ -217,27 +221,25 @@ def executeSystemCommand(code):
 
 def sendRaveloxCCMessage(channel, CC, value):
   global gRaveloxClient
-  message = struct.pack( "BBB", 0xaa, 176 - channel + 1, CC, value)
+  message = struct.pack( "BBB", 176 + channel - 1, CC, value)
   if gProcessRaveloxMidi:
     gRaveloxClient.send( message )
     sleep(MIN_DELAY)
   if gMode == 'Debug':
-     msg = struct.unpack( "BBBB", message)
-     printDebug("SEND RAVELOX CC  MESSAGE  %d %d %d %d" % (msg[0],msg[1],msg[2],msg[3]))
+     printDebug("SEND RAVELOX CC  MESSAGE  %d %d %d" % (channel , CC, value))
 #----------------------------------------------------------------
 ## 192 -PC on Channel 1
 ## 193 -PC on Channel 2
 ## 197 -PC on Channel 6
 
 def sendRaveloxPCMessage( channel, PC):
-  message = struct.pack( "BBB", 0xaa, 192 - channel + 1, PC)
+  message = struct.pack( "BB", 192 + channel - 1, PC)
   global gRaveloxClient
   if gProcessRaveloxMidi:
     gRaveloxClient.send( message )
     sleep(MIN_DELAY)
   if gMode == 'Debug':
-     msg = struct.unpack( "BBB", message)
-     printDebug("SEND RAVELOX PC  MESSAGE  %d %d %d" % (msg[0],msg[1],msg[2]))
+     printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
 #----------------------------------------------------------------
 
 #----------------------------------------------------------------
@@ -256,7 +258,7 @@ def unmuteChannel(channel, volume, delay, step):
     sendRaveloxCCMessage( channel, VOLUME_CC, x )
     x = x + step
     sleep(delay)
-  sendRaveloxCCMessage(shannel, VOLUME_CC, volume )
+  sendRaveloxCCMessage(channel, VOLUME_CC, volume )
 #----------------------------------------------------------------
 
 def setSongProgram(idx):
@@ -267,23 +269,27 @@ def setSongProgram(idx):
 
   song = gSongList[gCurrentSongIdx]
   program = song.programList[idx]
+  print(song.name)
 
   for preset in program['presetList']:
+    #pprint.pprint(preset)
     setPreset(preset)
 
   gNotificationMessageClient.sendProgramNotificationMessage(idx)
 
 #----------------------------------------------------------------
 def setPreset(preset):
-  pprint.pprint(preset)
   pc = int( gPresetDict[str(preset['refpreset'])] )
-
   channel = int( gInstrumentDict[str(preset['refinstrument'])] )
   mute = preset['muteflag']
-  
+
+  if preset['refinstrument'] == 1:
+    print('--PC-->', pc)
+    print('--CH-->', channel)
+
   if mute:
     muteChannel(channel, preset['volume'], 0.01, 10)
-  
+
   sendRaveloxPCMessage(channel, pc)
 
   if mute:
@@ -295,7 +301,7 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   if  msg0 == gChannel1  or msg0 == gChannel2:
     msg0 = gPedal2_Channel
   printDebug("SEND GENERIC MIDI COMMAND")
-  message = struct.pack( "BBBB", 0xaa, msg0, msg1, msg2 )
+  message = struct.pack( "BBB", msg0, msg1, msg2 )
   #sendRaveloxCCMessage( message )
 
   printDebug("Send Generic Midi Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
@@ -381,18 +387,18 @@ def getActionForReceivedMessage(midiMsg):
         gPedal2_Channel = gChannel2          
       elif msg2 == 15:
         selectPreviousSong()
-        setSongProgram(1)
+        setSongProgram(0)
       elif msg2 == 16:
-        setSongProgram(1)
+        setSongProgram(0)
       elif msg2 == 17:
-        setSongProgram(2)
+        setSongProgram(1)
       elif msg2 == 18:
-        setSongProgram(3) 
+        setSongProgram(2) 
       elif msg2 == 19:
-        setSongProgram(4)          
+        setSongProgram(3)          
       elif msg2 == 20:
         selectNextSong()
-        setSongProgram(1)
+        setSongProgram(0)
 
       # gSynthTest = 0
       # gPianoTest = 0

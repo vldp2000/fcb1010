@@ -2,13 +2,14 @@ import requests
 import json
 import pprint
 from dataClasses import *
+from config import *
 
 #----------------------------------------------------------------
 
 def getSongList():
   # pp = pprint.PrettyPrinter(indent=4)
   songList = {}
-  response = requests.get('http://localhost:8081/all/song')
+  response = requests.get(API_URL +  '/all/song')
   data = response.json()
   for item in data:
     # pprint.pprint(item)
@@ -19,7 +20,7 @@ def getSongList():
 
 def getCurrentGigId():
   gigId = -1
-  response = requests.get('http://localhost:8081/currentgig')
+  response = requests.get(API_URL + '/currentgig')
   data = response.json()
   if len(data) > 0:
     gigId = data['id']
@@ -28,7 +29,7 @@ def getCurrentGigId():
 
 def getGig(id):
   print('----------------------------------------------------')
-  URL = "http://localhost:8081/gig/"+str(id)
+  URL = API_URL + "/gig/"+str(id)
   # PARAMS = {'id':id} 
   # response = requests.get(url = URL, params = PARAMS) 
   response = requests.get(url = URL) 
@@ -42,7 +43,7 @@ def getGig(id):
 #----------------------------------------------------------------
 
 def getPresets():
-  URL = 'http://localhost:8081/all/preset'
+  URL = API_URL + '/all/preset'
   response = requests.get(url = URL)
   data = response.json()
   # pprint.pprint(data)
@@ -50,7 +51,7 @@ def getPresets():
 #----------------------------------------------------------------
 
 def getInstruments():
-  URL = 'http://localhost:8081/all/instrument'
+  URL = API_URL + '/all/instrument'
   response = requests.get(url = URL)
   data = response.json()
   # pprint.pprint(data)
@@ -58,7 +59,7 @@ def getInstruments():
 #----------------------------------------------------------------
 
 def getInstrumentBanks():
-  URL = 'http://localhost:8081/all/instrumentbank'
+  URL = API_URL + '/all/instrumentbank'
   response = requests.get(url = URL)
   data = response.json()
   # pprint.pprint(data)
