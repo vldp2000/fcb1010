@@ -140,6 +140,8 @@ def loadAllData():
 
 def checkCurrentBank(bank):
   global gCurrentBank
+  global gPlaySongFromSelectedGigOnly
+
   if gCurrentBank != bank:
     if bank == 1:
       gPlaySongFromSelectedGigOnly = True
@@ -176,10 +178,6 @@ def isReloadRequired():
     loadAllData()
     gReloadCounter = 0
 
-    # if gPlaySongFromSelectedGigOnly:
-    #   initGigSongs()
-    # else:
-    #   initAllSongs()
 #----------------------------------------------------------------
 
 def executeSystemCommand(code):
