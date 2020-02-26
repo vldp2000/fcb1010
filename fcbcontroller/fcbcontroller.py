@@ -149,6 +149,8 @@ def checkCurrentBank(bank):
       gPlaySongFromSelectedGigOnly = False
       gCurrentBank = 2
       # initAllSongs()
+  print('Current Bnk = ', gCurrentBank)
+  print('gPlaySongFromSelectedGigOnly = ', gPlaySongFromSelectedGigOnly)
 #----------------------------------------------------------------
 
 def resyncWithGigController():
