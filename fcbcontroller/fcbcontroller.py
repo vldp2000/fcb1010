@@ -59,7 +59,7 @@ gInstrumentBankDict = {}
 
 gMode = 'Live'
 gPlaySongFromSelectedGigOnly = True
-gCurrentBank = 1
+gCurrentBank = -1
 
 gCurrentSongIdx = -1
 gCurrentProgramIdx = -1
