@@ -165,8 +165,9 @@ def checkCurrentBank(bank):
 
   print('Current Bnk = ', gCurrentBank)
   print('gPlaySongFromSelectedGigOnly = ', gPlaySongFromSelectedGigOnly)
+  print('gSongList length --' , len(gSongList))
+  print('gGigSongList length --' , len(gGigSongList))
   print('gBankSongList length --' , len(gBankSongList))
-
 #----------------------------------------------------------------
 
 def resyncWithGigController():
@@ -278,6 +279,7 @@ def unmuteChannel(channel, volume, delay, step):
 def setSongProgram(idx):
   global gCurrentProgramIdx
   global gCurrentSongIdx
+  global gBankSongList
 
   gCurrentProgramIdx = idx
 
@@ -483,6 +485,7 @@ gNotificationMessageClient.initMessenger()
 # gNotificationMessageClient.sendProgramNotificationMessage(1)
 
 loadAllData()
+
 checkCurrentBank(1)
 
 if len(gBankSongList) > 0:
