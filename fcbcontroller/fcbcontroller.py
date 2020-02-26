@@ -148,6 +148,9 @@ def loadAllData():
 def checkCurrentBank(bank):
   global gCurrentBank
   global gPlaySongFromSelectedGigOnly
+  global gBankSongList
+  global gGigSongList
+  global gSongList
 
   if gCurrentBank != bank:
     if bank == 1:
