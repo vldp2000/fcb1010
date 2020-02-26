@@ -46,9 +46,13 @@ gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
 gGig = {}
+
 gSongList = []
 gSongDict = {}
+
 gGigSongList = []
+gBankSongList = []
+
 gInstrumentDict = {}
 gPresetDict= {}
 gInstrumentBankDict = {}
@@ -112,6 +116,7 @@ def loadAllData():
   global gInstrumentDict
   global gPresetDict
   global gInstrumentBankDict
+  global gBankSongList
 
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
@@ -128,7 +133,9 @@ def loadAllData():
     gSongList.clear()  
   if gSongDict != None:
     gSongDict.clear()
-
+  if gBankSongList != None:
+    gBankSongList.clear()
+ 
   gGig = dataHelper.loadCurrentGig()
   gSongDict = dataHelper.loadSongs()
   gSongList = dataHelper.initAllSongs(gSongDict)
@@ -146,13 +153,17 @@ def checkCurrentBank(bank):
     if bank == 1:
       gPlaySongFromSelectedGigOnly = True
       gCurrentBank = bank
+      gBankSongList = gGigSongList
       # initGigSongs()
     else:
       gPlaySongFromSelectedGigOnly = False
       gCurrentBank = 2
-      # initAllSongs()
+      gBankSongList = gSongList
+
   print('Current Bnk = ', gCurrentBank)
   print('gPlaySongFromSelectedGigOnly = ', gPlaySongFromSelectedGigOnly)
+  print('gBankSongList length --' , len(gBankSongList))
+
 #----------------------------------------------------------------
 
 def resyncWithGigController():
@@ -165,7 +176,7 @@ def resyncWithGigController():
   if gResyncCounter < 2:
     gResyncCounter = gResyncCounter + 1
   else:
-    MessageClient.sendSyncNotificationMessage( gSongList[gCurrentSongIdx].id, gCurrentProgramIdx)
+    MessageClient.sendSyncNotificationMessage( gBankSongList[gCurrentSongIdx].id, gCurrentProgramIdx)
     gResyncCounter = 0
 #----------------------------------------------------------------
 
@@ -267,7 +278,7 @@ def setSongProgram(idx):
 
   gCurrentProgramIdx = idx
 
-  song = gSongList[gCurrentSongIdx]
+  song = gBankSongList[gCurrentSongIdx]
   program = song.programList[idx]
   print(song.name)
 
@@ -310,30 +321,30 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
 
 def selectNextSong():
   global gCurrentSongIdx
-  global gSongList
+  global gBankSongList
 
-  if gCurrentSongIdx + 1 < len(gSongList):
+  if gCurrentSongIdx + 1 < len(gBankSongList):
     gCurrentSongIdx = gCurrentSongIdx + 1
   else:
     gCurrentSongIdx = 0
 
-  gNotificationMessageClient.sendSongNotificationMessage(gSongList[gCurrentSongIdx].id)
-  printDebug("next song " + gSongList[gCurrentSongIdx].name)
+  gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
+  printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
 
 def selectPreviousSong():
   global gCurrentSongIdx
-  global gSongList
+  global gBankSongList
 
   if gCurrentSongIdx - 1 > -1:
     gCurrentSongIdx = gCurrentSongIdx - 1
   else: 
-    gCurrentSongIdx = len(gSongList) - 1
-  gNotificationMessageClient.sendSongNotificationMessage(gSongList[gCurrentSongIdx].id)
+    gCurrentSongIdx = len(gBankSongList) - 1
+  gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
   # message = struct.pack( "BBBB", 0xaa, 181, 28, 100 )
   # sendRaveloxCCMessage( message )
-  printDebug("previous song " + gSongList[gCurrentSongIdx].name)
+  printDebug("previous song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
 
@@ -469,7 +480,9 @@ gNotificationMessageClient.initMessenger()
 # gNotificationMessageClient.sendProgramNotificationMessage(1)
 
 loadAllData()
-if len(gSongList) > 0:
+checkCurrentBank(1)
+
+if len(gBankSongList) > 0:
   gCurrentSongIdx = 0
   gCurrentProgramIdx = 0
 
