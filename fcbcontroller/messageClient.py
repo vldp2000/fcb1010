@@ -23,7 +23,7 @@ class MessageClient(object):
     self.socketIOClinet.emit(SONG_MESSAGE, str(id))
     print(SONG_MESSAGE + "=" + str(id))
 
-  def sendSyncNotificationMessage(songId, programId):
+  def sendSyncNotificationMessage(self,songId, programId):
     syncmessage = {}
     syncmessage.songId = songId
     syncmessage.programId = programId

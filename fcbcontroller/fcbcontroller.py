@@ -469,6 +469,9 @@ gNotificationMessageClient.initMessenger()
 # gNotificationMessageClient.sendProgramNotificationMessage(1)
 
 loadAllData()
+if len(gSongList) > 0:
+  gCurrentSongIdx = 0
+  gCurrentProgramIdx = 0
 
 # port = MIDI_PORT
 portOk = False
