@@ -61,11 +61,11 @@ try {
 
 require('./routes')(app)
 
-sequelize.sync({
-  force: false,
-  // logging: this.$log.debug
-})
-  .then(() => {
-    app.listen(config.httpPort)
-    // this.$log.debug(`Server started on port ${config.httpPort}`)
-  })
+// sequelize.sync({
+//   force: false,
+//   // logging: this.$log.debug
+// })
+//   .then(() => {
+//     app.listen(config.httpPort)
+//     // this.$log.debug(`Server started on port ${config.httpPort}`)
+//   })
