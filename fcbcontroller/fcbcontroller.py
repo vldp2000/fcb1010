@@ -41,7 +41,7 @@ from config import *
 
 #----------------------------------------------------------------
 
-gProcessRaveloxMidi = False
+gProcessRaveloxMidi = True
 gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
