@@ -1,5 +1,5 @@
 
-fcbcontroller/__pycache__/config.cpython-37.pyc
+fcbcontroller/__pycache__/
 *.pyc
 apiserver/node_modules/
 maintenance/node_modules/
