@@ -42,7 +42,7 @@ const getSchemaFiles =  async function (folder) {
     // console.log('--3---read all files ------')
     return result
   } catch (ex) {
-    console.log(er)
+    console.log(ex)
   }
   return []
 }
