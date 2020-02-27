@@ -2,13 +2,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const {sequelize} = require('./models')
+// const {sequelize} = require('./models')
 const config = require('./config/config')
 
 const app = express()
 
-const server = app.listen(config.messagePort, function() {
-  // this.$log.debug(`listening on *:${config.messagePort}`);
+const server = app.listen(config.httpPort, function() {
+  console.log(`listening on *:${config.httpPort}`);
 });
 
 app.use(morgan('combined'))
