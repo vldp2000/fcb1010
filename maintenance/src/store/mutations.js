@@ -44,13 +44,13 @@ const mutations = {
   },
   [types.UPDATE_SONGPROGRAMPRESET] (state, payload) {
     try {
-      console.log(payload)
+      // console.log(payload)
       let song = state.songList.find(sn => sn.id === payload.refsong)
-      console.log(song)
+      // console.log(song)
       let program = song.programList.find(pr => pr.id === payload.refsongprogram)
-      console.log(program)
+      // console.log(program)
       let preset = program.presetList.find(pr => pr.id === payload.id)
-      console.log(preset)
+      // console.log(preset)
 
       if (preset) {
         // Vue.$log.debug('types.UPDATE_SONGPROGRAMPRESET -->>')
@@ -65,7 +65,7 @@ const mutations = {
         preset.modeflag = payload.modeflag
         preset.reverbvalue = payload.reverbvalue
         preset.delayvalue = payload.delayvalue
-        console.log(song)
+        // console.log(song)
       }
     } catch (ex) {
       Vue.$log.error('[types.UPDATE_SONGPROGRAMPRESET] (state, payload)')
@@ -154,14 +154,14 @@ const mutations = {
   },
 
   [types.POPULATE_GIG_SONGS] (state, payload) {
-    console.log('>>>>>>----types.POPULATE_GIG_SONGS -->>')
+    // console.log('>>>>>>----types.POPULATE_GIG_SONGS -->>')
     try {
-      console.log(`>>>  gig Id = ${payload.gigId}`)
+      // console.log(`>>>  gig Id = ${payload.gigId}`)
       let gig = state.gigList.find(item => item.id === payload.gigId)
-      console.log(gig)
+      // console.log(gig)
       Vue.set(gig, 'songList', payload.songs)
-      console.log(gig)
-      console.log('--------------')
+      // console.log(gig)
+      // console.log('--------------')
     } catch (ex) {
       Vue.$log.error('types.POPULATE_GIG_SONGS ')
       Vue.$log.error(ex)
@@ -185,12 +185,7 @@ const mutations = {
     state.currentGigId = id
   },
   [types.SET_CURRENTSONG_ID] (state, id) {
-    let song = state.songList.find(s => s.id === id)
-    if (song) {
-      state.currentSongId = id
-    } else {
-      state.currentSongId = -1
-    }
+    state.currentSongId = id
     Vue.$log.debug(`> Mutation SET_CURRENTSONG_ID >> ${id}`)
   },
   [types.SET_CURRENT_PROGRAMMIDIPEDAL] (state, idx) {

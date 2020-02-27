@@ -65,7 +65,7 @@ async function getNewId(folder) {
 
   let result = Object.assign({}, data)
   data.id = data.id + 1
-  console.log(data)
+  // console.log(data)
   
   fs.writeFile(fileName, JSON.stringify(data), 'utf8', function (err) {
     if (err) {
@@ -97,12 +97,12 @@ module.exports = {
 
   async readDataByIdFromFile (req, res) {
     const objName = req.url.split("/")[1]
-    console.log(req.url)
+    // console.log(req.url)
     if (req.params.id) {
       const fileName = getFileName(objName, req.params.id)
-      console.log(fileName)
+      // console.log(fileName)
       const result = await readFromFile(fileName)
-      console.log(result)
+      // console.log(result)
       res.send(result)
     }
   },
@@ -117,10 +117,10 @@ module.exports = {
 
   async getCurrentGigId (req, res) {
     const fileName = config.filePath + 'gig/id/currentGig.json'
-    console.log(fileName)
+    // console.log(fileName)
     const file = await readFile(fileName, 'utf8')
     const result = await JSON.parse(file)
-    console.log(result)
+    // console.log(result)
     res.send(result)
   }
 }

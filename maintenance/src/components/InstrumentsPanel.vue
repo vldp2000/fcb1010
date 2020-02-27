@@ -181,7 +181,7 @@ export default {
     },
 
     saveInstrument () {
-      console.log('saveInstrument () -------')
+      // console.log('saveInstrument () -------')
       if (this.editedIndex > -1) {
         try {
           this.$store.dispatch('updateInstrument', this.editedItem)

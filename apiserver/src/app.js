@@ -39,16 +39,19 @@ try {
     socket.on(`${config.controllerProgramMessage}`, function(data) {
       // this.$log.debug(config.controllerProgramMessage)
       // this.$log.debug(data)
+      // console.log(data)
       io.emit(`${config.controllerProgramMessage}`, data)
     })
     socket.on(`${config.controllerSongMessage}`, function(data) {
       // this.$log.debug(config.controllerSongMessage)
       // this.$log.debug(data)
+      // console.log(data)
       io.emit(`${config.controllerSongMessage}`, data)
     })
     socket.on(`${config.controllerSyncMessage}`, function(data) {
       // this.$log.debug(config.controllerSyncMessage)
       // this.$log.debug(data)
+      // console.log(data)
       io.emit(`${config.controllerSyncMessage}`, data)
     })
   })

@@ -4,12 +4,12 @@ import Vue from 'vue'
 export default {
   async getAllData () {
     let result = await Api().get('all/gig')
-    console.log(result.data)
+    // console.log(result.data)
     return result.data
   },
   async getId () {
     let result = await Api().get('id/gig')
-    console.log(result.data)
+    // console.log(result.data)
     return result.data.id
   },
   async putGig (gig) {

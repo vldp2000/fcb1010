@@ -29,7 +29,7 @@ async function validateSong (song) {
   for (let p of pList) {
     const program = song.programList[i]
     if (program.name !== p || program.refsong !== song.id || program.midipedal !== i + 1 || !program.presetList || program.presetList.length !== 4) {
-      console.log(`-- Program ${program}`)
+      // console.log(`-- Program ${program}`)
       return false
     }
     let instList = []
@@ -37,7 +37,7 @@ async function validateSong (song) {
     let presetList = []
     for (let preset of program.presetList) {
       if (preset.refsong !== song.id || preset.refsongprogram !== program.id) {
-        console.log(`-- Preset ${preset}`)
+        // console.log(`-- Preset ${preset}`)
         return false
       }
       if (instList.includes(preset.refinstrument)) return false
@@ -115,12 +115,12 @@ async function updateGigSongCollection (getters, gig) {
       if (song) {
         await songs.push(song)
       } else {
-        console.log(` !!!!!!! --- no song ${item.id} `)
+        // console.log(` !!!!!!! --- no song ${item.id} `)
       }
     }
     return songs
   } else {
-    console.log('gggopppppaaaaaaaaa   00000000000 ')
+    // console.log('gggopppppaaaaaaaaa   00000000000 ')
     return []
   }
 }
@@ -170,7 +170,7 @@ async function initializeAllLists (commit, getters) {
     // console.log('----presets ---')
   }
 
-  console.log(getters.gigList)
+  // console.log(getters.gigList)
   if (!getters.gigList || getters.gigList.length === 0) {
     let gigs = await GigsService.getAllData()
     if (gigs.length > 0) {
@@ -192,8 +192,8 @@ async function initializeAllLists (commit, getters) {
     // console.log('----gig---')
   }
 
-  console.log(' ----- before POPULATE_GIG_SONGS')
-  console.log(getters.gigList.length)
+  // console.log(' ----- before POPULATE_GIG_SONGS')
+  // console.log(getters.gigList.length)
 
   for (let gig of getters.gigList) {
     // console.log(gig)
@@ -203,8 +203,8 @@ async function initializeAllLists (commit, getters) {
       await commit(types.POPULATE_GIG_SONGS, payload)
     }
   }
-  console.log(' ----- after POPULATE_GIG_SONGS')
-  console.log(getters.gigList)
+  // console.log(' ----- after POPULATE_GIG_SONGS')
+  // console.log(getters.gigList)
   await setInstrumentIcons(commit)
   //  Init Is Complete
   commit(types.INIT_ALL)
@@ -263,7 +263,7 @@ const actions = {
     // Vue.$log.debug('--- action >> updateSongProgramPreset')
     // SongsService.putSongPreset(songPreset)
     // Vue.$log.debug('--- action >> SongsService.putSongPreset')
-    console.log(songPreset)
+    // console.log(songPreset)
     commit(types.UPDATE_SONGPROGRAMPRESET, songPreset)
     Vue.$log.debug('--- action >> commit(types.UPDATE_SONGPROGRAMPRESET')
   },
@@ -274,7 +274,7 @@ const actions = {
   },
   async addInstrument ({ commit }, instrument) {
     const id = await InstrumentsService.getId()
-    console.log(id)
+    // console.log(id)
     instrument.id = id
     await InstrumentsService.put(instrument)
     commit(types.ADD_INSTRUMENT, instrument)
@@ -297,7 +297,7 @@ const actions = {
   },
   async addPreset ({ commit }, preset) {
     const id = await PresetsService.getId()
-    console.log(id)
+    // console.log(id)
     preset.id = id
     await PresetsService.put(preset)
     commit(types.ADD_PRESET, preset)
@@ -314,7 +314,7 @@ const actions = {
   },
   async addInstrumentBank ({ commit }, instrumentBank) {
     const id = await InstrumentBankService.getId()
-    console.log(id)
+    // console.log(id)
     instrumentBank.id = id
     await InstrumentBankService.put(instrumentBank)
     commit(types.ADD_INSTRUMENTBANK, instrumentBank)
@@ -332,7 +332,7 @@ const actions = {
   async addGig ({ commit }, gig) {
     const id = await GigsService.getId()
     gig.id = id
-    console.log(gig)
+    // console.log(gig)
     await GigsService.putGig(gig)
 
     commit(types.ADD_GIG, gig)
@@ -363,10 +363,10 @@ const actions = {
 
   resetGigSongs ({ commit, getters }, payload) { // {}  gigId, songList)
     try {
-      console.log('=========================')
-      console.log(payload.gig)
-      console.log(payload.songList)
-      console.log('=========================')
+      // console.log('=========================')
+      // console.log(payload.gig)
+      // console.log(payload.songList)
+      // console.log('=========================')
 
       var gig = Object.assign({}, payload.gig)
       if (!gig.shortSongList) {
@@ -387,7 +387,7 @@ const actions = {
         const song = getters.songList.find(s => s.id === item.id)
         gig.songList.push(song)
       }
-      console.log(gig)
+      // console.log(gig)
       commit(types.UPDATE_GIG, gig)
     } catch (ex) {
       Vue.$log.debug(ex)
@@ -439,14 +439,18 @@ const actions = {
       // Vue.$log.debug('-- Preset socket IO message')
       // Vue.$log.debug(data)
       // this.setCurrentProgramMidiPedal({ commit }, data)
-      commit(types.SET_CURRENT_PROGRAMMIDIPEDAL, data)
+      // console.log('Prog Message Received', data)
+      const idx = parseInt(data)
+      commit(types.SET_CURRENT_PROGRAMMIDIPEDAL, idx)
       // this.$store.dispatch('setCurrentProgramMidiPedal', parseInt(data))
     })
     this._vm.$socket.client.on(config.controllerSongMessage, (data) => {
       // Vue.$log.debug('-- Song socket IO message')
       // Vue.$log.debug(data)
       // this.setCurrentSongId({ commit }, data)
-      commit(types.SET_CURRENTSONG_ID, data)
+      // console.log('Song Message Received', data)
+      const id = parseInt(data)
+      commit(types.SET_CURRENTSONG_ID, id)
       // this.$store.dispatch('setCurrentSongId', parseInt(data))
     })
     clientInitialized = true

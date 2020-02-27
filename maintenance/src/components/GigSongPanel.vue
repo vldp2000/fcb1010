@@ -88,14 +88,12 @@ export default {
     ...mapState(['songList'])
   },
   mounted () {
-    console.log('-- mounted start ---')
     this.init()
-    console.log('-- mounted end ---')
   },
 
   methods: {
     init: async function () {
-      console.log(this.songList)
+      // console.log(this.songList)
       // this.$log.debug(this.songList)
       if (this.gig) {
         this.gigSonglist = []
@@ -115,21 +113,21 @@ export default {
           list = await list.filter(item => item.id !== song.id)
         }
         this.allSongList = list
-        console.log(this.gigSonglist)
-        console.log(' -------------------')
-        console.log(this.songList)
-        console.log(' -------------------')
-        console.log(this.gig)
-        console.log(' -------------------')
+        // console.log(this.gigSonglist)
+        // console.log(' -------------------')
+        // console.log(this.songList)
+        // console.log(' -------------------')
+        // console.log(this.gig)
+        // console.log(' -------------------')
       }
     },
 
     saveOrder: function () {
-      console.log('------ save -----------')
-      console.log(this.gigSonglist)
-      console.log(this.songList)
-      console.log(this.gig)
-      console.log('------ save -----------')
+      // console.log('------ save -----------')
+      // console.log(this.gigSonglist)
+      // console.log(this.songList)
+      // console.log(this.gig)
+      // console.log('------ save -----------')
       const payload = { 'gig': this.gig, 'songList': this.gigSonglist }
       this.$store.dispatch('resetGigSongs', payload)
     },

@@ -305,7 +305,7 @@ export default {
     },
 
     currentSongId: async function () {
-      if (!this.currentSong || this.currentSong.id !== this.currentSongId.id) {
+      if (!this.currentSong || this.currentSong.id !== this.currentSongId) {
         this.$log.debug('-- >>>>> current Song id was changed')
         this.setCurrentSong()
       }
@@ -330,14 +330,15 @@ export default {
     },
     setCurrentSong () {
       const id = this.currentSongId
-      this.$log.debug(' --- setCurrentSong ---')
+      this.$log.debug(' --- setCurrentSong ---', id)
       // this.$log.debug(this.currentGig)
       if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
+        // console.log(this.currentGig)
         this.currentSong = this.currentGig.songList.find(item => item.id === id)
       }
 
       if (!this.currentSong) {
-        this.$log.debug(`NOT found song in current gig >>  ${this.currentSong.name}`)
+        this.$log.debug(`NOT found song in current gig >>  ${id}`)
         this.setSongOutOfGig(id)
       }
       // this.$log.debug(this.currentSong.name)

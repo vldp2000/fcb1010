@@ -229,7 +229,7 @@ export default {
     },
 
     closeDialog () {
-      console.log('closeDialog')
+      // console.log('closeDialog')
       this.dialog = false
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
@@ -258,7 +258,7 @@ export default {
           }
         }
       } else {
-        console.log(value)
+        this.$log.debug(value)
       }
       this.showLoading(false)
       this.closeDialog()

@@ -10,7 +10,7 @@ export default {
   },
   async getId () {
     let result = await Api().get('id/song')
-    console.log(result.data.id)
+    // console.log(result.data.id)
     return result.data.id
   },
 
@@ -21,7 +21,7 @@ export default {
       delete songObj.createdAt
       delete songObj.updatedAt
       Vue.$log.debug('// --async putSong (song)')
-      console.log(song)
+      // console.log(song)
       let result = await Api().put(`song/${songObj.id}`, songObj)
       // Vue.$log.debug('// -----------result')
       Vue.$log.debug(result.data)

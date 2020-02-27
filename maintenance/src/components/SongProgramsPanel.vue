@@ -108,7 +108,7 @@ export default {
 
   methods: {
     async rowClicked (value) {
-      console.log(value)
+      // console.log(value)
       let oldId = -1
       if (this.expanded.length === 1) {
         oldId = this.expanded[0].id

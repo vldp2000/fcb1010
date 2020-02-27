@@ -10,13 +10,13 @@ export default {
   },
   async getId () {
     let result = await Api().get('id/instrument')
-    console.log(result.data.id)
+    // console.log(result.data.id)
     return result.data.id
   },
 
   async put (instrument) {
-    console.log('// ----------->>return Api().put(instrument{instrument.id}, instrument)')
-    console.log(instrument)
+    // console.log('// ----------->>return Api().put(instrument{instrument.id}, instrument)')
+    // console.log(instrument)
     let result = await Api().put(`instrument/${instrument.id}`, instrument)
     let newObj = await result.data
     Vue.$log.debug('// -----------result')

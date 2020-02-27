@@ -26,7 +26,7 @@ async function sendMessages () {
             value: 20,
             channel: 4
         });
-        console.log(i)
+        // console.log(i)
         await sleep(2000);
     }
 }

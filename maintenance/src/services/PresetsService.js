@@ -9,7 +9,7 @@ export default {
   },
   async getId () {
     let result = await Api().get('id/preset')
-    console.log(result.data.id)
+    // console.log(result.data.id)
     return result.data.id
   },
   async put (preset) {
