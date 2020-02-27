@@ -1,21 +1,18 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 // const {sequelize} = require('./models')
 const config = require('./config/config')
-
 const app = express()
-
 const server = app.listen(config.httpPort, function() {
   console.log(`listening on *:${config.httpPort}`);
 });
 
-app.use(morgan('combined'))
+// app.use(morgan('combined'))
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-
 app.use(cors())
 
 // const io = require('socket.io')(server);
