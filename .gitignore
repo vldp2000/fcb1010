@@ -1,4 +1,7 @@
 
 fcbcontroller/__pycache__/config.cpython-37.pyc
 *.pyc
-apiserver/node_modules/.bin/detect-libc
+apiserver/node_modules/
+maintenance/node_modules/
+maintenance/dist/
+midiTest/node_modules/
