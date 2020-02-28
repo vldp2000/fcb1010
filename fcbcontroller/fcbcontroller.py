@@ -31,7 +31,7 @@ import subprocess
 from array import *
 from time import sleep
 
-import pprint
+# import pprint
 
 import dataController
 import dataHelper
@@ -95,19 +95,6 @@ def printDebug(message):
     print(message)
 
 #----------------------------------------------------------------
-#     # for prs in songProgramPresets:
-# def pringSongs():
-#   for item in gSongDict:
-#     song = gSongDict[item]
-
-#     print('--------------------')
-
-#     pprint.pprint( json.dumps(song,
-#       indent=4, sort_keys=True, cls=CustomEncoder,
-#       separators=(',', ': '), ensure_ascii=False
-#     ))
-
-#----------------------------------------------------------------
 def loadAllData():
   global gGig
   global gSongDict
@@ -163,11 +150,11 @@ def checkCurrentBank(bank):
       gCurrentBank = 2
       gBankSongList = gSongList
 
-  print('Current Bnk = ', gCurrentBank)
-  print('gPlaySongFromSelectedGigOnly = ', gPlaySongFromSelectedGigOnly)
-  print('gSongList length --' , len(gSongList))
-  print('gGigSongList length --' , len(gGigSongList))
-  print('gBankSongList length --' , len(gBankSongList))
+  # printDebug('Current Bnk = ', gCurrentBank)
+  # printDebug('gPlaySongFromSelectedGigOnly = ', gPlaySongFromSelectedGigOnly)
+  # printDebug('gSongList length --' , len(gSongList))
+  # printDebug('gGigSongList length --' , len(gGigSongList))
+  # printDebug('gBankSongList length --' , len(gBankSongList))
 #----------------------------------------------------------------
 
 def resyncWithGigController():
@@ -175,8 +162,8 @@ def resyncWithGigController():
   global gCurrentSongIdx
   global gCurrentProgramIdx
 
-  print('== song ==',gCurrentSongIdx)
-  print('-- Prog --',gCurrentProgramIdx) 
+  # printDebug('== song ==',gCurrentSongIdx)
+  # printDebug('-- Prog --',gCurrentProgramIdx) 
   if gResyncCounter < 2:
     gResyncCounter = gResyncCounter + 1
   else:
@@ -199,7 +186,7 @@ def executeSystemCommand(code):
   global gSynthTest
   global gPianoTest
 
-  printDebug("EXECUTE SYSTEM COMMAND");
+  # printDebug("EXECUTE SYSTEM COMMAND");
   command = "";
   if code == 6:
     #shutdown RPi
@@ -288,7 +275,7 @@ def setSongProgram(idx):
 
   song = gBankSongList[gCurrentSongIdx]
   program = song.programList[idx]
-  print(song.name)
+  # printDebug(song.name)
 
   for preset in program['presetList']:
     #pprint.pprint(preset)
@@ -301,10 +288,6 @@ def setPreset(preset):
   pc = int( gPresetDict[str(preset['refpreset'])] )
   channel = int( gInstrumentDict[str(preset['refinstrument'])] )
   mute = preset['muteflag']
-
-  if preset['refinstrument'] == 1:
-    print('--PC-->', pc)
-    print('--CH-->', channel)
 
   if mute:
     muteChannel(channel, preset['volume'], 0.01, 10)
@@ -319,11 +302,11 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
 
   if  msg0 == gChannel1  or msg0 == gChannel2:
     msg0 = gPedal2_Channel
-  printDebug("SEND GENERIC MIDI COMMAND")
+  # printDebug("SEND GENERIC MIDI COMMAND")
   message = struct.pack( "BBB", msg0, msg1, msg2 )
-  #sendRaveloxCCMessage( message )
+  sendRaveloxCCMessage( message )
 
-  printDebug("Send Generic Midi Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
+  # printDebug("Send Generic Midi Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
 
 #----------------------------------------------------------------
 
@@ -359,10 +342,11 @@ def selectPreviousSong():
 
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
-  printDebug("SEND MIDI MSG")
+  # printDebug("SEND MIDI MSG")
   global gReloadCounter
   global gSynthTest
   global gPianoTest
+  global gPedal2_Channel
 
   msg = midiMsg[0]
   msg0 = msg[0]
@@ -389,11 +373,11 @@ def getActionForReceivedMessage(midiMsg):
   if msg0 == 180:
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
       executeSystemCommand(msg2)
-      printDebug(">>1--")
+      # printDebug(">>1--")
       return
     elif msg1 == 1:
       checkCurrentBank(msg2)
-      printDebug(">>2--")
+      # printDebug(">>2--")
       return
     elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
       if msg2 == 11:
@@ -424,15 +408,17 @@ def getActionForReceivedMessage(midiMsg):
 
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1 or 2 (or both ?)
-    printDebug('>>6--' + str(msg))
+    sendGenericMidiCommand(msg0, msg1, msg2):
+    # printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
     # Send Volume to Channel 6 or 7 (or both ?)
-    printDebug('>>7--' + str(msg))
+    sendGenericMidiCommand(msg0, msg1, msg2):
+    # printDebug('>>7--' + str(msg))
 
   else:
      sendGenericMidiCommand(msg0, msg1, msg2)
-     printDebug('>>8--' + str(msg))
+    #  printDebug('>>8--' + str(msg))
 
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
@@ -445,38 +431,10 @@ def getMidiMsg(midiInput):
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
-        print(msg)
-        printDebug(">>New Message Received<")
-        printDebug(msg)
+        # print(msg)
+        # printDebug(">>New Message Received<")
+        # printDebug(msg)
         getActionForReceivedMessage(msg)  
-
-#----------------------------------------------------------------
-def initRaveloxClient():
-  global gRaveloxClient
-  global gProcessRaveloxMidi
-
-  if gProcessRaveloxMidi:
-    try:
-      # gRaveloxClient = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-      # gRaveloxClient.connect( RAVELOX_HOST, RAVELOX_PORT )
-	    family = socket.AF_INET
-	    connect_tuple = ( 'localhost', RAVELOX_PORT )
-      gRaveloxClient = socket.socket( family, socket.SOCK_DGRAM )
-      gRaveloxClient.setblocking(0)
-      gRaveloxClient.connect( connect_tuple )
-      gRaveloxClient.send("")
-      gRaveloxClient.send("") # have to send twice to throw an error if ravelox not running
-
-      details = socket.getaddrinfo( RAVELOX_HOST, RAVELOX_PORT, socket.AF_UNSPEC, socket.SOCK_DGRAM)
-	    pprint.pprint(details)
-      family = details[0][0]
-      pprint.pprint(family)
-
-      return True
-    except:
-      return False
-  else:
-    return True
 
 #----------------------------------------------------------------
 
@@ -489,8 +447,8 @@ def connectRavelox():
 
     return True
   except:
-    print('<<< exception >>')
-    pprint.pprint(sys.exc_info())
+    printDebug('<<< exception >>')
+    # pprint.pprint(sys.exc_info())
     return False
 
 #----------------------------------------------------------------
@@ -498,13 +456,13 @@ def connectRavelox():
 #pygame.init()
 pygame.midi.init()
 
-print(str(sys.argv))
+# print(str(sys.argv))
 if len(sys.argv) > 1: 
   if str(sys.argv[1]).upper() == 'DEBUG':
     gMode = 'Debug'
 
 #Show the list of available midi devices
-print(pygame.midi.get_count())
+printDebug(pygame.midi.get_count())
 if gMode == 'Debug':
   for id in range(pygame.midi.get_count()):
     printDebug( "Id=%d Device=%s" % (id,pygame.midi.get_device_info(id)) )

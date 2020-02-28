@@ -1,6 +1,6 @@
 import requests
 import json
-import pprint
+# import pprint
 from dataClasses import *
 from config import *
 
@@ -28,7 +28,7 @@ def getCurrentGigId():
 #----------------------------------------------------------------
 
 def getGig(id):
-  print('----------------------------------------------------')
+  # print('----------------------------------------------------')
   URL = API_URL + "/gig/"+str(id)
   # PARAMS = {'id':id} 
   # response = requests.get(url = URL, params = PARAMS) 
