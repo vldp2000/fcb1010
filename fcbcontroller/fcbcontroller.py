@@ -117,12 +117,12 @@ def loadAllData():
   if gGigSongList != None:
     gGigSongList.clear()
   if gSongList != None:
-    gSongList.clear()  
+    gSongList.clear()
   if gSongDict != None:
     gSongDict.clear()
   if gBankSongList != None:
     gBankSongList.clear()
- 
+
   gGig = dataHelper.loadCurrentGig()
   gSongDict = dataHelper.loadSongs()
   gSongList = dataHelper.initAllSongs(gSongDict)
@@ -387,7 +387,7 @@ def getActionForReceivedMessage(midiMsg):
       elif msg2 == 13: #pedal 3 #Second Volume pedal sends messages to ch 1
         gPedal2_Channel = gChannel1
       elif  msg2 == 14: #pedal 4 #Second Volume pedal sends messages to ch 2
-        gPedal2_Channel = gChannel2          
+        gPedal2_Channel = gChannel2
       elif msg2 == 15:
         selectPreviousSong()
         setSongProgram(0)
@@ -396,9 +396,9 @@ def getActionForReceivedMessage(midiMsg):
       elif msg2 == 17:
         setSongProgram(1)
       elif msg2 == 18:
-        setSongProgram(2) 
+        setSongProgram(2)
       elif msg2 == 19:
-        setSongProgram(3)          
+        setSongProgram(3)
       elif msg2 == 20:
         selectNextSong()
         setSongProgram(0)
@@ -516,4 +516,3 @@ if gProcessRaveloxMidi:
 
 del midiInput
 pygame.midi.quit()
-
