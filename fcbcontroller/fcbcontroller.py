@@ -236,6 +236,7 @@ def executeSystemCommand(code):
 
 def sendRaveloxCCMessage(channel, CC, value):
   global gRaveloxClient
+
   message = struct.pack( "BBB", 176 + channel - 1, CC, value)
   if gProcessRaveloxMidi:
     gRaveloxClient.send( message )
@@ -248,8 +249,10 @@ def sendRaveloxCCMessage(channel, CC, value):
 ## 197 -PC on Channel 6
 
 def sendRaveloxPCMessage( channel, PC):
-  message = struct.pack( "BB", 192 + channel - 1, PC)
   global gRaveloxClient
+
+  message = struct.pack( "BB", 192 + channel - 1, PC)
+
   if gProcessRaveloxMidi:
     gRaveloxClient.send( message )
     sleep(MIN_DELAY)
@@ -463,6 +466,31 @@ def initRaveloxClient():
     return True
 
 #----------------------------------------------------------------
+
+def connectRavelox():
+  global gRaveloxClient
+  try:
+    #family = socket.AF_INET
+    connect_tuple = ( 'localhost', 5006 )
+    gRaveloxClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    #gRaveloxClient = socket.socket( family, socket.SOCK_DGRAM )
+    #gRaveloxClient.setblocking(0)
+    
+    gRaveloxClient.connect( connect_tuple )
+    #gRaveloxClient.send("")
+    #gRaveloxClient.send("") # have to send twice to throw an error if ravelox not running
+    #details = socket.getaddrinfo( RAVELOX_HOST, RAVELOX_PORT, socket.AF_UNSPEC, socket.SOCK_DGRAM)
+    #pprint.pprint(details)
+    #fam = details[0][0]
+    #pprint.pprint(fam)
+
+    return True
+  except:
+    print('<<< exception >>')
+    pprint.pprint(sys.exc_info())
+    return False
+
+#----------------------------------------------------------------
 #Main Module 
 #pygame.init()
 pygame.midi.init()
@@ -498,10 +526,12 @@ midiInput = None
 
 while not portOk:
   try:
-    result = initRaveloxClient()
+    # result = initRaveloxClient()
+    result = connectRavelox()
+
     if result:
       midiInput = pygame.midi.Input(gMidiDevice)
-      portOk = True  
+      portOk = True
     else:
       printDebug("waiting for raveloxmidi...")
       sleep(1)
