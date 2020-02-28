@@ -450,12 +450,25 @@ def getMidiMsg(midiInput):
 #----------------------------------------------------------------
 def initRaveloxClient():
   global gRaveloxClient
+  global gProcessRaveloxMidi
+
   if gProcessRaveloxMidi:
     try:
-      gRaveloxClient = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-      gRaveloxClient.connect( RAVELOX_HOST, RAVELOX_PORT )
+      # gRaveloxClient = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
+      # gRaveloxClient.connect( RAVELOX_HOST, RAVELOX_PORT )
+	    family = socket.AF_INET
+	    connect_tuple = ( 'localhost', RAVELOX_PORT )
+      gRaveloxClient = socket.socket( family, socket.SOCK_DGRAM )
+      gRaveloxClient.setblocking(0)
+      gRaveloxClient.connect( connect_tuple )
       gRaveloxClient.send("")
       gRaveloxClient.send("") # have to send twice to throw an error if ravelox not running
+
+      details = socket.getaddrinfo( RAVELOX_HOST, RAVELOX_PORT, socket.AF_UNSPEC, socket.SOCK_DGRAM)
+	    pprint.pprint(details)
+      family = details[0][0]
+      pprint.pprint(family)
+
       return True
     except:
       return False
