@@ -4,12 +4,12 @@ import Vue from 'vue'
 export default {
 
   async getAllData () {
-    let result = await Api().get('all/instrumentBank')
+    let result = await Api().get('all/instrumentbank')
     // console.log(data)
     return result.data
   },
   async getId () {
-    let result = await Api().get('id/instrumentBank')
+    let result = await Api().get('id/instrumentbank')
     // console.log(result.data.id)
     return result.data.id
   },
@@ -18,7 +18,7 @@ export default {
     Vue.$log.debug('// ----------->>return Api().put(instrumentBank{instrumentBannk.id}, instrumentBank)')
     Vue.$log.debug(instrumentBank)
     Vue.$log.debug(instrumentBank.id)
-    let result = await Api().put(`instrumentBank/${instrumentBank.id}`, instrumentBank)
+    let result = await Api().put(`instrumentbank/${instrumentBank.id}`, instrumentBank)
     let newObj = await result.data
     Vue.$log.debug('// -----------result')
     Vue.$log.debug(newObj)
