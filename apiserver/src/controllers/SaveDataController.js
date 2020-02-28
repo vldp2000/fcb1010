@@ -4,7 +4,7 @@ const fs = require('fs')
 function getFileName (objName, id) {    
   const result = config.filePath + objName + '/' + id + '.json'
   // console.log(  `Get file name  ==>> ${result}`)
-  return result
+  return result.toLowerCase()
 }
 
 
@@ -15,7 +15,7 @@ module.exports = {
     // console.log(' ---->>> Save Data <<<<< ')
     // console.log(req.url)
     const objName = req.url.split("/")[1]
-    const fileName = getFileName(objName, req.params.id)
+    const fileName = getFileName(objName, req.params.id).toLowerCase()
 
     // stringify JSON Object
     var jsonContent = JSON.stringify(req.body)
