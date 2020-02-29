@@ -305,6 +305,7 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   # printDebug("SEND GENERIC MIDI COMMAND")
   message = struct.pack( "BBB", msg0, msg1, msg2 )
   sendRaveloxCCMessage( message )
+  sleep(MIN_DELAY)
 
   # printDebug("Send Generic Midi Command to Ravelox %d, %d, %d"% (msg0,msg1,msg2))
 
