@@ -2,9 +2,9 @@ const config = require('../config/config')
 const fs = require('fs')
 
 function getFileName (objName, id) {    
-  const result = config.filePath + objName + '/' + id + '.json'
+  const result = config.filePath + objName.toLowerCase() + '/' + id + '.json'
   // console.log(  `Get file name  ==>> ${result}`)
-  return result.toLowerCase()
+  return result
 }
 
 
