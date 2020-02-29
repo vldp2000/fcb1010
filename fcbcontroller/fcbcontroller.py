@@ -225,8 +225,9 @@ def executeSystemCommand(code):
 def sendRaveloxCCMessage(channel, CC, value):
   global gRaveloxClient
   global gUseNewRaveloxMidi
-  
-  if !gProcessRaveloxMidi: return
+  global gProcessRaveloxMidi
+
+  if not gProcessRaveloxMidi: return
   
   message = ""
   if gUseNewRaveloxMidi:
@@ -247,8 +248,9 @@ def sendRaveloxCCMessage(channel, CC, value):
 def sendRaveloxPCMessage( channel, PC):
   global gRaveloxClient
   global gUseNewRaveloxMidi
-  
-  if !gProcessRaveloxMidi: return
+  global gProcessRaveloxMidi
+
+  if not gProcessRaveloxMidi: return
 
   message = ""
   if gUseNewRaveloxMidi:
@@ -262,6 +264,25 @@ def sendRaveloxPCMessage( channel, PC):
   if gMode == 'Debug':
      printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
 #----------------------------------------------------------------
+
+def sendGenericMidiCommand(msg0, msg1, msg2):
+  global gRaveloxClient
+  global gUseNewRaveloxMidi
+  global gProcessRaveloxMidi
+
+  if not gProcessRaveloxMidi: return
+  
+  message = ""
+  if  msg0 == gChannel1  or msg0 == gChannel2:
+    msg0 = gPedal2_Channel
+  # printDebug("SEND GENERIC MIDI COMMAND")
+  if gUseNewRaveloxMidi:
+    message = struct.pack("BBB", msg0, msg1, msg2)
+  else
+    message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
+
+  sendRaveloxCCMessage( message )
+  sleep(MIN_DELAY)
 
 #----------------------------------------------------------------
 def muteChannel(channel, volume, delay, step):
@@ -312,20 +333,6 @@ def setPreset(preset):
 
   if mute:
     unmuteChannel(channel, preset['volume'], 0.01, 10)
-
-#----------------------------------------------------------------
-def sendGenericMidiCommand(msg0, msg1, msg2):
-  global gUseNewRaveloxMidi
-  if  msg0 == gChannel1  or msg0 == gChannel2:
-    msg0 = gPedal2_Channel
-  # printDebug("SEND GENERIC MIDI COMMAND")
-  if gUseNewRaveloxMidi:
-    message = struct.pack("BBB", msg0, msg1, msg2)
-  else
-    message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
-
-  sendRaveloxCCMessage( message )
-  sleep(MIN_DELAY)
 
 #----------------------------------------------------------------
 
