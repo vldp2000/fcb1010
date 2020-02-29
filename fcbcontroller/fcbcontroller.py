@@ -281,9 +281,11 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   else:
     message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
 
-  sendRaveloxCCMessage( message )
+  gRaveloxClient.send( message )
   sleep(MIN_DELAY)
-
+  
+if gMode == 'Debug':
+     printDebug("SEND RAVELOX GENERIC MESSAGE %d %d %d" % (msg0, msg1, msg2))
 #----------------------------------------------------------------
 def muteChannel(channel, volume, delay, step):
   if volume > 0:
