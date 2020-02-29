@@ -301,6 +301,7 @@ const actions = {
     preset.id = id
     await PresetsService.put(preset)
     commit(types.ADD_PRESET, preset)
+    // console.log(preset)
   },
   updatePreset ({ commit }, preset) {
     // Vue.$log.debug('action - updatePreset')
