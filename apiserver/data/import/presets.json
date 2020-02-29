@@ -1,0 +1,100 @@
+"LivePresets" : [
+    {
+       "display_order" : 0,
+       "is_favorite" : false,
+       "preset_name" : "05.A. Dredn Rev",
+       "preset_uuid" : "B6665FFD-0368-4CE4-A70F-905037E44051"
+    },
+    {
+       "display_order" : 1,
+       "is_favorite" : false,
+       "preset_name" : "02. A. Dredn. Dry",
+       "preset_uuid" : "AF79D552-9513-440A-960A-792E9768D68C"
+    },
+    {
+       "display_order" : 2,
+       "is_favorite" : false,
+       "preset_name" : "01.A. Bluegrass. Dry",
+       "preset_uuid" : "B7E0A3A4-4550-4BBF-8519-E536919919AC"
+    },
+  
+    {
+       "display_order" : 4,
+       "is_favorite" : false,
+       "preset_name" : "03.A. MultiEcho",
+       "preset_uuid" : "1A323C2B-C8F8-4329-AAB6-CBEA7BF74A0F"
+    },
+    {
+       "display_order" : 5,
+       "is_favorite" : false,
+       "preset_name" : "04.Acoustic Mod",
+       "preset_uuid" : "20E99EBD-E8CE-47BA-A5D2-DA205BD3DA63"
+    },
+    {
+       "display_order" : 6,
+       "is_favorite" : false,
+       "preset_name" : "06. A. Mod. Long Rev",
+       "preset_uuid" : "F3348395-62B9-41FF-BF93-584C899A622D"
+    },
+    {
+       "display_order" : 7,
+       "is_favorite" : false,
+       "preset_name" : "07. A bright long rev",
+       "preset_uuid" : "ECD2AF74-7193-4874-9535-06DBE58B5216"
+    },
+ 
+    {
+       "display_order" : 10,
+       "is_favorite" : false,
+       "preset_name" : "60.Solo.American Dream",
+       "preset_uuid" : "8BC88201-A6EA-457D-BEEC-99F55DE6D026"
+    },
+    {
+       "display_order" : 13,
+       "is_favorite" : false,
+       "preset_name" : "08. A. wide stereo",
+       "preset_uuid" : "77BB4E18-D713-42AE-AEC5-F9F5D1F6C41C"
+    },
+    {
+       "display_order" : 18,
+       "is_favorite" : false,
+       "preset_name" : "20.R.Violet Rain",
+       "preset_uuid" : "72E0CEF6-633A-44F7-9F82-94295DFD9B9C"
+    },
+    {
+       "display_order" : 20,
+       "is_favorite" : false,
+       "preset_name" : "09.A. Duet",
+       "preset_uuid" : "B52AD5D7-69C7-4A84-B9E6-FE42CA2D9680"
+    },
+    {
+       "display_order" : 21,
+       "is_favorite" : false,
+       "preset_name" : "40.Clean.The Dream Is Over",
+       "preset_uuid" : "6664A1DD-3FD5-48C1-9B02-66C8D1B93460"
+    },
+    {
+       "display_order" : 22,
+       "is_favorite" : false,
+       "preset_name" : "69 Vibe",
+       "preset_uuid" : "FAB4B911-5B22-49DF-A294-6285192318BA"
+    },
+    {
+       "display_order" : 28,
+       "is_favorite" : false,
+       "preset_name" : "61.Solo.Comfortably Gilmour",
+       "preset_uuid" : "F352F894-DAE4-4384-8A72-FD8924B50120"
+    },
+    {
+       "display_order" : 33,
+       "is_favorite" : false,
+       "preset_name" : "62.Solo.Bombing Plane",
+       "preset_uuid" : "EE6E8B20-E1B4-46B7-8B07-C83A63272C1A"
+    },
+    {
+       "display_order" : 40,
+       "is_favorite" : false,
+       "preset_name" : "63.Solo.Super Star",
+       "preset_uuid" : "9DE0C2EA-661D-43EE-87E6-FEE04A25F265"
+    },
+ ]
