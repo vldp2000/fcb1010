@@ -147,12 +147,9 @@ export default {
         children: [
           { icon: 'mdi-settings', text: 'Songs', link: '/songs' },
           { icon: 'mdi-settings', text: 'Gigs', link: '/gigs' },
-          { icon: 'mdi-settings', text: 'Instruments', link: '/instruments' },
-          { icon: 'mdi-settings', text: 'Instrument Banks', link: '/instrumentBanks' },
           { icon: 'mdi-settings', text: 'Presets', link: '/presets' },
-          { icon: 'mdi-settings', text: 'Song Programs', link: '/songPrograms' },
-          { icon: 'mdi-settings', text: 'Preset', link: '/preset' },
-          { icon: 'mdi-settings', text: 'Test', link: '/test' }
+          { icon: 'mdi-settings', text: 'Instruments', link: '/instruments' },
+          { icon: 'mdi-settings', text: 'Instrument Banks', link: '/instrumentBanks' }
         ]
       }
     ]
