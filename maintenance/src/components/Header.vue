@@ -10,9 +10,9 @@
         class="maintenance"
         tag="span"
         :to="{
-          name: 'home'
+          name: 'gigcontrol'
         }">
-        Maintenance
+        FCB 1010 Midi Controller
       </router-link>
     </v-toolbar-title>
 
@@ -31,12 +31,6 @@
       </v-btn>
       <v-btn
         :to="{
-          name: 'songs'
-        }">
-        Test
-      </v-btn>
-      <v-btn
-        :to="{
           name: 'instruments'
         }">
         Instruments
@@ -52,12 +46,6 @@
           name: 'instrumentBank'
         }">
         instrumentBank
-      </v-btn>
-      <v-btn
-        :to="{
-          name: 'songPrograms'
-        }">
-        Song Programs
       </v-btn>
 
     </v-toolbar-items>

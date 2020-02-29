@@ -17,10 +17,10 @@ module.exports = (app) => {
   app.get('/all/preset', ReadDataController.readDataFromFile)
   app.get('/id/preset', ReadDataController.getId)
 
-  app.put('/instrumentBank/:id', SaveDataController.saveDataToFile)
+  app.put('/instrumentbank/:id', SaveDataController.saveDataToFile)
 
-  app.get('/all/instrumentBank', ReadDataController.readDataFromFile)
-  app.get('/id/instrumentBank', ReadDataController.getId)
+  app.get('/all/instrumentbank', ReadDataController.readDataFromFile)
+  app.get('/id/instrumentbank', ReadDataController.getId)
 
   app.put('/gig/:id', SaveDataController.saveDataToFile)
 

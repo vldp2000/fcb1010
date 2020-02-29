@@ -19,7 +19,7 @@ app.use(cors())
 const io = require('socket.io')(server);
 try {
   io.on('connection', function(socket) {
-    // this.$log.debug(`--- socket connected ---client ${socket.id}`)
+    console.log(`--- message socket connected. client ${socket.id}`)
     // this.$log.debug(socket)
     socket.on(`${config.viewProgramMessage}`, function(data) {
       // this.$log.debug(config.viewProgramMessage)
@@ -53,16 +53,7 @@ try {
     })
   })
 } catch (ex) {
-  // this.$log.debug(ex)
+  console.log(ex)
 }
 
 require('./routes')(app)
-
-// sequelize.sync({
-//   force: false,
-//   // logging: this.$log.debug
-// })
-//   .then(() => {
-//     app.listen(config.httpPort)
-//     // this.$log.debug(`Server started on port ${config.httpPort}`)
-//   })
