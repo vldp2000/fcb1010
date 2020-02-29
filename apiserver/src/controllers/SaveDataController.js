@@ -14,7 +14,7 @@ module.exports = {
     console.log(' ---->>> Save Data <<<<< ')
     // console.log(req.url)
     const objName = req.url.split("/")[1]
-    const fileName = await getFileName(objName, req.params.id)
+    const fileName = getFileName(objName, req.params.id)
 
     // stringify JSON Object
     var jsonContent = JSON.stringify(req.body)
