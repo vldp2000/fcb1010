@@ -42,7 +42,7 @@ from config import *
 #----------------------------------------------------------------
 
 gProcessRaveloxMidi = True
-gUseNewRaveloxMidi = False
+gUseNewRaveloxMidi = True
 gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
@@ -449,7 +449,7 @@ def getActionForReceivedMessage(midiMsg):
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
 #  printDebug(""))
-  printDebug("..... LISTEN TO MIDI MSG")
+  # printDebug("..... LISTEN TO MIDI MSG")
   gotMsg = 0
   while not(gotMsg):
     sleep(MIN_DELAY)
