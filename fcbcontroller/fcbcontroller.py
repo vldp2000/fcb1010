@@ -232,7 +232,7 @@ def sendRaveloxCCMessage(channel, CC, value):
   message = ""
   if gUseNewRaveloxMidi:
     message = struct.pack( "BBB", 176 + channel - 1, CC, value)
-  else
+  else:
     message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
 
   gRaveloxClient.send( message )
@@ -255,7 +255,7 @@ def sendRaveloxPCMessage( channel, PC):
   message = ""
   if gUseNewRaveloxMidi:
     message = struct.pack( "BB", 192 + channel - 1, PC)
-  else
+  else:
     message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
 
   gRaveloxClient.send( message )
@@ -271,14 +271,14 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   global gProcessRaveloxMidi
 
   if not gProcessRaveloxMidi: return
-  
+
   message = ""
   if  msg0 == gChannel1  or msg0 == gChannel2:
     msg0 = gPedal2_Channel
   # printDebug("SEND GENERIC MIDI COMMAND")
   if gUseNewRaveloxMidi:
     message = struct.pack("BBB", msg0, msg1, msg2)
-  else
+  else:
     message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
 
   sendRaveloxCCMessage( message )
