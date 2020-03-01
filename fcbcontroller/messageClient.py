@@ -8,14 +8,15 @@ sio = socketio.Client()
 class MessageClient(object):
   # sio.None
 
-  sio.on('connect', on_connect)
   def on_connect(self):
     print("connected.")
 
-  sio.on('songMessage', on_songMessage)
+  sio.on('connect', on_connect)
+
   def on_songMessage(*args):
     print('on_aaa_response', args)
-
+  
+  sio.on('songMessage', on_songMessage)
 
   # @sio.event
   # def connect_error():
