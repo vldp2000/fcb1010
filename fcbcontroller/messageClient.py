@@ -10,11 +10,11 @@ class MessageClient(object):
     # self.sio = sio
   # sio.None
 
-  sio.on('connect', on_connect)
+  @sio.on('connect', on_connect)
   def on_connect(self):
     print("connected.")
 
-  sio.on('songMessage', on_songMessage)
+  @sio.on('songMessage', on_songMessage)
   def on_songMessage(self, *args):
     print('on_aaa_response', args)
 
