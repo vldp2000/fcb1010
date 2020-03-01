@@ -6,15 +6,15 @@ from dataClasses import *
 class MessageClient(object):
   socketIOClient: None
 
-  @sio.event
+  @socketIOClient.event
   def connect():
       print("I'm connected!")
 
-  @sio.event
+  @socketIOClient.event
   def connect_error():
       print("The connection failed!")
 
-  @sio.event
+  @socketIOClient.event
   def disconnect():
       print("I'm disconnected!")
 
