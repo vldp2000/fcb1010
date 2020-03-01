@@ -6,8 +6,8 @@ from dataClasses import *
 class MessageClient(object):
   sio: None
 
- def on_connect( self ):
-        print "connected."
+  def on_connect(self):
+    print "connected."
 
   # @self.sio.event
   # def connect_error():
