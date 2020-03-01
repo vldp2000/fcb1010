@@ -3,9 +3,11 @@ from config import *
 from dataClasses import *
 # import pprint 
 
-sio = socketio.Client()
+# sio = socketio.Client()
 
-class MessageClient(object):
+class MessageClient(object,sio):
+  def __init__(self,sio):
+    self.sio = sio
   # sio.None
 
   def on_connect(self):
