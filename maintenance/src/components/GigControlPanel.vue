@@ -41,11 +41,16 @@
       </v-col>
        <v-col cols="12" md="1">
         <div>
-          <v-icon large class="saveSongBbutton"
+          <v-icon large
             v-bind:class="(dataChanged) ? 'saveSongButtonHighighted' : 'saveSongButton'"
             @click="saveSong()"
           >
           save
+          </v-icon>
+          <v-icon large class="selectSongButton"
+            @click="selectSong()"
+          >
+          settings_remote
           </v-icon>
         </div>
       </v-col>
@@ -363,7 +368,15 @@ export default {
       try {
         this.$store.dispatch('socketClientInitialize', 'socketClientInitialize')
       } catch (ex) {
-        this.$log.debug(ex)
+        this.$log.error(ex)
+      }
+    },
+
+    selectSong () {
+      try {
+        this.$store.dispatch('socketClientInitialize', 'socketClientInitialize')
+      } catch (ex) {
+        this.$log.error(ex)
       }
     },
 
@@ -388,7 +401,7 @@ export default {
           await this.$store.dispatch('initAllLists', 'initAll')
         }
       } catch (ex) {
-        this.$log.debug(ex)
+        this.$log.error(ex)
       }
     },
 
@@ -407,7 +420,7 @@ export default {
           return preset
         }
       } catch (ex) {
-        this.$log.debug(ex)
+        this.$log.error(ex)
       }
     },
     getProgramTytle (idx) {
@@ -534,6 +547,10 @@ export default {
 }
 .saveSongButton {
   color:  rgb(103, 103, 109);
+}
+.selectSongButton {
+  margin-left: 10px;
+  color: darkblue;
 }
 .defaultGigHighighted {
   margin-left: -10px;

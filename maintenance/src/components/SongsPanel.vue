@@ -12,6 +12,7 @@
       sort-by="id"
       class="elevation-1"
       ref="sortableTable"
+      hide-default-footer
     >
 
       <template v-slot:expanded-item="{ headers }">
@@ -176,14 +177,6 @@ export default {
         id: -1,
         createdAt: '',
         updatedAt: ''
-      },
-      pagination: {
-        page: 1,
-        itemsPerPage: 20,
-        pageStart: 1,
-        // pageStop: 2,
-        // pageCount: number
-        itemsLength: 128
       },
       selectedProgramList: []
     }

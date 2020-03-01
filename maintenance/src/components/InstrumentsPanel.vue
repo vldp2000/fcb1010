@@ -3,11 +3,12 @@
     <v-flex class="ml-2">
       <custom-panel title="Instruments">
         <v-data-table
-          @pagination="pagination = $event"
           :headers="headers"
           :items="instrumentList"
           sort-by="name"
           class="elevation-1"
+          hide-default-footer
+          item-key="id"
         >
           <template v-slot:item.image="{ item }">
             <div class ="image">
@@ -116,14 +117,6 @@ export default {
         id: -1,
         name: '',
         midichannel: 0
-      },
-      pagination: {
-        page: 1,
-        itemsPerPage: 20,
-        pageStart: 1,
-        // pageStop: 2,
-        // pageCount: number
-        itemsLength: 128
       },
       selected: []
     }

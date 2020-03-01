@@ -21,7 +21,9 @@
             </div>
           </v-col>
           <v-col cols=10>
-            <div class="presetName" @click="onPresetClick()">
+            <div class="presetName"
+              v-bind:class="(volume > 0) ? 'active' : 'inactive'"
+              @click="onPresetClick()">
               <b>{{ getPresetName() }}</b>
             </div>
           </v-col>
@@ -33,30 +35,64 @@
             v-model='volume'
             :editMode='editMode'
             knobLabel='Vol'
+            :base-color='getBaseColor()'
           />
         </div>
-
         <div class="customKnob">
           <my-knob
             v-model='pan'
             :editMode='editMode'
             knobLabel='Pan'
+            :base-color='getBaseColor()'
           />
         </div>
         <div class="ma=0 pa=0">
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Mute" v-model="songPreset.muteflag" />
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Del" v-model="songPreset.delayflag" />
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Rev" v-model="songPreset.reverbflag" />
+            <v-checkbox :readonly="!editMode"
+              v-if="volume > 0"
+              class="ma-0 pa-0 checkbox"
+              dense hide-details
+              label="Mute"
+              :disabled="volume == 0"
+              v-model="songPreset.muteflag" />
+            <v-checkbox
+              v-if="volume > 0"
+              :readonly="!editMode"
+              class="ma-0 pa-0 checkbox"
+              dense hide-details
+              label="Del"
+              :disabled="volume == 0"
+              v-model="songPreset.delayflag" />
+            <v-checkbox
+              v-if="volume > 0"
+              :readonly="!editMode"
+              class="ma-0 pa-0 checkbox"
+              dense hide-details
+              label="Rev"
+              :disabled="volume == 0"
+              v-model="songPreset.reverbflag" />
         </div>
         <div class="inputpanel">
           <div>
-            <v-checkbox :readonly="!editMode" class="ma-0 pa-0 checkbox" dense hide-details  label="Mode" v-model="songPreset.modeflag" />
+            <v-checkbox
+              v-if="volume > 0"
+              :readonly="!editMode"
+              class="ma-0 pa-0 checkbox"
+              dense hide-details
+              label="Mode"
+              :disabled="volume == 0"
+              v-model="songPreset.modeflag" />
           </div>
           <div class="valueInput">
-            <custom-text-input :editMode='editMode' v-model="songPreset.delayvalue" />
+            <custom-text-input
+              v-if="volume > 0"
+              :editMode='editMode'
+              v-model="songPreset.delayvalue" />
           </div>
           <div class="valueInput">
-            <custom-text-input :editMode='editMode' v-model="songPreset.reverbvalue" />
+            <custom-text-input
+              v-if="volume > 0"
+              :editMode='editMode'
+              v-model="songPreset.reverbvalue" />
           </div>
         </div>
           <v-dialog v-if="editMode"  v-model="dialog" persistent max-width="600px">
@@ -151,7 +187,8 @@ export default {
     },
     pan: {
       get () {
-        return this.songPreset.pan
+        if (this.songPreset && this.songPreset.volume > 0) return this.songPreset.pan
+        else return 0
       },
       set (val) {
         this.songPreset.pan = val
@@ -227,6 +264,10 @@ export default {
         // this.$log.debug(this.presets)
         this.dialog = true
       }
+    },
+    getBaseColor () {
+      if (this.songPreset && this.songPreset.volume > 0) return 'snow'
+      else return 'gray'
     }
   }
 }
@@ -246,6 +287,12 @@ export default {
     font-size: 8px;
   } */
 
+  .active {
+    color:azure
+  }
+  .inactive {
+    color:gray
+  }
   .presetName {
     display: flex;
     margin: 0px;

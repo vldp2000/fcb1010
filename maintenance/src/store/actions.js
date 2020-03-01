@@ -297,11 +297,11 @@ const actions = {
   },
   async addPreset ({ commit }, preset) {
     const id = await PresetsService.getId()
-    // console.log(id)
+    console.log(id)
     preset.id = id
     await PresetsService.put(preset)
-    commit(types.ADD_PRESET, preset)
-    // console.log(preset)
+    await commit(types.ADD_PRESET, preset)
+    console.log(preset)
   },
   updatePreset ({ commit }, preset) {
     // Vue.$log.debug('action - updatePreset')
@@ -422,8 +422,16 @@ const actions = {
   },
 
   //  Socket Io-----------------------------------------------------
+  selectSong (id) {
+    this.$socket.client.emit(config.viewProgramMessage, id)
+  },
+
+  selectSongProgram (idx) {
+    this.$socket.client.emit(config.viewSongMessage, idx)
+  },
+
   socketClientInitialize ({ commit }, payload) {
-    Vue.$log.debug(';;;;;; socketClientIniotialize ;;;;;;;;')
+    Vue.$log.debug(';;>> socketClientIniotialize <<;;')
     Vue.$log.debug(this._vm)
     Vue.$log.debug(this._vm.$socket)
 

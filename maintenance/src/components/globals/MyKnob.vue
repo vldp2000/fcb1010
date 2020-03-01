@@ -14,6 +14,7 @@
       :min='min'
       :max='max'
       :gauge-color='gaugeColor'
+      :base-color='baseColor'
       :scale-interval='scaleInterval'>
       <div>
         <div class="inner-text">
@@ -79,6 +80,11 @@ export default {
         { offset: 0, color: 'lightblue' },
         { offset: 50, color: 'blue' }
       ])
+    },
+
+    baseColor: {
+      type: String,
+      default: '#FFFFFF'
     },
 
     scaleInterval: {
