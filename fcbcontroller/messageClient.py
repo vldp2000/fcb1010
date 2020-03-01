@@ -3,13 +3,11 @@ from config import *
 from dataClasses import *
 # import pprint 
 
-# sio = socketio.Client()
-
 class MessageClient(object):
-  sio = {}
+  sio = socketio.Client()
 
-  def __init__(self,sio):
-    self.sio = sio
+  # def __init__(self:
+    # self.sio = sio
   # sio.None
 
   def on_connect(self):
@@ -40,16 +38,16 @@ class MessageClient(object):
 
   def initMessenger(self):
     # sio.= socketio.Client()
-    sio.connect(MESSAGE_URL)
+    self.sio.connect(MESSAGE_URL)
     # print('---------------socket--------------------')
     # pprint.pprint(sio.
 
   def sendProgramNotificationMessage(self,id):
-    sio.emit(PROGRAM_MESSAGE, str(id))
+    self.sio.emit(PROGRAM_MESSAGE, str(id))
     # print(PROGRAM_MESSAGE + "=" + str(id))
 
   def sendSongNotificationMessage(self,id):
-    sio.emit(SONG_MESSAGE, str(id))
+    self.sio.emit(SONG_MESSAGE, str(id))
     # print(SONG_MESSAGE + "=" + str(id))
 
   def sendSyncNotificationMessage(self,songId, programId):
@@ -61,7 +59,7 @@ class MessageClient(object):
       indent=4, sort_keys=True, cls=CustomEncoder,
       separators=(',', ': '), ensure_ascii=False
     )
-    sio.emit(SYNC_MESSAGE, jsonStr)
+    self.sio.emit(SYNC_MESSAGE, jsonStr)
     # print(SYNC_MESSAGE + "=" +  jsonStr)
 
   # ---------ASYNC-------------
