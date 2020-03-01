@@ -100,6 +100,7 @@
               <v-card-title class="headline">Preset</v-card-title>
               <div>
                 <v-select
+                  class="ml-10 mr-10"
                   :items="presets"
                   v-model="presetId"
                   label="Preset"
@@ -246,6 +247,11 @@ export default {
         this.songPreset.refpreset = this.presetId
         this.songPreset.refinstrumentbank = preset.refinstrumentbank
         this.songPreset.refinstrument = preset.refinstrument
+        if (preset.midipc === 0) {
+          this.songPreset.volume = 0
+          this.songPreset.pan = 64
+        }
+
         this.dialog = false
       }
     },
