@@ -6,23 +6,23 @@ from dataClasses import *
 class MessageClient(object):
   sio: None
 
-  @sio.event
+  @self.sio.event
   def connect():
       print("I'm connected!")
 
-  @sio.event
+  @self.sio.event
   def connect_error():
       print("The connection failed!")
 
-  @sio.event
+  @self.sio.event
   def disconnect():
       print("I'm disconnected!")
 
-  @sio.on(VIEW_PROGRAM_MESSAGE)
+  @self.sio.on(VIEW_PROGRAM_MESSAGE)
   def on_message(data):
     print('I received a VIEW_PROGRAM_MESSAGE message!',data)
 
-  @sio.on(VIEW_SONG_MESSAGE)
+  @self.sio.on(VIEW_SONG_MESSAGE)
   def on_message(data):
     print('I received a VIEW_SONG_MESSAGE message!',data)
 
