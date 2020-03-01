@@ -6,7 +6,7 @@ from dataClasses import *
 # sio = socketio.Client()
 
 class MessageClient(object):
-  sio = None
+  sio = {}
 
   def __init__(self,sio):
     self.sio = sio
