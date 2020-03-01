@@ -6,10 +6,11 @@ from dataClasses import *
 class MessageClient(object):
   sio: None
 
+  self.sio.on('connect', on_connect)
   def on_connect(self):
     print("connected.")
 
-  sio.on('songMessage', on_songMessage)
+  self.sio.on('songMessage', on_songMessage)
   def on_songMessage(*args):
     print('on_aaa_response', args)
 
