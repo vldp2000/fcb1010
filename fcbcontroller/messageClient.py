@@ -6,25 +6,24 @@ from dataClasses import *
 class MessageClient(object):
   sio: None
 
-  @self.sio.event
-  def connect():
-      print("I'm connected!")
+ def on_connect( self ):
+        print "connected."
 
-  @self.sio.event
-  def connect_error():
-      print("The connection failed!")
+  # @self.sio.event
+  # def connect_error():
+  #     print("The connection failed!")
 
-  @self.sio.event
-  def disconnect():
-      print("I'm disconnected!")
+  # @self.sio.event
+  # def disconnect():
+  #     print("I'm disconnected!")
 
-  @self.sio.on(VIEW_PROGRAM_MESSAGE)
-  def on_message(data):
-    print('I received a VIEW_PROGRAM_MESSAGE message!',data)
+  # @self.sio.on(VIEW_PROGRAM_MESSAGE)
+  # def on_message(data):
+  #   print('I received a VIEW_PROGRAM_MESSAGE message!',data)
 
-  @self.sio.on(VIEW_SONG_MESSAGE)
-  def on_message(data):
-    print('I received a VIEW_SONG_MESSAGE message!',data)
+  # @self.sio.on(VIEW_SONG_MESSAGE)
+  # def on_message(data):
+  #   print('I received a VIEW_SONG_MESSAGE message!',data)
 
   def initMessenger(self):
     self.sio = socketio.Client()
