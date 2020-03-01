@@ -7,7 +7,7 @@ class MessageClient(object):
   sio: None
 
   def on_connect(self):
-    print "connected."
+    print("connected.")
 
   # @self.sio.event
   # def connect_error():
