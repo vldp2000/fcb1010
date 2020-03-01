@@ -9,6 +9,11 @@ class MessageClient(object):
   def on_connect(self):
     print("connected.")
 
+  sio.on('songMessage', on_songMessage)
+  def on_songMessage(*args):
+    print('on_aaa_response', args)
+
+
   # @self.sio.event
   # def connect_error():
   #     print("The connection failed!")
