@@ -3,11 +3,12 @@
     <v-flex class="ml-2">
       <custom-panel title="Banks of Instruments">
         <v-data-table
-          @pagination="pagination = $event"
           :headers="headers"
           :items="instrumentBankList"
-          sort-by="name"
+          sort-by="refInstrument"
           class="elevation-1"
+          hide-default-footer
+          item-key="id"
         >
           <template v-slot:item.instrument="{ item }">
             <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip>
@@ -112,14 +113,6 @@ export default {
         name: '',
         number: 0,
         refinstrument: -1
-      },
-      pagination: {
-        page: 1,
-        itemsPerPage: 20,
-        pageStart: 1,
-        // pageStop: 2,
-        // pageCount: number
-        itemsLength: 128
       },
       selected: []
     }

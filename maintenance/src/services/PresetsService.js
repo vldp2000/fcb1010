@@ -9,7 +9,6 @@ export default {
   },
   async getId () {
     let result = await Api().get('id/preset')
-    // console.log(result.data.id)
     return result.data.id
   },
   async put (preset) {
@@ -20,7 +19,6 @@ export default {
     let newPreset = await result.data
     Vue.$log.debug('// -----------result')
     Vue.$log.debug(newPreset)
-    // await store.dispatch('updatePreset', newPreset)
   }
 
   // async getAll () {

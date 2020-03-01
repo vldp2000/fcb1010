@@ -1,0 +1,145 @@
+-- Logs begin at Sat 2020-02-29 15:17:03 AEDT, end at Sun 2020-03-01 01:05:27 AEDT. --
+Feb 29 15:49:45 fcb1010 systemd[1]: Started Midi API.
+Feb 29 15:50:03 fcb1010 npm[371]: > apiserver@1.0.1 start /home/pi/fcb1010/apiserver
+Feb 29 15:50:03 fcb1010 npm[371]: > nodemon src/app.js --exec  "npm run lint && node"
+Feb 29 16:30:59 fcb1010 npm[371]: [nodemon] 2.0.2
+Feb 29 16:30:59 fcb1010 npm[371]: [nodemon] to restart at any time, enter `rs`
+Feb 29 16:30:59 fcb1010 npm[371]: [nodemon] watching dir(s): *.*
+Feb 29 16:30:59 fcb1010 npm[371]: [nodemon] watching extensions: js,mjs,json
+Feb 29 16:30:59 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:31:12 fcb1010 npm[371]: > apiserver@1.0.1 lint /home/pi/fcb1010/apiserver
+Feb 29 16:31:12 fcb1010 npm[371]: > eslint src/**/*.js
+Feb 29 16:31:48 fcb1010 npm[371]: listening on *:8081
+Feb 29 16:31:48 fcb1010 npm[371]: --- message socket connected. client uarf_H8akT5FSn8GAAAA
+Feb 29 16:31:54 fcb1010 npm[371]: --- message socket connected. client 8ECxHrVfUayf929hAAAB
+Feb 29 16:32:26 fcb1010 npm[371]: --- message socket connected. client I3fgiV9WXC6JKcpVAAAC
+Feb 29 16:32:56 fcb1010 npm[371]: --- message socket connected. client y6G_dD2PdqYBcdeVAAAD
+Feb 29 16:33:03 fcb1010 npm[371]: --- message socket connected. client mqASEe_Glz4mE4D-AAAE
+Feb 29 16:33:49 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:33:49 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:33:50 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:33:50 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:33:51 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:33:59 fcb1010 npm[371]: > apiserver@1.0.1 lint /home/pi/fcb1010/apiserver
+Feb 29 16:33:59 fcb1010 npm[371]: > eslint src/**/*.js
+Feb 29 16:34:19 fcb1010 npm[371]: listening on *:8081
+Feb 29 16:34:19 fcb1010 npm[371]: --- message socket connected. client eY638PhIg-alHc1PAAAA
+Feb 29 16:34:21 fcb1010 npm[371]: --- message socket connected. client sAgXJxi2PlsrzBdhAAAB
+Feb 29 16:34:40 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:34:40 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:34:41 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:34:49 fcb1010 npm[371]: > apiserver@1.0.1 lint /home/pi/fcb1010/apiserver
+Feb 29 16:34:49 fcb1010 npm[371]: > eslint src/**/*.js
+Feb 29 16:35:08 fcb1010 npm[371]: listening on *:8081
+Feb 29 16:35:10 fcb1010 npm[371]: --- message socket connected. client c6V9unhok2kPoEaUAAAA
+Feb 29 16:35:11 fcb1010 npm[371]: --- message socket connected. client Wns61gE_XaK1bUN5AAAB
+Feb 29 16:42:44 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:42:45 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:42:45 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:42:53 fcb1010 npm[371]: > apiserver@1.0.1 lint /home/pi/fcb1010/apiserver
+Feb 29 16:42:53 fcb1010 npm[371]: > eslint src/**/*.js
+Feb 29 16:43:14 fcb1010 npm[371]: listening on *:8081
+Feb 29 16:43:16 fcb1010 npm[371]: --- message socket connected. client NAa854GDxVniCMkkAAAA
+Feb 29 16:43:21 fcb1010 npm[371]: --- message socket connected. client S8SOailzv7oDRO7gAAAB
+Feb 29 16:44:46 fcb1010 npm[371]: --- message socket connected. client PPmnSMseYSFkvVIxAAAC
+Feb 29 16:45:43 fcb1010 npm[371]: --- message socket connected. client UCE41wzevAvartZPAAAD
+Feb 29 16:46:29 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:46:29 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:46:37 fcb1010 npm[371]: > apiserver@1.0.1 lint /home/pi/fcb1010/apiserver
+Feb 29 16:46:37 fcb1010 npm[371]: > eslint src/**/*.js
+Feb 29 16:46:56 fcb1010 npm[371]: listening on *:8081
+Feb 29 16:46:57 fcb1010 npm[371]: --- message socket connected. client vfTVyXrX6XK1VUY4AAAA
+Feb 29 16:46:59 fcb1010 npm[371]: --- message socket connected. client 2RLhRzTN_-x8RBWhAAAB
+Feb 29 16:48:18 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:48:19 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:48:27 fcb1010 npm[371]: > apiserver@1.0.1 lint /home/pi/fcb1010/apiserver
+Feb 29 16:48:27 fcb1010 npm[371]: > eslint src/**/*.js
+Feb 29 16:48:47 fcb1010 npm[371]: listening on *:8081
+Feb 29 16:48:47 fcb1010 npm[371]: --- message socket connected. client WTeuiEDBFkFkHHhdAAAA
+Feb 29 16:48:53 fcb1010 npm[371]: --- message socket connected. client YLTUx7QAG1BHofUrAAAB
+Feb 29 16:49:27 fcb1010 npm[371]: --- message socket connected. client 9Bd0xPl__rmTsKnBAAAC
+Feb 29 16:50:28 fcb1010 npm[371]: --- message socket connected. client OyMobjPdoTvlbS5EAAAD
+Feb 29 16:51:00 fcb1010 npm[371]: --- message socket connected. client Q11o_5v76S8UlufZAAAE
+Feb 29 16:51:14 fcb1010 npm[371]: [nodemon] restarting due to changes...
+Feb 29 16:51:14 fcb1010 npm[371]: [nodemon] starting `npm run lint && node src/app.js`
+Feb 29 16:51:22 fcb1010 npm[371]: > apiserver@1.0.1 lint /home/pi/fcb1010/apiserver
+Feb 29 16:51:22 fcb1010 npm[371]: > eslint src/**/*.js
+Feb 29 16:51:44 fcb1010 npm[371]: listening on *:8081
+Feb 29 16:51:45 fcb1010 npm[371]: --- message socket connected. client bbxv6TONeAADbesdAAAA
+Feb 29 16:51:48 fcb1010 npm[371]: --- message socket connected. client VBr3t2w1vohxD2dOAAAB
+Feb 29 16:52:54 fcb1010 npm[371]: --- message socket connected. client zsZ0sF7r35g-ggJBAAAC
+Feb 29 16:55:08 fcb1010 npm[371]: --- message socket connected. client rf6asJLnNUSocj2xAAAD
+Feb 29 16:56:15 fcb1010 npm[371]: --- message socket connected. client hZmPf-T-5TKvoI2gAAAE
+Feb 29 17:08:28 fcb1010 npm[371]: --- message socket connected. client 0bM_gboDgqze-SS1AAAF
+Feb 29 17:10:17 fcb1010 npm[371]: --- message socket connected. client iQKXAn82-hLHgozDAAAG
+Feb 29 17:11:14 fcb1010 npm[371]: --- message socket connected. client eDSN5iDiT9z7b6cmAAAH
+Feb 29 17:11:46 fcb1010 npm[371]: --- message socket connected. client MjmyHPyXgJE0UAL-AAAI
+Feb 29 17:12:46 fcb1010 npm[371]: --- message socket connected. client jth3sn08eheD5c0YAAAJ
+Feb 29 17:13:18 fcb1010 npm[371]: --- message socket connected. client XhWV-v-jydPLethjAAAK
+Feb 29 17:14:48 fcb1010 npm[371]: --- message socket connected. client Y1EHDwFi-qPjlQmHAAAL
+Feb 29 17:15:20 fcb1010 npm[371]: --- message socket connected. client 3WwQydSYmCgnkfrYAAAM
+Feb 29 17:18:07 fcb1010 npm[371]: --- message socket connected. client LjM31z-7DGpp7UYfAAAN
+Feb 29 17:18:39 fcb1010 npm[371]: --- message socket connected. client nRlHE4Bknpl-5v5uAAAO
+Feb 29 17:19:12 fcb1010 npm[371]: --- message socket connected. client 26PbRHm2GTAneWKpAAAP
+Feb 29 17:19:44 fcb1010 npm[371]: --- message socket connected. client OyKCvHjQ7p0gZFEsAAAQ
+Feb 29 17:20:17 fcb1010 npm[371]: --- message socket connected. client rlwhUObqeeZLWSKhAAAR
+Feb 29 17:20:49 fcb1010 npm[371]: --- message socket connected. client oiORioglaKryedSAAAAS
+Feb 29 17:21:21 fcb1010 npm[371]: --- message socket connected. client P0qdRJhMCSNMmzv1AAAT
+Feb 29 17:22:48 fcb1010 npm[371]: --- message socket connected. client 21TapWFJp0XRNXcnAAAU
+Feb 29 17:23:20 fcb1010 npm[371]: --- message socket connected. client 14R7DcLw1Ca97PYvAAAV
+Feb 29 17:24:20 fcb1010 npm[371]: --- message socket connected. client SlkaDbLIax6fvN6CAAAW
+Feb 29 17:24:52 fcb1010 npm[371]: --- message socket connected. client G58k3vOCkSCkEEeEAAAX
+Feb 29 17:25:25 fcb1010 npm[371]: --- message socket connected. client RFLtXD-yq6l4s46jAAAY
+Feb 29 17:26:25 fcb1010 npm[371]: --- message socket connected. client _ljtX8GFdJ_6PC4HAAAZ
+Feb 29 17:27:23 fcb1010 npm[371]: --- message socket connected. client VOcsXi-AIwnKDGk4AAAa
+Feb 29 17:28:22 fcb1010 npm[371]: --- message socket connected. client 2NyRm76EsCMW_sMBAAAb
+Feb 29 17:28:54 fcb1010 npm[371]: --- message socket connected. client mjGLGU0t5Vj7tcI1AAAc
+Feb 29 17:29:26 fcb1010 npm[371]: --- message socket connected. client ujrx9d0gicCIPIrYAAAd
+Feb 29 17:30:26 fcb1010 npm[371]: --- message socket connected. client gkxo-clGoI2ZVkp7AAAe
+Feb 29 17:31:27 fcb1010 npm[371]: --- message socket connected. client ZRee7e5K9I8pEHH-AAAf
+Feb 29 17:32:28 fcb1010 npm[371]: --- message socket connected. client t3PtAOSI1Q5WRmLXAAAg
+Feb 29 17:33:00 fcb1010 npm[371]: --- message socket connected. client uzgk1alQJQuFCUwkAAAh
+Feb 29 17:33:34 fcb1010 npm[371]: --- message socket connected. client YQWAGZKphYirYWgiAAAi
+Feb 29 17:34:06 fcb1010 npm[371]: --- message socket connected. client pE2LZxshQVNJLsmNAAAj
+Feb 29 17:35:07 fcb1010 npm[371]: --- message socket connected. client roZYtlgqC4NwQD-wAAAk
+Feb 29 17:35:39 fcb1010 npm[371]: --- message socket connected. client yP4GBWeduremrjvqAAAl
+Feb 29 17:36:40 fcb1010 npm[371]: --- message socket connected. client WHSLK4yGKDAYqU0NAAAm
+Feb 29 17:37:37 fcb1010 npm[371]: --- message socket connected. client iyp2Ey719IeB7U2XAAAn
+Feb 29 17:38:11 fcb1010 npm[371]: --- message socket connected. client dL607Wu18JVV7-PRAAAo
+Feb 29 17:38:42 fcb1010 npm[371]: --- message socket connected. client YzIiOlP_o0RJjQ4nAAAp
+Feb 29 17:39:14 fcb1010 npm[371]: --- message socket connected. client ZGwfZtWRNRxv1ST8AAAq
+Feb 29 17:40:14 fcb1010 npm[371]: --- message socket connected. client Cj9m4H1ub4CCqBaiAAAr
+Feb 29 17:40:46 fcb1010 npm[371]: --- message socket connected. client 7903sHQO8Ite5p-VAAAs
+Feb 29 17:41:18 fcb1010 npm[371]: --- message socket connected. client OIO6uaJOdxrGm6VAAAAt
+Feb 29 17:42:46 fcb1010 npm[371]: --- message socket connected. client M7rpQ_UB7CBMJGBGAAAu
+Feb 29 17:43:18 fcb1010 npm[371]: --- message socket connected. client 9gZ2RysCHPb1MkyAAAAv
+Feb 29 17:44:20 fcb1010 npm[371]: --- message socket connected. client pI00BDAphTQcpOCwAAAw
+Feb 29 17:44:52 fcb1010 npm[371]: --- message socket connected. client 4yvxSBAxF4Qwea7YAAAx
+Feb 29 17:45:24 fcb1010 npm[371]: --- message socket connected. client CFQEVuKPblogidaLAAAy
+Feb 29 17:46:23 fcb1010 npm[371]: --- message socket connected. client 8RYntdsAR0vJQ1vOAAAz
+Feb 29 17:46:55 fcb1010 npm[371]: --- message socket connected. client 7nsKe1zfjYqXAOtwAAA0
+Feb 29 17:48:54 fcb1010 npm[371]: --- message socket connected. client fanEv9m_4rncaHToAAA1
+Feb 29 17:50:20 fcb1010 npm[371]: --- message socket connected. client VtHlgDheyn_I7EafAAA2
+Feb 29 17:51:22 fcb1010 npm[371]: --- message socket connected. client DTM9RqE3EGYEAV6lAAA3
+Feb 29 17:52:46 fcb1010 npm[371]: --- message socket connected. client A47penqLm_soH3COAAA4
+Feb 29 17:53:18 fcb1010 npm[371]: --- message socket connected. client vxi7pQ_UJH0KYeFQAAA5
+Feb 29 17:54:20 fcb1010 npm[371]: --- message socket connected. client Ndj2ZivbZVXbGAsVAAA6
+Feb 29 17:55:20 fcb1010 npm[371]: --- message socket connected. client buWB0-Qg64AaH16rAAA7
+Feb 29 17:56:48 fcb1010 npm[371]: --- message socket connected. client SE3KtfuX0hjYZXQKAAA8
+Feb 29 17:57:47 fcb1010 npm[371]: --- message socket connected. client GFa4UmiGHYyGcfBZAAA9
+Feb 29 17:58:18 fcb1010 npm[371]: --- message socket connected. client 6vzl3NAOHH3-J9QSAAA-
+Feb 29 17:58:49 fcb1010 npm[371]: --- message socket connected. client Q-lO6O3jzkn3ne-2AAA_
+Feb 29 17:59:21 fcb1010 npm[371]: --- message socket connected. client I2kHK7MCjnqgTdrzAABA
+Feb 29 18:00:48 fcb1010 npm[371]: --- message socket connected. client irW7Sq-JUDXOKxgjAABB
+Feb 29 18:01:20 fcb1010 npm[371]: --- message socket connected. client a0TgR6wwIeRDGI9MAABC
+Feb 29 18:02:45 fcb1010 npm[371]: --- message socket connected. client aI3dCLYzow3sn-b8AABD
+Feb 29 18:03:17 fcb1010 npm[371]: --- message socket connected. client qqXL60URmWGykFlOAABE
+Feb 29 18:04:18 fcb1010 npm[371]: --- message socket connected. client -FfSb-TfYVQIIElIAABF
+Feb 29 18:05:16 fcb1010 npm[371]: --- message socket connected. client byDogl_TeIHenaxGAABG
+Feb 29 18:05:48 fcb1010 npm[371]: --- message socket connected. client frpSXbbuhskLhorEAABH
+Feb 29 18:06:20 fcb1010 npm[371]: --- message socket connected. client opOoxeH87wQLMJ7PAABI
+Feb 29 18:08:18 fcb1010 npm[371]: --- message socket connected. client qTBi66UUjJH1MnaIAABJ
+Feb 29 18:09:19 fcb1010 npm[371]: --- message socket connected. client VLvRmbudsV79_BhlAABK
+Feb 29 18:10:18 fcb1010 npm[371]: --- message socket connected. client zNFkXWyLWonNXJduAABL
+Feb 29 18:10:52 fcb1010 npm[371]: --- message socket connected. client DUWZyT_IilmWqDo5AABM
+Feb 

@@ -113,14 +113,6 @@ export default {
         gigdate: '',
         songList: []
       },
-      pagination: {
-        page: 1,
-        itemsPerPage: 20,
-        pageStart: 1,
-        // pageStop: 2,
-        // pageCount: number
-        itemsLength: 128
-      },
       selected: [],
       landscape: true,
       reactive: true,

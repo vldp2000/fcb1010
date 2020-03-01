@@ -8,16 +8,12 @@ import vuetify from './plugins/vuetify'
 import logger from './plugins/logger'
 
 import VueSocketIOExt from 'vue-socket.io-extended'
-// import socket from './store/socket-instance'
 import io from 'socket.io-client'
-
 import CustomPanel from '@/components/globals/CustomPanel'
-// import CustomKnob from '@/components/globals/CustomKnob'
 import MyKnob from '@/components/globals/MyKnob'
 
 import PresetControl from '@/components/globals/PresetControl'
 import CustomTextInput from '@/components/globals/CustomTextInput'
-// import { sync } from 'vuex-router-sync'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import VueSvgGauge from 'vue-svg-gauge'
 import Vue2TouchEvents from 'vue2-touch-events'
