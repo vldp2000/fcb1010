@@ -6,6 +6,18 @@ from dataClasses import *
 class MessageClient(object):
   socketIOClient: None
 
+  @sio.event
+  def connect():
+      print("I'm connected!")
+
+  @sio.event
+  def connect_error():
+      print("The connection failed!")
+
+  @sio.event
+  def disconnect():
+      print("I'm disconnected!")
+
   @socketIOClient.on(VIEW_PROGRAM_MESSAGE)
   def on_message(data):
     print('I received a VIEW_PROGRAM_MESSAGE message!',data)
