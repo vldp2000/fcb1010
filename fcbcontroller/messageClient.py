@@ -8,11 +8,11 @@ sio = socketio.Client()
 class MessageClient(object):
   # sio.None
 
-  sio.n('connect', on_connect)
+  sio.on('connect', on_connect)
   def on_connect(self):
     print("connected.")
 
-  sio.n('songMessage', on_songMessage)
+  sio.on('songMessage', on_songMessage)
   def on_songMessage(*args):
     print('on_aaa_response', args)
 
@@ -61,7 +61,7 @@ class MessageClient(object):
 
   # ---------ASYNC-------------
   async def asyncInitMessenger():
-    sio.= socketio.AsyncClient()
+    sio = socketio.AsyncClient()
     await sio.connect(MESSAGE_URL)
 
   async def asyncSendProgramNotificationMessage(id):
