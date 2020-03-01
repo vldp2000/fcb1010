@@ -3,46 +3,48 @@ from config import *
 from dataClasses import *
 # import pprint 
 
-class MessageClient(object):
-  sio: None
+sio = socketio.Client()
 
-  self.sio.on('connect', on_connect)
+class MessageClient(object):
+  # sio.None
+
+  sio.n('connect', on_connect)
   def on_connect(self):
     print("connected.")
 
-  self.sio.on('songMessage', on_songMessage)
+  sio.n('songMessage', on_songMessage)
   def on_songMessage(*args):
     print('on_aaa_response', args)
 
 
-  # @self.sio.event
+  # @sio.event
   # def connect_error():
   #     print("The connection failed!")
 
-  # @self.sio.event
+  # @sio.event
   # def disconnect():
   #     print("I'm disconnected!")
 
-  # @self.sio.on(VIEW_PROGRAM_MESSAGE)
+  # @sio.on(VIEW_PROGRAM_MESSAGE)
   # def on_message(data):
   #   print('I received a VIEW_PROGRAM_MESSAGE message!',data)
 
-  # @self.sio.on(VIEW_SONG_MESSAGE)
+  # @sio.on(VIEW_SONG_MESSAGE)
   # def on_message(data):
   #   print('I received a VIEW_SONG_MESSAGE message!',data)
 
   def initMessenger(self):
-    self.sio = socketio.Client()
-    self.sio.connect(MESSAGE_URL)
+    # sio.= socketio.Client()
+    sio.connect(MESSAGE_URL)
     # print('---------------socket--------------------')
-    # pprint.pprint(self.sio)
+    # pprint.pprint(sio.
 
   def sendProgramNotificationMessage(self,id):
-    self.sio.emit(PROGRAM_MESSAGE, str(id))
+    sio.emit(PROGRAM_MESSAGE, str(id))
     # print(PROGRAM_MESSAGE + "=" + str(id))
 
   def sendSongNotificationMessage(self,id):
-    self.sio.emit(SONG_MESSAGE, str(id))
+    sio.emit(SONG_MESSAGE, str(id))
     # print(SONG_MESSAGE + "=" + str(id))
 
   def sendSyncNotificationMessage(self,songId, programId):
@@ -54,19 +56,19 @@ class MessageClient(object):
       indent=4, sort_keys=True, cls=CustomEncoder,
       separators=(',', ': '), ensure_ascii=False
     )
-    self.sio.emit(SYNC_MESSAGE, jsonStr)
+    sio.emit(SYNC_MESSAGE, jsonStr)
     # print(SYNC_MESSAGE + "=" +  jsonStr)
 
   # ---------ASYNC-------------
   async def asyncInitMessenger():
-    self.sio = socketio.AsyncClient()
-    await self.sio.connect(MESSAGE_URL)
+    sio.= socketio.AsyncClient()
+    await sio.connect(MESSAGE_URL)
 
   async def asyncSendProgramNotificationMessage(id):
-    self.sio.emit(PROGRAM_MESSAGE, str(id))
+    sio.emit(PROGRAM_MESSAGE, str(id))
 
   async def asyncSendSongNotificationMessage(id):
-    await self.sio.emit(SONG_MESSAGE, str(id))
+    await sio.emit(SONG_MESSAGE, str(id))
 
   async def asyncSendSyncNotificationMessage(songId, programId):
     syncmessage = {}
@@ -76,4 +78,4 @@ class MessageClient(object):
       indent=4, sort_keys=True, cls=CustomEncoder,
       separators=(',', ': '), ensure_ascii=False
     )
-    await self.sio.emit(SYNC_MESSAGE, jsonStr)
+    await sio.emit(SYNC_MESSAGE, jsonStr)
