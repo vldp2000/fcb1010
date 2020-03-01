@@ -5,9 +5,9 @@ from dataClasses import *
 
 # sio = socketio.Client()
 
-class MessageClient(object,sio):
+class MessageClient(object):
   sio = None
-  
+
   def __init__(self,sio):
     self.sio = sio
   # sio.None
