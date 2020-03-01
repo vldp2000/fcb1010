@@ -26,6 +26,7 @@ import pygame.midi
 import time
 import sys
 import socket
+import socketio
 import struct
 import subprocess
 from array import *
@@ -493,7 +494,8 @@ if gMode == 'Debug':
   for id in range(pygame.midi.get_count()):
     printDebug( "Id=%d Device=%s" % (id,pygame.midi.get_device_info(id)) )
 
-gNotificationMessageClient = MessageClient()
+sio = socketio.Client()
+gNotificationMessageClient = MessageClient(sio)
 gNotificationMessageClient.initMessenger()
 
 # gNotificationMessageClient.sendSongNotificationMessage(1)
