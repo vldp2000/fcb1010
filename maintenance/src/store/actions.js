@@ -446,22 +446,18 @@ const actions = {
     })
 
     this._vm.$socket.client.on(config.controllerProgramMessage, (data) => {
-      // Vue.$log.debug('-- Preset socket IO message')
-      // Vue.$log.debug(data)
-      // this.setCurrentProgramMidiPedal({ commit }, data)
-      // console.log('Prog Message Received', data)
       const idx = parseInt(data)
       commit(types.SET_CURRENT_PROGRAMMIDIPEDAL, idx)
       // this.$store.dispatch('setCurrentProgramMidiPedal', parseInt(data))
     })
     this._vm.$socket.client.on(config.controllerSongMessage, (data) => {
-      // Vue.$log.debug('-- Song socket IO message')
-      // Vue.$log.debug(data)
-      // this.setCurrentSongId({ commit }, data)
-      // console.log('Song Message Received', data)
       const id = parseInt(data)
       commit(types.SET_CURRENTSONG_ID, id)
       // this.$store.dispatch('setCurrentSongId', parseInt(data))
+    })
+    this._vm.$socket.client.on(config.controllerGigMessage, (data) => {
+      const id = parseInt(data)
+      commit(types.SET_SELECTEDGIG_ID, id)
     })
     clientInitialized = true
   }

@@ -147,7 +147,7 @@ def pringSongs():
 # for item in gig.shortSongList:
 #   print(item['id'])
 gSongDict = {}
-gGig = dataHelper.loadCurrentGig()
+gGig = dataHelper.loadScheduledGig()
 gSongDict = dataHelper.loadSongs()
 gSongList = dataHelper.initAllSongs(gSongDict)
 gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)

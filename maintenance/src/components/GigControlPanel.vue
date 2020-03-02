@@ -443,7 +443,11 @@ export default {
     },
 
     checkIfGigIsCurrent () {
-      return (this.currentGig && this.currentGig.id === this.scheduledGigId)
+      if (!this.currentGig) return false
+      console.log('>>>>-- checkIfGigIsCurrent')
+      console.log(this.currentGig.id)
+      console.log(this.scheduledGigId)
+      return (this.currentGig.id === this.scheduledGigId)
     },
 
     saveGigAsCurrent () {

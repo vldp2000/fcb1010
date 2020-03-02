@@ -40,6 +40,9 @@ try {
     socket.on(`${config.controllerSongMessage}`, function(data) {
       io.emit(`${config.controllerSongMessage}`, data)
     })
+    socket.on(`${config.controllerGigMessage}`, function(data) {
+      io.emit(`${config.controllerGigMessage}`, data)
+    })
     
     socket.on(`${config.controllerSyncMessage}`, function(data) {
       console.log(config.controllerSyncMessage)

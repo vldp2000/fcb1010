@@ -32,12 +32,9 @@ import subprocess
 from array import *
 from time import sleep
 
-# import pprint
-
 import dataController
 import dataHelper
 from dataClasses import *
-#from messageClient import MessageClient
 from config import *
 
 #----------------------------------------------------------------
@@ -48,6 +45,7 @@ gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
 gGig = {}
+gSelectedGigId = -1
 
 gSongList = []
 gSongDict = {}
@@ -70,7 +68,6 @@ gReloadCounter = 0
 gResyncCounter = 0
 
 gRaveloxClient = None
-gNotificationMessageClient = None
 
 #default value for second  volume pedal is 176 = 1st channel
 gPedal2_Channel = 176
@@ -92,50 +89,51 @@ gLastGuitar2Volume = 0
 sio = socketio.Client()
 
 
-#---SOCKET---------------
+#---SOCKET--CLIENT-------------
 @sio.event
 def connect():
   print('SOCKET connection established')
-
+#==
 @sio.event
 def message(data):
   print('Message received with ', data)
-  
-
+#== 
 @sio.event
 def disconnect():
   print('disconnected from SOCKET server')
-
+#==
 @sio.on('VIEW_SONG_MESSAGE')
 def processSongMessage(id):
   print("VIEW_SONG_MESSAGE ID: " , id)
   setSong(id)
-
+#==
 @sio.on('VIEW_PROGRAM_MESSAGE')
 def processProgramMessage(idx):
   print("VIEW_PROGRAM_MESSAGE IDX: " , idx)
   setSongProgram(idx)
-
+#==
 def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(idx))
   print(PROGRAM_MESSAGE + " >> " + str(idx))
-
+#==
 def sendSongNotificationMessage(id):
   sio.emit(SONG_MESSAGE, str(id))
   print(SONG_MESSAGE + " >>" + str(id))
-
+#==
+def sendGigNotificationMessage(id):
+  sio.emit(GIG_MESSAGE, str(id))
+  print(GIG_MESSAGE + " >>" + str(id))
+#==
 def sendSyncNotificationMessage(songId, programIdx):
   syncmessage = {}
   syncmessage.songId = songId
   syncmessage.programIdx = programIdx
-
   jsonStr = json.dumps(syncmessage,
     indent=4, sort_keys=True, cls=CustomEncoder,
     separators=(',', ': '), ensure_ascii=False
   )
   sio.emit(SYNC_MESSAGE, jsonStr)
   # print(SYNC_MESSAGE + "=" +  jsonStr)
-
 #----------------------------------------------------------------
 
 def printDebug(message):
@@ -153,6 +151,7 @@ def loadAllData():
   global gPresetDict
   global gInstrumentBankDict
   global gBankSongList
+  global gSelectedGigId
 
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
@@ -172,52 +171,15 @@ def loadAllData():
   if gBankSongList != None:
     gBankSongList.clear()
 
-  gGig = dataHelper.loadCurrentGig()
+  gGig = dataHelper.loadScheduledGig()
+  gSelectedGigId = gGig.id
+
   gSongDict = dataHelper.loadSongs()
   gSongList = dataHelper.initAllSongs(gSongDict)
   gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
   gInstrumentDict = dataHelper.initInstruments()
   gPresetDict = dataHelper.initPresets()
   gInstrumentBankDict = dataHelper.initInstrumentBanks()
-#----------------------------------------------------------------
-
-def checkCurrentBank(bank):
-  global gCurrentBank
-  global gPlaySongFromSelectedGigOnly
-  global gBankSongList
-  global gGigSongList
-  global gSongList
-
-  if gCurrentBank != bank:
-    if bank == 1:
-      gPlaySongFromSelectedGigOnly = True
-      gCurrentBank = bank
-      gBankSongList = gGigSongList
-      # initGigSongs()
-    else:
-      gPlaySongFromSelectedGigOnly = False
-      gCurrentBank = 2
-      gBankSongList = gSongList
-
-  # printDebug('Current Bnk = ', gCurrentBank)
-  # printDebug('gPlaySongFromSelectedGigOnly = ', gPlaySongFromSelectedGigOnly)
-  # printDebug('gSongList length --' , len(gSongList))
-  # printDebug('gGigSongList length --' , len(gGigSongList))
-  # printDebug('gBankSongList length --' , len(gBankSongList))
-#----------------------------------------------------------------
-
-def resyncWithGigController():
-  global gResyncCounter
-  global gCurrentSongIdx
-  global gCurrentProgramIdx
-
-  # printDebug('== song ==',gCurrentSongIdx)
-  # printDebug('-- Prog --',gCurrentProgramIdx) 
-  if gResyncCounter < 2:
-    gResyncCounter = gResyncCounter + 1
-  else:
-   # MessageClient.sendSyncNotificationMessage( gBankSongList[gCurrentSongIdx].id, gCurrentProgramIdx)
-    gResyncCounter = 0
 #----------------------------------------------------------------
 
 def isReloadRequired():
@@ -353,6 +315,44 @@ def unmuteChannel(channel, volume, delay, step):
   sendRaveloxCCMessage(channel, VOLUME_CC, volume )
 #----------------------------------------------------------------
 
+def checkCurrentBank(bank):
+  global gCurrentBank
+  global gPlaySongFromSelectedGigOnly
+  global gBankSongList
+  global gGigSongList
+  global gSongList
+  global gGig
+  global gSelectedGigId 
+
+  if gCurrentBank != bank:
+    if bank == 1:
+      gPlaySongFromSelectedGigOnly = True
+      gCurrentBank = bank
+      gBankSongList = gGigSongList
+      gSelectedGigId = gGig.id
+    else:
+      gPlaySongFromSelectedGigOnly = False
+      gCurrentBank = 2
+      gBankSongList = gSongList
+      gSelectedGigId = -1
+
+    sendGigNotificationMessage(gSelectedGigId)
+#----------------------------------------------------------------
+
+def resyncWithGigController():
+  global gResyncCounter
+  global gCurrentSongIdx
+  global gCurrentProgramIdx
+
+  # printDebug('== song ==',gCurrentSongIdx)
+  # printDebug('-- Prog --',gCurrentProgramIdx) 
+  if gResyncCounter < 2:
+    gResyncCounter = gResyncCounter + 1
+  else:
+   # MessageClient.sendSyncNotificationMessage( gBankSongList[gCurrentSongIdx].id, gCurrentProgramIdx)
+    gResyncCounter = 0
+#----------------------------------------------------------------
+#----------------------------------------------------------------
 def setSongProgram(idx):
   global gCurrentProgramIdx
   global gCurrentSongIdx
@@ -389,12 +389,14 @@ def setPreset(preset):
 def selectNextSong():
   global gCurrentSongIdx
   global gBankSongList
+  global gSelectedGigId
 
   if gCurrentSongIdx + 1 < len(gBankSongList):
     gCurrentSongIdx = gCurrentSongIdx + 1
   else:
     gCurrentSongIdx = 0
 
+  sendGigNotificationMessage(gSelectedGigId)
   sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
   printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
@@ -403,11 +405,14 @@ def selectNextSong():
 def selectPreviousSong():
   global gCurrentSongIdx
   global gBankSongList
+  global gSelectedGigId
 
   if gCurrentSongIdx - 1 > -1:
     gCurrentSongIdx = gCurrentSongIdx - 1
   else: 
     gCurrentSongIdx = len(gBankSongList) - 1
+
+  sendGigNotificationMessage(gSelectedGigId)  
   sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
   printDebug("previous song " + gBankSongList[gCurrentSongIdx].name)
 

@@ -44,7 +44,7 @@ export default {
       Vue.$log.debug('->> getScheduledGigId')
       let result = await Api().get('currentgig')
       Vue.$log.debug(result.data)
-      return result.data
+      return result.data.id
     } catch (ex) {
       Vue.$log.error(ex)
     }

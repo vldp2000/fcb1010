@@ -9,5 +9,6 @@ module.exports = {
   viewSongMessage: 'VIEW_SONG_MESSAGE',
   controllerProgramMessage: 'CONTROLLER_PROGRAM_MESSAGE',
   controllerSongMessage: 'CONTROLLER_SONG_MESSAGE',
-  controllerSyncMessage: 'CONTROLLER_SYNC_MESSAGE'
+  controllerSyncMessage: 'CONTROLLER_SYNC_MESSAGE',
+  controllerGigMessage:'CONTROLLER_GIG_MESSAGE'
 }

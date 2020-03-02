@@ -53,7 +53,7 @@ def initAllSongs(songDict):
   return songList
 
 #----------------------------------------------------------------
-def loadCurrentGig():
+def loadScheduledGig():
   global gGig
   id = dataController.getScheduledGigId()
   print('Current id = ',id)
