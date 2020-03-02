@@ -433,9 +433,9 @@ export default {
     },
 
     onProgramClick (idx) {
-      this.$socket.client.emit(config.controllerProgramMessage, idx)
       this.$store.dispatch('selectSongProgram', this.idx)
     },
+
     checkIfGigIsCurrent () {
       return (this.currentGig && this.currentGig.currentFlag)
     },

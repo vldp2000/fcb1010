@@ -20,37 +20,30 @@ const io = require('socket.io')(server);
 try {
   io.on('connection', function(socket) {
     console.log(`--- message socket connected. client ${socket.id}`)
-    // this.$log.debug(socket)
+
     socket.on(`${config.viewProgramMessage}`, function(data) {
-      // this.$log.debug(config.viewProgramMessage)
-      // this.$log.debug(data)
+      console.log(config.viewProgramMessage)
+      console.log(data)
       io.emit(`${config.viewProgramMessage}`, data)
     })
 
     socket.on(`${config.viewSongMessage}`, function(data) {
-      // this.$log.debug(config.viewSongMessage)
-      // this.$log.debug(data)
       console.log(config.viewSongMessage)
       console.log(data)
       io.emit(`${config.viewSongMessage}`, data)
     })
 
     socket.on(`${config.controllerProgramMessage}`, function(data) {
-      // this.$log.debug(config.controllerProgramMessage)
-      // this.$log.debug(data)
-      // console.log(data)
       io.emit(`${config.controllerProgramMessage}`, data)
     })
+
     socket.on(`${config.controllerSongMessage}`, function(data) {
-      // this.$log.debug(config.controllerSongMessage)
-      // this.$log.debug(data)
-      // console.log(data)
       io.emit(`${config.controllerSongMessage}`, data)
     })
+    
     socket.on(`${config.controllerSyncMessage}`, function(data) {
-      // this.$log.debug(config.controllerSyncMessage)
-      // this.$log.debug(data)
-      // console.log(data)
+      console.log(config.controllerSyncMessage)
+      console.log(data)
       io.emit(`${config.controllerSyncMessage}`, data)
     })
   })

@@ -430,8 +430,6 @@ const actions = {
 
   selectSongProgram ({ commit }, idx) {
     this._vm.$socket.client.emit(config.viewProgramMessage, idx)
-    // console.log('Send viewProgramMessage', idx)
-    // console.log(config.viewProgramMessage)
   },
 
   socketClientInitialize ({ commit }, payload) {
