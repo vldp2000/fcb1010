@@ -89,6 +89,27 @@ gLastGuitar1Volume = 0
 gLastGuitar2Program = 0
 gLastGuitar2Volume = 0
 
+sio = socketio.Client()
+
+
+#---SOCKET---------------
+@sio.event
+def connect():
+  print('SOCKET connection established')
+
+@sio.event
+def my_message(data):
+  print('MY_message received with ', data)
+
+@sio.event
+def message(data):
+  print('Message received with ', data)
+  
+
+@sio.event
+def disconnect():
+  print('disconnected from SOCKET server')
+
 #----------------------------------------------------------------
 
 def printDebug(message):
@@ -495,8 +516,10 @@ if gMode == 'Debug':
     printDebug( "Id=%d Device=%s" % (id,pygame.midi.get_device_info(id)) )
 
 # sio = socketio.Client()
-gNotificationMessageClient = MessageClient()
-gNotificationMessageClient.initMessenger()
+sio.connect('http://localhost:8081')
+
+#gNotificationMessageClient = MessageClient()
+#gNotificationMessageClient.initMessenger()
 
 # gNotificationMessageClient.sendSongNotificationMessage(1)
 # gNotificationMessageClient.sendProgramNotificationMessage(1)
