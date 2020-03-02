@@ -124,8 +124,9 @@ def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
   print(GIG_MESSAGE + " >>" + str(id))
 #==
-def sendSyncNotificationMessage(songId, programIdx):
+def sendSyncNotificationMessage(bankId, songId, programIdx):
   syncmessage = {}
+  syncmessage.bankId = bankId
   syncmessage.songId = songId
   syncmessage.programIdx = programIdx
   jsonStr = json.dumps(syncmessage,
@@ -343,13 +344,16 @@ def resyncWithGigController():
   global gResyncCounter
   global gCurrentSongIdx
   global gCurrentProgramIdx
+  global gSelectedGigId 
 
-  # printDebug('== song ==',gCurrentSongIdx)
-  # printDebug('-- Prog --',gCurrentProgramIdx) 
   if gResyncCounter < 2:
     gResyncCounter = gResyncCounter + 1
   else:
-   # MessageClient.sendSyncNotificationMessage( gBankSongList[gCurrentSongIdx].id, gCurrentProgramIdx)
+    songId = gBankSongList[gCurrentSongIdx].id
+    printDebug('== gig ==', gSelectedGigId)
+    printDebug('== song ==', songId)
+    printDebug('-- Prog --', gCurrentProgramIdx) 
+    sendSyncNotificationMessage( gSelectedGigId, songId, gCurrentProgramIdx)
     gResyncCounter = 0
 #----------------------------------------------------------------
 #----------------------------------------------------------------
