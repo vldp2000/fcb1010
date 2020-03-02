@@ -107,12 +107,12 @@ def disconnect():
   print('disconnected from SOCKET server')
 
 @sio.on('message')
-async def print_message(sid, message):
+def print_message(sid, message):
     print("Socket ID: " , sid)
     print(message)
 
 @sio.on('VIEW_SONG_MESSAGE')
-async def print_message(id):
+def print_message(id):
     print("VIEW_SONG_MESSAGE ID: " , id)
     print(message)
 #----------------------------------------------------------------
