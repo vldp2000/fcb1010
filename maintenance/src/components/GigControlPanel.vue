@@ -220,8 +220,7 @@
 
 <script>
 import { mapState } from 'vuex'
-
-const config = require('@/config/config')
+// const config = require('@/config/config')
 
 export default {
   data () {
@@ -433,7 +432,8 @@ export default {
     },
 
     onProgramClick (idx) {
-      this.$store.dispatch('selectSongProgram', this.idx)
+      console.log('onProgramClick >> ', idx)
+      this.$store.dispatch('selectSongProgram', idx)
     },
 
     checkIfGigIsCurrent () {

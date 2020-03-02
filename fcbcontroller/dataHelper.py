@@ -9,8 +9,6 @@ from dataClasses import *
 
 
 #----------------------------------------------------------------
-#----------------------------------------------------------------
-#####
 def initPresets():
   iList = dataController.getPresets()
   iDict = {}
@@ -19,7 +17,6 @@ def initPresets():
   # pprint.pprint(iDict)
   return iDict      
 #----------------------------------------------------------------
-#####
 def initInstruments():
   iList = dataController.getInstruments()
   iDict = {}
@@ -28,7 +25,6 @@ def initInstruments():
   # pprint.pprint(iDict)
   return iDict
 #----------------------------------------------------------------
-#####
 def initInstrumentBanks():
   iList = dataController.getInstrumentBanks()
   iDict = {}
@@ -37,7 +33,6 @@ def initInstrumentBanks():
   # pprint.pprint(iDict)
   return iDict
 #----------------------------------------------------------------
-#####
 def initGigSongs(items, allSongs):  
   ## Init Gig Songs
   gigSongList = []
@@ -49,10 +44,7 @@ def initGigSongs(items, allSongs):
     gigSongList.append(song)
   # print( len(gSongList))
   return gigSongList
-
-
 #----------------------------------------------------------------
-#####
 def initAllSongs(songDict):
   songList = []
   for item in songDict:
@@ -61,7 +53,6 @@ def initAllSongs(songDict):
   return songList
 
 #----------------------------------------------------------------
-#####
 def loadCurrentGig():
   global gGig
   id = dataController.getCurrentGigId()
@@ -72,7 +63,14 @@ def loadCurrentGig():
   return gig
 
 #----------------------------------------------------------------
-#####
 def loadSongs():
   songs = dataController.getSongList()
   return songs
+
+#----------------------------------------------------------------
+def findIndexById(list, id):
+  try:
+    idx = [ x.id for x in list].index(id)
+  except ValueError:
+    idx = -1
+  return i  

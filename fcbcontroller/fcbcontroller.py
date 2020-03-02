@@ -108,11 +108,12 @@ def disconnect():
 
 @sio.on('VIEW_SONG_MESSAGE')
 def processSongMessage(id):
-    print("VIEW_SONG_MESSAGE ID: " , id)
+  print("VIEW_SONG_MESSAGE ID: " , id)
 
 @sio.on('VIEW_PROGRAM_MESSAGE')
 def processProgramMessage(idx):
-    print("VIEW_PROGRAM_MESSAGE IDX: " , idx)
+  print("VIEW_PROGRAM_MESSAGE IDX: " , idx)
+  setSongProgram(idx)
 
 def sendProgramNotificationMessage(self,id):
   sio.emit(PROGRAM_MESSAGE, str(id))
@@ -366,7 +367,7 @@ def setSongProgram(idx):
     #pprint.pprint(preset)
     setPreset(preset)
 
-  #gNotificationMessageClient.sendProgramNotificationMessage(idx)
+  sendProgramNotificationMessage(idx)
 
 #----------------------------------------------------------------
 def setPreset(preset):
@@ -393,7 +394,7 @@ def selectNextSong():
   else:
     gCurrentSongIdx = 0
 
-  #gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
+  sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
   printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
@@ -406,11 +407,21 @@ def selectPreviousSong():
     gCurrentSongIdx = gCurrentSongIdx - 1
   else: 
     gCurrentSongIdx = len(gBankSongList) - 1
-  #gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
+  sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
   printDebug("previous song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
+def setSong(id):
+  global gCurrentSongIdx
+  global gBankSongList
 
+  idx = dataHelper.findIndexById(gBankSongList, id)
+  if idx > 0:
+    gCurrentSongIdx = idx
+    # sendSongNotificationMessage(id)
+    print("Song selected. idx =", idx)
+  else: 
+    print("There is no Song with id =", id)
 
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
