@@ -116,17 +116,17 @@ def processProgramMessage(idx):
   setSongProgram(idx)
 
 def sendProgramNotificationMessage(idx):
-  sio.emit(PROGRAM_MESSAGE, str(id))
-    # print(PROGRAM_MESSAGE + "=" + str(id))
+  sio.emit(PROGRAM_MESSAGE, str(idx))
+  print(PROGRAM_MESSAGE + " >> " + str(idx))
 
 def sendSongNotificationMessage(id):
   sio.emit(SONG_MESSAGE, str(id))
-  # print(SONG_MESSAGE + "=" + str(id))
+  print(SONG_MESSAGE + " >>" + str(id))
 
-def sendSyncNotificationMessage(songId, programId):
+def sendSyncNotificationMessage(songId, programIdx):
   syncmessage = {}
   syncmessage.songId = songId
-  syncmessage.programId = programId
+  syncmessage.programIdx = programIdx
 
   jsonStr = json.dumps(syncmessage,
     indent=4, sort_keys=True, cls=CustomEncoder,
