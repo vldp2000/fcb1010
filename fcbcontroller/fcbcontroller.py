@@ -126,9 +126,10 @@ def sendGigNotificationMessage(id):
 #==
 def sendSyncNotificationMessage(bankId, songId, programIdx):
   syncmessage = {}
-  syncmessage.bankId = bankId
   syncmessage.songId = songId
   syncmessage.programIdx = programIdx
+  syncmessage.bankId = bankId
+  
   jsonStr = json.dumps(syncmessage,
     indent=4, sort_keys=True, cls=CustomEncoder,
     separators=(',', ': '), ensure_ascii=False
