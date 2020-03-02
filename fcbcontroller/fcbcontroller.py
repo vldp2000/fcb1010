@@ -37,7 +37,7 @@ from time import sleep
 import dataController
 import dataHelper
 from dataClasses import *
-from messageClient import MessageClient
+#from messageClient import MessageClient
 from config import *
 
 #----------------------------------------------------------------
@@ -190,7 +190,7 @@ def resyncWithGigController():
   if gResyncCounter < 2:
     gResyncCounter = gResyncCounter + 1
   else:
-    MessageClient.sendSyncNotificationMessage( gBankSongList[gCurrentSongIdx].id, gCurrentProgramIdx)
+   # MessageClient.sendSyncNotificationMessage( gBankSongList[gCurrentSongIdx].id, gCurrentProgramIdx)
     gResyncCounter = 0
 #----------------------------------------------------------------
 
@@ -342,7 +342,7 @@ def setSongProgram(idx):
     #pprint.pprint(preset)
     setPreset(preset)
 
-  gNotificationMessageClient.sendProgramNotificationMessage(idx)
+  #gNotificationMessageClient.sendProgramNotificationMessage(idx)
 
 #----------------------------------------------------------------
 def setPreset(preset):
@@ -369,7 +369,7 @@ def selectNextSong():
   else:
     gCurrentSongIdx = 0
 
-  gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
+  #gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
   printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
@@ -382,7 +382,7 @@ def selectPreviousSong():
     gCurrentSongIdx = gCurrentSongIdx - 1
   else: 
     gCurrentSongIdx = len(gBankSongList) - 1
-  gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
+  #gNotificationMessageClient.sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
   printDebug("previous song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
