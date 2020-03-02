@@ -110,6 +110,11 @@ def message(data):
 def disconnect():
   print('disconnected from SOCKET server')
 
+@sio.on('message')
+async def print_message(sid, message):
+    print("Socket ID: " , sid)
+    print(message)
+
 #----------------------------------------------------------------
 
 def printDebug(message):
