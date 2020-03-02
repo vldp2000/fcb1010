@@ -73,4 +73,5 @@ def findIndexById(list, id):
     idx = [ x.id for x in list].index(id)
   except ValueError:
     idx = -1
-  return i  
+  print(idx)
+  return idx
