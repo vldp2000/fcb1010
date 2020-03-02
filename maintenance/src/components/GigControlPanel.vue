@@ -432,19 +432,9 @@ export default {
       this.$store.dispatch('addSongItems', songId)
     },
 
-    btnClickPogram () {
-      let x = this.currentProgramIdx + 1
-      if (x > 3) { x = 0 }
-      this.$socket.client.emit(config.controllerProgramMessage, x)
-    },
-    btnClickSong () {
-      let x = this.songId + 1
-      if (x > 12) { x = 1 }
-      this.$socket.client.emit(config.controllerSongMessage, x)
-    },
-
     onProgramClick (idx) {
       this.$socket.client.emit(config.controllerProgramMessage, idx)
+      this.$store.dispatch('selectSongProgram', this.idx)
     },
     checkIfGigIsCurrent () {
       return (this.currentGig && this.currentGig.currentFlag)

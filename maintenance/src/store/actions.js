@@ -424,14 +424,14 @@ const actions = {
   //  Socket Io-----------------------------------------------------
   selectSong ({ commit }, id) {
     this._vm.$socket.client.emit(config.viewSongMessage, id)
-    console.log('Send viewSongMessage', id)
-    console.log(config.viewSongMessage)
+    // console.log('Send viewSongMessage', id)
+    // console.log(config.viewSongMessage)
   },
 
   selectSongProgram ({ commit }, idx) {
     this._vm.$socket.client.emit(config.viewProgramMessage, idx)
-    console.log('Send viewProgramMessage', idx)
-    console.log(config.viewProgramMessage)
+    // console.log('Send viewProgramMessage', idx)
+    // console.log(config.viewProgramMessage)
   },
 
   socketClientInitialize ({ commit }, payload) {

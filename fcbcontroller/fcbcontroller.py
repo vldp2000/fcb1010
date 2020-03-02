@@ -106,15 +106,34 @@ def message(data):
 def disconnect():
   print('disconnected from SOCKET server')
 
-@sio.on('message')
-def print_message(sid, message):
-    print("Socket ID: " , sid)
-    print(message)
-
 @sio.on('VIEW_SONG_MESSAGE')
-def print_message(id):
+def processSongMessage(id):
     print("VIEW_SONG_MESSAGE ID: " , id)
-    print(message)
+
+@sio.on('VIEW_PROGRAM_MESSAGE')
+def processProgramMessage(idx):
+    print("VIEW_PROGRAM_MESSAGE IDX: " , idx)
+
+def sendProgramNotificationMessage(self,id):
+  sio.emit(PROGRAM_MESSAGE, str(id))
+    # print(PROGRAM_MESSAGE + "=" + str(id))
+
+def sendSongNotificationMessage(self,id):
+  sio.emit(SONG_MESSAGE, str(id))
+  # print(SONG_MESSAGE + "=" + str(id))
+
+def sendSyncNotificationMessage(self,songId, programId):
+  syncmessage = {}
+  syncmessage.songId = songId
+  syncmessage.programId = programId
+
+  jsonStr = json.dumps(syncmessage,
+    indent=4, sort_keys=True, cls=CustomEncoder,
+    separators=(',', ': '), ensure_ascii=False
+  )
+  sio.emit(SYNC_MESSAGE, jsonStr)
+  # print(SYNC_MESSAGE + "=" +  jsonStr)
+
 #----------------------------------------------------------------
 
 def printDebug(message):
