@@ -338,23 +338,27 @@ export default {
     OnControlDataChanged () {
       this.dataChanged = true
     },
-    setCurrentSong () {
+    async setCurrentSong () {
       const id = this.currentSongId
       this.$log.debug(' --- setCurrentSong ---', id)
       // this.$log.debug(this.currentGig)
-      if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
-        // console.log(this.currentGig)
-        this.currentSong = this.currentGig.songList.find(item => item.id === id)
+      if (this.currentSongList) {
+        this.currentSong = await this.currentSongList.find(item => item.id === id)
+      }
+      if (!this.currentSong && this.selectedGigId > 0) {
+        if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
+          // console.log(this.currentGig)
+          this.currentSong = await this.currentGig.songList.find(item => item.id === id)
+        }
       }
 
       if (!this.currentSong) {
         this.$log.debug(`NOT found song in current gig >>  ${id}`)
-        this.setSongOutOfGig(id)
+        await this.setSongOutOfGig(id)
       }
       // this.$log.debug(this.currentSong.name)
-      if (this.currentSong && (this.currentSong.programList === null ||
-        typeof (this.currentSong.programList) === 'undefined')) {
-        this.initSongPrograms(id)
+      if (this.currentSong && !this.currentSong.programList) {
+        await this.initSongPrograms(id)
       }
     },
 
@@ -362,7 +366,7 @@ export default {
       try {
         this.gigId = -1
         this.currentGig = null
-        this.$log.debug('--- out of gig')
+        console.log('--- out of gig >>> ', this.currentSongId)
         this.currentSong = await this.songList.find(item => item.id === this.currentSongId)
       } catch (ex) {
         this.$log.error(ex)
