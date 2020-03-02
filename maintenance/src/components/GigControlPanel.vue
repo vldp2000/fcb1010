@@ -15,7 +15,9 @@
       </v-col>
       <v-col cols="12" md="1">
         <div>
-          <v-icon large
+          <v-icon
+            v-if="gigId>0"
+            large
             v-bind:class="(checkIfGigIsCurrent()) ? 'defaultGigHighighted' : 'defaultGig'"
             @click="saveGigAsCurrent()"
           >
@@ -236,10 +238,10 @@ export default {
   },
 
   computed: {
-    // currentGigId: state => state.currentGigId,
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList',
       'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal',
-      'currentGigId', 'allInitialized', 'instrumentListImagesInitialized',
+      'selectedGigId', 'scheduledGigId',
+      'allInitialized', 'instrumentListImagesInitialized',
       'refreshSong', 'initialisingIsInProgress', 'defaultPreset']),
     songId: {
       get () {
@@ -255,8 +257,12 @@ export default {
       }
     },
     gigId: {
-      get () { return this.currentGigId },
-      set (value) { this.$store.dispatch('setCurrentGigId', value) }
+      get () {
+        return this.selectedGigId
+      },
+      set (value) {
+        this.$store.dispatch('setSelectedGigId', value)
+      }
     }
   },
 
@@ -286,7 +292,7 @@ export default {
         }
       }
     },
-    currentGigId: async function (id) {
+    selectedGigId: async function (id) {
       // this.initFlag = true
       if (id > 0) {
         if (typeof this.gigList !== 'undefined') {
@@ -437,19 +443,19 @@ export default {
     },
 
     checkIfGigIsCurrent () {
-      return (this.currentGig && this.currentGig.currentFlag)
+      return (this.currentGig && this.currentGig.id === this.scheduledGigId)
     },
 
     saveGigAsCurrent () {
       if (this.currentGig) {
-        this.$log.debug('setGigAsCurrent')
-        this.$store.dispatch('setGigAsCurrent', this.currentGig.id)
+        this.$log.debug('setGigAsScheduled')
+        this.$store.dispatch('setGigAsScheduled', this.currentGig.id)
       }
     },
     clearGig () {
       this.$log.debug('clearGig')
       this.currentGig = null
-      this.$store.dispatch('setCurrentGigId', -1)
+      this.$store.dispatch('setSelectedGigId', -1)
     },
     saveSong () {
       this.$log.debug('save song')

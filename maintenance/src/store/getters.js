@@ -11,7 +11,8 @@ const getters = {
       return item.id === id
     })
   },
-  currentGigId: state => state.currentGigId,
+  scheduledGigId: state => state.scheduledGigId,
+  selectedGigId: state => state.selectedGigId,
   currentSongId: state => state.currentSongId,
   currentProgramMidiPedal: state => state.currentProgramMidiPedal,
   allInitialized: state => state.allInitialized,

@@ -160,7 +160,6 @@ export default {
   },
 
   computed: {
-    // currentGigId: state => state.currentGigId,
     ...mapState(['allInitialized', 'initialisingIsInProgress'])
   },
 

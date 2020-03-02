@@ -181,8 +181,11 @@ const mutations = {
     Object.assign(item, gigsong)
   },
 
-  [types.SET_CURRENTGIG_ID] (state, id) {
-    state.currentGigId = id
+  [types.SET_SCHEDULEDGIG_ID] (state, id) {
+    state.scheduledGigId = id
+  },
+  [types.SET_SELECTEDGIG_ID] (state, id) {
+    state.selectedGigId = id
   },
   [types.SET_CURRENTSONG_ID] (state, id) {
     state.currentSongId = id

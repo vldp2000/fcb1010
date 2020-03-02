@@ -203,7 +203,10 @@ async function initializeAllLists (commit, getters) {
       await commit(types.POPULATE_GIG_SONGS, payload)
     }
   }
-  // console.log(' ----- after POPULATE_GIG_SONGS')
+
+  const gigId = await GigsService.getScheduledGigId()
+  await commit(types.SET_SCHEDULEDGIG_ID, gigId)
+  console.log(' ----- SET_SCHEDULEDGIG_ID --', gigId)
   // console.log(getters.gigList)
   await setInstrumentIcons(commit)
   //  Init Is Complete
@@ -396,18 +399,14 @@ const actions = {
   },
 
   //  Set current Song Id-----------------------------------------------------
-  setCurrentGigId ({ commit }, id) {
-    commit(types.SET_CURRENTGIG_ID, id)
-    // Vue.$log.debug('STORE. Set current Gig Id-------------------------------')
-    // Vue.$log.debug(id)
+  setSelectedGigId ({ commit }, id) {
+    commit(types.SET_SELECTEDGIG_ID, id)
   },
-  //  setGigAsCurrent -----------------------------------------------------
-  setGigAsCurrent ({ commit, getters }, id) {
-    getters.gigList.forEach(gig => {
-      gig.currentFlag = (gig.id === id)
-      GigsService.put(gig)
-      commit(types.UPDATE_GIG, gig)
-    })
+
+  //  setGigAsScheduled -----------------------------------------------------
+  setGigAsScheduled ({ commit }, id) {
+    GigsService.saveScheduledGigId(id)
+    commit(types.SET_SCHEDULEDGIG_ID, id)
   },
 
   //  Set current Song Id-----------------------------------------------------

@@ -18,7 +18,7 @@ def getSongList():
   return songList
 #----------------------------------------------------------------
 
-def getCurrentGigId():
+def getScheduledGigId():
   gigId = -1
   response = requests.get(API_URL + '/currentgig')
   data = response.json()

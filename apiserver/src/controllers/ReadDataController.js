@@ -115,7 +115,7 @@ module.exports = {
     res.send(result)
   },
 
-  async getCurrentGigId (req, res) {
+  async getScheduledGigId (req, res) {
     const fileName = config.filePath + 'gig/id/currentgig.json'
     // console.log(fileName)
     const file = await readFile(fileName.toLowerCase(), 'utf8')
