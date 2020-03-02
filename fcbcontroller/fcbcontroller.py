@@ -115,15 +115,15 @@ def processProgramMessage(idx):
   print("VIEW_PROGRAM_MESSAGE IDX: " , idx)
   setSongProgram(idx)
 
-def sendProgramNotificationMessage(self,id):
+def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(id))
     # print(PROGRAM_MESSAGE + "=" + str(id))
 
-def sendSongNotificationMessage(self,id):
+def sendSongNotificationMessage(id):
   sio.emit(SONG_MESSAGE, str(id))
   # print(SONG_MESSAGE + "=" + str(id))
 
-def sendSyncNotificationMessage(self,songId, programId):
+def sendSyncNotificationMessage(songId, programId):
   syncmessage = {}
   syncmessage.songId = songId
   syncmessage.programId = programId
@@ -552,12 +552,6 @@ if gMode == 'Debug':
 
 # sio = socketio.Client()
 sio.connect('http://localhost:8081')
-
-#gNotificationMessageClient = MessageClient()
-#gNotificationMessageClient.initMessenger()
-
-# gNotificationMessageClient.sendSongNotificationMessage(1)
-# gNotificationMessageClient.sendProgramNotificationMessage(1)
 
 loadAllData()
 
