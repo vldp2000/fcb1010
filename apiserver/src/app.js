@@ -30,6 +30,8 @@ try {
     socket.on(`${config.viewSongMessage}`, function(data) {
       // this.$log.debug(config.viewSongMessage)
       // this.$log.debug(data)
+      console.log(config.viewSongMessage)
+      console.log(data)
       io.emit(`${config.viewSongMessage}`, data)
     })
 

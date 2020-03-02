@@ -374,7 +374,7 @@ export default {
 
     selectSong () {
       try {
-        this.$store.dispatch('socketClientInitialize', 'socketClientInitialize')
+        this.$store.dispatch('selectSong', this.currentSongId)
       } catch (ex) {
         this.$log.error(ex)
       }
