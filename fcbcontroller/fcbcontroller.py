@@ -350,9 +350,9 @@ def resyncWithGigController():
     gResyncCounter = gResyncCounter + 1
   else:
     songId = gBankSongList[gCurrentSongIdx].id
-    printDebug('== gig ==', gSelectedGigId)
-    printDebug('== song ==', songId)
-    printDebug('-- Prog --', gCurrentProgramIdx) 
+    print('== gig ==', gSelectedGigId)
+    print('== song ==', songId)
+    print('-- Prog --', gCurrentProgramIdx) 
     sendSyncNotificationMessage( gSelectedGigId, songId, gCurrentProgramIdx)
     gResyncCounter = 0
 #----------------------------------------------------------------
