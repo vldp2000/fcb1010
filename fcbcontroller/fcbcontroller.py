@@ -109,6 +109,7 @@ def disconnect():
 @sio.on('VIEW_SONG_MESSAGE')
 def processSongMessage(id):
   print("VIEW_SONG_MESSAGE ID: " , id)
+  setSong(id)
 
 @sio.on('VIEW_PROGRAM_MESSAGE')
 def processProgramMessage(idx):
