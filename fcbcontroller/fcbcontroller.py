@@ -98,10 +98,6 @@ def connect():
   print('SOCKET connection established')
 
 @sio.event
-def my_message(data):
-  print('MY_message received with ', data)
-
-@sio.event
 def message(data):
   print('Message received with ', data)
   
@@ -115,6 +111,10 @@ async def print_message(sid, message):
     print("Socket ID: " , sid)
     print(message)
 
+@sio.on('VIEW_SONG_MESSAGE')
+async def print_message(sid, message):
+    print("Socket ID: " , sid)
+    print(message)
 #----------------------------------------------------------------
 
 def printDebug(message):
