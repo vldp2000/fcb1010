@@ -450,15 +450,30 @@ const actions = {
       commit(types.SET_CURRENT_PROGRAMMIDIPEDAL, idx)
       // this.$store.dispatch('setCurrentProgramMidiPedal', parseInt(data))
     })
+
     this._vm.$socket.client.on(config.controllerSongMessage, (data) => {
       const id = parseInt(data)
       commit(types.SET_CURRENTSONG_ID, id)
       // this.$store.dispatch('setCurrentSongId', parseInt(data))
     })
+
     this._vm.$socket.client.on(config.controllerGigMessage, (data) => {
       const id = parseInt(data)
       commit(types.SET_SELECTEDGIG_ID, id)
     })
+
+    this._vm.$socket.client.on(config.controllerPedal1Message, (data) => {
+      const idx = parseInt(data)
+      console.log(idx)
+      // commit(types.SET_SELECTEDGIG_ID, id)
+    })
+
+    this._vm.$socket.client.on(config.controllerPedal2Message, (data) => {
+      const idx = parseInt(data)
+      console.log(idx)
+      // commit(types.SET_SELECTEDGIG_ID, id)
+    })
+
     clientInitialized = true
   }
 }

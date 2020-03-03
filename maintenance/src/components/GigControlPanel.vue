@@ -71,6 +71,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 0)'
+            :activeVolumePedal='checkVolumePedal1(0, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -78,6 +79,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 1)'
+            :activeVolumePedal='checkVolumePedal1(0, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -85,6 +87,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 2)'
+            :activeVolumePedal='checkVolumePedal2(0, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -92,6 +95,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 3)'
+            :activeVolumePedal='checkVolumePedal2(0, 2)'
             @changed="OnControlDataChanged()"/>
         </v-card>
       </v-col>
@@ -110,6 +114,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 0)'
+            :activeVolumePedal='checkVolumePedal1(1, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -117,6 +122,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 1)'
+            :activeVolumePedal='checkVolumePedal1(1, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -124,6 +130,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 2)'
+            :activeVolumePedal='checkVolumePedal2(1, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -131,6 +138,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 3)'
+            :activeVolumePedal='checkVolumePedal2(1, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -149,6 +157,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(2, 0)'
+            :activeVolumePedal='checkVolumePedal1(2, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -156,6 +165,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
           :presetControlData='getPresetControlData(2, 1)'
+          :activeVolumePedal='checkVolumePedal1(2, 2)'
           @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -163,6 +173,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(2, 2)'
+            :activeVolumePedal='checkVolumePedal2(2, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -170,6 +181,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(2, 3)'
+            :activeVolumePedal='checkVolumePedal2(2, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -188,6 +200,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 0)'
+            :activeVolumePedal='checkVolumePedal1(3, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -195,6 +208,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 1)'
+            :activeVolumePedal='checkVolumePedal1(3, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -202,6 +216,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 2)'
+            :activeVolumePedal='checkVolumePedal2(3, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -209,6 +224,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 3)'
+            :activeVolumePedal='checkVolumePedal2(3, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
       </v-col>
@@ -233,7 +249,9 @@ export default {
       currentProgramIdx: 0,
       currentSongList: [],
       initFlag: true,
-      dataChanged: false
+      dataChanged: false,
+      pedal1Value: 1,
+      pedal2Value: 1
     }
   },
 
@@ -452,6 +470,21 @@ export default {
       console.log(this.currentGig.id)
       console.log(this.scheduledGigId)
       return (this.currentGig.id === this.scheduledGigId)
+    },
+
+    checkVolumePedal1 (program, pedal) {
+      if (program === this.currentProgramIdx && pedal === this.pedal1Value) {
+        return true
+      } else {
+        return false
+      }
+    },
+    checkVolumePedal2 (program, pedal) {
+      if (program === this.currentProgramIdx && pedal === this.pedal2Value) {
+        return true
+      } else {
+        return false
+      }
     },
 
     saveGigAsCurrent () {

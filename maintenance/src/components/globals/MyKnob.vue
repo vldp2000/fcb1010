@@ -25,6 +25,9 @@
         </div>
       </div>
     </vue-svg-gauge>
+    <div>
+      <div v-bind:class="(activeVolumePedal) ? 'pedalSelected' : 'pedalDisabled'" />
+    </div>
   </div>
 </template>
 
@@ -44,6 +47,10 @@ export default {
     }
   },
   props: {
+    activeVolumePedal: {
+      type: Boolean,
+      default: false
+    },
     value: {
       type: [String, Number],
       default: 0
@@ -350,6 +357,7 @@ export default {
 
 <!--  change style to calculate the position of the inner text automatically  -->
 <style scoped>
+
 .custom-label {
   display: flex;
   align-items: center;
@@ -367,5 +375,17 @@ export default {
 .custom-label2 {
   margin-top: -15px!important;
   font-size: 30px!important;
+}
+.pedalSelected {
+  display: flex;
+  height: 5px;
+  width: 40px;
+  background-color: rgb(29, 15, 228);
+  color: rgb(29, 15, 228);
+  border: solid 1px rgb(29, 15, 228);
+  margin: auto;
+}
+.pedalDisabled {
+  border: solid 1px rgba(36, 34, 34, 0);
 }
  </style>

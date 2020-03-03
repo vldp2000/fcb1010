@@ -34,6 +34,7 @@
           <my-knob
             v-model='volume'
             :editMode='editMode'
+            :activeVolumePedal='activeVolumePedal'
             knobLabel='Vol'
             :base-color='getBaseColor()'
           />
@@ -142,6 +143,10 @@ export default {
   props: {
     presetControlData: {
       type: Object
+    },
+    activeVolumePedal: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

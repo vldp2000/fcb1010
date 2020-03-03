@@ -44,6 +44,14 @@ try {
       io.emit(`${config.controllerGigMessage}`, data)
     })
     
+    socket.on(`${config.controllerPedal1Message}`, function(data) {
+      io.emit(`${config.controllerPedal1Message}`, data)
+    })
+
+    socket.on(`${config.controllerPedal2Message}`, function(data) {
+      io.emit(`${config.controllerPedal2Message}`, data)
+    })
+    
     socket.on(`${config.controllerSyncMessage}`, function(data) {
       console.log(config.controllerSyncMessage)
       console.log(data)

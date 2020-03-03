@@ -69,10 +69,13 @@ gResyncCounter = 0
 
 gRaveloxClient = None
 
+gPedal1Value = 1
+gPedal2Value = 1
+
 #default value for second  volume pedal is 176 = 1st channel
-gPedal2_Channel = 176
-gChannel1 = 176
-gChannel2 = 177
+#gPedal2_Channel = 176
+#gChannel1 = 176
+#gChannel2 = 177
 
 gLastSynth1Program = 0
 gLastSynth1Volume = 0
@@ -124,6 +127,15 @@ def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
   print(GIG_MESSAGE + " >>" + str(id))
 #==
+def sendPedal1Message(value):
+  sio.emit(PEDAL1_MESSAGE, str(value))
+  print(PEDAL1_MESSAGE + " >>" + str(value))
+#==
+def sendPedal2Message(value):
+  sio.emit(PEDAL2_MESSAGE, str(value))
+  print(PEDAL2_MESSAGE + " >>" + str(value))
+#==
+
 def sendSyncNotificationMessage(bankId, songId, programIdx):
   syncmessage = {}
   syncmessage['songId'] = songId
@@ -433,6 +445,24 @@ def setSong(id):
     print("Song selected. idx =", idx)
   else: 
     print("There is no Song with id =", id)
+#----------------------------------------------------------------
+
+def setPedal1Value():
+  global gPedal1Value
+  if gPedal1Value == 1
+    gPedal1Value = 2
+  else:
+    gPedal1Value = 1
+  sendPedal1Message(gPedal1Value)
+#----------------------------------------------------------------
+
+def setPedal2Value():
+  global gPedal2Value
+  if gPedal2Value == 1
+    gPedal2Value = 2
+  else:
+    gPedal2Value = 1
+  sendPedal2Message(gPedal2Value)
 
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
@@ -440,7 +470,8 @@ def getActionForReceivedMessage(midiMsg):
   global gReloadCounter
   global gSynthTest
   global gPianoTest
-  global gPedal2_Channel
+  global gPedal1Value
+  global gPedal2Value
 
   msg = midiMsg[0]
   msg0 = msg[0]
@@ -479,9 +510,11 @@ def getActionForReceivedMessage(midiMsg):
       elif msg2 == 12:
         isReloadRequired()  ## press pedal 3 times to reload data
       elif msg2 == 13: #pedal 3 #Second Volume pedal sends messages to ch 1
-        gPedal2_Channel = gChannel1
+        setPedal1Value()
+        #gPedal2_Channel = gChannel1
       elif  msg2 == 14: #pedal 4 #Second Volume pedal sends messages to ch 2
-        gPedal2_Channel = gChannel2
+        setPedal2Value()
+        #gPedal2_Channel = gChannel2
       elif msg2 == 15:
         selectPreviousSong()
         setSongProgram(0)
@@ -502,13 +535,20 @@ def getActionForReceivedMessage(midiMsg):
 
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1 or 2 (or both ?)
-    sendGenericMidiCommand(msg0, msg1, msg2)
+    if gPedal1Value == 1:
+      channel = 176
+    else:  
+      channel = 177
+    sendGenericMidiCommand(channel, msg1, msg2)
     # printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
+    if gPedal2Value == 1:
+      channel = 181
+    else:  
+      channel = 182
     # Send Volume to Channel 6 or 7 (or both ?)
-    sendGenericMidiCommand(msg0, msg1, msg2)
-    # printDebug('>>7--' + str(msg))
+    sendGenericMidiCommand(channel, msg1, msg2)
 
   else:
      sendGenericMidiCommand(msg0, msg1, msg2)
@@ -572,7 +612,6 @@ if len(gBankSongList) > 0:
   gCurrentSongIdx = 0
   gCurrentProgramIdx = 0
 
-# port = MIDI_PORT
 portOk = False
 midiInput = None
 
