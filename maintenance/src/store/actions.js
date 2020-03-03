@@ -465,13 +465,13 @@ const actions = {
     this._vm.$socket.client.on(config.controllerPedal1Message, (data) => {
       const idx = parseInt(data)
       console.log(idx)
-      // commit(types.SET_SELECTEDGIG_ID, id)
+      commit(types.SET_PEDAL1VALUE, idx)
     })
 
     this._vm.$socket.client.on(config.controllerPedal2Message, (data) => {
       const idx = parseInt(data)
       console.log(idx)
-      // commit(types.SET_SELECTEDGIG_ID, id)
+      commit(types.SET_PEDAL2VALUE, idx)
     })
 
     clientInitialized = true

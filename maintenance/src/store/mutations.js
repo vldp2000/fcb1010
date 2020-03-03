@@ -193,6 +193,12 @@ const mutations = {
   },
   [types.SET_CURRENT_PROGRAMMIDIPEDAL] (state, idx) {
     state.currentProgramMidiPedal = idx
+  },
+  [types.SET_PEDAL1VALUE] (state, value) {
+    state.pedal1Value = value
+  },
+  [types.SET_PEDAL2VALUE] (state, value) {
+    state.pedal2Value = value
   }
 }
 export default mutations

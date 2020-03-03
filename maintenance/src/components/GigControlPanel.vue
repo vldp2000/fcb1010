@@ -250,8 +250,8 @@ export default {
       currentSongList: [],
       initFlag: true,
       dataChanged: false,
-      pedal1Value: 1,
-      pedal2Value: 1
+      currentPedal1Value: 1,
+      currentPedal2Value: 1
     }
   },
 
@@ -259,6 +259,7 @@ export default {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList',
       'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal',
       'selectedGigId', 'scheduledGigId',
+      'pedal1Value', 'pedal2Value',
       'allInitialized', 'instrumentListImagesInitialized',
       'refreshSong', 'initialisingIsInProgress', 'defaultPreset']),
     songId: {
@@ -342,6 +343,14 @@ export default {
     currentProgramMidiPedal: function (idx) {
       this.currentProgramIdx = idx
       this.$log.debug(`currentProgramMidiPedal was changed -> ${this.currentProgramIdx}`)
+    },
+    pedal1Value: function () {
+      this.currentPedal1Value = this.pedal1Value
+      console.log(this.currentPedal1Value)
+    },
+    pedal2Value: function () {
+      this.currentPedal2Value = this.pedal2Value
+      console.log(this.currentPedal2Value)
     }
   },
   created () {
@@ -473,14 +482,14 @@ export default {
     },
 
     checkVolumePedal1 (program, pedal) {
-      if (program === this.currentProgramIdx && pedal === this.pedal1Value) {
+      if (program === this.currentProgramIdx && pedal === this.currentPedal1Value) {
         return true
       } else {
         return false
       }
     },
     checkVolumePedal2 (program, pedal) {
-      if (program === this.currentProgramIdx && pedal === this.pedal2Value) {
+      if (program === this.currentProgramIdx && pedal === this.currentPedal2Value) {
         return true
       } else {
         return false

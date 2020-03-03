@@ -19,6 +19,8 @@ const getters = {
   initialisingIsInProgress: state => state.initialisingIsInProgress,
   instrumentListImagesInitialized: state => state.instrumentList[0].imageURL.length > 0,
   refreshSong: state => state.refreshSong,
-  defaultPreset: state => state.defaultPreset
+  defaultPreset: state => state.defaultPreset,
+  pedal1Value: state => state.pedal1Value,
+  pedal2Value: state => state.pedal2Value
 }
 export default getters

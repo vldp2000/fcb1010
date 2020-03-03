@@ -374,6 +374,8 @@ def setSongProgram(idx):
   global gCurrentProgramIdx
   global gCurrentSongIdx
   global gBankSongList
+  global gPedal1Value
+  global gPedal2Value
 
   gCurrentProgramIdx = idx
 
@@ -386,6 +388,21 @@ def setSongProgram(idx):
     setPreset(preset)
 
   sendProgramNotificationMessage(idx)
+
+  print(program['presetList'][0]['volume'])
+
+  if  program['presetList'][0]['volume'] > 0:
+    gPedal1Value = 1
+  else:
+    gPedal1Value = 2
+  sendPedal1Message(gPedal1Value)
+
+  print(program['presetList'][2]['volume'])
+  if  program['presetList'][2]['volume'] > 0:
+    gPedal2Value = 1
+  else:
+    gPedal2Value = 2
+  sendPedal2Message(gPedal2Value)
 
 #----------------------------------------------------------------
 def setPreset(preset):

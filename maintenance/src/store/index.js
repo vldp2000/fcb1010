@@ -31,6 +31,9 @@ const Store = new Vuex.Store({
     allInitialized: false,
     initialisingIsInProgress: false,
     refreshSong: false,
+    pedal1Value: 1,
+    pedal2Value: 1,
+
     defaultPreset: {
       id: -1,
       refsong: -1,
