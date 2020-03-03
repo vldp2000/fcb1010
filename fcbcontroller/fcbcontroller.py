@@ -446,7 +446,6 @@ def setSong(id):
   else: 
     print("There is no Song with id =", id)
 #----------------------------------------------------------------
-
 def setPedal1Value():
   global gPedal1Value
   if gPedal1Value == 1:
@@ -455,7 +454,6 @@ def setPedal1Value():
     gPedal1Value = 1
   sendPedal1Message(gPedal1Value)
 #----------------------------------------------------------------
-
 def setPedal2Value():
   global gPedal2Value
   if gPedal2Value == 1:
@@ -463,7 +461,6 @@ def setPedal2Value():
   else:
     gPedal2Value = 1
   sendPedal2Message(gPedal2Value)
-
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
   # printDebug("SEND MIDI MSG")
@@ -516,7 +513,7 @@ def getActionForReceivedMessage(midiMsg):
       elif  msg2 == 14: #pedal 4 #Second Volume pedal sends messages to ch 2
         setPedal2Value()
         #gPedal2_Channel = gChannel2
-        
+
       elif msg2 == 15:
         selectPreviousSong()
         setSongProgram(0)
