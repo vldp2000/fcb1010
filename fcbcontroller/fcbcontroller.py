@@ -449,7 +449,7 @@ def setSong(id):
 
 def setPedal1Value():
   global gPedal1Value
-  if gPedal1Value == 1
+  if gPedal1Value == 1:
     gPedal1Value = 2
   else:
     gPedal1Value = 1
@@ -458,7 +458,7 @@ def setPedal1Value():
 
 def setPedal2Value():
   global gPedal2Value
-  if gPedal2Value == 1
+  if gPedal2Value == 1:
     gPedal2Value = 2
   else:
     gPedal2Value = 1
@@ -509,12 +509,14 @@ def getActionForReceivedMessage(midiMsg):
         resyncWithGigController()  ## press pedal 3 times to resync
       elif msg2 == 12:
         isReloadRequired()  ## press pedal 3 times to reload data
+
       elif msg2 == 13: #pedal 3 #Second Volume pedal sends messages to ch 1
         setPedal1Value()
         #gPedal2_Channel = gChannel1
       elif  msg2 == 14: #pedal 4 #Second Volume pedal sends messages to ch 2
         setPedal2Value()
         #gPedal2_Channel = gChannel2
+        
       elif msg2 == 15:
         selectPreviousSong()
         setSongProgram(0)
