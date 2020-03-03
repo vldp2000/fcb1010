@@ -297,8 +297,8 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   if not gProcessRaveloxMidi: return
 
   message = ""
-  if  msg0 == gChannel1  or msg0 == gChannel2:
-    msg0 = gPedal2_Channel
+  # if  msg0 == gChannel1  or msg0 == gChannel2:
+  #   msg0 = gPedal2_Channel
   # printDebug("SEND GENERIC MIDI COMMAND")
   if gUseNewRaveloxMidi:
     message = struct.pack("BBB", msg0, msg1, msg2)
