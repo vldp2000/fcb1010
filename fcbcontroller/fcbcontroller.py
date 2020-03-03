@@ -562,8 +562,8 @@ def getActionForReceivedMessage(midiMsg):
     if gPedal2Value == 1:
       channel = 181
     else:  
-      channel = 182
-    # Send Volume to Channel 6 or 7 (or both ?)
+      channel = 179
+    # Send Volume to Channel 6 or 4 (or both ?)
     sendGenericMidiCommand(channel, msg1, msg2)
 
   else:
