@@ -129,11 +129,11 @@ def sendGigNotificationMessage(id):
 #==
 def sendPedal1Message(value):
   sio.emit(PEDAL1_MESSAGE, str(value))
-  print(PEDAL1_MESSAGE + " >>" + str(value))
+  printDebug(value)
 #==
 def sendPedal2Message(value):
   sio.emit(PEDAL2_MESSAGE, str(value))
-  print(PEDAL2_MESSAGE + " >>" + str(value))
+  printDebug(value)
 #==
 
 def sendSyncNotificationMessage(bankId, songId, programIdx):
