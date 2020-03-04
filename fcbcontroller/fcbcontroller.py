@@ -492,6 +492,7 @@ def getActionForReceivedMessage(midiMsg):
   msg1 = msg[1]
   msg2 = msg[2]
   msgParameter = midiMsg[1]
+  channel=-1
 
 #System events
 #FCB1010 has 10 banks 0..9
@@ -555,7 +556,8 @@ def getActionForReceivedMessage(midiMsg):
       channel = 176
     else:  
       channel = 177
-    sendGenericMidiCommand(channel, msg1, msg2)
+    if channel > 0:
+      sendGenericMidiCommand(channel, msg1, msg2)
     # printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
@@ -564,7 +566,8 @@ def getActionForReceivedMessage(midiMsg):
     else:  
       channel = 179
     # Send Volume to Channel 6 or 4 (or both ?)
-    sendGenericMidiCommand(channel, msg1, msg2)
+    if channel > 0:
+      sendGenericMidiCommand(channel, msg1, msg2)
 
   else:
      sendGenericMidiCommand(msg0, msg1, msg2)
