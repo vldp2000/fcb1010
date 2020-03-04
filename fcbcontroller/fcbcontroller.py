@@ -552,7 +552,7 @@ def getActionForReceivedMessage(midiMsg):
 
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1 or 2 (or both ?)
-    if gPedal1Value == 1:
+    if gPedal2Value == 1:
       channel = 176
     else:  
       channel = 177
@@ -561,7 +561,7 @@ def getActionForReceivedMessage(midiMsg):
     # printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
-    if gPedal2Value == 1:
+    if gPedal1Value == 1:
       channel = 181
     else:  
       channel = 179
