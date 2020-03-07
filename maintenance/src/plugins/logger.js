@@ -17,7 +17,7 @@ export default ({
   app,
   store
 }, inject) => {
-  console.debug('Initializing Logger', options)
+  // console.debug('Initializing Logger', options)
   VueLogger.install(Vue, options)
   app['$log'] = Vue.$log
   store['$log'] = Vue.$log

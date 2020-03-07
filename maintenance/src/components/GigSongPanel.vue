@@ -58,7 +58,6 @@
 </template>
 
 <script>
-// import SortableTable from '@/plugins/SortableTable'
 import draggable from 'vuedraggable'
 import { mapState } from 'vuex'
 
