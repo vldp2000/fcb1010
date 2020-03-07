@@ -9,6 +9,7 @@
           class="elevation-1"
           hide-default-footer
           item-key="id"
+          disable-pagination
         >
           <template v-slot:item.image="{ item }">
             <div class ="image">

@@ -29,6 +29,7 @@
               class="elevation-1"
               hide-default-footer
               item-key="id"
+              disable-pagination
             >
 
               <template v-slot:item.instrument="{ item }">
@@ -135,11 +136,7 @@
 </template>
 
 <script>
-
 import { mapState } from 'vuex'
-// import PresetsService from '@/services/PresetsService'
-// import InstrumentsService from '@/services/InstrumentsService'
-// import InstrumentBankService from '@/services/InstrumentBankService'
 
 export default {
   data () {
@@ -151,7 +148,7 @@ export default {
         {
           text: 'Name',
           align: 'left',
-          sortable: false,
+          // sortable: false,
           value: 'name'
         },
         { text: 'Instrument', value: 'instrument' },
@@ -226,9 +223,6 @@ export default {
   },
 
   methods: {
-    // async init () {
-    // },
-
     editItem (item) {
       // this.$log.debug(`-------start editItem (item)  ${item.id}`)
       this.editedIndex = this.presetList.indexOf(item)

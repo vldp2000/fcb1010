@@ -13,6 +13,7 @@
       class="elevation-1"
       ref="sortableTable"
       hide-default-footer
+      disable-pagination
     >
 
       <template v-slot:expanded-item="{ headers }">

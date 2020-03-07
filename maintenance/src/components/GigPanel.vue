@@ -9,7 +9,7 @@
       :expanded.sync="expanded"
       hide-default-footer
       item-key="id"
-      @click:row="rowClicked"
+      disable-pagination
     >
       <template v-slot:expanded-item="{ headers }">
         <td :colspan="headers.length">

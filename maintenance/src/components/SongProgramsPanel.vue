@@ -8,6 +8,7 @@
     :single-expand="singleExpand"
     :expanded.sync="expanded"
     hide-default-footer
+    disable-pagination
   >
     <template v-slot:expanded-item="{ headers }">
       <td :colspan="headers.length">

@@ -9,6 +9,7 @@
           class="elevation-1"
           hide-default-footer
           item-key="id"
+          disable-pagination
         >
           <template v-slot:item.instrument="{ item }">
             <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip>
