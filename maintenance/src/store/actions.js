@@ -163,8 +163,11 @@ async function initializeAllLists (commit, getters) {
 
   if (!getters.presetList || getters.presetList.length === 0) {
     let presets = await PresetsService.getAllData()
+    console.log(presets)
     if (presets.length > 0) {
-      await commit(types.SET_PRESETLIST, presets)
+      let sortedList = await _sortBy(presets, 'name')
+      console.log(sortedList)
+      await commit(types.SET_PRESETLIST, sortedList)
     }
     // console.log(presets)
     // console.log('----presets ---')

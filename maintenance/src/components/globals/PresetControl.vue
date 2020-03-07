@@ -138,6 +138,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import _sortBy from 'lodash/sortBy'
 
 export default {
   props: {
@@ -236,11 +237,12 @@ export default {
       return pr.name
     },
 
-    populatePresetList (id) {
+    async populatePresetList (id) {
       if (typeof this.presetList !== 'undefined' && this.presetList !== null &&
         typeof this.songPreset !== 'undefined' && this.songPreset !== null) {
         // this.$log.debug('---get--preset--------------')
-        this.presets = this.presetList.filter(item => item.refinstrument === id)
+        let list = await this.presetList.filter(item => item.refinstrument === id)
+        this.presets = await _sortBy(list, 'name')
         // this.$log.debug(this.presets)
       }
     },

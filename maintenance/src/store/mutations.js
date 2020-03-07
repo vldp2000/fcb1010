@@ -45,12 +45,13 @@ const mutations = {
   [types.UPDATE_SONGPROGRAMPRESET] (state, payload) {
     try {
       // console.log(payload)
+      console.log(state.songList)
       let song = state.songList.find(sn => sn.id === payload.refsong)
-      // console.log(song)
+      console.log(song)
       let program = song.programList.find(pr => pr.id === payload.refsongprogram)
-      // console.log(program)
+      console.log(program)
       let preset = program.presetList.find(pr => pr.id === payload.id)
-      // console.log(preset)
+      console.log(preset)
 
       if (preset) {
         // Vue.$log.debug('types.UPDATE_SONGPROGRAMPRESET -->>')
