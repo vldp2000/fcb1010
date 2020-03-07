@@ -3,7 +3,7 @@ const midi = require('midi');
 // Set up a new output.
 
 async function sendMessages (output, val) {
-    console.log(val);
+    // console.log(val);
     output.sendMessage([180,20,val]);
 }
 
@@ -18,10 +18,10 @@ output.openVirtualPort("Test Input");
 
 console.log(output.getPortCount());
 
-for (let i = 0 ; i < output.getPortCount(); i++)
-{
-    console.log(output.getPortName(i));
-}
+// for (let i = 0 ; i < output.getPortCount(); i++)
+// {
+//     console.log(output.getPortName(i));
+// }
 
 const readline = require('readline');
 readline.emitKeypressEvents(process.stdin);
@@ -41,8 +41,8 @@ process.stdin.on('keypress', (str, key) => {
     // if (key.name == '3') sendMessages (output, 13);
     // if (key.name == '4') sendMessages (output, 14);
 
-    console.log(`You pressed the "${str}" key`);
-    console.log(key);
+    // console.log(`You pressed the "${str}" key`);
+    // console.log(key);
   }
 });
 console.log('Press any key...');

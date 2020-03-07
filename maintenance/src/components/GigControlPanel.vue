@@ -346,11 +346,11 @@ export default {
     },
     pedal1Value: function () {
       this.currentPedal1Value = this.pedal1Value
-      console.log(this.currentPedal1Value)
+      // console.log(this.currentPedal1Value)
     },
     pedal2Value: function () {
       this.currentPedal2Value = this.pedal2Value
-      console.log(this.currentPedal2Value)
+      // console.log(this.currentPedal2Value)
     }
   },
   created () {
@@ -393,7 +393,7 @@ export default {
       try {
         this.gigId = -1
         this.currentGig = null
-        console.log('--- out of gig >>> ', this.currentSongId)
+        // console.log('--- out of gig >>> ', this.currentSongId)
         this.currentSong = await this.songList.find(item => item.id === this.currentSongId)
       } catch (ex) {
         this.$log.error(ex)
@@ -469,15 +469,15 @@ export default {
     },
 
     onProgramClick (idx) {
-      console.log('onProgramClick >> ', idx)
+      // console.log('onProgramClick >> ', idx)
       this.$store.dispatch('selectSongProgram', idx)
     },
 
     checkIfGigIsCurrent () {
       if (!this.currentGig) return false
-      console.log('>>>>-- checkIfGigIsCurrent')
-      console.log(this.currentGig.id)
-      console.log(this.scheduledGigId)
+      // console.log('>>>>-- checkIfGigIsCurrent')
+      // console.log(this.currentGig.id)
+      // console.log(this.scheduledGigId)
       return (this.currentGig.id === this.scheduledGigId)
     },
 

@@ -19,17 +19,17 @@ app.use(cors())
 const io = require('socket.io')(server);
 try {
   io.on('connection', function(socket) {
-    console.log(`--- message socket connected. client ${socket.id}`)
+    // console.log(`--- message socket connected. client ${socket.id}`)
 
     socket.on(`${config.viewProgramMessage}`, function(data) {
-      console.log(config.viewProgramMessage)
-      console.log(data)
+      // console.log(config.viewProgramMessage)
+      // console.log(data)
       io.emit(`${config.viewProgramMessage}`, data)
     })
 
     socket.on(`${config.viewSongMessage}`, function(data) {
-      console.log(config.viewSongMessage)
-      console.log(data)
+      // console.log(config.viewSongMessage)
+      // console.log(data)
       io.emit(`${config.viewSongMessage}`, data)
     })
 
@@ -53,8 +53,8 @@ try {
     })
     
     socket.on(`${config.controllerSyncMessage}`, function(data) {
-      console.log(config.controllerSyncMessage)
-      console.log(data)
+      // console.log(config.controllerSyncMessage)
+      // console.log(data)
       io.emit(`${config.controllerSyncMessage}`, data)
     })
   })

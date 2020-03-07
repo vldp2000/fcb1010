@@ -206,7 +206,7 @@ async function initializeAllLists (commit, getters) {
 
   const gigId = await GigsService.getScheduledGigId()
   await commit(types.SET_SCHEDULEDGIG_ID, gigId)
-  console.log(' ----- SET_SCHEDULEDGIG_ID --', gigId)
+  // console.log(' ----- SET_SCHEDULEDGIG_ID --', gigId)
   // console.log(getters.gigList)
   await setInstrumentIcons(commit)
   //  Init Is Complete
@@ -300,11 +300,11 @@ const actions = {
   },
   async addPreset ({ commit }, preset) {
     const id = await PresetsService.getId()
-    console.log(id)
+    // console.log(id)
     preset.id = id
     await PresetsService.put(preset)
     await commit(types.ADD_PRESET, preset)
-    console.log(preset)
+    // console.log(preset)
   },
   updatePreset ({ commit }, preset) {
     // Vue.$log.debug('action - updatePreset')
@@ -464,13 +464,13 @@ const actions = {
 
     this._vm.$socket.client.on(config.controllerPedal1Message, (data) => {
       const idx = parseInt(data)
-      console.log(idx)
+      // console.log(idx)
       commit(types.SET_PEDAL1VALUE, idx)
     })
 
     this._vm.$socket.client.on(config.controllerPedal2Message, (data) => {
       const idx = parseInt(data)
-      console.log(idx)
+      // console.log(idx)
       commit(types.SET_PEDAL2VALUE, idx)
     })
 

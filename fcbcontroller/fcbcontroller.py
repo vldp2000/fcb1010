@@ -579,7 +579,7 @@ def getMidiMsg(midiInput):
   # printDebug("..... LISTEN TO MIDI MSG")
   gotMsg = 0
   while not(gotMsg):
-    sleep(MIN_DELAY)
+    sleep(MIDI_RECEIVE_DELAY)
     if midiInput.poll():    
       gotMsg = 1
       inp = midiInput.read(100)

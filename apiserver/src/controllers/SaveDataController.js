@@ -12,7 +12,7 @@ module.exports = {
 
   async saveScheduledGigId (req, res) {
     const fileName = config.filePath + 'gig/id/currentgig.json'
-    console.log(fileName)
+    // console.log(fileName)
 
     var jsonContent = JSON.stringify(req.body)
     fs.writeFile(fileName, jsonContent, 'utf8', function (err) {
@@ -29,7 +29,7 @@ module.exports = {
   },
 
   async saveDataToFile (req, res) {
-    console.log(' ---->>> Save Data <<<<< ')
+    // console.log(' ---->>> Save Data <<<<< ')
     // console.log(req.url)
     const objName = req.url.split("/")[1]
     const fileName = getFileName(objName, req.params.id)
