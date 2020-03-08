@@ -577,6 +577,7 @@ def getActionForReceivedMessage(midiMsg):
 def getMidiMsg(midiInput):
 #  printDebug(""))
   # printDebug("..... LISTEN TO MIDI MSG")
+  x = 0
   gotMsg = 0
   while not(gotMsg):
     sleep(MIDI_RECEIVE_DELAY)
@@ -584,10 +585,12 @@ def getMidiMsg(midiInput):
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
-        # print(msg)
-        # printDebug(">>New Message Received<")
-        # printDebug(msg)
         getActionForReceivedMessage(msg)  
+      x = 0
+    else:
+      x = x + 1
+    if x > KEEPALIVE_FREQUENCY:
+      sendGenericMidiCommand(KEEPALIVE_CHANNEL, 7, 0)
 
 #----------------------------------------------------------------
 
