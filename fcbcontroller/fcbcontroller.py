@@ -558,7 +558,7 @@ def getActionForReceivedMessage(midiMsg):
     else:  
       channel = 177
     if channel > 0:
-      sendGenericMidiCommand(channel, msg1, msg2)
+      sendRaveloxCCMessage(channel, 7, msg2)
     # printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
@@ -568,7 +568,7 @@ def getActionForReceivedMessage(midiMsg):
       channel = 179
     # Send Volume to Channel 6 or 4 (or both ?)
     if channel > 0:
-      sendGenericMidiCommand(channel, msg1, msg2)
+      sendRaveloxCCMessage(channel, 7, msg2)
 
   else:
      sendGenericMidiCommand(msg0, msg1, msg2)
