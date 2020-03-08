@@ -592,6 +592,8 @@ def getMidiMsg(midiInput):
     if x > KEEPALIVE_FREQUENCY:
       sendGenericMidiCommand(KEEPALIVE_CHANNEL, 7, 0)
       printDebug('<<<keep alive >>>>')
+      printDebug(x)
+      x = 0
 
 #----------------------------------------------------------------
 
