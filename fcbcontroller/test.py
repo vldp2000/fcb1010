@@ -15,11 +15,6 @@ from time import sleep
 
 import pprint
 
-import dataController
-import dataHelper
-from dataClasses import *
-
-from messageClient import MessageClient
 
 #----------------------------------------------------------------
 
@@ -40,121 +35,15 @@ def printDebug(message):
 
 
 
-def initSongs():
-  global gGigSongList
-  global gSongDict
-
-  gSongDict = dataController.getSongList()
-  gigId = dataController.getCurrentGig()
-  data = dataController.getGigSongs(gigId)
-  gGigSongList = []
-
-  for item in data:
-    id = item['refsong']
-    song = gSongDict[str(id)]
-    song.sequencenumber = item['sequencenumber']
-    gGigSongList.append(song)
-
-#----------------------------------------------------------------
-def initSongItems():
-  global gGigSongList
-  global gSongDict
-
-  data = dataController.allPresets()
-  # Programs are saved as list withing a song
-  # Presets are saved as a list withing a program
-  x=0
-  programId = -1
-  presetId = -1
-  songId = -1
-  song = None
-  for prg in data:
-    if songId != int(prg["refsong"]):
-      songId = int(prg["refsong"])
-      song = gSongDict[str(songId)]
-      programId = -1
-      presetId = -1
-    if programId != int(prg["refsongprogram"]):
-      presetId = -1
-      programId = prg["refsongprogram"]
-      program = Program(
-        prg["refsongprogram"],
-        prg["SongProgram"]["name"],
-        prg["SongProgram"]["midipedal"] 
-      )
-      # print(program.name)
-      song.programs.append(program)
-    if presetId != int(prg["refpreset"]):
-      presetId = int(prg["refpreset"])
-      preset = Preset(
-        prg["id"],
-        prg["delayflag"],
-        prg["delayvalue"],
-        prg["modeflag"],
-        prg["muteflag"],
-        prg["pan"],
-        prg["reverbflag"],
-        prg["reverbvalue"],
-        prg["volume"],
-        prg["Instrument"]["midichannel"],
-        prg["InstrumentBank"]["number"],
-        prg["Preset"]["midipc"]
-      )    
-      # print(preset.midipc)
-      program.presets.append(preset)
-  
-#----------------------------------------------------------------
-    # for prs in songProgramPresets:
-def pringSongs(): 
-  for item in gSongDict:
-    song = gSongDict[item]
-    
-    print('--------------------')
-
-    pprint.pprint( json.dumps(song,
-      indent=4, sort_keys=True, cls=CustomEncoder,
-      separators=(',', ': '), ensure_ascii=False
-    ))
 
 #----------------------------------------------------------------
 #Main Module 
-#pygame.init()
+pygame.midi.init()
 
-# print ("Parms = " , str(sys.argv))
-# if len(sys.argv) > 1: 
-#   if str(sys.argv[1]) == 'Debug':
-#     gMode = 'Debug'
+printDebug(pygame.midi.get_count())
+if gMode == 'Debug':
+  for id in range(pygame.midi.get_count()):
+    printDebug( "Id=%d Device=%s" % (id,pygame.midi.get_device_info(id)) )
 
-
-# runInit=False
-# if len(sys.argv) > 1: 
-#   if str(sys.argv[1]) == 'Init':
-#     runInit = True
-
-# initSongs()
-
-# initSongItems()
-
-# pringSongs()  
-# mc = MessageClient()
-
-# mc.initMessenger()
-# mc.sendSongNotificationMessage(1)
-# mc.sendProgramNotificationMessage(1)
-# mc.sendSyncNotificationMessage(1,1)
-
-# pprint.pprint(len(gig.shortSongList))
-# for item in gig.shortSongList:
-#   print(item['id'])
-gSongDict = {}
-gGig = dataHelper.loadScheduledGig()
-gSongDict = dataHelper.loadSongs()
-gSongList = dataHelper.initAllSongs(gSongDict)
-gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
-pprint.pprint(gSongList)
-gInstrumentDict = dataHelper.initInstruments()
-gPresetDict = dataHelper.initPresets()
-gInstrumentBankDict = dataHelper.initInstrumentBanks()
-print (gInstrumentBankDict)
 
 quit
