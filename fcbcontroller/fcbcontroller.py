@@ -41,6 +41,7 @@ from config import *
 
 gProcessRaveloxMidi = True
 gUseNewRaveloxMidi = True
+
 gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
@@ -590,7 +591,7 @@ def getMidiMsg(midiInput):
     else:
       x = x + 1
     if x > KEEPALIVE_FREQUENCY:
-      sendGenericMidiCommand(KEEPALIVE_CHANNEL, 7, 0)
+      sendRaveloxCCMessage(KEEPALIVE_CHANNEL, 7, 0)
       printDebug('<<<keep alive >>>>')
       printDebug(x)
       x = 0
