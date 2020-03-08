@@ -551,18 +551,18 @@ def getActionForReceivedMessage(midiMsg):
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1 or 2 (or both ?)
     if gPedal2Value == 1:
-      channel = 176
+      channel = 1
     else:  
-      channel = 177
+      channel = 2
     if channel > 0:
       sendRaveloxCCMessage(channel, 7, msg2)
     # printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
     if gPedal1Value == 1:
-      channel = 181
+      channel = 6
     else:  
-      channel = 179
+      channel = 4
     # Send Volume to Channel 6 or 4 (or both ?)
     if channel > 0:
       sendRaveloxCCMessage(channel, 7, msg2)
