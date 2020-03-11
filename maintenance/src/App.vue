@@ -25,9 +25,7 @@
                 cols="6"
                 class="text-center"
               >
-                <a
-                  class="body-2 black--text"
-                >EDIT  >>> </a>
+                <a class="body-2 black--text"> EDIT </a>
               </v-col>
             </v-row>
 
@@ -139,17 +137,17 @@ export default {
   data: () => ({
     drawer: null,
     items: [
-      { icon: 'mdi-contacts', text: 'gigcontrol', link: '/gigcontrol' },
+      { icon: 'mdi-desktop-classic', text: 'gigcontrol', link: '/gigcontrol' },
       { icon: 'mdi-chevron-up',
         'icon-alt': 'mdi-chevron-down',
         text: 'Maintenance',
         model: false,
         children: [
-          { icon: 'mdi-settings', text: 'Songs', link: '/songs' },
-          { icon: 'mdi-settings', text: 'Gigs', link: '/gigs' },
-          { icon: 'mdi-settings', text: 'Presets', link: '/presets' },
-          { icon: 'mdi-settings', text: 'Instruments', link: '/instruments' },
-          { icon: 'mdi-settings', text: 'Instrument Banks', link: '/instrumentBanks' }
+          { icon: 'mdi-playlist-check', text: 'Songs', link: '/songs' },
+          { icon: 'mdi-calendar', text: 'Gigs', link: '/gigs' },
+          { icon: 'mdi-bookmark-music', text: 'Presets', link: '/presets' },
+          { icon: 'mdi-guitar-acoustic', text: 'Instruments', link: '/instruments' },
+          { icon: 'mdi-window-restore', text: 'Instrument Banks', link: '/instrumentBanks' }
         ]
       }
     ]
