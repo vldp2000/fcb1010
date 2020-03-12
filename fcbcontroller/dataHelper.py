@@ -70,7 +70,7 @@ def loadSongs():
 #----------------------------------------------------------------
 def findIndexById(list, id):
   try:
-    idx = [ x.id for x in list].index(id)
+    idx = [x.id for x in list].index(id)
   except ValueError:
     idx = -1
   print(idx)

@@ -456,6 +456,7 @@ def setSong(id):
   idx = dataHelper.findIndexById(gBankSongList, id)
   if idx > -1:
     gCurrentSongIdx = idx
+    setSongProgram(0)
     # sendSongNotificationMessage(id)
     print("Song selected. idx =", idx)
   else: 
