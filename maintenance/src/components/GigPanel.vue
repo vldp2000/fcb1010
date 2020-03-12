@@ -9,6 +9,7 @@
       :expanded.sync="expanded"
       hide-default-footer
       item-key="id"
+      @click:row="rowClicked"
       disable-pagination
     >
       <template v-slot:expanded-item="{ headers }">
@@ -171,6 +172,7 @@ export default {
     },
 
     async rowClicked (value) {
+      console.log(value)
       let oldGigId = -1
       if (this.expanded.length === 1) {
         oldGigId = this.expanded[0].id
