@@ -213,22 +213,22 @@ def executeSystemCommand(code):
   global gPianoTest
 
   # printDebug("EXECUTE SYSTEM COMMAND");
-  command = "";
+  command = ""
   if code == 6:
     #shutdown RPi
-    command = "/usr/bin/sudo /home/pi/syscommand/shutdown.sh"
+    command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
   elif code == 7:
     #reboot RPi
-    command = "/usr/bin/sudo /home/pi/syscommand/reboot.sh";
+    command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
   elif code == 8:
     #Set as Access Point
-    command = "/usr/bin/sudo /home/pi/syscommand/networkaccesspoint.sh";
+    command = "/usr/bin/sudo /home/pi/sys/networkaccesspoint.sh"
   elif code == 9:
     #connect to home network
-    command = "/usr/bin/sudo /home/pi/syscommand/networkhome.sh";
+    command = "/usr/bin/sudo /home/pi/sys/networkhome.sh"
   elif code == 10:
     #connect to multiple networks phone/home/gz firebird
-    command = "/usr/bin/sudo /home/pi/syscommand/networkmulti.sh";
+    command = "/usr/bin/sudo /home/pi/sys/networkmulti.sh"
 
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
