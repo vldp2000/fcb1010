@@ -415,7 +415,7 @@ const actions = {
   //  Set current Song Id-----------------------------------------------------
   setCurrentSongId ({ commit }, id) {
     commit(types.SET_CURRENTSONG_ID, id)
-    // Vue.$log.debug('STORE. Set current Song Id-------------------------------')
+    // Vue.$log.debug('STORE. Set current Song Id-------------------------------
     // Vue.$log.debug(id)
   },
   //  Set current Program Id-----------------------------------------------------
@@ -423,7 +423,7 @@ const actions = {
     commit(types.SET_CURRENT_PROGRAMMIDIPEDAL, idx)
   },
 
-  //  Socket Io-----------------------------------------------------
+  //  Socket Io----Message Related methods----------------------------------------
   selectSong ({ commit }, id) {
     this._vm.$socket.client.emit(config.viewSongMessage, id)
     // console.log('Send viewSongMessage', id)
@@ -432,6 +432,10 @@ const actions = {
 
   selectSongProgram ({ commit }, idx) {
     this._vm.$socket.client.emit(config.viewProgramMessage, idx)
+  },
+
+  sendChangePresetVolumeMessage (payload) {
+    this._vm.$socket.client.emit(config.viewPresetVolMessage, payload)
   },
 
   socketClientInitialize ({ commit }, payload) {

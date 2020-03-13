@@ -1,6 +1,9 @@
 module.exports = {
   viewProgramMessage: process.env.VUE_APP_VIEW_PROGRAM_MESSAGE || 'VIEW_PROGRAM_MESSAGE',
   viewSongMessage: process.env.VUE_APP_VIEW_SONG_MESSAGE || 'VIEW_SONG_MESSAGE',
+  viewPresetVolMessage: process.env.VUE_APP_VIEW_PRESET_VOL_MESSAGE || 'VIEW_PRESET_VOL_MESSAGE',
+  viewPresetPanMessage: process.env.VUE_APP_VIEW_PRESET_PAN_MESSAGE || 'VIEW_PRESET_PAN_MESSAGE',
+
   controllerProgramMessage: process.env.VUE_APP_CONTROLLER_PROGRAM_MESSAGE || 'CONTROLLER_PROGRAM_MESSAGE',
   controllerSongMessage: process.env.VUE_APP_CONTROLLER_SONG_MESSAGE || 'CONTROLLER_SONG_MESSAGE',
   controllerGigMessage: process.env.VUE_APP_CONTROLLER_GIG_MESSAGE || 'CONTROLLER_GIG_MESSAGE',

@@ -186,10 +186,11 @@ export default {
 
     volume: {
       get () {
+        // console.log(this.songPreset.volume)
         return this.songPreset.volume
       },
       set (val) {
-        this.songPreset.volume = val
+        this.setVolume(val)
       }
     },
     pan: {
@@ -223,6 +224,22 @@ export default {
   },
 
   methods: {
+    setVolume (val) {
+      this.songPreset.volume = val
+      if (this.editMode) {
+        const payload = {
+          'songId': this.songPreset.refsong,
+          'programIdx': this.songPreset.refsongprogram,
+          'presetId': this.songPreset.refpreset,
+          'instrumentId': this.songPreset.refinstrument,
+          'value': val
+        }
+        console.log(this.songPreset)
+
+        this.$store.dispatch('sendChangePresetVolumeMessage', payload)
+      }
+    },
+
     getPresetName () {
       if (typeof this.presetList === 'undefined' || this.presetList === null ||
         typeof this.songPreset === 'undefined' || this.songPreset === null ||

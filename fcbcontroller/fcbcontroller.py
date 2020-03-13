@@ -116,6 +116,11 @@ def processProgramMessage(idx):
   print("VIEW_PROGRAM_MESSAGE IDX: " , idx)
   setSongProgram(idx)
 #==
+@sio.on('VIEW_PRESET_VOL_MESSAGE')
+def processPresetVolumeMessage(payload):
+  print(payload)
+  # setSongProgram(idx)
+#==
 def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(idx))
   print(PROGRAM_MESSAGE + " >> " + str(idx))
