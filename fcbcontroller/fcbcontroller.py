@@ -228,7 +228,7 @@ def executeSystemCommand(code):
     command = "sudo ./home/pi/sys/networkhome.sh"
   elif code == 10:
     #connect to multiple networks phone/home/gz firebird
-    #command = "sudo ./home/pi/sys/networkmulti.sh"
+    command = "sudo ./home/pi/sys/networkmulti.sh"
 
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
