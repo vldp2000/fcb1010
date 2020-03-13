@@ -214,22 +214,24 @@ def executeSystemCommand(code):
 
   # printDebug("EXECUTE SYSTEM COMMAND");
   command = ""
-  if code == 6:
+  if code == 5:
     #shutdown RPi
-    command = "sudo ./home/pi/sys/shutdown.sh"
+    command = "/usr/bin/sudo ls -l //home/pi/sys"
+  elif code == 6:
+    #shutdown RPi
+    command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
   elif code == 7:
     #reboot RPi
-    command = "sudo ./home/pi/sys/reboot.sh"
+    command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
   elif code == 8:
     #Set as Access Point
-    command = "sudo ./home/pi/sys/net_accesspoint.sh"
+    command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
   elif code == 9:
     #connect to home network
-    command = "sudo ./home/pi/sys/networkhome.sh"
+    command = "/usr/bin/sudo /home/pi/sys/networkhome.sh"
   elif code == 10:
     #connect to multiple networks phone/home/gz firebird
-    command = "sudo ./home/pi/sys/networkmulti.sh"
-
+    command = "/usr/bin/sudo /home/pi/sys/networkmulti.sh"
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
     return
