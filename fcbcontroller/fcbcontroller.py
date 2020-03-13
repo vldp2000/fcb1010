@@ -231,7 +231,7 @@ def executeSystemCommand(code):
     command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
   elif code == 10:
     #connect to multiple networks phone/home/gz firebird
-    command = "/usr/bin/sudo /home/pi/sys/networkmulti.sh"
+    command = "/usr/bin/sudo /home/pi/sys/networkmulti.sh-h"
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
     return
