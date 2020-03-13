@@ -228,7 +228,7 @@ def executeSystemCommand(code):
     command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
   elif code == 9:
     #connect to home network
-    command = "/usr/bin/sudo /home/pi/sys/networkhome.sh"
+    command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
   elif code == 10:
     #connect to multiple networks phone/home/gz firebird
     command = "/usr/bin/sudo /home/pi/sys/networkmulti.sh"
