@@ -33,6 +33,14 @@ try {
       io.emit(`${config.viewSongMessage}`, data)
     })
 
+    socket.on(`${config.viewPresetVolMessage}`, function(data) {
+      io.emit(`${config.viewPresetVolMessage}`, data)
+    })
+    socket.on(`${config.viewPresetPanMessage}`, function(data) {
+      io.emit(`${config.viewPresetPanMessage}`, data)
+    })
+
+
     socket.on(`${config.controllerProgramMessage}`, function(data) {
       io.emit(`${config.controllerProgramMessage}`, data)
     })
