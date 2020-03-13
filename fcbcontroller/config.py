@@ -1,9 +1,9 @@
-API_URL = 'http://192.168.27.1:8081'
-MESSAGE_URL = 'http://192.168.27.1:8081'
+API_URL = 'http://localhost:8081'
+MESSAGE_URL = 'http://localhost:8081'
 
 MIDI_INPUT_DEVICE = 3
 
-RAVELOX_HOST = 'localhost'
+RAVELOX_HOST = 'http://localhost'
 RAVELOX_PORT = '5006'
 
 GIG_MESSAGE = 'CONTROLLER_GIG_MESSAGE'
