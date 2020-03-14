@@ -434,7 +434,8 @@ const actions = {
     this._vm.$socket.client.emit(config.viewProgramMessage, idx)
   },
 
-  sendChangePresetVolumeMessage (payload) {
+  sendChangePresetVolumeMessage ({ commit }, payload) {
+    // console.log(payload)
     this._vm.$socket.client.emit(config.viewPresetVolMessage, payload)
   },
 

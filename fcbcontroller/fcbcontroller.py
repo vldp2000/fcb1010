@@ -36,11 +36,27 @@ import dataController
 import dataHelper
 from dataClasses import *
 from config import *
+import queue
+import threading
 
+
+#################################################################
+class raveloxBackgroundThread (threading.Thread):
+  def __init__(self, threadID):
+    threading.Thread.__init__(self)
+    self.threadID = threadID
+  def run(self):
+    print ("Starting raveloxBackgroundThread")
+    processRaveloxMessageQueue()
+    print ("Exiting raveloxBackgroundThread")
+#################################################################
 #----------------------------------------------------------------
+gMessageQueue = None
+gQueueLock = None
 
 gProcessRaveloxMidi = True
 gUseNewRaveloxMidi = True
+gExitFlag = False
 
 gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
@@ -63,8 +79,10 @@ gPlaySongFromSelectedGigOnly = True
 gCurrentBank = -1
 
 gCurrentSongIdx = -1
+gCurrentSongId = -1
 gCurrentProgramIdx = -1
-
+gCurrentPresetId = -1
+gCurrentPreset = {}
 gReloadCounter = 0
 gResyncCounter = 0
 
@@ -118,6 +136,37 @@ def processProgramMessage(idx):
 #==
 @sio.on('VIEW_PRESET_VOL_MESSAGE')
 def processPresetVolumeMessage(payload):
+  global gPresetDict
+  global gInstrumentDict
+  global gCurrentSongId
+  global gCurrentSongIdx
+  global gCurrentPresetId
+  global gCurrentPreset
+
+  printDebug(payload)
+  if payload['songId'] == gCurrentSongId:
+    if payload['presetId'] != gCurrentPresetId:
+      song = gBankSongList[gCurrentSongIdx]
+      program = song.programList[payload['programIdx']] 
+      for preset in program['presetList']:
+        if preset['refpreset'] == payload['presetId']:
+          gCurrentPresetId = payload['presetId']
+          gCurrentPreset = preset
+          printDebug('Found new Preset')
+          printDebug(gCurrentPreset)
+          break
+
+    volume = payload['value']
+    gCurrentPreset['volume'] = volume
+    # printDebug(volume)
+    #  'programIdx': 1, 'presetId': 3, 'instrumentId': 3, 'value': 73}
+    channel = int( gInstrumentDict[str(gCurrentPreset['refinstrument'])] )
+    if channel > 0:
+      sendRaveloxCCMessage(channel, 7, volume)
+
+  #==
+@sio.on('VIEW_PRESET_PAN_MESSAGE')
+def processPresetVolumeMessage(payload):
   print(payload)
   # setSongProgram(idx)
 #==
@@ -133,11 +182,11 @@ def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
   print(GIG_MESSAGE + " >>" + str(id))
 #==
-def sendPedal1Message(value):
+def sendPedal1NotificationMessage(value):
   sio.emit(PEDAL1_MESSAGE, str(value))
   printDebug(value)
 #==
-def sendPedal2Message(value):
+def sendPedal2NotificationMessage(value):
   sio.emit(PEDAL2_MESSAGE, str(value))
   printDebug(value)
 #==
@@ -193,9 +242,14 @@ def loadAllData():
 
   gGig = dataHelper.loadScheduledGig()
   gSelectedGigId = gGig.id
+  # printDebug(gGig.shortSongList)
 
   gSongDict = dataHelper.loadSongs()
+  # printDebug(gSongDict)
+
   gSongList = dataHelper.initAllSongs(gSongDict)
+  # printDebug(gSongList)
+
   gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
   gInstrumentDict = dataHelper.initInstruments()
   gPresetDict = dataHelper.initPresets()
@@ -224,15 +278,19 @@ def executeSystemCommand(code):
     command = "/usr/bin/sudo ls -l //home/pi/sys"
   elif code == 6:
     #shutdown RPi
+    gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
   elif code == 7:
     #reboot RPi
+    gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
   elif code == 8:
     #Set as Access Point
+    gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
   elif code == 9:
     #connect to home network
+    gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
   elif code == 10:
     #connect to multiple networks phone/home/gz firebird
@@ -254,6 +312,48 @@ def executeSystemCommand(code):
 ## 180 -CC Channel 5
 ## 181 -CC Channel 6
 
+def connectRavelox():
+  global gRaveloxClient
+  try:
+    connect_tuple = ( 'localhost', 5006 )
+    gRaveloxClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    gRaveloxClient.connect( connect_tuple )
+
+    return True
+  except:
+    printDebug('<<< exception >>')
+    # pprint.pprint(sys.exc_info())
+    return False
+
+#----------------------------------------------------------------
+def processRaveloxMessageQueue():
+  global gRaveloxClient
+  global gExitFlag
+  global gMessageQueue
+  global gQueueLock
+
+  while not gExitFlag:
+    gQueueLock.acquire()
+    if not gMessageQueue.empty():
+      print (gMessageQueue.qsize())  
+      message = gMessageQueue.get()
+      # gRaveloxClient.send( message )
+      gQueueLock.release()
+      print ('Processed Message ->>>  ', message)
+    else:
+      gQueueLock.release()
+      sleep(MIN_DELAY)
+    sleep(MIN_DELAY)
+#----------------------------------------------------------------
+def pushRaveloxMessageToQueue(message):
+  global gMessageQueue 
+  global gQueueLock
+
+  gQueueLock.acquire()
+  gMessageQueue.put(message)
+  gQueueLock.release()
+#----------------------------------------------------------------
+
 def sendRaveloxCCMessage(channel, CC, value):
   global gRaveloxClient
   global gUseNewRaveloxMidi
@@ -266,19 +366,20 @@ def sendRaveloxCCMessage(channel, CC, value):
     message = struct.pack( "BBB", 176 + channel - 1, CC, value)
   else:
     message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
-
+  pushRaveloxMessageToQueue(message)
   gRaveloxClient.send( message )
-  sleep(MIN_DELAY)
+  # sleep(MIN_DELAY)
+  print('new message ###  ', message)
   
   if gMode == 'Debug':
-     printDebug("SEND RAVELOX CC  MESSAGE  %d %d %d" % (channel , CC, value))
+     printDebug("SEND RAVELOX CC  MESSAGE  to  queue %d %d %d" % (channel , CC, value))
 #----------------------------------------------------------------
 ## 192 -PC on Channel 1
 ## 193 -PC on Channel 2
 ## 197 -PC on Channel 6
 
 def sendRaveloxPCMessage( channel, PC):
-  global gRaveloxClient
+  # global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
 
@@ -290,15 +391,16 @@ def sendRaveloxPCMessage( channel, PC):
   else:
     message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
 
-  gRaveloxClient.send( message )
-  sleep(MIN_DELAY)
+  pushRaveloxMessageToQueue(message)
+  # gRaveloxClient.send( message )
+  # sleep(MIN_DELAY)
   
   if gMode == 'Debug':
      printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
 #----------------------------------------------------------------
 
 def sendGenericMidiCommand(msg0, msg1, msg2):
-  global gRaveloxClient
+  # global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
 
@@ -310,8 +412,9 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   else:
     message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
 
-  gRaveloxClient.send( message )
-  sleep(MIN_DELAY)
+  pushRaveloxMessageToQueue(message)
+  # gRaveloxClient.send( message )
+  # sleep(MIN_DELAY)
   
   if gMode == 'Debug':
     printDebug("SEND RAVELOX GENERIC MESSAGE %d %d %d" % (msg0, msg1, msg2))
@@ -361,17 +464,18 @@ def checkCurrentBank(bank):
 def resyncWithGigController():
   global gResyncCounter
   global gCurrentSongIdx
+  global gCurrentSongId
   global gCurrentProgramIdx
   global gSelectedGigId 
 
   if gResyncCounter < 2:
     gResyncCounter = gResyncCounter + 1
   else:
-    songId = gBankSongList[gCurrentSongIdx].id
+    gCurrentSongId = gBankSongList[gCurrentSongIdx].id
     print('== gig ==', gSelectedGigId)
-    print('== song ==', songId)
+    print('== song ==', gCurrentSongId)
     print('-- Prog --', gCurrentProgramIdx) 
-    sendSyncNotificationMessage( gSelectedGigId, songId, gCurrentProgramIdx)
+    sendSyncNotificationMessage( gSelectedGigId, gCurrentSongId, gCurrentProgramIdx)
     gResyncCounter = 0
 #----------------------------------------------------------------
 #----------------------------------------------------------------
@@ -394,41 +498,43 @@ def setSongProgram(idx):
 
   sendProgramNotificationMessage(idx)
 
-  print(program['presetList'][0]['volume'])
+  # print(program['presetList'][0]['volume'])
 
   if  program['presetList'][0]['volume'] > 0:
     gPedal1Value = 1
   else:
     gPedal1Value = 2
-  sendPedal1Message(gPedal1Value)
+  sendPedal1NotificationMessage(gPedal1Value)
 
-  print(program['presetList'][2]['volume'])
+  # print(program['presetList'][2]['volume'])
   if  program['presetList'][2]['volume'] > 0:
     gPedal2Value = 1
   else:
     gPedal2Value = 2
-  sendPedal2Message(gPedal2Value)
+  sendPedal2NotificationMessage(gPedal2Value)
 
 #----------------------------------------------------------------
 def setPreset(preset):
-  pc = int( gPresetDict[str(preset['refpreset'])] )
+  midiProgramChange = int( gPresetDict[str(preset['refpreset'])] )
   channel = int( gInstrumentDict[str(preset['refinstrument'])] )
   mute = preset['muteflag']
 
   if mute:
     muteChannel(channel, preset['volume'], 0.01, 10)
 
-  sendRaveloxPCMessage(channel, pc)
+  sendRaveloxPCMessage(channel, midiProgramChange)
 
   if mute:
     unmuteChannel(channel, preset['volume'], 0.01, 10)
-
+  else:
+    sendRaveloxCCMessage( channel, VOLUME_CC, preset['volume'] )
 #----------------------------------------------------------------
 
 def selectNextSong():
   global gCurrentSongIdx
   global gBankSongList
   global gSelectedGigId
+  global gCurrentSongId
 
   if gCurrentSongIdx + 1 < len(gBankSongList):
     gCurrentSongIdx = gCurrentSongIdx + 1
@@ -436,13 +542,15 @@ def selectNextSong():
     gCurrentSongIdx = 0
 
   sendGigNotificationMessage(gSelectedGigId)
-  sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
+  gCurrentSongId = gBankSongList[gCurrentSongIdx].id
+  sendSongNotificationMessage(gCurrentSongId)
   printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
 
 def selectPreviousSong():
   global gCurrentSongIdx
+  global gCurrentSongId
   global gBankSongList
   global gSelectedGigId
 
@@ -452,16 +560,19 @@ def selectPreviousSong():
     gCurrentSongIdx = len(gBankSongList) - 1
 
   sendGigNotificationMessage(gSelectedGigId)  
-  sendSongNotificationMessage(gBankSongList[gCurrentSongIdx].id)
+  gCurrentSongId = gBankSongList[gCurrentSongIdx].id
+  sendSongNotificationMessage(gCurrentSongId)
   printDebug("previous song " + gBankSongList[gCurrentSongIdx].name)
 
 #----------------------------------------------------------------
 def setSong(id):
   global gCurrentSongIdx
   global gBankSongList
+  global gCurrentSongId
 
   idx = dataHelper.findIndexById(gBankSongList, id)
   if idx > -1:
+    gCurrentSongId = id
     gCurrentSongIdx = idx
     setSongProgram(0)
     # sendSongNotificationMessage(id)
@@ -475,7 +586,7 @@ def setPedal1Value():
     gPedal1Value = 2
   else:
     gPedal1Value = 1
-  sendPedal1Message(gPedal1Value)
+  sendPedal1NotificationMessage(gPedal1Value)
 #----------------------------------------------------------------
 def setPedal2Value():
   global gPedal2Value
@@ -483,7 +594,7 @@ def setPedal2Value():
     gPedal2Value = 2
   else:
     gPedal2Value = 1
-  sendPedal2Message(gPedal2Value)
+  sendPedal2NotificationMessage(gPedal2Value)
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
   # printDebug("SEND MIDI MSG")
@@ -603,20 +714,7 @@ def getMidiMsg(midiInput):
 
 #----------------------------------------------------------------
 
-def connectRavelox():
-  global gRaveloxClient
-  try:
-    connect_tuple = ( 'localhost', 5006 )
-    gRaveloxClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    gRaveloxClient.connect( connect_tuple )
 
-    return True
-  except:
-    printDebug('<<< exception >>')
-    # pprint.pprint(sys.exc_info())
-    return False
-
-#----------------------------------------------------------------
 #Main Module 
 #pygame.init()
 pygame.midi.init()
@@ -639,8 +737,15 @@ loadAllData()
 
 checkCurrentBank(1)
 
+gQueueLock = threading.Lock()
+gMessageQueue = queue.Queue(60)
+threadID = 1
+thread = raveloxBackgroundThread(threadID)
+thread.start()
+
 if len(gBankSongList) > 0:
-  gCurrentSongIdx = 0
+  gCurrentSongIdx = -1
+  selectNextSong()
   gCurrentProgramIdx = 0
 
 portOk = False
@@ -667,7 +772,8 @@ while not portOk:
 
 printDebug("Everything ready now...")
 
-while 1:
+
+while not gExitFlag:
   getMidiMsg(midiInput)
 
 #---Close application

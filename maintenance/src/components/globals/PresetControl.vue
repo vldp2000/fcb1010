@@ -234,7 +234,7 @@ export default {
           'instrumentId': this.songPreset.refinstrument,
           'value': val
         }
-        console.log(this.songPreset)
+        // console.log(this.songPreset)
 
         this.$store.dispatch('sendChangePresetVolumeMessage', payload)
       }

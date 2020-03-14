@@ -34,6 +34,7 @@ try {
     })
 
     socket.on(`${config.viewPresetVolMessage}`, function(data) {
+      // console.log(config.viewPresetVolMessage)
       io.emit(`${config.viewPresetVolMessage}`, data)
     })
     socket.on(`${config.viewPresetPanMessage}`, function(data) {

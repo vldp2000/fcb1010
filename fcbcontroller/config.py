@@ -3,6 +3,7 @@ MESSAGE_URL = 'http://localhost:8081'
 
 MIDI_INPUT_DEVICE = 3
 
+_RAVELOX_HOST = 'http://192.168.17.55'
 RAVELOX_HOST = 'http://localhost'
 RAVELOX_PORT = '5006'
 
