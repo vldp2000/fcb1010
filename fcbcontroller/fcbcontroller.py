@@ -144,20 +144,20 @@ def processPresetVolumeMessage(payload):
   global gCurrentPreset
   global gCurrentProgramIdx
 
-  print(payload)
+  # print(payload)
 
-  print('gCurrentSongId ', gCurrentSongId)
-  print('gCurrentSongIdx ', gCurrentSongIdx)
-  print('gCurrentPresetId ', gCurrentPresetId)
-  print('gCurrentProgramIdx ', gCurrentProgramIdx)
+  # print('gCurrentSongId ', gCurrentSongId)
+  # print('gCurrentSongIdx ', gCurrentSongIdx)
+  # print('gCurrentPresetId ', gCurrentPresetId)
+  # print('gCurrentProgramIdx ', gCurrentProgramIdx)
 
   if payload['songId'] == gCurrentSongId and payload['programIdx'] == gCurrentProgramIdx:
     if payload['presetId'] != gCurrentPresetId:
       song = gBankSongList[gCurrentSongIdx]
       program = song.programList[gCurrentProgramIdx]
-      print(program)
-      print(' ?? Not the same Preset > ', gCurrentPresetId)
-      print(program['presetList'])
+      # print(program)
+      # print(' ?? Not the same Preset > ', gCurrentPresetId)
+      # print(program['presetList'])
       for preset in program['presetList']:
         if preset['refpreset'] == payload['presetId']:
           gCurrentPresetId = payload['presetId']
@@ -165,11 +165,11 @@ def processPresetVolumeMessage(payload):
           printDebug('Found new Preset')
           printDebug(gCurrentPreset)
           break
-        else:
-          print(' <><><> Not the expected preset', preset['refpreset'])
+        # else:
+        #   print(' <><><> Not the expected preset', preset['refpreset'])
 
-    else:
-      print(' !! Same Preset > ', gCurrentPresetId)
+    # else:
+    #   print(' !! Same Preset > ', gCurrentPresetId)
 
     volume = payload['value']
     gCurrentPreset['volume'] = volume
@@ -178,8 +178,8 @@ def processPresetVolumeMessage(payload):
     channel = int( gInstrumentDict[str(gCurrentPreset['refinstrument'])] )
     if channel > 0:
       sendRaveloxCCMessage(channel, 7, volume)
-  else:
-    print('Not a current Song ??? ', gCurrentSongId)
+  # else:
+  #   print('Not a current Song ??? ', gCurrentSongId)
 
 #==
 @sio.on('VIEW_PRESET_PAN_MESSAGE')
