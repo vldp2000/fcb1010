@@ -337,7 +337,7 @@ def processRaveloxMessageQueue():
     if not gMessageQueue.empty():
       print (gMessageQueue.qsize())  
       message = gMessageQueue.get()
-      # gRaveloxClient.send( message )
+      gRaveloxClient.send( message )
       gQueueLock.release()
       delay = MIN_DELAY
       print ('Processed Message ->>>  ', message)
@@ -367,9 +367,9 @@ def sendRaveloxCCMessage(channel, CC, value):
     message = struct.pack( "BBB", 176 + channel - 1, CC, value)
   else:
     message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
-  #pushRaveloxMessageToQueue(message)
-  gRaveloxClient.send( message )
-  sleep(MIN_DELAY)
+  pushRaveloxMessageToQueue(message)
+  # gRaveloxClient.send( message )
+  # sleep(MIN_DELAY)
   print('new message ###  ', message)
   
   if gMode == 'Debug':
