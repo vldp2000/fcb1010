@@ -71,6 +71,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 0)'
+            :programIdx=0
             :activeVolumePedal='checkVolumePedal1(0, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -79,6 +80,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 1)'
+            :programIdx=0
             :activeVolumePedal='checkVolumePedal1(0, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -87,6 +89,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 2)'
+            :programIdx=0
             :activeVolumePedal='checkVolumePedal2(0, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -95,6 +98,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(0, 3)'
+            :programIdx=0
             :activeVolumePedal='checkVolumePedal2(0, 2)'
             @changed="OnControlDataChanged()"/>
         </v-card>
@@ -114,6 +118,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 0)'
+            :programIdx=1
             :activeVolumePedal='checkVolumePedal1(1, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -122,6 +127,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 1)'
+            :programIdx=1
             :activeVolumePedal='checkVolumePedal1(1, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -130,6 +136,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 2)'
+            :programIdx=1
             :activeVolumePedal='checkVolumePedal2(1, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -138,6 +145,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(1, 3)'
+            :programIdx=1
             :activeVolumePedal='checkVolumePedal2(1, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -157,6 +165,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(2, 0)'
+            :programIdx=2
             :activeVolumePedal='checkVolumePedal1(2, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -165,6 +174,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
           :presetControlData='getPresetControlData(2, 1)'
+          :programIdx=2
           :activeVolumePedal='checkVolumePedal1(2, 2)'
           @changed="OnControlDataChanged()" />
         </v-card>
@@ -173,6 +183,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(2, 2)'
+            :programIdx=2
             :activeVolumePedal='checkVolumePedal2(2, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -181,6 +192,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(2, 3)'
+            :programIdx=2
             :activeVolumePedal='checkVolumePedal2(2, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -200,6 +212,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 0)'
+            :programIdx=3
             :activeVolumePedal='checkVolumePedal1(3, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -208,6 +221,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 1)'
+            :programIdx=3
             :activeVolumePedal='checkVolumePedal1(3, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -216,6 +230,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 2)'
+            :programIdx=3
             :activeVolumePedal='checkVolumePedal2(3, 1)'
             @changed="OnControlDataChanged()" />
         </v-card>
@@ -224,6 +239,7 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
           <preset-control
             :presetControlData='getPresetControlData(3, 3)'
+            :programIdx=3
             :activeVolumePedal='checkVolumePedal2(3, 2)'
             @changed="OnControlDataChanged()" />
         </v-card>

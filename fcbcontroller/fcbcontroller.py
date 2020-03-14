@@ -154,7 +154,7 @@ def processPresetVolumeMessage(payload):
   if payload['songId'] == gCurrentSongId and payload['programIdx'] == gCurrentProgramIdx:
     if payload['presetId'] != gCurrentPresetId:
       song = gBankSongList[gCurrentSongIdx]
-      program = song.programList[payload['programIdx']]
+      program = song.programList[gCurrentProgramIdx]
       print(program)
       print(' ?? Not the same Preset > ', gCurrentPresetId)
       print(program['presetList'])

@@ -148,6 +148,10 @@ export default {
     activeVolumePedal: {
       type: Boolean,
       default: false
+    },
+    programIdx: {
+      type: Number,
+      default: -1
     }
   },
   data () {
@@ -229,7 +233,7 @@ export default {
       if (this.editMode) {
         const payload = {
           'songId': this.songPreset.refsong,
-          'programIdx': this.songPreset.refsongprogram,
+          'programIdx': this.programIdx,
           'presetId': this.songPreset.refpreset,
           'instrumentId': this.songPreset.refinstrument,
           'value': val
