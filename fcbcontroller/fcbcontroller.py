@@ -158,7 +158,7 @@ def processPresetVolumeMessage(payload):
           printDebug(gCurrentPreset)
           break
         else:
-          print(' <><><> Not the expected preset' preset['refpreset'])
+          print(' <><><> Not the expected preset', preset['refpreset'])
 
     else:
       print(' !! Same Preset > ', gCurrentPresetId)
