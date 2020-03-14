@@ -147,7 +147,8 @@ def processPresetVolumeMessage(payload):
   if payload['songId'] == gCurrentSongId:
     if payload['presetId'] != gCurrentPresetId:
       song = gBankSongList[gCurrentSongIdx]
-      program = song.programList[payload['programIdx']] 
+      program = song.programList[payload['programIdx']]
+      print(' ?? Not the same Preset > ', gCurrentPresetId)
       for preset in program['presetList']:
         if preset['refpreset'] == payload['presetId']:
           gCurrentPresetId = payload['presetId']
@@ -155,6 +156,8 @@ def processPresetVolumeMessage(payload):
           printDebug('Found new Preset')
           printDebug(gCurrentPreset)
           break
+    else:
+      print(' !! Same Preset > ', gCurrentPresetId)
 
     volume = payload['value']
     gCurrentPreset['volume'] = volume
@@ -163,8 +166,10 @@ def processPresetVolumeMessage(payload):
     channel = int( gInstrumentDict[str(gCurrentPreset['refinstrument'])] )
     if channel > 0:
       sendRaveloxCCMessage(channel, 7, volume)
+  else:
+    print('Not a current Song', gCurrentSongId)
 
-  #==
+#==
 @sio.on('VIEW_PRESET_PAN_MESSAGE')
 def processPresetVolumeMessage(payload):
   print(payload)
