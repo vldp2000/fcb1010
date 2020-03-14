@@ -142,12 +142,20 @@ def processPresetVolumeMessage(payload):
   global gCurrentSongIdx
   global gCurrentPresetId
   global gCurrentPreset
+  global gCurrentProgramIdx
 
-  printDebug(payload)
-  if payload['songId'] == gCurrentSongId:
+  print(payload)
+
+  print('gCurrentSongId ', gCurrentSongId)
+  print('gCurrentSongIdx ', gCurrentSongIdx)
+  print('gCurrentPresetId ', gCurrentPresetId)
+  print('gCurrentProgramIdx ', gCurrentProgramIdx)
+
+  if payload['songId'] == gCurrentSongId and payload['programIdx'] == gCurrentProgramIdx:
     if payload['presetId'] != gCurrentPresetId:
       song = gBankSongList[gCurrentSongIdx]
       program = song.programList[payload['programIdx']]
+      print(program)
       print(' ?? Not the same Preset > ', gCurrentPresetId)
       print(program['presetList'])
       for preset in program['presetList']:
@@ -171,7 +179,7 @@ def processPresetVolumeMessage(payload):
     if channel > 0:
       sendRaveloxCCMessage(channel, 7, volume)
   else:
-    print('Not a current Song', gCurrentSongId)
+    print('Not a current Song ??? ', gCurrentSongId)
 
 #==
 @sio.on('VIEW_PRESET_PAN_MESSAGE')
