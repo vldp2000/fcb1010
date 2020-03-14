@@ -149,6 +149,7 @@ def processPresetVolumeMessage(payload):
       song = gBankSongList[gCurrentSongIdx]
       program = song.programList[payload['programIdx']]
       print(' ?? Not the same Preset > ', gCurrentPresetId)
+      print(program['presetList'])
       for preset in program['presetList']:
         if preset['refpreset'] == payload['presetId']:
           gCurrentPresetId = payload['presetId']
@@ -156,6 +157,9 @@ def processPresetVolumeMessage(payload):
           printDebug('Found new Preset')
           printDebug(gCurrentPreset)
           break
+        else:
+          print(' <><><> Not the expected preset' preset['refpreset'])
+
     else:
       print(' !! Same Preset > ', gCurrentPresetId)
 
