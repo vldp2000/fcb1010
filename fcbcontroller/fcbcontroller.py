@@ -287,6 +287,7 @@ def isReloadRequired():
 def executeSystemCommand(code):
   global gSynthTest
   global gPianoTest
+  global gExitFlag
 
   # printDebug("EXECUTE SYSTEM COMMAND");
   command = ""
@@ -721,6 +722,7 @@ def getMidiMsg(midiInput):
       inp = midiInput.read(100)
       for msg in inp:
         getActionForReceivedMessage(msg)  
+        sleep(0.002)
       x = 0
     else:
       x = x + 1
@@ -776,6 +778,7 @@ while not portOk:
 
     if result:
       midiInput = pygame.midi.Input(gMidiDevice)
+      sleep(0.04)
       portOk = True
     else:
       printDebug("waiting for raveloxmidi...")

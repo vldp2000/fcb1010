@@ -37,6 +37,7 @@
             :activeVolumePedal='activeVolumePedal'
             knobLabel='Vol'
             :base-color='getBaseColor()'
+            @doubleclick="onVolumeKnobDoubleClick()"
           />
         </div>
         <div class="customKnob">
@@ -45,6 +46,7 @@
             :editMode='editMode'
             knobLabel='Pan'
             :base-color='getBaseColor()'
+            @doubleclick="onPanKnobDoubleClick()"
           />
         </div>
         <div class="ma=0 pa=0">
@@ -302,6 +304,18 @@ export default {
     getBaseColor () {
       if (this.songPreset && this.songPreset.volume > 0) return 'snow'
       else return 'gray'
+    },
+    onVolumeKnobDoubleClick (item) {
+      if (this.editMode) {
+        this.volume = 0
+      }
+      // console.log('%%%% Knob click')
+    },
+    onPanKnobDoubleClick (item) {
+      if (this.editMode) {
+        this.pan = 0
+      }
+      // console.log('%%%% Knob click')
     }
   }
 }

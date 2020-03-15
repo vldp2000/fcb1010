@@ -1,18 +1,18 @@
 
-let dataTableClickCount = 0
+let clickCount = 0
 let clickTimer = null
 
 export function singleOrDoubleRowClick (item, singleClickFunc, doubleClickFunc) {
   try {
-    dataTableClickCount++
-    if (dataTableClickCount === 1) {
+    clickCount++
+    if (clickCount === 1) {
       clickTimer = setTimeout(function () {
-        dataTableClickCount = 0
+        clickCount = 0
         singleClickFunc(item)
       }, 250)
-    } else if (dataTableClickCount === 2) {
+    } else if (clickCount === 2) {
       clearTimeout(clickTimer)
-      dataTableClickCount = 0
+      clickCount = 0
       doubleClickFunc(item)
     }
   } catch (ex) {

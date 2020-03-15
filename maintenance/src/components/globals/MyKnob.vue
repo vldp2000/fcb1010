@@ -5,6 +5,7 @@
     ref="infoBox"
     @mousedown="moveStart"
     @touchstart="moveStart"
+    @click="onClick()"
   >
     <vue-svg-gauge
       :start-angle='startAngle'
@@ -32,6 +33,8 @@
 </template>
 
 <script>
+
+import { singleOrDoubleRowClick } from '@/helpers/utils'
 
 export default {
   name: 'MyKnob',
@@ -213,6 +216,21 @@ export default {
     }
   },
   methods: {
+    onClick (item) {
+      let that = this
+      try {
+        singleOrDoubleRowClick(item,
+          function singleCLick (item) {
+            that.$emit('click')
+          },
+          function doubleCLick (item) {
+            that.$emit('doubleclick')
+          }
+        )
+      } catch (ex) {
+        that.$log.debug(ex)
+      }
+    },
     bindEvents () {
       document.addEventListener('touchmove', this.moving, { passive: false })
       document.addEventListener('touchend', this.moveEnd, { passive: false })
