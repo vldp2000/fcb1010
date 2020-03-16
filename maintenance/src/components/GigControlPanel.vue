@@ -2,7 +2,7 @@
   <v-container grid-list-md text-md-center fluid class="darkBackgroud">
   <div class="selector-panel">
     <v-row md12 no-gutters>
-      <v-col cols="12" md="5">
+      <v-col cols="12" md="4">
         <v-select
           v-if="gigList"
           label="Select Gig"
@@ -28,6 +28,12 @@
           >
           cancel
           </v-icon>
+        </div>
+      </v-col>
+      <v-col cols="12" md="1">
+        <div v-if="currentSongId>0">
+           <metronome :bpm="tempo">
+           </metronome>
         </div>
       </v-col>
       <v-col cols="12" md="5">
@@ -255,8 +261,12 @@
 <script>
 import { mapState } from 'vuex'
 // const config = require('@/config/config')
+import Metronome from '@/components/globals/Metronome'
 
 export default {
+  components: {
+    Metronome
+  },
   data () {
     return {
       // songId: 1,
@@ -267,7 +277,8 @@ export default {
       initFlag: true,
       dataChanged: false,
       currentPedal1Value: 1,
-      currentPedal2Value: 1
+      currentPedal2Value: 1,
+      isPlaying: false
     }
   },
 
@@ -297,6 +308,13 @@ export default {
       },
       set (value) {
         this.$store.dispatch('setSelectedGigId', value)
+      }
+    },
+
+    tempo: {
+      get () {
+        if (this.currentSong) return this.currentSong.tempo
+        else return -1
       }
     }
   },
@@ -668,4 +686,17 @@ export default {
   text-orientation: upright;
 }
 
+.v-avatar--metronome {
+  animation-name: metronome-example;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+@keyframes metronome-example {
+  from {
+    transform: scale(.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
 </style>
