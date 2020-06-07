@@ -291,26 +291,23 @@ def executeSystemCommand(code):
 
   # printDebug("EXECUTE SYSTEM COMMAND");
   command = ""
-  if code == 5:
-    #shutdown RPi
-    command = "/usr/bin/sudo ls -l //home/pi/sys"
-  elif code == 6:
+  if code == 1:
     #shutdown RPi
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
-  elif code == 7:
+  elif code == 2:
     #reboot RPi
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
-  elif code == 8:
+  elif code == 6:
     #Set as Access Point
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
-  elif code == 9:
+  elif code == 7:
     #connect to home network
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
-  elif code == 10:
+  elif code == 8:
     #connect to multiple networks phone/home/gz firebird
     command = "/usr/bin/sudo /home/pi/sys/networkmulti.sh-h"
   else:
@@ -737,7 +734,8 @@ def getMidiMsg(midiInput):
 def getListOfRaveloxMidiClients():
   global gRaveloxClient
   # Request status
-  bytes = struct.pack( "4s", "LIST" )
+  bytes = struct.pack( '4s', b'LIST' )
+  print(bytes)
   data = ''
   gRaveloxClient.sendall( bytes )
   while True:
