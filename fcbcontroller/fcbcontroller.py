@@ -748,7 +748,7 @@ def getListOfRaveloxMidiClients():
     if data:
       break
 
-  print data
+  print(data)
 #----------------------------------------------------------------
 
 #Main Module 
