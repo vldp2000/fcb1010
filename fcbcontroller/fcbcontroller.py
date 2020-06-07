@@ -734,7 +734,7 @@ def getMidiMsg(midiInput):
 
 #----------------------------------------------------------------
 
-def getListOfRaveloxMidiClients()
+def getListOfRaveloxMidiClients():
   global gRaveloxClient
   # Request status
   bytes = struct.pack( "4s", "LIST" )
