@@ -734,6 +734,22 @@ def getMidiMsg(midiInput):
 
 #----------------------------------------------------------------
 
+def getListOfRaveloxMidiClients()
+  global gRaveloxClient
+  # Request status
+  bytes = struct.pack( "4s", "LIST" )
+  data = ''
+  gRaveloxClient.sendall( bytes )
+  while True:
+    try:
+      data,addr = gRaveloxClient.recvfrom(8192)
+    except:
+      pass
+    if data:
+      break
+
+  print data
+#----------------------------------------------------------------
 
 #Main Module 
 #pygame.init()
@@ -793,6 +809,7 @@ while not portOk:
 
 printDebug("Everything ready now...")
 
+getListOfRaveloxMidiClients()
 
 while not gExitFlag:
   getMidiMsg(midiInput)
