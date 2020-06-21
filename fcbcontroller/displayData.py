@@ -20,8 +20,9 @@ SPI_DEVICE = 0
 # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
 
 # Note you can change the I2C address by passing an i2c_address parameter like:
-disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
 
+def initDisplay():
+disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
 # Initialize library.
 disp.begin()
 
