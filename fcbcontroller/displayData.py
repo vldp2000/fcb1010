@@ -53,7 +53,7 @@ def clearScreen():
 
 def drawStatus():
   font = ImageFont.truetype('8-bit-pusab.ttf', 10)  
-  image = Image.new('1', (128, 16)
+  image = Image.new('1', (128, 16))
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   draw.text((2, 0), "R", font=font, fill=255)
