@@ -51,8 +51,9 @@ def clearScreen():
   # Draw a black filled box to clear the image.
   draw.rectangle((0,0,width,height), outline=0, fill=0)
 
-def drawStautus()
-  
+def drawStatus():
+  draw.rectangle((0,0,11,11), outline=0, fill=0)
+ 
 def drawScreen():
   global g_Disp
   font1 = ImageFont.truetype('8-bit-pusab.ttf', 11)
