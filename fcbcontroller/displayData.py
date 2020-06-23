@@ -69,7 +69,7 @@ def drawScreen():
   global g_Disp
 
   font1 = ImageFont.truetype('8-bit-pusab.ttf', 10)
-
+  font2 = ImageFont.truetype('CodersCrux2', 10)
   # Some other nice fonts to try: http://www.dafont.com/bitmap.php
   image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
@@ -77,10 +77,8 @@ def drawScreen():
 
   drawStatus(draw)
 
-  x = 0
-  top = 0
   draw.text((0, 25), "Song name", font=font1, fill=255)
-
+  draw.text((0, 55), "Song name", font=font2, fill=255)
   # Display image.
   g_Disp.image(image)
   g_Disp.display()
