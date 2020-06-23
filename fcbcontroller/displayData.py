@@ -42,30 +42,32 @@ def clearScreen():
   global g_Disp
   # Create blank image for drawing.
   # Make sure to create image with mode '1' for 1-bit color.
-  width = disp.width
-  height = disp.height
+  width = g_Disp.width
+  height = g_Disp.height
   image = Image.new('1', (width, height))
 
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
-
   # Draw a black filled box to clear the image.
   draw.rectangle((0,0,width,height), outline=0, fill=0)
 
 def drawScreen():
+  global g_Disp
   font1 = ImageFont.truetype('8-bit-pusab.ttf', 11)
   font2 = ImageFont.truetype('8-bit-pusab.ttf', 11)
   font3 = ImageFont.truetype('8-bit-pusab.ttf', 11)
   # Some other nice fonts to try: http://www.dafont.com/bitmap.php
-
+  image = Image.new('1', (g_Disp.width, g_Disp.height))
+  # Get drawing object to draw on image.
+  draw = ImageDraw.Draw(image)
 
   draw.text((x, top),       "Test 1 ", font=font1, fill=255)
   draw.text((x, top+18),    "TEST 2" , font=font2, fill=255)
   draw.text((x, top+40),    "TeSt 4" , font=font3, fill=255)
 
   # Display image.
-  disp.image(image)
-  disp.display()
+  g_Disp.image(image)
+  g_Disp.display()
   time.sleep(.1)
 
 
