@@ -60,7 +60,7 @@ def drawScreen():
   image = Image.new('1', (g_Disp.width, g_Disp.height))
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
-
+  x = 0
   draw.text((x, top),       "Test 1 ", font=font1, fill=255)
   draw.text((x, top+18),    "TEST 2" , font=font2, fill=255)
   draw.text((x, top+40),    "TeSt 4" , font=font3, fill=255)
