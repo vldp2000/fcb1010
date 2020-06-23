@@ -90,7 +90,6 @@ def drawScreen():
 initDisplay()
 clearScreen()
 
-drawStatus()
 drawScreen()
 
 time.sleep(10)
