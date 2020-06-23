@@ -53,6 +53,9 @@ def clearScreen():
 
 def drawStatus():
   font = ImageFont.truetype('8-bit-pusab.ttf', 10)  
+  image = Image.new('1', (128, 16)
+  # Get drawing object to draw on image.
+  draw = ImageDraw.Draw(image)
   draw.text((2, 0), "R", font=font, fill=255)
   draw.ellipse((12,0,27,15), outline=0, fill=0)
   #draw.rectangle((0,0,11,11), outline=0, fill=0)
@@ -70,7 +73,7 @@ def drawScreen():
   font2 = ImageFont.truetype('8-Bit Madness.ttf', 11)
   font3 = ImageFont.truetype('UAV-OSD-Sans-Mono.ttf', 10)
   # Some other nice fonts to try: http://www.dafont.com/bitmap.php
-  image = Image.new('1', (g_Disp.width, g_Disp.height))
+  image = Image.new('1', (128, 48))
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   x = 0
