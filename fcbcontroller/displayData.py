@@ -75,9 +75,7 @@ def drawScreen():
   draw = ImageDraw.Draw(image)
   x = 0
   top = 0
-  draw.text((0, 0),       "Test 1 ", font=font1, fill=255)
-  draw.text((0, 20),    "TEST 2" , font=font2, fill=255)
-  draw.text((0, 40),    "TeSt 4" , font=font3, fill=255)
+  draw.text((0, 25),       "Song name", font=font1, fill=255)
 
   # Display image.
   g_Disp.image(image)
@@ -87,6 +85,9 @@ def drawScreen():
 
 initDisplay()
 clearScreen()
+
+drawStatus()
 drawScreen()
+
 time.sleep(10)
 clearScreen()
