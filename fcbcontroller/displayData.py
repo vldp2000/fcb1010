@@ -57,8 +57,8 @@ def drawStatus():
 def drawScreen():
   global g_Disp
   font1 = ImageFont.truetype('8-bit-pusab.ttf', 11)
-  font2 = ImageFont.truetype('VCR_OSD_MONO_1.001.ttf', 11)
-  font3 = ImageFont.truetype('8BitWonder.ttf', 11)
+  font2 = ImageFont.truetype('UAV-OSD-Mono.ttf', 11)
+  font3 = ImageFont.truetype('UAV-OSD-Sans-Mono.ttf', 11)
   # Some other nice fonts to try: http://www.dafont.com/bitmap.php
   image = Image.new('1', (g_Disp.width, g_Disp.height))
   # Get drawing object to draw on image.
