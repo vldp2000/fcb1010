@@ -59,18 +59,17 @@ x = 0
 font1 = ImageFont.truetype('8-bit-pusab.ttf', 11)
 font2 = ImageFont.truetype('8-bit-pusab.ttf', 11)
 font3 = ImageFont.truetype('8-bit-pusab.ttf', 11)
-while True:
 
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0,0,width,height), outline=0, fill=0)
+# Draw a black filled box to clear the image.
+draw.rectangle((0,0,width,height), outline=0, fill=0)
 
-    # Write two lines of text.
+# Write two lines of text.
 
-    draw.text((x, top),       "Test 1 ", font=font1, fill=255)
-    draw.text((x, top+18),    "TEST 2" , font=font2, fill=255)
-    draw.text((x, top+40),    "TeSt 4" , font=font3, fill=255)
+draw.text((x, top),       "Test 1 ", font=font1, fill=255)
+draw.text((x, top+18),    "TEST 2" , font=font2, fill=255)
+draw.text((x, top+40),    "TeSt 4" , font=font3, fill=255)
 
-    # Display image.
-    disp.image(image)
-    disp.display()
-    time.sleep(.1)
+# Display image.
+disp.image(image)
+disp.display()
+time.sleep(.1)
