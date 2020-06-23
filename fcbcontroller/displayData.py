@@ -51,11 +51,9 @@ def clearScreen():
   # Draw a black filled box to clear the image.
   draw.rectangle((0,0,width,height), outline=0, fill=0)
 
-def drawStatus():
+def drawStatus(draw):
   font = ImageFont.truetype('8-bit-pusab.ttf', 10)  
-  image = Image.new('1', (128, 16))
   # Get drawing object to draw on image.
-  draw = ImageDraw.Draw(image)
   draw.text((2, 0), "R", font=font, fill=255)
   draw.ellipse((12,0,27,15), outline=0, fill=0)
   #draw.rectangle((0,0,11,11), outline=0, fill=0)
@@ -69,16 +67,19 @@ def drawStatus():
  
 def drawScreen():
   global g_Disp
+
   font1 = ImageFont.truetype('8-bit-pusab.ttf', 10)
-  font2 = ImageFont.truetype('8-Bit Madness.ttf', 11)
-  font3 = ImageFont.truetype('UAV-OSD-Sans-Mono.ttf', 10)
+
   # Some other nice fonts to try: http://www.dafont.com/bitmap.php
-  image = Image.new('1', (128, 48))
+  image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
+
+  drawStatus(draw)
+
   x = 0
   top = 0
-  draw.text((0, 25),       "Song name", font=font1, fill=255)
+  draw.text((0, 25), "Song name", font=font1, fill=255)
 
   # Display image.
   g_Disp.image(image)
