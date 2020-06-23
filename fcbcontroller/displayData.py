@@ -52,7 +52,17 @@ def clearScreen():
   draw.rectangle((0,0,width,height), outline=0, fill=0)
 
 def drawStatus():
-  draw.rectangle((0,0,11,11), outline=0, fill=0)
+  font = ImageFont.truetype('8-bit-pusab.ttf', 10)  
+  draw.text((2, 0), "R", font=font, fill=255)
+  draw.ellipse((12,0,27,15), outline=0, fill=0)
+  #draw.rectangle((0,0,11,11), outline=0, fill=0)
+
+  draw.text((30, 0), "M", font=font, fill=255)
+  draw.ellipse((40,0,55,15), outline=0, fill=0)
+
+  draw.text((2, 0), "F", font=font, fill=255)
+  draw.ellipse((60,0,76,15), outline=0, fill=0)
+
  
 def drawScreen():
   global g_Disp
