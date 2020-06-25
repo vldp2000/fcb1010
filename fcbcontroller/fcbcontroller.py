@@ -352,6 +352,7 @@ def processRaveloxMessageQueue():
     if not gMessageQueue.empty():
       #print (gMessageQueue.qsize())  
       message = gMessageQueue.get()
+      gMessageQueue.task_done()
       gQueueLock.release()
       gRaveloxClient.send( message )
       delay = MIN_DELAY
