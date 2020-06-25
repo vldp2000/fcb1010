@@ -350,15 +350,15 @@ def processRaveloxMessageQueue():
   while not gExitFlag:
     gQueueLock.acquire()
     if not gMessageQueue.empty():
-      print (gMessageQueue.qsize())  
+      #print (gMessageQueue.qsize())  
       message = gMessageQueue.get()
-      gRaveloxClient.send( message )
       gQueueLock.release()
+      gRaveloxClient.send( message )
       delay = MIN_DELAY
-      print ('Processed Message ->>>  ', message)
+      #print ('Processed Message ->>>  ', message)
     else:
       gQueueLock.release()
-      delay = MIN_DELAY * 100
+      delay = MIN_DELAY * 2
     sleep(delay)
 #----------------------------------------------------------------
 def pushRaveloxMessageToQueue(message):
