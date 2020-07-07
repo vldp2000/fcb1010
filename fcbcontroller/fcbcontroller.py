@@ -308,8 +308,11 @@ def executeSystemCommand(code):
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
   elif code == 8:
-    #connect to multiple networks phone/home/gz firebird
-    command = "/usr/bin/sudo /home/pi/sys/networkmulti.sh-h"
+    #connect to gz sphera
+    command = "/usr/bin/sudo /home/pi/sys/net_sphera.sh"
+  elif code == 9:
+    #connect to iPhone
+    command = "/usr/bin/sudo /home/pi/sys/net_phone.sh"
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
     return
