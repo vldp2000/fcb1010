@@ -29,15 +29,19 @@ import socket
 import socketio
 import struct
 import subprocess
-from array import *
-from time import sleep
+import queue
+import threading
 
 import dataController
 import dataHelper
+import displayData
+
+from array import *
+from time import sleep
+
 from dataClasses import *
 from config import *
-import queue
-import threading
+
 
 
 #################################################################
@@ -114,7 +118,14 @@ sio = socketio.Client()
 #---SOCKET--CLIENT-------------
 @sio.event
 def connect():
-  print('SOCKET connection established')
+  try:
+    print('SOCKET connection established')
+    displayData.setMessageAPIStatus(255)
+    displayData.drawScreen()
+  except:
+    print('SOCKET connection can not be established')
+    displayData.setMessageAPIStatus(255)
+    displayData.drawScreen() 
 #==
 @sio.event
 def message(data):
@@ -123,6 +134,9 @@ def message(data):
 @sio.event
 def disconnect():
   print('disconnected from SOCKET server')
+  displayData.setMessageAPIStatus(255)
+  displayData.drawScreen() 
+
 #==
 @sio.on('VIEW_SONG_MESSAGE')
 def processSongMessage(id):
@@ -256,21 +270,27 @@ def loadAllData():
     gSongDict.clear()
   if gBankSongList != None:
     gBankSongList.clear()
+  try:
+    gGig = dataHelper.loadScheduledGig()
+    gSelectedGigId = gGig.id
+    # printDebug(gGig.shortSongList)
 
-  gGig = dataHelper.loadScheduledGig()
-  gSelectedGigId = gGig.id
-  # printDebug(gGig.shortSongList)
+    gSongDict = dataHelper.loadSongs()
+    # printDebug(gSongDict)
 
-  gSongDict = dataHelper.loadSongs()
-  # printDebug(gSongDict)
+    gSongList = dataHelper.initAllSongs(gSongDict)
+    # printDebug(gSongList)
 
-  gSongList = dataHelper.initAllSongs(gSongDict)
-  # printDebug(gSongList)
-
-  gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
-  gInstrumentDict = dataHelper.initInstruments()
-  gPresetDict = dataHelper.initPresets()
-  gInstrumentBankDict = dataHelper.initInstrumentBanks()
+    gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
+    gInstrumentDict = dataHelper.initInstruments()
+    gPresetDict = dataHelper.initPresets()
+    gInstrumentBankDict = dataHelper.initInstrumentBanks()
+    
+    displayData.setDataAPIStatus(255)
+    displayData.drawScreen()
+  except:
+    displayData.setDataAPIStatus(0)
+    displayData.drawScreen()
 #----------------------------------------------------------------
 
 def isReloadRequired():
@@ -336,9 +356,12 @@ def connectRavelox():
     connect_tuple = ( 'localhost', 5006 )
     gRaveloxClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     gRaveloxClient.connect( connect_tuple )
-
+    displayData.setRaveloxmidiStatus(255)
+    displayData.drawScreen()
     return True
   except:
+    displayData.setRaveloxmidiStatus(0)
+    displayData.drawScreen()
     printDebug('<<< exception >>')
     # pprint.pprint(sys.exc_info())
     return False
@@ -357,7 +380,12 @@ def processRaveloxMessageQueue():
       message = gMessageQueue.get()
       gMessageQueue.task_done()
       gQueueLock.release()
-      gRaveloxClient.send( message )
+      try:
+        gRaveloxClient.send( message )
+      except:
+        displayData.setRaveloxmidiStatus(0)
+        displayData.drawScreen()
+
       delay = MIN_DELAY
       #print ('Processed Message ->>>  ', message)
     else:
@@ -533,6 +561,9 @@ def setSongProgram(idx):
     gPedal2Value = 2
   sendPedal2NotificationMessage(gPedal2Value)
 
+  displayData.setProgramName(f"{gCurrentProgramIdx}.{program.name}")
+  displayData.drawScreen()
+
 #----------------------------------------------------------------
 def setPreset(preset):
   midiProgramChange = int( gPresetDict[str(preset['refpreset'])] )
@@ -564,8 +595,12 @@ def selectNextSong():
   sendGigNotificationMessage(gSelectedGigId)
   gCurrentSongId = gBankSongList[gCurrentSongIdx].id
   sendSongNotificationMessage(gCurrentSongId)
+  
+  name = gBankSongList[gCurrentSongIdx].name)
   printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
+  displayData.setSongName(f"{gCurrentSongIdx}.{name}")
+  displayData.drawScreen()
 #----------------------------------------------------------------
 
 def selectPreviousSong():
@@ -582,8 +617,12 @@ def selectPreviousSong():
   sendGigNotificationMessage(gSelectedGigId)  
   gCurrentSongId = gBankSongList[gCurrentSongIdx].id
   sendSongNotificationMessage(gCurrentSongId)
-  printDebug("previous song " + gBankSongList[gCurrentSongIdx].name)
+  name = gBankSongList[gCurrentSongIdx].name)
 
+  printDebug("previous song " + name)
+
+  displayData.setSongName(f"{gCurrentSongIdx}.{name}")
+  displayData.drawScreen()
 #----------------------------------------------------------------
 def setSong(id):
   global gCurrentSongIdx
@@ -599,7 +638,11 @@ def setSong(id):
     print("Song selected. idx =", idx)
   else: 
     print("There is no Song with id =", id)
+    displayData.setSongName()
+    displayData.drawScreen()
 #----------------------------------------------------------------
+
+
 def setPedal1Value():
   global gPedal1Value
   if gPedal1Value == 1:
@@ -757,6 +800,7 @@ def getListOfRaveloxMidiClients():
 #pygame.init()
 pygame.midi.init()
 
+displayData.drawScreen()
 # print(str(sys.argv))
 if len(sys.argv) > 1: 
   if str(sys.argv[1]).upper() == 'DEBUG':
@@ -770,13 +814,15 @@ if gMode == 'Debug':
 
 # sio = socketio.Client()
 sio.connect('http://localhost:8081')
+displayData.setMessageAPIStatus(255)
+displayData.drawScreen()
 
 loadAllData()
 
 checkCurrentBank(1)
 
 gQueueLock = threading.Lock()
-gMessageQueue = queue.Queue(60)
+gMessageQueue = queue.Queue(0)
 threadID = 1
 thread = raveloxBackgroundThread(threadID)
 thread.start()

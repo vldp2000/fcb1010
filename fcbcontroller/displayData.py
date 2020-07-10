@@ -18,6 +18,12 @@ SPI_DEVICE = 0
 
 g_Disp = None
 
+g_RaveloxmidiStatus = 0
+g_MessageAPIStatus = 0
+g_DataAPIStatus = 0
+g_SongName = ''
+g_ProgramName = ''
+
 # 128x64 display with hardware I2C:
 # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
 
@@ -45,50 +51,74 @@ def clearScreen():
   width = g_Disp.width
   height = g_Disp.height
   image = Image.new('1', (width, height))
-
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   # Draw a black filled box to clear the image.
   draw.rectangle((0,0,width,height), outline=0, fill=0)
 
-def drawStatus(draw):
-  font = ImageFont.truetype('8-bit-pusab.ttf', 10)  
-  # Get drawing object to draw on image.
-  draw.text((0, 0), "R", font=font, fill=255)
-  draw.ellipse((15,1,30,15), outline=0, fill=255)
-  #draw.rectangle((0,0,11,11), outline=0, fill=0)
+def setRaveloxmidiStatus(status):
+  global g_RaveloxmidiStatus
+  g_RaveloxmidiStatus = status
 
-  draw.text((35, 0), "M", font=font, fill=255)
-  draw.ellipse((50,1,65,15), outline=0, fill=255)
+def setMessageAPIStatus(status):
+  global g_MessageAPIStatus
+  g_MessageAPIStatus = status
 
-  draw.text((70, 0), "F", font=font, fill=255)
-  draw.ellipse((85,1,100,15), outline=255, fill=0)
+def setDataAPIStatus(status):
+  global g_DataAPIStatus
+  g_DataAPIStatus = status
+
+def setSongName(name):
+  global g_SongName
+  g_SongName = name
+
+def setProgramName(name):
+  global g_ProgramName
+  g_ProgramName = name
+
 
  
 def drawScreen():
   global g_Disp
+  global g_RaveloxmidiStatus
+  global g_MessageAPIStatus
+  global g_DataAPIStatus
+  global g_SongName
+  global g_ProgramName
 
-  font1 = ImageFont.truetype('8-bit-pusab.ttf', 10)
-  font2 = ImageFont.truetype('CodersCrux2.ttf', 18)
   # Some other nice fonts to try: http://www.dafont.com/bitmap.php
   image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
 
-  drawStatus(draw)
+  font = ImageFont.truetype('8-bit-pusab.ttf', 10)  
+  # Get drawing object to draw on image.
+  draw.text((0, 0), "R", font=font, fill=255)
+  draw.ellipse((15,1,30,15), outline=0, fill=status)
+  #draw.rectangle((0,0,11,11), outline=0, fill=0)
 
-  draw.text((0, 20), "Song name", font=font1, fill=255)
-  draw.text((0, 40), "Song name", font=font2, fill=255)
+  draw.text((35, 0), "A", font=font, fill=255)
+  draw.ellipse((50,1,65,10), outline=0, fill=status)
+ 
+  draw.text((70, 0), "F", font=font, fill=255)
+  draw.ellipse((85,1,100,11), outline=255, fill=status)
+
+  font1 = ImageFont.truetype('8-bit-pusab.ttf', 10)
+  font2 = ImageFont.truetype('CodersCrux2.ttf', 18)
+
+  draw.text((0, 20), g_SongName, font=font1, fill=255)
+  draw.text((0, 40), g_ProgramName, font=font2, fill=255)
+  
   # Display image.
   g_Disp.image(image)
   g_Disp.display()
-  time.sleep(.1)
+  ##time.sleep(.1)
 
 
-initDisplay()
-clearScreen()
+#initDisplay()
+#clearScreen()
 
-drawScreen()
+#drawScreen()
 
-time.sleep(10)
-clearScreen()
+#time.sleep(10)
+#clearScreen()
