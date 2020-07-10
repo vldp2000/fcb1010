@@ -596,7 +596,7 @@ def selectNextSong():
   gCurrentSongId = gBankSongList[gCurrentSongIdx].id
   sendSongNotificationMessage(gCurrentSongId)
   
-  name = gBankSongList[gCurrentSongIdx].name)
+  name = gBankSongList[gCurrentSongIdx].name
   printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
   displayData.setSongName(f"{gCurrentSongIdx}.{name}")
@@ -617,7 +617,7 @@ def selectPreviousSong():
   sendGigNotificationMessage(gSelectedGigId)  
   gCurrentSongId = gBankSongList[gCurrentSongIdx].id
   sendSongNotificationMessage(gCurrentSongId)
-  name = gBankSongList[gCurrentSongIdx].name)
+  name = gBankSongList[gCurrentSongIdx].name
 
   printDebug("previous song " + name)
 
@@ -638,8 +638,8 @@ def setSong(id):
     print("Song selected. idx =", idx)
   else: 
     print("There is no Song with id =", id)
-    displayData.setSongName()
-    displayData.drawScreen()
+    #displayData.setSongName()
+    #displayData.drawScreen()
 #----------------------------------------------------------------
 
 
