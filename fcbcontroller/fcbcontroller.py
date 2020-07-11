@@ -115,6 +115,7 @@ gLastGuitar2Program = 0
 gLastGuitar2Volume = 0
 
 gSystemCommandCounter = 0
+gSystemCommandCode = -1
 
 sio = socketio.Client()
 
@@ -317,10 +318,13 @@ def isReloadRequired():
 def executeSystemCommand(code):
   global gExitFlag
   global gSystemCommandCounter
+  global gSystemCommandCode
   # printDebug("EXECUTE SYSTEM COMMAND");
   command = ""
   displayText = ""
-
+  if gSystemCommandCode != code
+    gSystemCommandCounter = 0
+    
   if code == 1:
     #shutdown RPi
     displayText = 'SHUTDOWN'
