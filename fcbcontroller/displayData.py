@@ -197,8 +197,8 @@ def drawSysCommand(textValue):
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   
-  font1 = ImageFont.truetype('RetroGaming.ttf', 14)
-  font2 = ImageFont.truetype('UAVOSDMono.ttf', 18)
+  font1 = ImageFont.truetype('RetroGaming.ttf', 20)
+  font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
 
   draw.text((1, 1), 'SYSTEM', font=font1, fill=255)
   draw.text((4, 30), textValue,  font=font2, fill=255)
