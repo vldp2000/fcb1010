@@ -790,8 +790,10 @@ def getListOfRaveloxMidiClients():
   global gRaveloxClient
   # Request status
   bytes = struct.pack( '4s', b'LIST' )
+
   print(bytes)
   data = ''
+  result = ''
   gRaveloxClient.sendall( bytes )
   while True:
     try:
