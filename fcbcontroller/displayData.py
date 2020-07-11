@@ -112,15 +112,20 @@ def drawScreen():
 
   #font = ImageFont.truetype('PokemonClassic.ttf', 10)
   font = ImageFont.truetype('Code.ttf', 16)
+  fontA = ImageFont.truetype('fontawesome-webfont.ttf', 14)
+
   # Get drawing object to draw on image.
-  draw.text((2, 0), "R", font=font, fill=255)
-  draw.ellipse((12,statusY1,20,statusY2), outline=255, fill=g_RaveloxmidiStatus )
+  #draw.text((2, 0), "R", font=font, fill=255)
+  #draw.ellipse((12,statusY1,20,statusY2), outline=255, fill=g_RaveloxmidiStatus )
 
-  draw.text((26, 0), "S", font=font, fill=255)
-  draw.ellipse((37,statusY1,45,statusY2), outline=255, fill=g_MessageAPIStatus)
+  #draw.text((26, 0), "S", font=font, fill=255)
+  #draw.ellipse((37,statusY1,45,statusY2), outline=255, fill=g_MessageAPIStatus)
 
-  draw.text((51, 0), "D", font=font, fill=255)
-  draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
+  #  draw.text((51, 0), "D", font=font, fill=255)
+  #  draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
+
+  draw.text((2, 1), chr(61931),  font=fontA, fill=255)
+  draw.text((16,1), chr(61888),  font=fontA, fill=255)
 
   draw.text((76, 0), "P", font=font, fill=255)
   draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=g_iPadStatus)
