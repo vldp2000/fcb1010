@@ -811,6 +811,7 @@ def getListOfRaveloxMidiClients():
     displayData.g_MacBookStatus = 255
   else:
     displayData.g_MacBookStatus = 255
+  displayData.drawScreen()
   print(result)
 #----------------------------------------------------------------
 
