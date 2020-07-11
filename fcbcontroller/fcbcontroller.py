@@ -540,7 +540,8 @@ def setSongProgram(idx):
 
   song = gBankSongList[gCurrentSongIdx]
   program = song.programList[idx]
-  # printDebug(song.name)
+  printDebug(song)
+  printDebug(program)
 
   for preset in program['presetList']:
     #pprint.pprint(preset)
