@@ -846,8 +846,8 @@ if gMode == 'Debug':
 # sio = socketio.Client()
 sio.connect('http://localhost:8081')
 
-displayData.setMessageAPIStatus(255)
-displayData.drawScreen()
+#displayData.setMessageAPIStatus(255)
+#displayData.drawScreen()
 
 loadAllData()
 
