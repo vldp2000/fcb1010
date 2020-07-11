@@ -803,6 +803,14 @@ def getListOfRaveloxMidiClients():
       pass
     if data:
       break
+  if result.find("Vlad-iPad") > -1:
+    displayData.g_iPadStatus = 255
+  else:
+   displayData.g_iPadStatus = 0
+  if result.find("Vlad's MacBook Pro") > -1:
+    displayData.g_MacBookStatus = 255
+  else:
+    displayData.g_MacBookStatus = 255
   print(result)
 #----------------------------------------------------------------
 

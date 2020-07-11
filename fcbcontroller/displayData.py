@@ -110,20 +110,8 @@ def drawScreen():
   statusY1 = 3
   statusY2 = 11
 
-  #font = ImageFont.truetype('PokemonClassic.ttf', 10)
-  font = ImageFont.truetype('Code.ttf', 16)
   fontA = ImageFont.truetype('fontawesome-webfont.ttf', 14)
 
-  # Get drawing object to draw on image.
-  #draw.text((2, 0), "R", font=font, fill=255)
-  #draw.ellipse((12,statusY1,20,statusY2), outline=255, fill=g_RaveloxmidiStatus )
-
-  #draw.text((26, 0), "S", font=font, fill=255)
-  #draw.ellipse((37,statusY1,45,statusY2), outline=255, fill=g_MessageAPIStatus)
-
-  #  draw.text((51, 0), "D", font=font, fill=255)
-  #  draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
-  
   #RaveloxMidi status
   draw.rectangle((0,0,20,14), outline=255, fill=0)
   if g_RaveloxmidiStatus > 0:
@@ -147,22 +135,17 @@ def drawScreen():
 
   #iPad connection status
   draw.rectangle((75,0,95,14), outline=255, fill=0) 
-  if g_iPadStatus == 0:
+  if g_iPadStatus > 0:
     draw.text((81,1), chr(61706),  font=fontA, fill=255)
   else:
     draw.text((81,1), chr(61453),  font=fontA, fill=255)
 
   #Macbook connection status
   draw.rectangle((100,0,123,14), outline=255, fill=0)
-  if g_MacBookStatus == 0:
+  if g_MacBookStatus > 0:
     draw.text((104,1), chr(61704),  font=fontA, fill=255)
   else:
     draw.text((104,1), chr(61453),  font=fontA, fill=255)
-
-  #61704  PC
-  #61706 tablet
-  #draw.text((101, 0), "M", font=font, fill=255)
-  #draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=g_MacBookStatus)
 
   ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
   font1 = ImageFont.truetype('Pixelade.ttf', 22)
