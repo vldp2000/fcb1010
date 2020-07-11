@@ -37,8 +37,9 @@ image = Image.open('VGMates.png').convert('1')
 disp.image(image)
 disp.display()
 
-time.sleep(10)
+time.sleep(2)
 
+disp.clear()
 image = Image.open('VGMatesBlack.png').convert('1')
 # Display image.
 disp.image(image)
