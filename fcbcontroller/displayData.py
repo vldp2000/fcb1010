@@ -201,7 +201,7 @@ def drawSysCommand(textValue):
   font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
 
   draw.text((1, 1), 'SYSTEM', font=font1, fill=255)
-  draw.text((4, 30), textValue,  font=font2, fill=255)
+  draw.text((1, 30), textValue,  font=font2, fill=255)
 
   g_Disp.image(image)
   g_Disp.display()

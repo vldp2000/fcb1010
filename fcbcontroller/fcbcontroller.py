@@ -326,7 +326,7 @@ def executeSystemCommand(code):
     displayText = 'SHUTDOWN'
     if gSystemCommandCounter > 0:
       displayData.drawShutdown()
-    #command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
+    command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
   elif code == 2:
     #reboot RPi
     displayText = 'REBOOT'
@@ -896,7 +896,9 @@ threadID = 1
 thread = raveloxBackgroundThread(threadID)
 thread.start()
 
+sleep(1)
 loadAllData()
+sleep(1)
 checkCurrentBank(1)
 
 if len(gBankSongList) > 0:
