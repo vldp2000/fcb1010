@@ -162,11 +162,27 @@ def drawScreen():
   g_Disp.display()
   ##time.sleep(.1)
 
+def drawShutdown():
+  g_disp.clear()
+  g_disp.display()
+  # Load image based on OLED display height.  Note that image is converted to 1 bit color.
+  image = Image.open('Goodbye.png').convert('1')
+  # Display image.
+  disp.image(image)
+  disp.display()
+  time.sleep(2)
+  disp.clear()
+  image = Image.open('GoodbyeBlack.png').convert('1')
+  # Display image.
+  disp.image(image)
+  disp.display()
 
-#initDisplay()
-#clearScreen()
-
-#drawScreen()
-
-#time.sleep(10)
-#clearScreen()
+def drawReboot():
+  g_disp.clear()
+  g_disp.display()
+  # Load image based on OLED display height.  Note that image is converted to 1 bit color.
+  image = Image.open('Restart.png').convert('1')
+  # Display image.
+  disp.image(image)
+  disp.display()
+  time.sleep(2)

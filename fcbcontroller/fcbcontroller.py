@@ -315,10 +315,12 @@ def executeSystemCommand(code):
   command = ""
   if code == 1:
     #shutdown RPi
+    displayData.drawShutdown
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
   elif code == 2:
     #reboot RPi
+    displayData.drawReboot
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
   elif code == 6:
@@ -811,7 +813,7 @@ def getListOfRaveloxMidiClients():
     displayData.g_MacBookStatus = 255
   else:
     displayData.g_MacBookStatus = 0
-    
+
   displayData.drawScreen()
   print(result)
 #----------------------------------------------------------------
@@ -827,7 +829,7 @@ displayData.initDisplay()
 displayData.clearScreen()
 
 displayData.drawScreen()
-sleep(2)
+sleep(3)
 displayData.clearScreen()
 
 # print(str(sys.argv))
