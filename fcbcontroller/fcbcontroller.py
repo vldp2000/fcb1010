@@ -123,10 +123,10 @@ def connect():
   try:
     print('SOCKET connection established')
     displayData.setMessageAPIStatus(255)
-    displayData.drawScreen()
+    #displayData.drawScreen()
   except:
     print('SOCKET connection can not be established')
-    displayData.setMessageAPIStatus(255)
+    displayData.setMessageAPIStatus(0)
     displayData.drawScreen() 
 #==
 @sio.event
@@ -136,7 +136,7 @@ def message(data):
 @sio.event
 def disconnect():
   print('disconnected from SOCKET server')
-  displayData.setMessageAPIStatus(255)
+  displayData.setMessageAPIStatus(0)
   displayData.drawScreen() 
 
 #==
@@ -289,7 +289,7 @@ def loadAllData():
     gInstrumentBankDict = dataHelper.initInstrumentBanks()
     
     displayData.setDataAPIStatus(255)
-    displayData.drawScreen()
+    #displayData.drawScreen()
   except:
     displayData.setDataAPIStatus(0)
     displayData.drawScreen()
@@ -361,7 +361,7 @@ def connectRavelox():
     gRaveloxClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     gRaveloxClient.connect( connect_tuple )
     displayData.setRaveloxmidiStatus(255)
-    displayData.drawScreen()
+    #displayData.drawScreen()
     return True
   except:
     displayData.setRaveloxmidiStatus(0)
@@ -605,7 +605,7 @@ def selectNextSong():
   printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
 
   displayData.setSongName(f"{gCurrentSongIdx}.{name}")
-  displayData.drawScreen()
+  #displayData.drawScreen()
 #----------------------------------------------------------------
 
 def selectPreviousSong():
@@ -627,7 +627,7 @@ def selectPreviousSong():
   printDebug("previous song " + name)
 
   displayData.setSongName(f"{gCurrentSongIdx}.{name}")
-  displayData.drawScreen()
+  #displayData.drawScreen()
 #----------------------------------------------------------------
 def setSong(id):
   global gCurrentSongIdx
@@ -638,6 +638,8 @@ def setSong(id):
   if idx > -1:
     gCurrentSongId = id
     gCurrentSongIdx = idx
+    name = gBankSongList[gCurrentSongIdx].name
+    displayData.setSongName(f"{gCurrentSongIdx}.{name}")
     setSongProgram(0)
     # sendSongNotificationMessage(id)
     print("Song selected. idx =", idx)
@@ -814,7 +816,7 @@ def getListOfRaveloxMidiClients():
   else:
     displayData.g_MacBookStatus = 0
 
-  displayData.drawScreen()
+  #displayData.drawScreen()
   print(result)
 #----------------------------------------------------------------
 
@@ -830,7 +832,7 @@ displayData.clearScreen()
 
 displayData.drawScreen()
 sleep(3)
-displayData.clearScreen()
+#displayData.clearScreen()
 
 # print(str(sys.argv))
 if len(sys.argv) > 1: 
