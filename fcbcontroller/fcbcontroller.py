@@ -797,14 +797,13 @@ def getListOfRaveloxMidiClients():
   gRaveloxClient.sendall( bytes )
   while True:
     try:
-      data,addr = gRaveloxClient.recvfrom(8192).decode('utf-8')
-      #result = json.JSONEncoder().encode(data)
+      data,addr = gRaveloxClient.recvfrom(8192)
+      result = dataHelper.unicodetoASCII(str(data))
     except:
       pass
     if data:
       break
-
-  print(data)
+  print(result)
 #----------------------------------------------------------------
 
 
