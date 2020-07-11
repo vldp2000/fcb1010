@@ -148,12 +148,12 @@ def drawScreen():
   #iPad connection status
   draw.rectangle((75,0,95,14), outline=255, fill=0) 
   if g_iPadStatus == 0:
-    draw.text((79,1), chr(61706),  font=fontA, fill=255)
+    draw.text((82,1), chr(61706),  font=fontA, fill=255)
   else:
-    draw.text((79,1), chr(61453),  font=fontA, fill=255)
+    draw.text((82,1), chr(61453),  font=fontA, fill=255)
 
   #Macbook connection status
-  draw.rectangle((100,0,120,14), outline=255, fill=0)
+  draw.rectangle((100,0,123,14), outline=255, fill=0)
   if g_MacBookStatus == 0:
     draw.text((104,1), chr(61704),  font=fontA, fill=255)
   else:
