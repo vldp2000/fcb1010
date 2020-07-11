@@ -198,12 +198,11 @@ def drawSysCommand(textValue):
   draw = ImageDraw.Draw(image)
   
   font1 = ImageFont.truetype('Pixelade.ttf', 12)
-  font2 = ImageFont.truetype('UAVOSDMono.ttf', 22)
+  font2 = ImageFont.truetype('UAVOSDMono.ttf', 18)
 
-  draw.text((1, 1), textValue,  font=font1, fill=255)
-
-  draw.text((40, 30), 'SYSTEM', font=font2, fill=255)
-
+  draw.text((1, 1), 'SYSTEM', font=font1, fill=255)
+  draw.text((40, 1), textValue,  font=font2, fill=255)
+  
   g_Disp.image(image)
   g_Disp.display()
 
