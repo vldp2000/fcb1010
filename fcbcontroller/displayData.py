@@ -190,3 +190,13 @@ def drawReboot():
   g_Disp.image(image)
   g_Disp.display()
   time.sleep(2)
+
+
+# vcgencmd measure_volts
+###volt=1.2000V
+# vcgencmd measure_temp
+## temp=40.1'C
+# vcgencmd get_mem arm
+##arm=960M
+# vcgencmd get_mem gpu
+##gpu=64M
