@@ -540,8 +540,8 @@ def setSongProgram(idx):
 
   song = gBankSongList[gCurrentSongIdx]
   program = song.programList[idx]
-  printDebug(song)
-  printDebug(program)
+  printDebug(program['name]'])
+  printDebug(program['tytle'])
 
   for preset in program['presetList']:
     #pprint.pprint(preset)
@@ -564,7 +564,7 @@ def setSongProgram(idx):
     gPedal2Value = 2
   sendPedal2NotificationMessage(gPedal2Value)
 
-  displayData.setProgramName(f"{gCurrentProgramIdx}.{program.name}")
+  displayData.setProgramName(f"{gCurrentProgramIdx}.{program['name']}")
   displayData.drawScreen()
 
 #----------------------------------------------------------------
