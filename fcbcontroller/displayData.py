@@ -124,8 +124,9 @@ def drawScreen():
   #  draw.text((51, 0), "D", font=font, fill=255)
   #  draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
 
-  draw.text((2, 1), chr(61931),  font=fontA, fill=255)
-  draw.text((16,1), chr(61888),  font=fontA, fill=255)
+  draw.text((4, 1), chr(61931),  font=fontA, fill=255)
+  draw.text((24,1), chr(61888),  font=fontA, fill=255)
+  draw.text((24,1), chr(61800),  font=fontA, fill=255)
 
   draw.text((76, 0), "P", font=font, fill=255)
   draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=g_iPadStatus)
