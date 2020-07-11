@@ -322,9 +322,10 @@ def executeSystemCommand(code):
   # printDebug("EXECUTE SYSTEM COMMAND");
   command = ""
   displayText = ""
-  if gSystemCommandCode != code
+
+  if gSystemCommandCode != code and gSystemCommandCounter > 0:
     gSystemCommandCounter = 0
-    
+
   if code == 1:
     #shutdown RPi
     displayText = 'SHUTDOWN'
@@ -368,7 +369,8 @@ def executeSystemCommand(code):
   else:
     displayData.drawSysCommand(displayText)
     printDebug(displayText)
-    gSystemCommandCounter = gSystemCommandCounter + 1     
+    gSystemCommandCounter = gSystemCommandCounter + 1
+    gSystemCommandCode = code  
 
 #----------------------------------------------------------------
 ## 176 -CC Channel 1
