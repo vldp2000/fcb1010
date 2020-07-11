@@ -34,7 +34,6 @@ import threading
 
 import dataController
 import dataHelper
-import displayData
 
 from array import *
 from time import sleep
@@ -42,7 +41,10 @@ from time import sleep
 from dataClasses import *
 from config import *
 
+import Adafruit_GPIO.SPI as SPI
+import Adafruit_SSD1306
 
+import displayData
 
 #################################################################
 class raveloxBackgroundThread (threading.Thread):
@@ -799,8 +801,11 @@ def getListOfRaveloxMidiClients():
 #Main Module 
 #pygame.init()
 pygame.midi.init()
+displayData.initDisplay()
+displayData.clearScreen()
 
 displayData.drawScreen()
+
 # print(str(sys.argv))
 if len(sys.argv) > 1: 
   if str(sys.argv[1]).upper() == 'DEBUG':

@@ -91,24 +91,27 @@ def drawScreen():
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
 
-  font = ImageFont.truetype('8-bit-pusab.ttf', 10)  
+  font = ImageFont.truetype('PKMN.ttf', 10)  
   # Get drawing object to draw on image.
   draw.text((0, 0), "R", font=font, fill=255)
-  draw.ellipse((15,1,30,15), outline=0, fill=status)
+  draw.ellipse((15,1,30,15), outline=0, fill=g_RaveloxmidiStatus )
   #draw.rectangle((0,0,11,11), outline=0, fill=0)
 
   draw.text((35, 0), "A", font=font, fill=255)
-  draw.ellipse((50,1,65,10), outline=0, fill=status)
+  draw.ellipse((50,1,65,10), outline=0, fill=g_MessageAPIStatus)
  
   draw.text((70, 0), "F", font=font, fill=255)
-  draw.ellipse((85,1,100,11), outline=255, fill=status)
+  draw.ellipse((85,1,100,11), outline=255, fill=g_DataAPIStatus)
 
-  font1 = ImageFont.truetype('8-bit-pusab.ttf', 10)
+  font1 = ImageFont.truetype('RetroGaming.ttf', 10)
   font2 = ImageFont.truetype('CodersCrux2.ttf', 18)
 
-  draw.text((0, 20), g_SongName, font=font1, fill=255)
-  draw.text((0, 40), g_ProgramName, font=font2, fill=255)
+  #draw.text((0, 20), g_SongName, font=font1, fill=255)
+  #draw.text((0, 40), g_ProgramName, font=font2, fill=255)
   
+  draw.text((0, 20), '1.Down The River', font=font1, fill=255)
+  draw.text((0, 40), '2.Down THe River', font=font2, fill=255)
+
   # Display image.
   g_Disp.image(image)
   g_Disp.display()
