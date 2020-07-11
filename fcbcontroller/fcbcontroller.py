@@ -315,12 +315,12 @@ def executeSystemCommand(code):
   command = ""
   if code == 1:
     #shutdown RPi
-    displayData.drawShutdown
+    displayData.drawShutdown()
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
   elif code == 2:
     #reboot RPi
-    displayData.drawReboot
+    displayData.drawReboot()
     gExitFlag = True
     command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
   elif code == 6:
