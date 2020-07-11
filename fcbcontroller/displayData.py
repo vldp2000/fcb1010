@@ -130,10 +130,10 @@ def drawScreen():
 
   ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
   font1 = ImageFont.truetype('Pixelade.ttf', 20)
-  font2 = ImageFont.truetype('UAVOSDMono.ttf', 16)
+  font2 = ImageFont.truetype('UAVOSDMono.ttf', 14)
 
   draw.text((0, 20), g_SongName, font=font1, fill=255)
-  draw.text((0, 40), g_ProgramName, font=font2, fill=255)
+  draw.text((0, 43), g_ProgramName, font=font2, fill=255)
 
   #draw.text((0, 20), '1.Down The River', font=font1, fill=255)
   #draw.text((0, 40), '2.Down THe River', font=font2, fill=255)
