@@ -760,7 +760,8 @@ def getActionForReceivedMessage(midiMsg):
 def getMidiMsg(midiInput):
 #  printDebug(""))
   # printDebug("..... LISTEN TO MIDI MSG")
-  x = 0
+  keepAliveCounter = 0
+  checkRaveloxCounter = 0
   gotMsg = 0
   while not(gotMsg):
     sleep(MIDI_RECEIVE_DELAY)
@@ -770,15 +771,21 @@ def getMidiMsg(midiInput):
       for msg in inp:
         getActionForReceivedMessage(msg)  
         sleep(0.002)
-      x = 0
+      keepAliveCounter = 0
+      checkRaveloxCounter = 0
     else:
-      x = x + 1
-    if x > KEEPALIVE_FREQUENCY:
+      keepAliveCounter = keepAliveCounter + 1
+      checkRaveloxCounter = checkRaveloxCounter + 1
+
+    if keepAliveCounter > KEEPALIVE_FREQUENCY:
       sendRaveloxCCMessage(KEEPALIVE_CHANNEL, 7, 0)
       printDebug('<<<keep alive >>>>')
       printDebug(x)
-      x = 0
+      keepAliveCounter = 0
 
+    if checkRaveloxCounter > CHECK_RAVELOX_CLIENT_FREQUENCY:
+      getListOfRaveloxMidiClients()
+      checkRaveloxCounter = 0
 #----------------------------------------------------------------
 
 def getListOfRaveloxMidiClients():
@@ -799,6 +806,10 @@ def getListOfRaveloxMidiClients():
   print(data)
 #----------------------------------------------------------------
 
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+
 #Main Module 
 #pygame.init()
 pygame.midi.init()
@@ -807,6 +818,8 @@ displayData.clearScreen()
 
 displayData.drawScreen()
 sleep(2)
+displayData.clearScreen()
+
 # print(str(sys.argv))
 if len(sys.argv) > 1: 
   if str(sys.argv[1]).upper() == 'DEBUG':
