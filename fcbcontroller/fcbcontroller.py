@@ -863,6 +863,7 @@ if len(gBankSongList) > 0:
   gCurrentSongIdx = -1
   selectNextSong()
   gCurrentProgramIdx = 0
+  setSongProgram(gCurrentProgramIdx)
 
 portOk = False
 midiInput = None
