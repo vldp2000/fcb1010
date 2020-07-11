@@ -124,25 +124,28 @@ def drawScreen():
   #  draw.text((51, 0), "D", font=font, fill=255)
   #  draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
   
+  #RaveloxMidi status
   draw.rectangle((0,0,20,14), outline=255, fill=0)
   if g_RaveloxmidiStatus > 0:
     draw.text((4, 1), chr(61931),  font=fontA, fill=255)
   else:
     draw.text((4, 1), chr(61453),  font=fontA, fill=255)
 
+  #Data API status
   draw.rectangle((25,0,45,14), outline=255, fill=0)
   if g_DataAPIStatus > 0:
     draw.text((29,1), chr(61888),  font=fontA, fill=255)
   else:
     draw.text((29,1), chr(61527),  font=fontA, fill=255)
-
+  
+  #Socket messeger status
   draw.rectangle((50,0,70,14), outline=255, fill=0)
   if g_MessageAPIStatus > 0:
-    draw.text((54,1), chr(61669),  font=fontA, fill=255)
+    draw.text((54,1), chr(61671),  font=fontA, fill=255)
   else:
     draw.text((54,1), chr(62163),  font=fontA, fill=255)
 
-
+  #iPad connection status
   draw.rectangle((75,0,95,14), outline=255, fill=0) 
   if g_iPadStatus > 0:
     draw.text((79,1), chr(61706),  font=fontA, fill=255)
@@ -153,13 +156,14 @@ def drawScreen():
   #draw.text((76, 0), "P", font=font, fill=255)
   #draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=g_iPadStatus)
   
+  #Macbook connection status
   draw.rectangle((100,0,120,14), outline=255, fill=0)
   if g_MacBookStatus > 0:
     draw.text((104,1), chr(61704),  font=fontA, fill=255)
   else:
     draw.text((104,1), chr(61453),  font=fontA, fill=255)
 
-   #61704  PC
+  #61704  PC
   #61706 tablet
   #draw.text((101, 0), "M", font=font, fill=255)
   #draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=g_MacBookStatus)
