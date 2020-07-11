@@ -21,8 +21,12 @@ g_Disp = None
 g_RaveloxmidiStatus = 0
 g_MessageAPIStatus = 0
 g_DataAPIStatus = 0
+g_iPadStatus = 0
+g_MacBookStatus = 0
+
 g_SongName = ''
 g_ProgramName = ''
+
 
 # 128x64 display with hardware I2C:
 # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
@@ -76,7 +80,13 @@ def setProgramName(name):
   global g_ProgramName
   g_ProgramName = name
 
+def setiPadStatus(status):
+  global g_iPadStatus
+  g_iPadStatus = status
 
+def setMacBookStatus(status):
+  global g_MacBookStatus
+  g_MacBookStatus = status
  
 def drawScreen():
   global g_Disp
@@ -85,30 +95,47 @@ def drawScreen():
   global g_DataAPIStatus
   global g_SongName
   global g_ProgramName
+  global g_iPadStatus
+  global g_MacBookStatus
+
+  ###draw.rectangle((0,0,11,11), outline=255, fill=0)
 
   # Some other nice fonts to try: http://www.dafont.com/bitmap.php
   image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
+  
+  draw.rectangle((0,0,127,14), outline=255, fill=0)
 
-  font = ImageFont.truetype('PKMN.ttf', 10)  
+  statusY1 = 3
+  statusY2 = 11
+
+  #font = ImageFont.truetype('PokemonClassic.ttf', 10)
+  font = ImageFont.truetype('Code.ttf', 16)
   # Get drawing object to draw on image.
-  draw.text((0, 0), "R", font=font, fill=255)
-  draw.ellipse((15,1,30,15), outline=0, fill=g_RaveloxmidiStatus )
-  #draw.rectangle((0,0,11,11), outline=0, fill=0)
+  draw.text((2, 0), "R", font=font, fill=255)
+  draw.ellipse((12,statusY1,20,statusY2), outline=255, fill=g_RaveloxmidiStatus )
 
-  draw.text((35, 0), "A", font=font, fill=255)
-  draw.ellipse((50,1,65,10), outline=0, fill=g_MessageAPIStatus)
- 
-  draw.text((70, 0), "F", font=font, fill=255)
-  draw.ellipse((85,1,100,11), outline=255, fill=g_DataAPIStatus)
+  draw.text((26, 0), "S", font=font, fill=255)
+  draw.ellipse((37,statusY1,45,statusY2), outline=255, fill=g_MessageAPIStatus)
 
-  font1 = ImageFont.truetype('RetroGaming.ttf', 10)
-  font2 = ImageFont.truetype('CodersCrux2.ttf', 18)
+  draw.text((51, 0), "D", font=font, fill=255)
+  draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
+
+  draw.text((76, 0), "P", font=font, fill=255)
+  draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=0)
+
+  draw.text((101, 0), "M", font=font, fill=255)
+  draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=0)
+
+
+  ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
+  font1 = ImageFont.truetype('Pixelade.ttf', 20)
+  font2 = ImageFont.truetype('UAVOSDMono.ttf', 10)
 
   #draw.text((0, 20), g_SongName, font=font1, fill=255)
   #draw.text((0, 40), g_ProgramName, font=font2, fill=255)
-  
+
   draw.text((0, 20), '1.Down The River', font=font1, fill=255)
   draw.text((0, 40), '2.Down THe River', font=font2, fill=255)
 
