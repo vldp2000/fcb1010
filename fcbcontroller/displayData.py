@@ -123,21 +123,20 @@ def drawScreen():
   draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
 
   draw.text((76, 0), "P", font=font, fill=255)
-  draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=0)
+  draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=g_iPadStatus)
 
   draw.text((101, 0), "M", font=font, fill=255)
-  draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=0)
-
+  draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=g_MacBookStatus)
 
   ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
   font1 = ImageFont.truetype('Pixelade.ttf', 20)
-  font2 = ImageFont.truetype('UAVOSDMono.ttf', 10)
+  font2 = ImageFont.truetype('UAVOSDMono.ttf', 16)
 
-  #draw.text((0, 20), g_SongName, font=font1, fill=255)
-  #draw.text((0, 40), g_ProgramName, font=font2, fill=255)
+  draw.text((0, 20), g_SongName, font=font1, fill=255)
+  draw.text((0, 40), g_ProgramName, font=font2, fill=255)
 
-  draw.text((0, 20), '1.Down The River', font=font1, fill=255)
-  draw.text((0, 40), '2.Down THe River', font=font2, fill=255)
+  #draw.text((0, 20), '1.Down The River', font=font1, fill=255)
+  #draw.text((0, 40), '2.Down THe River', font=font2, fill=255)
 
   # Display image.
   g_Disp.image(image)
