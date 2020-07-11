@@ -105,7 +105,7 @@ def drawScreen():
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   
-  draw.rectangle((0,0,127,14), outline=255, fill=0)
+  #draw.rectangle((0,0,127,14), outline=255, fill=0)
 
   statusY1 = 3
   statusY2 = 11
@@ -123,26 +123,46 @@ def drawScreen():
 
   #  draw.text((51, 0), "D", font=font, fill=255)
   #  draw.ellipse((62,statusY1,70,statusY2), outline=255, fill=g_DataAPIStatus)
+  
+  draw.rectangle((0,0,20,14), outline=255, fill=0)
   if g_RaveloxmidiStatus > 0:
     draw.text((4, 1), chr(61931),  font=fontA, fill=255)
   else:
     draw.text((4, 1), chr(61453),  font=fontA, fill=255)
 
+  draw.rectangle((25,0,45,14), outline=255, fill=0)
   if g_DataAPIStatus > 0:
-    draw.text((26,1), chr(61888),  font=fontA, fill=255)
+    draw.text((29,1), chr(61888),  font=fontA, fill=255)
   else:
-    draw.text((26,1), chr(61527),  font=fontA, fill=255)
+    draw.text((29,1), chr(61527),  font=fontA, fill=255)
 
+  draw.rectangle((50,0,70,14), outline=255, fill=0)
   if g_MessageAPIStatus > 0:
     draw.text((48,1), chr(61669),  font=fontA, fill=255)
   else:
     draw.text((48,1), chr(62163),  font=fontA, fill=255)
 
-  draw.text((76, 0), "P", font=font, fill=255)
-  draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=g_iPadStatus)
 
-  draw.text((101, 0), "M", font=font, fill=255)
-  draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=g_MacBookStatus)
+  draw.rectangle((75,0,95,14), outline=255, fill=0) 
+  if g_iPadStatus > 0:
+    draw.text((48,1), chr(61706),  font=fontA, fill=255)
+  else:
+    draw.text((48,1), chr(61453),  font=fontA, fill=255)
+
+
+  #draw.text((76, 0), "P", font=font, fill=255)
+  #draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=g_iPadStatus)
+  
+  draw.rectangle((100,0,124,14), outline=255, fill=0)
+  if g_MacBookStatus > 0:
+    draw.text((48,1), chr(61704),  font=fontA, fill=255)
+  else:
+    draw.text((48,1), chr(61453),  font=fontA, fill=255)
+
+   #61704  PC
+  #61706 tablet
+  #draw.text((101, 0), "M", font=font, fill=255)
+  #draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=g_MacBookStatus)
 
   ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
   font1 = ImageFont.truetype('Pixelade.ttf', 22)
