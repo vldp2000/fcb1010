@@ -138,26 +138,26 @@ def drawScreen():
 
   draw.rectangle((50,0,70,14), outline=255, fill=0)
   if g_MessageAPIStatus > 0:
-    draw.text((48,1), chr(61669),  font=fontA, fill=255)
+    draw.text((54,1), chr(61669),  font=fontA, fill=255)
   else:
-    draw.text((48,1), chr(62163),  font=fontA, fill=255)
+    draw.text((54,1), chr(62163),  font=fontA, fill=255)
 
 
   draw.rectangle((75,0,95,14), outline=255, fill=0) 
   if g_iPadStatus > 0:
-    draw.text((48,1), chr(61706),  font=fontA, fill=255)
+    draw.text((79,1), chr(61706),  font=fontA, fill=255)
   else:
-    draw.text((48,1), chr(61453),  font=fontA, fill=255)
+    draw.text((79,1), chr(61453),  font=fontA, fill=255)
 
 
   #draw.text((76, 0), "P", font=font, fill=255)
   #draw.ellipse((87,statusY1,95,statusY2), outline=255, fill=g_iPadStatus)
   
-  draw.rectangle((100,0,124,14), outline=255, fill=0)
+  draw.rectangle((100,0,120,14), outline=255, fill=0)
   if g_MacBookStatus > 0:
-    draw.text((48,1), chr(61704),  font=fontA, fill=255)
+    draw.text((104,1), chr(61704),  font=fontA, fill=255)
   else:
-    draw.text((48,1), chr(61453),  font=fontA, fill=255)
+    draw.text((104,1), chr(61453),  font=fontA, fill=255)
 
    #61704  PC
   #61706 tablet
