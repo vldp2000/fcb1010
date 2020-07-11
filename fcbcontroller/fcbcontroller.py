@@ -114,6 +114,8 @@ gLastGuitar1Volume = 0
 gLastGuitar2Program = 0
 gLastGuitar2Volume = 0
 
+gSystemCommandCounter = 0
+
 sio = socketio.Client()
 
 
@@ -160,6 +162,8 @@ def processPresetVolumeMessage(payload):
   global gCurrentPreset
   global gCurrentProgramIdx
 
+  global gSystemCommandCounter
+  gSystemCommandCounter = 0
   # print(payload)
 
   # print('gCurrentSongId ', gCurrentSongId)
@@ -225,6 +229,9 @@ def sendPedal2NotificationMessage(value):
 #==
 
 def sendSyncNotificationMessage(bankId, songId, programIdx):
+  global gSystemCommandCounter
+  gSystemCommandCounter = 0
+
   syncmessage = {}
   syncmessage['songId'] = songId
   syncmessage['programIdx'] = programIdx
@@ -308,46 +315,56 @@ def isReloadRequired():
 #----------------------------------------------------------------
 
 def executeSystemCommand(code):
-  global gSynthTest
-  global gPianoTest
   global gExitFlag
-
+  global gSystemCommandCounter
   # printDebug("EXECUTE SYSTEM COMMAND");
   command = ""
+  displayText = ""
+
   if code == 1:
     #shutdown RPi
-    displayData.drawShutdown()
-    gExitFlag = True
-    command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
+    displayText = 'SHUTDOWN'
+    if gSystemCommandCounter > 0:
+      displayData.drawShutdown()
+    #command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
   elif code == 2:
     #reboot RPi
-    displayData.drawReboot()
-    gExitFlag = True
+    displayText = 'REBOOT'
+    if gSystemCommandCounter > 0:
+      displayData.drawReboot()
     command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
   elif code == 6:
     #Set as Access Point
-    gExitFlag = True
-    command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
+    displayText = "Local Network"
+    command = "/usr/bin/sudo /home/pi/sys/net_local.sh"
   elif code == 7:
-    #connect to home network
-    gExitFlag = True
-    command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
+    #Set as Access Point
+    displayText = 'Access Point'
+    command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
   elif code == 8:
-    #connect to gz sphera
-    command = "/usr/bin/sudo /home/pi/sys/net_sphera.sh"
+    #connect to home network
+    displayText = 'VP NET'
+    command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
   elif code == 9:
     #connect to iPhone
+    displayText = 'VP iPhone'
     command = "/usr/bin/sudo /home/pi/sys/net_phone.sh"
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
     return
 
-  if command != "":
-    printDebug("Code =%d, Command=%s" % (code, command))
-    import subprocess
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    printDebug(output)
+  if gSystemCommandCounter > 0:
+    gExitFlag = True 
+    if command != "":
+       printDebug("Code =%d, Command=%s" % (code, command))
+       import subprocess
+       process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+       output = process.communicate()[0]
+       printDebug(output)
+  else:
+    displayData.drawSysCommand(displayText)
+    printDebug(displayText)
+    gSystemCommandCounter = gSystemCommandCounter + 1     
 
 #----------------------------------------------------------------
 ## 176 -CC Channel 1
@@ -532,6 +549,9 @@ def resyncWithGigController():
   global gCurrentProgramIdx
   global gSelectedGigId 
 
+  global gSystemCommandCounter
+  gSystemCommandCounter = 0
+
   if gResyncCounter < 2:
     gResyncCounter = gResyncCounter + 1
   else:
@@ -551,6 +571,8 @@ def setSongProgram(idx):
   global gBankSongList
   global gPedal1Value
   global gPedal2Value
+  global gSystemCommandCounter
+  gSystemCommandCounter = 0
 
   gCurrentProgramIdx = idx
 
@@ -605,6 +627,9 @@ def selectNextSong():
   global gBankSongList
   global gSelectedGigId
   global gCurrentSongId
+  
+  global gSystemCommandCounter
+  gSystemCommandCounter = 0
 
   if gCurrentSongIdx + 1 < len(gBankSongList):
     gCurrentSongIdx = gCurrentSongIdx + 1
