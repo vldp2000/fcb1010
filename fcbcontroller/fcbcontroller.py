@@ -897,15 +897,6 @@ thread = raveloxBackgroundThread(threadID)
 thread.start()
 
 sleep(1)
-loadAllData()
-sleep(1)
-checkCurrentBank(1)
-
-if len(gBankSongList) > 0:
-  gCurrentSongIdx = -1
-  selectNextSong()
-  gCurrentProgramIdx = 0
-  setSongProgram(gCurrentProgramIdx)
 
 portOk = False
 midiInput = None
@@ -933,6 +924,18 @@ while not portOk:
 printDebug("Everything ready now...")
 
 getListOfRaveloxMidiClients()
+
+sleep(1)
+loadAllData()
+sleep(1)
+checkCurrentBank(1)
+
+if len(gBankSongList) > 0:
+  gCurrentSongIdx = -1
+  selectNextSong()
+  gCurrentProgramIdx = 0
+  setSongProgram(gCurrentProgramIdx)
+
 
 while not gExitFlag:
   getMidiMsg(midiInput)
