@@ -810,7 +810,8 @@ def getListOfRaveloxMidiClients():
   if result.find("Vlad's MacBook Pro") > -1:
     displayData.g_MacBookStatus = 255
   else:
-    displayData.g_MacBookStatus = 255
+    displayData.g_MacBookStatus = 0
+    
   displayData.drawScreen()
   print(result)
 #----------------------------------------------------------------
