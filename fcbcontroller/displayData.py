@@ -138,14 +138,14 @@ def drawScreen():
   if g_iPadStatus > 0:
     draw.text((81,1), chr(61706),  font=fontA, fill=255)
   else:
-    draw.text((81,1), chr(61453),  font=fontA, fill=255)
+    draw.text((80,0), chr(61453),  font=fontA, fill=255)
 
   #Macbook connection status
   draw.rectangle((100,0,123,14), outline=255, fill=0)
   if g_MacBookStatus > 0:
     draw.text((104,1), chr(61704),  font=fontA, fill=255)
   else:
-    draw.text((104,1), chr(61453),  font=fontA, fill=255)
+    draw.text((106,0), chr(61453),  font=fontA, fill=255)
 
   ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
   font1 = ImageFont.truetype('Pixelade.ttf', 22)
