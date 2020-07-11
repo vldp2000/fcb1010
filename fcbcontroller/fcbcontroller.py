@@ -806,7 +806,7 @@ displayData.initDisplay()
 displayData.clearScreen()
 
 displayData.drawScreen()
-
+sleep(2)
 # print(str(sys.argv))
 if len(sys.argv) > 1: 
   if str(sys.argv[1]).upper() == 'DEBUG':
