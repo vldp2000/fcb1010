@@ -141,13 +141,13 @@ def drawScreen():
   #Socket messeger status
   draw.rectangle((50,0,70,14), outline=255, fill=0)
   if g_MessageAPIStatus > 0:
-    draw.text((54,1), chr(61671),  font=fontA, fill=255)
+    draw.text((57,1), chr(61671),  font=fontA, fill=255)
   else:
-    draw.text((54,1), chr(62163),  font=fontA, fill=255)
+    draw.text((57,1), chr(62163),  font=fontA, fill=255)
 
   #iPad connection status
   draw.rectangle((75,0,95,14), outline=255, fill=0) 
-  if g_iPadStatus > 0:
+  if g_iPadStatus = 0:
     draw.text((79,1), chr(61706),  font=fontA, fill=255)
   else:
     draw.text((79,1), chr(61453),  font=fontA, fill=255)
@@ -158,7 +158,7 @@ def drawScreen():
   
   #Macbook connection status
   draw.rectangle((100,0,120,14), outline=255, fill=0)
-  if g_MacBookStatus > 0:
+  if g_MacBookStatus = 0:
     draw.text((104,1), chr(61704),  font=fontA, fill=255)
   else:
     draw.text((104,1), chr(61453),  font=fontA, fill=255)
