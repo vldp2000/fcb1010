@@ -366,7 +366,7 @@ def connectRavelox():
   except:
     displayData.setRaveloxmidiStatus(0)
     displayData.drawScreen()
-    printDebug('<<< exception >>')
+    printDebug('<<< exception. connectRavelox >>')
     # pprint.pprint(sys.exc_info())
     return False
 
@@ -389,6 +389,7 @@ def processRaveloxMessageQueue():
       except:
         displayData.setRaveloxmidiStatus(0)
         displayData.drawScreen()
+        printDebug('<<< exception. processRaveloxMessageQueue >>')
 
       delay = MIN_DELAY
       #print ('Processed Message ->>>  ', message)
@@ -396,6 +397,7 @@ def processRaveloxMessageQueue():
       gQueueLock.release()
       delay = MIN_DELAY * 2
     sleep(delay)
+
 #----------------------------------------------------------------
 def pushRaveloxMessageToQueue(message):
   global gMessageQueue 
@@ -404,6 +406,7 @@ def pushRaveloxMessageToQueue(message):
   gQueueLock.acquire()
   gMessageQueue.put(message)
   gQueueLock.release()
+
 #----------------------------------------------------------------
 
 def sendRaveloxCCMessage(channel, CC, value):
@@ -425,7 +428,9 @@ def sendRaveloxCCMessage(channel, CC, value):
   
   if gMode == 'Debug':
      printDebug("SEND RAVELOX CC  MESSAGE  to  queue %d %d %d" % (channel , CC, value))
+
 #----------------------------------------------------------------
+
 ## 192 -PC on Channel 1
 ## 193 -PC on Channel 2
 ## 197 -PC on Channel 6
@@ -449,6 +454,7 @@ def sendRaveloxPCMessage( channel, PC):
   
   if gMode == 'Debug':
      printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
+
 #----------------------------------------------------------------
 
 def sendGenericMidiCommand(msg0, msg1, msg2):
@@ -470,7 +476,9 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   
   if gMode == 'Debug':
     printDebug("SEND RAVELOX GENERIC MESSAGE %d %d %d" % (msg0, msg1, msg2))
+
 #----------------------------------------------------------------
+
 def muteChannel(channel, volume, delay, step):
   if volume > 0:
     x = volume
@@ -479,6 +487,7 @@ def muteChannel(channel, volume, delay, step):
       x = x - step
       sleep(delay)
     sendRaveloxCCMessage(channel, VOLUME_CC, 0 )
+
 #----------------------------------------------------------------
 def unmuteChannel(channel, volume, delay, step):
   x = step
@@ -487,6 +496,7 @@ def unmuteChannel(channel, volume, delay, step):
     x = x + step
     sleep(delay)
   sendRaveloxCCMessage(channel, VOLUME_CC, volume )
+
 #----------------------------------------------------------------
 
 def checkCurrentBank(bank):
@@ -511,6 +521,7 @@ def checkCurrentBank(bank):
       gSelectedGigId = -1
 
     sendGigNotificationMessage(gSelectedGigId)
+
 #----------------------------------------------------------------
 
 def resyncWithGigController():
@@ -529,8 +540,10 @@ def resyncWithGigController():
     print('-- Prog --', gCurrentProgramIdx) 
     sendSyncNotificationMessage( gSelectedGigId, gCurrentSongId, gCurrentProgramIdx)
     gResyncCounter = 0
+
 #----------------------------------------------------------------
 #----------------------------------------------------------------
+
 def setSongProgram(idx):
   global gCurrentProgramIdx
   global gCurrentSongIdx
