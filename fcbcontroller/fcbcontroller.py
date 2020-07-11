@@ -293,6 +293,7 @@ def loadAllData():
   except:
     displayData.setDataAPIStatus(0)
     displayData.drawScreen()
+    print ('<< Exception. loadAllData >>')
 #----------------------------------------------------------------
 
 def isReloadRequired():
@@ -864,15 +865,14 @@ sio.connect('http://localhost:8081')
 #displayData.setMessageAPIStatus(255)
 #displayData.drawScreen()
 
-loadAllData()
-
-checkCurrentBank(1)
-
 gQueueLock = threading.Lock()
 gMessageQueue = queue.Queue(0)
 threadID = 1
 thread = raveloxBackgroundThread(threadID)
 thread.start()
+
+loadAllData()
+checkCurrentBank(1)
 
 if len(gBankSongList) > 0:
   gCurrentSongIdx = -1
