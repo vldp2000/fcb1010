@@ -129,8 +129,8 @@ def drawScreen():
   draw.ellipse((112,statusY1,120,statusY2), outline=255, fill=g_MacBookStatus)
 
   ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
-  font1 = ImageFont.truetype('Pixelade.ttf', 20)
-  font2 = ImageFont.truetype('UAVOSDMono.ttf', 14)
+  font1 = ImageFont.truetype('Pixelade.ttf', 22)
+  font2 = ImageFont.truetype('UAVOSDMono.ttf', 12)
 
   draw.text((0, 20), g_SongName, font=font1, fill=255)
   draw.text((0, 43), g_ProgramName, font=font2, fill=255)

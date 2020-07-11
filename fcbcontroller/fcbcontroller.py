@@ -564,7 +564,7 @@ def setSongProgram(idx):
     gPedal2Value = 2
   sendPedal2NotificationMessage(gPedal2Value)
 
-  displayData.setProgramName(f"{program['id']}.{program['name']}.{program['tytle']}")
+  displayData.setProgramName(f"{program['name']}.{program['tytle']}")
   displayData.drawScreen()
 
 #----------------------------------------------------------------
