@@ -191,21 +191,6 @@ def drawReboot():
   g_Disp.display()
   time.sleep(2)
 
-def drawSysCommand(textValue):
-  global g_Disp
-  image = Image.new('1', (128, 64))
-  # Get drawing object to draw on image.
-  draw = ImageDraw.Draw(image)
-  
-  font1 = ImageFont.truetype('Pixelade.ttf', 12)
-  font2 = ImageFont.truetype('UAVOSDMono.ttf', 22)
-
-  draw.text((1, 1), textValue,  font=font1, fill=255)
-
-  draw.text((40, 30), 'SYSTEM', font=font2, fill=255)
-
-  g_Disp.image(image)
-  g_Disp.display()
 
 # vcgencmd measure_volts
 ###volt=1.2000V
