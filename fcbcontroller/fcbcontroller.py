@@ -779,8 +779,6 @@ def getMidiMsg(midiInput):
 
     if keepAliveCounter > KEEPALIVE_FREQUENCY:
       sendRaveloxCCMessage(KEEPALIVE_CHANNEL, 7, 0)
-      printDebug('<<<keep alive >>>>')
-      printDebug(x)
       keepAliveCounter = 0
 
     if checkRaveloxCounter > CHECK_RAVELOX_CLIENT_FREQUENCY:
