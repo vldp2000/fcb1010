@@ -459,8 +459,8 @@ def sendRaveloxCCMessage(channel, CC, value):
   # sleep(MIN_DELAY)
   #print('new message ###  ', message)
   
-  if gMode == 'Debug':
-     printDebug("SEND RAVELOX CC  MESSAGE  to  queue %d %d %d" % (channel , CC, value))
+  #if gMode == 'Debug':
+  #   printDebug("SEND RAVELOX CC  MESSAGE  to  queue %d %d %d" % (channel , CC, value))
 
 #----------------------------------------------------------------
 
