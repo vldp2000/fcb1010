@@ -150,7 +150,7 @@ def processSongMessage(id):
 #==
 @sio.on('VIEW_PROGRAM_MESSAGE')
 def processProgramMessage(idx):
-  printDebug(f"VIEW_PROGRAM_MESSAGE IDX: {idx})
+  printDebug(f"VIEW_PROGRAM_MESSAGE IDX: {idx}")
   setSongProgram(idx)
 #==
 @sio.on('VIEW_PRESET_VOL_MESSAGE')
