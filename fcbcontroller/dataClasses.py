@@ -1,12 +1,12 @@
 import json
 
 #----------------------------------------------------------------
-class BroadcastMessage(object):
+class BroadcastMessage:
   message = "",
   messageType = ""
-  def __init__(self, **entries):
-    self.message = ""
-    self.messageType = ""
+  def __init__(self, ms, tp):
+    self.message = ms
+    self.messageType = tp
 
 #----------------------------------------------------------------
 class Gig(object):
