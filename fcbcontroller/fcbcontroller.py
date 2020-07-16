@@ -898,6 +898,7 @@ def getListOfRaveloxMidiClients():
 #Main Module 
 #pygame.init()
 pygame.midi.init()
+pygame.event.clear()
 displayData.initDisplay()
 displayData.clearScreen()
 
