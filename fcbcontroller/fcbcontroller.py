@@ -874,7 +874,7 @@ def getListOfRaveloxMidiClients():
     if data:
       break
     sleep(MIN_DELAY / 2.0)
-    if (x > 100)
+    if (x > 100):
       loopFlag = False
     x = x + 1   
   #----  
