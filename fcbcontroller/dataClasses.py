@@ -1,6 +1,14 @@
 import json
 
 #----------------------------------------------------------------
+class BroadcastMessage(object):
+  message = "",
+  messageType = ""
+  def __init__(self, **entries):
+    self.message = ""
+    self.messageType = ""
+
+#----------------------------------------------------------------
 class Gig(object):
   id = -1,
   name = "",

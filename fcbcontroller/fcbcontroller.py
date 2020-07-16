@@ -418,11 +418,17 @@ def processRaveloxMessageQueue():
     gQueueLock.acquire()
     if not gMessageQueue.empty():
       #print (gMessageQueue.qsize())  
-      message = gMessageQueue.get()
+      broadcastMessage = gMessageQueue.get()
       gMessageQueue.task_done()
       gQueueLock.release()
       try:
-        gRaveloxClient.send( message )
+        if (broadcastMessage.messageType == 'PC'):
+          sleep(MIN_DELAY)
+          gRaveloxClient.send( broadcastMessage.message )
+
+        if (broadcastMessage.messageType == 'CC'):
+          gRaveloxClient.send( broadcastMessage.message )
+          
       except:
         displayData.setRaveloxmidiStatus(0)
         displayData.drawScreen()
@@ -436,12 +442,12 @@ def processRaveloxMessageQueue():
     sleep(delay)
 
 #----------------------------------------------------------------
-def pushRaveloxMessageToQueue(message):
+def pushRaveloxMessageToQueue(broadcastMessage):
   global gMessageQueue 
   global gQueueLock
 
   gQueueLock.acquire()
-  gMessageQueue.put(message)
+  gMessageQueue.put(broadcastMessage)
   gQueueLock.release()
 
 #----------------------------------------------------------------
@@ -458,7 +464,8 @@ def sendRaveloxCCMessage(channel, CC, value):
     message = struct.pack( "BBB", 176 + channel - 1, CC, value)
   else:
     message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
-  pushRaveloxMessageToQueue(message)
+  broadcastMessage = BroadcastMessage(message, 'CC')  
+  pushRaveloxMessageToQueue(broadcastMessage)
   # gRaveloxClient.send( message )
   # sleep(MIN_DELAY)
   #print('new message ###  ', message)
@@ -484,8 +491,9 @@ def sendRaveloxPCMessage( channel, PC):
     message = struct.pack( "BB", 192 + channel - 1, PC)
   else:
     message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
+  broadcastMessage = BroadcastMessage(message, 'PC')  
 
-  pushRaveloxMessageToQueue(message)
+  pushRaveloxMessageToQueue(broadcastMessage)
   # gRaveloxClient.send( message )
   # sleep(MIN_DELAY)
   
