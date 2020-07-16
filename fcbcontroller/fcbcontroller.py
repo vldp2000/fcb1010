@@ -134,7 +134,7 @@ def connect():
 #==
 @sio.event
 def message(data):
-  printDebug(f"Message received with  {data})
+  printDebug(f"Message received with  {data}")
 #== 
 @sio.event
 def disconnect():
