@@ -80,6 +80,7 @@ gInstrumentDict = {}
 gPresetDict= {}
 gInstrumentBankDict = {}
 
+gDebugMessageCounter = 0
 gMode = 'Live'
 gPlaySongFromSelectedGigOnly = True
 gCurrentBank = -1
@@ -253,8 +254,10 @@ def printDebug(message):
 
 def clearScreenDebug():
   global gMode
+  global gDebugMessageCounter
   if gMode == 'Debug':
-    print("\n" * 50)
+    print("\n" * 10)
+    print(f'               >> ----- {gDebugMessageCounter} -------<<' )
 
 #----------------------------------------------------------------
 def loadAllData():
