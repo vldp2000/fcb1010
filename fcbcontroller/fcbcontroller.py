@@ -251,6 +251,11 @@ def printDebug(message):
   if gMode == 'Debug':
     print(message)
 
+def clearScreenDebug():
+  global gMode
+  if gMode == 'Debug':
+    print ("\n" * 50)
+
 #----------------------------------------------------------------
 def loadAllData():
   global gGig
@@ -354,6 +359,10 @@ def executeSystemCommand(code):
     #connect to iPhone
     displayText = 'VP iPhone'
     command = "/usr/bin/sudo /home/pi/sys/net_phone.sh"
+  elif code == 10:
+    #connect to GZ Sphera
+    displayText = 'GZ Sphera'
+    command = "/usr/bin/sudo /home/pi/sys/net_sphera.sh"
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
     return
@@ -765,17 +774,23 @@ def getActionForReceivedMessage(midiMsg):
         #gPedal2_Channel = gChannel2
 
       elif msg2 == 15:
+        clearScreenDebug()
         selectPreviousSong()
         setSongProgram(0)
       elif msg2 == 16:
+        clearScreenDebug()
         setSongProgram(0)
       elif msg2 == 17:
+        clearScreenDebug()
         setSongProgram(1)
       elif msg2 == 18:
+        clearScreenDebug()
         setSongProgram(2)
       elif msg2 == 19:
+        clearScreenDebug()
         setSongProgram(3)
       elif msg2 == 20:
+        clearScreenDebug()
         selectNextSong()
         setSongProgram(0)
 
