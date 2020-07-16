@@ -258,6 +258,7 @@ def clearScreenDebug():
   if gMode == 'Debug':
     print("\n" * 10)
     print(f'               >> ----- {gDebugMessageCounter} -------<<' )
+    gDebugMessageCounter = gDebugMessageCounter + 1
 
 #----------------------------------------------------------------
 def loadAllData():
