@@ -124,33 +124,33 @@ sio = socketio.Client()
 @sio.event
 def connect():
   try:
-    print('SOCKET connection established')
+    printDebug('SOCKET connection established')
     displayData.setMessageAPIStatus(255)
     #displayData.drawScreen()
   except:
-    print('SOCKET connection can not be established')
+    printDebug('SOCKET connection can not be established')
     displayData.setMessageAPIStatus(0)
     displayData.drawScreen() 
 #==
 @sio.event
 def message(data):
-  print('Message received with ', data)
+  printDebug(f"Message received with  {data})
 #== 
 @sio.event
 def disconnect():
-  print('disconnected from SOCKET server')
+  printDebug('disconnected from SOCKET server')
   displayData.setMessageAPIStatus(0)
   displayData.drawScreen() 
 
 #==
 @sio.on('VIEW_SONG_MESSAGE')
 def processSongMessage(id):
-  print("VIEW_SONG_MESSAGE ID: " , id)
+  printDebug(f"VIEW_SONG_MESSAGE ID:  {id}")
   setSong(id)
 #==
 @sio.on('VIEW_PROGRAM_MESSAGE')
 def processProgramMessage(idx):
-  print("VIEW_PROGRAM_MESSAGE IDX: " , idx)
+  printDebug(f"VIEW_PROGRAM_MESSAGE IDX: {idx})
   setSongProgram(idx)
 #==
 @sio.on('VIEW_PRESET_VOL_MESSAGE')
@@ -205,20 +205,20 @@ def processPresetVolumeMessage(payload):
 #==
 @sio.on('VIEW_PRESET_PAN_MESSAGE')
 def processPresetVolumeMessage(payload):
-  print(payload)
+  printDebug(payload)
   # setSongProgram(idx)
 #==
 def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(idx))
-  print(PROGRAM_MESSAGE + " >> " + str(idx))
+  printDebug(f"{PROGRAM_MESSAGE} >> {str(idx)}")
 #==
 def sendSongNotificationMessage(id):
   sio.emit(SONG_MESSAGE, str(id))
-  print(SONG_MESSAGE + " >>" + str(id))
+  printDebug(f'{SONG_MESSAGE}  >> { str(id)}')
 #==
 def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
-  print(GIG_MESSAGE + " >>" + str(id))
+  printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
 #==
 def sendPedal1NotificationMessage(value):
   sio.emit(PEDAL1_MESSAGE, str(value))
@@ -254,7 +254,7 @@ def printDebug(message):
 def clearScreenDebug():
   global gMode
   if gMode == 'Debug':
-    print ("\n" * 50)
+    print("\n" * 50)
 
 #----------------------------------------------------------------
 def loadAllData():
@@ -457,7 +457,7 @@ def sendRaveloxCCMessage(channel, CC, value):
   pushRaveloxMessageToQueue(message)
   # gRaveloxClient.send( message )
   # sleep(MIN_DELAY)
-  print('new message ###  ', message)
+  #print('new message ###  ', message)
   
   if gMode == 'Debug':
      printDebug("SEND RAVELOX CC  MESSAGE  to  queue %d %d %d" % (channel , CC, value))
@@ -571,9 +571,9 @@ def resyncWithGigController():
     gResyncCounter = gResyncCounter + 1
   else:
     gCurrentSongId = gBankSongList[gCurrentSongIdx].id
-    print('== gig ==', gSelectedGigId)
-    print('== song ==', gCurrentSongId)
-    print('-- Prog --', gCurrentProgramIdx) 
+    printDebug(f'== gig == {gSelectedGigId}')
+    printDebug(f'== song == {gCurrentSongId}')
+    printDebug(f'-- Prog -- {gCurrentProgramIdx}') 
     sendSyncNotificationMessage( gSelectedGigId, gCurrentSongId, gCurrentProgramIdx)
     gResyncCounter = 0
 
@@ -696,9 +696,9 @@ def setSong(id):
     displayData.setSongName(f"{gCurrentSongIdx}.{name}")
     setSongProgram(0)
     # sendSongNotificationMessage(id)
-    print("Song selected. idx =", idx)
+    printDebug(f"Song selected. idx ={idx}")
   else: 
-    print("There is no Song with id =", id)
+    printDebug(f"There is no Song with id ={id}")
     #displayData.setSongName()
     #displayData.drawScreen()
 #----------------------------------------------------------------
@@ -855,7 +855,7 @@ def getListOfRaveloxMidiClients():
   # Request status
   bytes = struct.pack( '4s', b'LIST' )
 
-  print(bytes)
+  #print(bytes)
   data = ''
   result = ''
   gRaveloxClient.sendall( bytes )
@@ -877,7 +877,7 @@ def getListOfRaveloxMidiClients():
     displayData.g_MacBookStatus = 0
 
   displayData.drawScreen()
-  print(result)
+  printDebug(result)
 #----------------------------------------------------------------
 
 
