@@ -637,7 +637,7 @@ def setSongProgram(idx):
 #----------------------------------------------------------------
 def setPreset(preset):
   presetItem = gPresetDict[str(preset['refpreset'])]
-  print presetItem
+  print(presetItem)
 
   midiProgramChange = int( gPresetDict[str(preset['refpreset'])] )
   channel = int( gInstrumentDict[str(preset['refinstrument'])] )
