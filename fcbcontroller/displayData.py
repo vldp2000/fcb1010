@@ -149,10 +149,10 @@ def drawScreen():
 
   ###font1 = ImageFont.truetype('RetroGaming.ttf', 10)
   font1 = ImageFont.truetype('Pixelade.ttf', 22)
-  font2 = ImageFont.truetype('UAVOSDMono.ttf', 12)
+  #font2 = ImageFont.truetype('UAVOSDMono.ttf', 12)
 
   draw.text((0, 20), g_SongName, font=font1, fill=255)
-  draw.text((0, 43), g_ProgramName, font=font2, fill=255)
+  draw.text((0, 43), g_ProgramName, font=font1, fill=255)
 
   #draw.text((0, 20), '1.Down The River', font=font1, fill=255)
   #draw.text((0, 40), '2.Down THe River', font=font2, fill=255)
@@ -198,10 +198,10 @@ def drawSysCommand(textValue):
   draw = ImageDraw.Draw(image)
   
   font1 = ImageFont.truetype('RetroGaming.ttf', 20)
-  #font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
+  font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
 
   draw.text((1, 1), 'SYSTEM', font=font1, fill=255)
-  draw.text((1, 30), textValue,  font=font1, fill=255)
+  draw.text((1, 30), textValue,  font=font2, fill=255)
 
   g_Disp.image(image)
   g_Disp.display()
