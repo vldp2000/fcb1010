@@ -423,22 +423,24 @@ def processRaveloxMessageQueue():
       gQueueLock.release()
       try:
         if (broadcastMessage.messageType == 'PC'):
-          sleep(MIN_DELAY)
+          sleep(MIN_DELAY * 2.0)
+          gRaveloxClient.send( broadcastMessage.message )
+          sleep(MIN_DELAY * 2.0)
           gRaveloxClient.send( broadcastMessage.message )
 
         if (broadcastMessage.messageType == 'CC'):
           gRaveloxClient.send( broadcastMessage.message )
-          
+
       except:
         displayData.setRaveloxmidiStatus(0)
         displayData.drawScreen()
-        printDebug('<<< exception. processRaveloxMessageQueue >>')
+        printDebug(f'<<< exception. processRaveloxMessageQueue >>{broadcastMessage}')
 
       delay = MIN_DELAY
       printDebug (f'Processed Message ->>>  {message}')
     else:
       gQueueLock.release()
-      delay = MIN_DELAY * 2
+      delay = MIN_DELAY * 2.0
     sleep(delay)
 
 #----------------------------------------------------------------
