@@ -437,7 +437,7 @@ def processRaveloxMessageQueue():
         printDebug(f'<<< exception. processRaveloxMessageQueue >>{broadcastMessage}')
 
       delay = MIN_DELAY
-      printDebug (f'Processed Message ->>>  {message}')
+      #printDebug (f'Processed Message ->>>  {message}')
     else:
       gQueueLock.release()
       delay = MIN_DELAY * 2.0
@@ -499,8 +499,8 @@ def sendRaveloxPCMessage( channel, PC):
   # gRaveloxClient.send( message )
   # sleep(MIN_DELAY)
   
-  if gMode == 'Debug':
-     printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
+  #if gMode == 'Debug':
+  #   printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
 
 #----------------------------------------------------------------
 
@@ -636,8 +636,8 @@ def setSongProgram(idx):
 
 #----------------------------------------------------------------
 def setPreset(preset):
-  presetItem = gPresetDict[int(preset['refpreset'])]
-  print(presetItem)
+  #presetItem = gPresetDict[int(preset['refpreset'])]
+  print(preset)
 
   midiProgramChange = int( gPresetDict[str(preset['refpreset'])] )
   channel = int( gInstrumentDict[str(preset['refinstrument'])] )
