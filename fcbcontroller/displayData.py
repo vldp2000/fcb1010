@@ -147,7 +147,7 @@ def drawScreen():
   else:
     draw.text((106,0), chr(61453),  font=fontA, fill=255)
 
-  font2 = ImageFont.truetype('RetroGaming.ttf', 16)
+  font2 = ImageFont.truetype('RetroGaming.ttf', 14)
   font1 = ImageFont.truetype('Pixelade.ttf', 22)
   #font2 = ImageFont.truetype('UAVOSDMono.ttf', 12)
 
