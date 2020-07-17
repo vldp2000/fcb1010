@@ -13,7 +13,8 @@ def initPresets():
   iList = dataController.getPresets()
   iDict = {}
   for item in iList:
-    iDict[str(item['id'])] = item['midipc']
+    iDict[str(item['id'])] = item
+    #iDict[str(item['id'])] = item['midipc']
   # pprint.pprint(iDict)
   return iDict      
 #----------------------------------------------------------------

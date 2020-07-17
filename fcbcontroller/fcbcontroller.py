@@ -76,7 +76,7 @@ gSongDict = {}
 gGigSongList = []
 gBankSongList = []
 
-gInstrumentDict = {}
+gInstrumentChannelDict = {}
 gPresetDict= {}
 gInstrumentBankDict = {}
 
@@ -157,7 +157,7 @@ def processProgramMessage(idx):
 @sio.on('VIEW_PRESET_VOL_MESSAGE')
 def processPresetVolumeMessage(payload):
   global gPresetDict
-  global gInstrumentDict
+  global gInstrumentChannelDict
   global gCurrentSongId
   global gCurrentSongIdx
   global gCurrentPresetId
@@ -197,7 +197,7 @@ def processPresetVolumeMessage(payload):
     gCurrentPreset['volume'] = volume
     # printDebug(volume)
     #  'programIdx': 1, 'presetId': 3, 'instrumentId': 3, 'value': 73}
-    channel = int( gInstrumentDict[str(gCurrentPreset['refinstrument'])] )
+    channel = int( gInstrumentChannelDict[str(gCurrentPreset['refinstrument'])] )
     if channel > 0:
       sendRaveloxCCMessage(channel, 7, volume)
   # else:
@@ -266,7 +266,7 @@ def loadAllData():
   global gSongDict
   global gSongList
   global gGigSongList
-  global gInstrumentDict
+  global gInstrumentChannelDict
   global gPresetDict
   global gInstrumentBankDict
   global gBankSongList
@@ -275,8 +275,8 @@ def loadAllData():
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
     gGig = None
-  if gInstrumentDict != None:
-    gInstrumentDict.clear()
+  if gInstrumentChannelDict != None:
+    gInstrumentChannelDict.clear()
   if gInstrumentBankDict != None:
     gInstrumentBankDict.clear()
   if gPresetDict != None:
@@ -301,7 +301,7 @@ def loadAllData():
     # printDebug(gSongList)
 
     gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
-    gInstrumentDict = dataHelper.initInstruments()
+    gInstrumentChannelDict = dataHelper.initInstruments()
     gPresetDict = dataHelper.initPresets()
     gInstrumentBankDict = dataHelper.initInstrumentBanks()
     
@@ -635,23 +635,25 @@ def setSongProgram(idx):
   displayData.drawScreen()
 
 #----------------------------------------------------------------
-def setPreset(preset):
-  #presetItem = gPresetDict[int(preset['refpreset'])]
+def setPreset(songPreset):
+  id = songPreset['refpreset']
+  print(id)
+  preset = gPresetDict[str(id)] 
   print(preset)
-
-  midiProgramChange = int( gPresetDict[str(preset['refpreset'])] )
-  channel = int( gInstrumentDict[str(preset['refinstrument'])] )
-  mute = preset['muteflag']
+  
+  midiProgramChange = preset['midipc']
+  channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
+  mute = songPreset['muteflag']
 
   if mute:
-    muteChannel(channel, preset['volume'], 0.01, 10)
+    muteChannel(channel, songPreset['volume'], 0.01, 10)
 
   sendRaveloxPCMessage(channel, midiProgramChange)
 
   if mute:
-    unmuteChannel(channel, preset['volume'], 0.01, 10)
+    unmuteChannel(channel, songPreset['volume'], 0.01, 10)
   else:
-    sendRaveloxCCMessage( channel, VOLUME_CC, preset['volume'] )
+    sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 #----------------------------------------------------------------
 
 def selectNextSong():
