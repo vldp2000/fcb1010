@@ -613,7 +613,7 @@ def setSongProgram(idx):
   for preset in program['presetList']:
     #pprint.pprint(preset)
     setPreset(preset)
-
+    
   sendProgramNotificationMessage(idx)
 
   # print(program['presetList'][0]['volume'])
@@ -636,6 +636,9 @@ def setSongProgram(idx):
 
 #----------------------------------------------------------------
 def setPreset(preset):
+  presetItem = gPresetDict[str(preset['refpreset'])]
+  print presetItem
+
   midiProgramChange = int( gPresetDict[str(preset['refpreset'])] )
   channel = int( gInstrumentDict[str(preset['refinstrument'])] )
   mute = preset['muteflag']
