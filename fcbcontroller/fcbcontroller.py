@@ -612,7 +612,7 @@ def setSongProgram(idx):
 
   for preset in program['presetList']:
     #pprint.pprint(preset)
-    setPreset(preset)
+    setPreset(program, preset)
     
   sendProgramNotificationMessage(idx)
 
@@ -631,29 +631,30 @@ def setSongProgram(idx):
     gPedal2Value = 2
   sendPedal2NotificationMessage(gPedal2Value)
 
-  displayData.setProgramName(f"{program['name']}.{program['tytle']}")
-  displayData.drawScreen()
-
 #----------------------------------------------------------------
-def setPreset(songPreset):
+def setPreset(program, songPreset):
   id = songPreset['refpreset']
-  print(id)
+  #print(id)
   preset = gPresetDict[str(id)] 
-  print(preset)
+  #print(preset)
 
   midiProgramChange = int(preset['midipc'])
   channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
   mute = songPreset['muteflag']
 
   if mute:
-    muteChannel(channel, songPreset['volume'], 0.01, 10)
+    muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
 
   sendRaveloxPCMessage(channel, midiProgramChange)
 
   if mute:
-    unmuteChannel(channel, songPreset['volume'], 0.01, 10)
+    unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
   else:
     sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
+
+  if preset['refinstrument'] == 1:
+    displayData.setProgramName(f"{program['name']}.{preset['name']}")
+    displayData.drawScreen()
 #----------------------------------------------------------------
 
 def selectNextSong():
