@@ -640,8 +640,8 @@ def setPreset(songPreset):
   print(id)
   preset = gPresetDict[str(id)] 
   print(preset)
-  
-  midiProgramChange = preset['midipc']
+
+  midiProgramChange = int(preset['midipc'])
   channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
   mute = songPreset['muteflag']
 
