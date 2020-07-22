@@ -423,10 +423,10 @@ def processRaveloxMessageQueue():
       gQueueLock.release()
       try:
         if (broadcastMessage.messageType == 'PC'):
-          sleep(MIN_DELAY * 2.0)
+          sleep(MIN_DELAY * 3.0)
           gRaveloxClient.send( broadcastMessage.message )
-          sleep(MIN_DELAY * 2.0)
-          gRaveloxClient.send( broadcastMessage.message )
+          #sleep(MIN_DELAY * 2.0)
+          # gRaveloxClient.send( broadcastMessage.message )
 
         if (broadcastMessage.messageType == 'CC'):
           gRaveloxClient.send( broadcastMessage.message )
