@@ -320,6 +320,7 @@ def isReloadRequired():
   global gReloadCounter
   global gCurrentBank
   global gCurrentSongIdx
+  global gCurrentSongId
   global gCurrentProgramIdx
 
   printDebug(f' -- >>  ReloadRequired{gReloadCounter}')
@@ -334,8 +335,7 @@ def isReloadRequired():
     checkCurrentBank(1)    
 
     if len(gBankSongList) > 0:
-      gCurrentSongIdx = -1
-      selectNextSong()
+      setSong(gCurrentSongId)
       gCurrentProgramIdx = 0
       setSongProgram(gCurrentProgramIdx)
     else:
