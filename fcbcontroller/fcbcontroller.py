@@ -496,7 +496,7 @@ def sendRaveloxPCMessage( channel, PC):
     message = struct.pack( "BB", 192 + channel - 1, PC)
   else:
     message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
-    
+
   if gUseMessageQueue:
     broadcastMessage = BroadcastMessage(message, 'PC')  
     pushRaveloxMessageToQueue(broadcastMessage)
@@ -846,8 +846,8 @@ def getActionForReceivedMessage(midiMsg):
       sendRaveloxCCMessage(channel, 7, msg2)
 
   else:
-     sendGenericMidiCommand(msg0, msg1, msg2)
-    #  printDebug('>>8--' + str(msg))
+    sendGenericMidiCommand(msg0, msg1, msg2)
+    printDebug(f'sendGenericMidiCommand  -- >>-- {str(msg)}')
 
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
