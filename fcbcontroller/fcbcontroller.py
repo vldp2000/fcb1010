@@ -318,6 +318,9 @@ def loadAllData():
 
 def isReloadRequired():
   global gReloadCounter
+  global gCurrentBank
+  global gCurrentSongIdx
+  global gCurrentProgramIdx
 
   printDebug(f' -- >>  ReloadRequired{gReloadCounter}')
   if gReloadCounter < 2:
