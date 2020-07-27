@@ -327,6 +327,7 @@ def isReloadRequired():
     gReloadCounter = 0
 
     sleep(1)
+    gCurrentBank = -1
     checkCurrentBank(1)    
 
     if len(gBankSongList) > 0:
