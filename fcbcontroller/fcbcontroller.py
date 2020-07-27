@@ -274,6 +274,7 @@ def loadAllData():
   global gBankSongList
   global gSelectedGigId
 
+  printDebug(' << Load All Data >>')
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
     gGig = None
@@ -318,6 +319,7 @@ def loadAllData():
 def isReloadRequired():
   global gReloadCounter
 
+  printDebug(f' -- >>  ReloadRequired{gReloadCounter}')
   if gReloadCounter < 2:
     gReloadCounter = gReloadCounter + 1
   else:
