@@ -57,6 +57,8 @@ class raveloxBackgroundThread (threading.Thread):
     print ("Exiting raveloxBackgroundThread")
 #################################################################
 #----------------------------------------------------------------
+
+gUseMessageQueue = False
 gMessageQueue = None
 gQueueLock = None
 
@@ -458,6 +460,7 @@ def sendRaveloxCCMessage(channel, CC, value):
   global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
+  global gUseMessageQueue
 
   if not gProcessRaveloxMidi: return
   
@@ -466,14 +469,13 @@ def sendRaveloxCCMessage(channel, CC, value):
     message = struct.pack( "BBB", 176 + channel - 1, CC, value)
   else:
     message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
-  broadcastMessage = BroadcastMessage(message, 'CC')  
-  pushRaveloxMessageToQueue(broadcastMessage)
-  # gRaveloxClient.send( message )
-  # sleep(MIN_DELAY)
-  #print('new message ###  ', message)
-  
-  #if gMode == 'Debug':
-  #   printDebug("SEND RAVELOX CC  MESSAGE  to  queue %d %d %d" % (channel , CC, value))
+
+  if gUseMessageQueue:
+    broadcastMessage = BroadcastMessage(message, 'CC')  
+    pushRaveloxMessageToQueue(broadcastMessage)
+  else:
+    gRaveloxClient.send(message )
+    sleep(MIN_DELAY)
 
 #----------------------------------------------------------------
 
@@ -485,6 +487,7 @@ def sendRaveloxPCMessage( channel, PC):
   # global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
+  global gUseMessageQueue
 
   if not gProcessRaveloxMidi: return
 
@@ -493,11 +496,13 @@ def sendRaveloxPCMessage( channel, PC):
     message = struct.pack( "BB", 192 + channel - 1, PC)
   else:
     message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
-  broadcastMessage = BroadcastMessage(message, 'PC')  
-
-  pushRaveloxMessageToQueue(broadcastMessage)
-  # gRaveloxClient.send( message )
-  # sleep(MIN_DELAY)
+    
+  if gUseMessageQueue:
+    broadcastMessage = BroadcastMessage(message, 'PC')  
+    pushRaveloxMessageToQueue(broadcastMessage)
+  else:
+    gRaveloxClient.send(message )    
+    sleep(MIN_DELAY)
   
   #if gMode == 'Debug':
   #   printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
@@ -508,18 +513,22 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   # global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
+  global gUseMessageQueue
 
   if not gProcessRaveloxMidi: return
 
   message = ""
-  if gUseNewRaveloxMidi:
+  if gUseNewRaveloxMidi:   
     message = struct.pack("BBB", msg0, msg1, msg2)
   else:
     message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
 
-  pushRaveloxMessageToQueue(message)
-  # gRaveloxClient.send( message )
-  # sleep(MIN_DELAY)
+  if gUseMessageQueue:
+    broadcastMessage = BroadcastMessage(message, 'CC')  
+    pushRaveloxMessageToQueue(broadcastMessage)
+  else:
+    gRaveloxClient.send(message )      
+    sleep(MIN_DELAY)
   
   if gMode == 'Debug':
     printDebug("SEND RAVELOX GENERIC MESSAGE %d %d %d" % (msg0, msg1, msg2))
