@@ -295,13 +295,13 @@ def loadAllData():
   try:
     gGig = dataHelper.loadScheduledGig()
     gSelectedGigId = gGig.id
-    # printDebug(gGig.shortSongList)
+    printDebug(gGig.shortSongList)
 
     gSongDict = dataHelper.loadSongs()
-    # printDebug(gSongDict)
+    printDebug(gSongDict)
 
     gSongList = dataHelper.initAllSongs(gSongDict)
-    # printDebug(gSongList)
+    printDebug(gSongList)
 
     gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     gInstrumentChannelDict = dataHelper.initInstruments()
@@ -326,7 +326,7 @@ def isReloadRequired():
     loadAllData()
     gReloadCounter = 0
 
-    sleep(1)
+    sleep(0.5)
     gCurrentBank = -1
     checkCurrentBank(1)    
 
@@ -962,13 +962,13 @@ sio.connect('http://localhost:8081')
 #displayData.setMessageAPIStatus(255)
 #displayData.drawScreen()
 
-gQueueLock = threading.Lock()
-gMessageQueue = queue.Queue(0)
-threadID = 1
-thread = raveloxBackgroundThread(threadID)
-thread.start()
-
-sleep(1)
+if gUseMessageQueue:
+  gQueueLock = threading.Lock()
+  gMessageQueue = queue.Queue(0)
+  threadID = 1
+  thread = raveloxBackgroundThread(threadID)
+  thread.start()
+  sleep(1)
 
 portOk = False
 midiInput = None
