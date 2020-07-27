@@ -325,6 +325,11 @@ def isReloadRequired():
   else:
     loadAllData()
     gReloadCounter = 0
+    if len(gBankSongList) > 0:
+      gCurrentSongIdx = -1
+      selectNextSong()
+      gCurrentProgramIdx = 0
+      setSongProgram(gCurrentProgramIdx)
 
 #----------------------------------------------------------------
 
