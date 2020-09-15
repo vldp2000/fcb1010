@@ -693,7 +693,7 @@ def setPreset(program, songPreset):
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
 
-  printDebug(f"instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
+  printDebug(f"channel {channel} , instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
 
   delayFlag = songPreset['delayflag']
   if delayFlag:
