@@ -693,7 +693,17 @@ def setPreset(program, songPreset):
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
   
-  printDebug(f"instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']}")
+  delayFlag = songPreset['delayflag']
+  if dalayFlag:
+    sendRaveloxCCMessage( channel, DELAY_TIME_CC , songPreset['delayvalue'] )
+
+  reverbFlag = songPreset['reverbflag']
+  if reverbFlag:
+    sendRaveloxCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
+
+  printDebug(f"instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
+
+
 #----------------------------------------------------------------
 
 def selectNextSong():
