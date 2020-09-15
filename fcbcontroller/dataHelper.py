@@ -57,7 +57,7 @@ def initAllSongs(songDict):
 def reloadSong(allSongs, id):
   song = allSongs[str(id)]
   data = dataController.getSong(id)
-  song.
+  #song.
 
 #----------------------------------------------------------------
 def loadScheduledGig():
