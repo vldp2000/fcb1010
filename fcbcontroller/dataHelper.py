@@ -60,7 +60,7 @@ def reloadSong(allSongs, id):
   for i in range(4):
     program = song.programList[i]
     programNew = data.programList[i]
-    for x in range(4)
+    for x in range(4):
       program['presetList'][x]['volume'] = programNew['presetList'][x]['volume']
       program['presetList'][x]['delayflag'] = programNew['presetList'][x]['delayflag']
       program['presetList'][x]['modeflag'] = programNew['presetList'][x]['modeflag']

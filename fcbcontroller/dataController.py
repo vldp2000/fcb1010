@@ -1,7 +1,7 @@
 import requests
 import json
 
-import pprint
+#import pprint
 
 from dataClasses import *
 from config import *
@@ -72,6 +72,6 @@ def getInstrumentBanks():
 def getSong(id):
   response = requests.get(API_URL +  '/song/' + str(id))
   data = response.json()
-  pprint.pprint(data)
+  #pprint.pprint(data)
   
   return data
