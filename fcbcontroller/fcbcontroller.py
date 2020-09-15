@@ -692,8 +692,8 @@ def setPreset(program, songPreset):
   if preset['refinstrument'] == 1:
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
-    
-  printDebug("preset volume" + str(songPreset['volume']))
+  
+  printDebug(f"instrument {program['refinstrument']} preset {preset['refpreset']}  preset volume {songPreset['volume']}")
 #----------------------------------------------------------------
 
 def selectNextSong():
