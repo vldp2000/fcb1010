@@ -73,7 +73,7 @@ def getSong(id):
   response = requests.get(API_URL +  '/song/' + str(id))
   data = response.json()
   for key, value in data.items():
-    print key, value
+    print (key, value)
   #pprint.pprint(data)
   
   return data
