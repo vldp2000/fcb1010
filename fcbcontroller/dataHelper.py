@@ -58,8 +58,8 @@ def reloadSong(allSongs, id):
   song = allSongs[str(id)]
   data = dataController.getSong(id)
   for i in range(4):
-    print ('-----------------------')
-    print (data['programList'][i])
+    #print ('-----------------------')
+    #print (data['programList'][i])
 
     program = song.programList[i]
     programNew = data['programList'][i]
