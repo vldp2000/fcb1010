@@ -306,13 +306,13 @@ def loadAllData():
   try:
     gGig = dataHelper.loadScheduledGig()
     gSelectedGigId = gGig.id
-    printDebug(gGig.shortSongList)
+    #printDebug(gGig.shortSongList)
 
     gSongDict = dataHelper.loadSongs()
-    printDebug(gSongDict)
+    #printDebug(gSongDict)
 
     gSongList = dataHelper.initAllSongs(gSongDict)
-    printDebug(gSongList)
+    #printDebug(gSongList)
 
     gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     gInstrumentChannelDict = dataHelper.initInstruments()
