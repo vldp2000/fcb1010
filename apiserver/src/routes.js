@@ -4,7 +4,7 @@ const ReadDataController = require('./controllers/ReadDataController')
 module.exports = (app) => {
 
   app.put('/song/:id', SaveDataController.saveDataToFile)
-
+  app.get('/song/:id', ReadDataController.readDataByIdFromFile)
   app.get('/all/song', ReadDataController.readDataFromFile)
   app.get('/id/song', ReadDataController.getId)
 
