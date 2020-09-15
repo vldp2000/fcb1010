@@ -72,6 +72,6 @@ def getInstrumentBanks():
 def getSong(id):
   response = requests.get(API_URL +  '/song/' + str(id))
   data = response.json()
-  pprint.pprint(item)
+  pprint.pprint(data)
   
   return data
