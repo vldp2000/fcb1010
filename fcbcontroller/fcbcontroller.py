@@ -494,9 +494,9 @@ def sendRaveloxCCMessage(channel, CC, value):
   
   message = ""
   if gUseNewRaveloxMidi:
-    message = struct.pack( "BBB", 176 + channel - 1, CC, value)
+    message = struct.pack( "BBB", 176 + int(channel) - 1, int(CC), int(value))
   else:
-    message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
+    message = struct.pack("BBBB", 0xaa, 176 + int(channel) - 1, int(CC), int(value))
 
   if gUseMessageQueue:
     broadcastMessage = BroadcastMessage(message, 'CC')  
@@ -521,9 +521,9 @@ def sendRaveloxPCMessage( channel, PC):
 
   message = ""
   if gUseNewRaveloxMidi:
-    message = struct.pack( "BB", 192 + channel - 1, PC)
+    message = struct.pack( "BB", 192 + int(channel) - 1, int(PC))
   else:
-    message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
+    message = struct.pack("BBB", 0xaa, 192 + int(channel) - 1, int(PC))
 
   if gUseMessageQueue:
     broadcastMessage = BroadcastMessage(message, 'PC')  
@@ -692,7 +692,7 @@ def setPreset(program, songPreset):
   if preset['refinstrument'] == 1:
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
-    
+
   printDebug(f"instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
 
   delayFlag = songPreset['delayflag']
