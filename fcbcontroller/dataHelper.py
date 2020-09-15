@@ -54,6 +54,12 @@ def initAllSongs(songDict):
   return songList
 
 #----------------------------------------------------------------
+def reloadSong(allSongs, id):
+  song = allSongs[str(id)]
+  data = dataController.getSong(id)
+  song.
+
+#----------------------------------------------------------------
 def loadScheduledGig():
   global gGig
   id = dataController.getScheduledGigId()

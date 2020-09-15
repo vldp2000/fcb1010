@@ -64,3 +64,12 @@ def getInstrumentBanks():
   data = response.json()
   # pprint.pprint(data)
   return data
+
+#----------------------------------------------------------------
+
+def getSong(id):
+  response = requests.get(API_URL +  '/song/' + str(id))
+  data = response.json()
+  pprint.pprint(item)
+  
+  return data

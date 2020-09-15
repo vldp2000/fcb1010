@@ -132,10 +132,12 @@ def connect():
     printDebug('SOCKET connection can not be established')
     displayData.setMessageAPIStatus(0)
     displayData.drawScreen() 
+
 #==
 @sio.event
 def message(data):
   printDebug(f"Message received with  {data}")
+
 #== 
 @sio.event
 def disconnect():
@@ -146,13 +148,17 @@ def disconnect():
 #==
 @sio.on('VIEW_SONG_MESSAGE')
 def processSongMessage(id):
+  global gSongDict
   printDebug(f"VIEW_SONG_MESSAGE ID:  {id}")
+  dataHelper.reloadSong(gSongDict, id)
   setSong(id)
+
 #==
 @sio.on('VIEW_PROGRAM_MESSAGE')
 def processProgramMessage(idx):
   printDebug(f"VIEW_PROGRAM_MESSAGE IDX: {idx}")
   setSongProgram(idx)
+
 #==
 @sio.on('VIEW_PRESET_VOL_MESSAGE')
 def processPresetVolumeMessage(payload):
@@ -208,28 +214,33 @@ def processPresetVolumeMessage(payload):
 def processPresetVolumeMessage(payload):
   printDebug(payload)
   # setSongProgram(idx)
+
 #==
 def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(idx))
   printDebug(f"{PROGRAM_MESSAGE} >> {str(idx)}")
+
 #==
 def sendSongNotificationMessage(id):
   sio.emit(SONG_MESSAGE, str(id))
   printDebug(f'{SONG_MESSAGE}  >> { str(id)}')
+
 #==
 def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
   printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
+
 #==
 def sendPedal1NotificationMessage(value):
   sio.emit(PEDAL1_MESSAGE, str(value))
   printDebug(value)
+
 #==
 def sendPedal2NotificationMessage(value):
   sio.emit(PEDAL2_MESSAGE, str(value))
   printDebug(value)
-#==
 
+#==
 def sendSyncNotificationMessage(bankId, songId, programIdx):
   global gSystemCommandCounter
   gSystemCommandCounter = 0
@@ -532,7 +543,7 @@ def muteChannel(channel, volume, delay, step):
     while x > 0:
       sendRaveloxCCMessage( channel, VOLUME_CC, x )
       x = x - step
-      sleep(delay)
+      #sleep(delay)
     sendRaveloxCCMessage(channel, VOLUME_CC, 0 )
 
 #----------------------------------------------------------------
@@ -541,7 +552,7 @@ def unmuteChannel(channel, volume, delay, step):
   while x < volume:
     sendRaveloxCCMessage( channel, VOLUME_CC, x )
     x = x + step
-    sleep(delay)
+    #sleep(delay)
   sendRaveloxCCMessage(channel, VOLUME_CC, volume )
 
 #----------------------------------------------------------------
@@ -854,7 +865,7 @@ def getMidiMsg(midiInput):
       inp = midiInput.read(100)
       for msg in inp:
         getActionForReceivedMessage(msg)  
-        sleep(0.002)
+        #sleep(0.002)
       keepAliveCounter = 0
       checkRaveloxCounter = 0
     else:
