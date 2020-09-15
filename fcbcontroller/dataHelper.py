@@ -59,9 +59,10 @@ def reloadSong(allSongs, id):
   data = dataController.getSong(id)
   for i in range(4):
     print ('-----------------------')
-    print data['programList'][i]
+    print (data['programList'][i])
+
     program = song.programList[i]
-    programNew = data.['programList'][i]
+    programNew = data['programList'][i]
     for x in range(4):
       program['presetList'][x]['volume'] = programNew['presetList'][x]['volume']
       program['presetList'][x]['delayflag'] = programNew['presetList'][x]['delayflag']
