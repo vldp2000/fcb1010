@@ -66,6 +66,7 @@ def reloadSong(allSongs, id):
     for x in range(4):
       program['presetList'][x]['volume'] = programNew['presetList'][x]['volume']
       program['presetList'][x]['delayflag'] = programNew['presetList'][x]['delayflag']
+      program['presetList'][x]['delayvalue'] = programNew['presetList'][x]['delayvalue']   
       program['presetList'][x]['modeflag'] = programNew['presetList'][x]['modeflag']
       program['presetList'][x]['muteflag'] = programNew['presetList'][x]['muteflag']
       program['presetList'][x]['pan'] = programNew['presetList'][x]['pan']
@@ -74,8 +75,8 @@ def reloadSong(allSongs, id):
       program['presetList'][x]['refsongprogram'] = programNew['presetList'][x]['refsongprogram']
       program['presetList'][x]['reverbflag'] = programNew['presetList'][x]['reverbflag']
       program['presetList'][x]['reverbvalue'] = programNew['presetList'][x]['reverbvalue']
-      print(program['presetList'][x]['id'])
-      print(programNew['presetList'][x]['id'])
+      #print(program['presetList'][x]['id'])
+      #print(programNew['presetList'][x]['id'])
 
 #----------------------------------------------------------------
 def loadScheduledGig():
