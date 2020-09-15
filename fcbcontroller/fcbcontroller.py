@@ -57,6 +57,8 @@ class raveloxBackgroundThread (threading.Thread):
     print ("Exiting raveloxBackgroundThread")
 #################################################################
 #----------------------------------------------------------------
+
+gUseMessageQueue = False
 gMessageQueue = None
 gQueueLock = None
 
@@ -283,6 +285,7 @@ def loadAllData():
   global gBankSongList
   global gSelectedGigId
 
+  printDebug(' << Load All Data >>')
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
     gGig = None
@@ -303,13 +306,13 @@ def loadAllData():
   try:
     gGig = dataHelper.loadScheduledGig()
     gSelectedGigId = gGig.id
-    # printDebug(gGig.shortSongList)
+    printDebug(gGig.shortSongList)
 
     gSongDict = dataHelper.loadSongs()
-    # printDebug(gSongDict)
+    printDebug(gSongDict)
 
     gSongList = dataHelper.initAllSongs(gSongDict)
-    # printDebug(gSongList)
+    printDebug(gSongList)
 
     gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     gInstrumentChannelDict = dataHelper.initInstruments()
@@ -326,12 +329,28 @@ def loadAllData():
 
 def isReloadRequired():
   global gReloadCounter
+  global gCurrentBank
+  global gCurrentSongIdx
+  global gCurrentSongId
+  global gCurrentProgramIdx
 
+  printDebug(f' -- >>  ReloadRequired{gReloadCounter}')
   if gReloadCounter < 2:
     gReloadCounter = gReloadCounter + 1
   else:
     loadAllData()
     gReloadCounter = 0
+
+    sleep(0.5)
+    gCurrentBank = -1
+    checkCurrentBank(1)    
+
+    if len(gBankSongList) > 0:
+      setSong(gCurrentSongId)
+      gCurrentProgramIdx = 0
+      setSongProgram(gCurrentProgramIdx)
+    else:
+      printDebug('len(gBankSongList) = 0')
 
 #----------------------------------------------------------------
 
@@ -469,6 +488,7 @@ def sendRaveloxCCMessage(channel, CC, value):
   global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
+  global gUseMessageQueue
 
   if not gProcessRaveloxMidi: return
   
@@ -477,14 +497,13 @@ def sendRaveloxCCMessage(channel, CC, value):
     message = struct.pack( "BBB", 176 + channel - 1, CC, value)
   else:
     message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
-  broadcastMessage = BroadcastMessage(message, 'CC')  
-  pushRaveloxMessageToQueue(broadcastMessage)
-  # gRaveloxClient.send( message )
-  # sleep(MIN_DELAY)
-  #print('new message ###  ', message)
-  
-  #if gMode == 'Debug':
-  #   printDebug("SEND RAVELOX CC  MESSAGE  to  queue %d %d %d" % (channel , CC, value))
+
+  if gUseMessageQueue:
+    broadcastMessage = BroadcastMessage(message, 'CC')  
+    pushRaveloxMessageToQueue(broadcastMessage)
+  else:
+    gRaveloxClient.send(message )
+    sleep(MIN_DELAY)
 
 #----------------------------------------------------------------
 
@@ -496,6 +515,7 @@ def sendRaveloxPCMessage( channel, PC):
   # global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
+  global gUseMessageQueue
 
   if not gProcessRaveloxMidi: return
 
@@ -504,11 +524,13 @@ def sendRaveloxPCMessage( channel, PC):
     message = struct.pack( "BB", 192 + channel - 1, PC)
   else:
     message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
-  broadcastMessage = BroadcastMessage(message, 'PC')  
 
-  pushRaveloxMessageToQueue(broadcastMessage)
-  # gRaveloxClient.send( message )
-  # sleep(MIN_DELAY)
+  if gUseMessageQueue:
+    broadcastMessage = BroadcastMessage(message, 'PC')  
+    pushRaveloxMessageToQueue(broadcastMessage)
+  else:
+    gRaveloxClient.send(message )    
+    sleep(MIN_DELAY)
   
   #if gMode == 'Debug':
   #   printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
@@ -519,18 +541,22 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   # global gRaveloxClient
   global gUseNewRaveloxMidi
   global gProcessRaveloxMidi
+  global gUseMessageQueue
 
   if not gProcessRaveloxMidi: return
 
   message = ""
-  if gUseNewRaveloxMidi:
+  if gUseNewRaveloxMidi:   
     message = struct.pack("BBB", msg0, msg1, msg2)
   else:
     message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
 
-  pushRaveloxMessageToQueue(message)
-  # gRaveloxClient.send( message )
-  # sleep(MIN_DELAY)
+  if gUseMessageQueue:
+    broadcastMessage = BroadcastMessage(message, 'CC')  
+    pushRaveloxMessageToQueue(broadcastMessage)
+  else:
+    gRaveloxClient.send(message )      
+    sleep(MIN_DELAY)
   
   if gMode == 'Debug':
     printDebug("SEND RAVELOX GENERIC MESSAGE %d %d %d" % (msg0, msg1, msg2))
@@ -848,8 +874,8 @@ def getActionForReceivedMessage(midiMsg):
       sendRaveloxCCMessage(channel, 7, msg2)
 
   else:
-     sendGenericMidiCommand(msg0, msg1, msg2)
-    #  printDebug('>>8--' + str(msg))
+    sendGenericMidiCommand(msg0, msg1, msg2)
+    printDebug(f'sendGenericMidiCommand  -- >>-- {str(msg)}')
 
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
@@ -950,13 +976,13 @@ sio.connect('http://localhost:8081')
 #displayData.setMessageAPIStatus(255)
 #displayData.drawScreen()
 
-gQueueLock = threading.Lock()
-gMessageQueue = queue.Queue(0)
-threadID = 1
-thread = raveloxBackgroundThread(threadID)
-thread.start()
-
-sleep(1)
+if gUseMessageQueue:
+  gQueueLock = threading.Lock()
+  gMessageQueue = queue.Queue(0)
+  threadID = 1
+  thread = raveloxBackgroundThread(threadID)
+  thread.start()
+  sleep(1)
 
 portOk = False
 midiInput = None
