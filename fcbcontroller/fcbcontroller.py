@@ -694,7 +694,7 @@ def setPreset(program, songPreset):
     displayData.drawScreen()
   
   delayFlag = songPreset['delayflag']
-  if dalayFlag:
+  if delayFlag:
     sendRaveloxCCMessage( channel, DELAY_TIME_CC , songPreset['delayvalue'] )
 
   reverbFlag = songPreset['reverbflag']
