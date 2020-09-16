@@ -505,6 +505,8 @@ def sendRaveloxCCMessage(channel, CC, value):
     gRaveloxClient.send(message )
     sleep(MIN_DELAY)
 
+  printDebug(f"channel {channel} , CC {CC} value {value} ")
+
 #----------------------------------------------------------------
 
 ## 192 -PC on Channel 1
@@ -677,8 +679,8 @@ def setPreset(program, songPreset):
 
   midiProgramChange = int(preset['midipc'])
   channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
-  mute = songPreset['muteflag']
 
+  mute = songPreset['muteflag']
   if mute:
     muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
 
@@ -693,7 +695,7 @@ def setPreset(program, songPreset):
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
 
-  printDebug(f"channel {channel} , instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
+  #printDebug(f"channel {channel} , instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
 
   delayFlag = songPreset['delayflag']
   if delayFlag:
