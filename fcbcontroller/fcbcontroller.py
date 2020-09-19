@@ -134,10 +134,12 @@ def connect():
     printDebug('SOCKET connection can not be established')
     displayData.setMessageAPIStatus(0)
     displayData.drawScreen() 
+
 #==
 @sio.event
 def message(data):
   printDebug(f"Message received with  {data}")
+
 #== 
 @sio.event
 def disconnect():
@@ -148,13 +150,17 @@ def disconnect():
 #==
 @sio.on('VIEW_SONG_MESSAGE')
 def processSongMessage(id):
+  global gSongDict
   printDebug(f"VIEW_SONG_MESSAGE ID:  {id}")
+  dataHelper.reloadSong(gSongDict, id)
   setSong(id)
+
 #==
 @sio.on('VIEW_PROGRAM_MESSAGE')
 def processProgramMessage(idx):
   printDebug(f"VIEW_PROGRAM_MESSAGE IDX: {idx}")
   setSongProgram(idx)
+
 #==
 @sio.on('VIEW_PRESET_VOL_MESSAGE')
 def processPresetVolumeMessage(payload):
@@ -210,28 +216,33 @@ def processPresetVolumeMessage(payload):
 def processPresetVolumeMessage(payload):
   printDebug(payload)
   # setSongProgram(idx)
+
 #==
 def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(idx))
   printDebug(f"{PROGRAM_MESSAGE} >> {str(idx)}")
+
 #==
 def sendSongNotificationMessage(id):
   sio.emit(SONG_MESSAGE, str(id))
   printDebug(f'{SONG_MESSAGE}  >> { str(id)}')
+
 #==
 def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
   printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
+
 #==
 def sendPedal1NotificationMessage(value):
   sio.emit(PEDAL1_MESSAGE, str(value))
   printDebug(value)
+
 #==
 def sendPedal2NotificationMessage(value):
   sio.emit(PEDAL2_MESSAGE, str(value))
   printDebug(value)
-#==
 
+#==
 def sendSyncNotificationMessage(bankId, songId, programIdx):
   global gSystemCommandCounter
   gSystemCommandCounter = 0
@@ -295,13 +306,13 @@ def loadAllData():
   try:
     gGig = dataHelper.loadScheduledGig()
     gSelectedGigId = gGig.id
-    printDebug(gGig.shortSongList)
+    #printDebug(gGig.shortSongList)
 
     gSongDict = dataHelper.loadSongs()
-    printDebug(gSongDict)
+    #printDebug(gSongDict)
 
     gSongList = dataHelper.initAllSongs(gSongDict)
-    printDebug(gSongList)
+    #printDebug(gSongList)
 
     gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     gInstrumentChannelDict = dataHelper.initInstruments()
@@ -483,9 +494,9 @@ def sendRaveloxCCMessage(channel, CC, value):
   
   message = ""
   if gUseNewRaveloxMidi:
-    message = struct.pack( "BBB", 176 + channel - 1, CC, value)
+    message = struct.pack( "BBB", 176 + int(channel) - 1, int(CC), int(value))
   else:
-    message = struct.pack("BBBB", 0xaa, 176 + channel - 1, CC, value)
+    message = struct.pack("BBBB", 0xaa, 176 + int(channel) - 1, int(CC), int(value))
 
   if gUseMessageQueue:
     broadcastMessage = BroadcastMessage(message, 'CC')  
@@ -493,6 +504,8 @@ def sendRaveloxCCMessage(channel, CC, value):
   else:
     gRaveloxClient.send(message )
     sleep(MIN_DELAY)
+
+  printDebug(f"channel {channel} , CC {CC} value {value} ")
 
 #----------------------------------------------------------------
 
@@ -510,9 +523,9 @@ def sendRaveloxPCMessage( channel, PC):
 
   message = ""
   if gUseNewRaveloxMidi:
-    message = struct.pack( "BB", 192 + channel - 1, PC)
+    message = struct.pack( "BB", 192 + int(channel) - 1, int(PC))
   else:
-    message = struct.pack("BBB", 0xaa, 192 + channel - 1, PC)
+    message = struct.pack("BBB", 0xaa, 192 + int(channel) - 1, int(PC))
 
   if gUseMessageQueue:
     broadcastMessage = BroadcastMessage(message, 'PC')  
@@ -558,7 +571,7 @@ def muteChannel(channel, volume, delay, step):
     while x > 0:
       sendRaveloxCCMessage( channel, VOLUME_CC, x )
       x = x - step
-      sleep(delay)
+      #sleep(delay)
     sendRaveloxCCMessage(channel, VOLUME_CC, 0 )
 
 #----------------------------------------------------------------
@@ -567,7 +580,7 @@ def unmuteChannel(channel, volume, delay, step):
   while x < volume:
     sendRaveloxCCMessage( channel, VOLUME_CC, x )
     x = x + step
-    sleep(delay)
+    #sleep(delay)
   sendRaveloxCCMessage(channel, VOLUME_CC, volume )
 
 #----------------------------------------------------------------
@@ -666,8 +679,8 @@ def setPreset(program, songPreset):
 
   midiProgramChange = int(preset['midipc'])
   channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
-  mute = songPreset['muteflag']
 
+  mute = songPreset['muteflag']
   if mute:
     muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
 
@@ -681,6 +694,18 @@ def setPreset(program, songPreset):
   if preset['refinstrument'] == 1:
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
+
+  #printDebug(f"channel {channel} , instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
+
+  delayFlag = songPreset['delayflag']
+  if delayFlag:
+    sendRaveloxCCMessage( channel, DELAY_TIME_CC , songPreset['delayvalue'] )
+
+  reverbFlag = songPreset['reverbflag']
+  if reverbFlag:
+    sendRaveloxCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
+
+
 #----------------------------------------------------------------
 
 def selectNextSong():
@@ -880,7 +905,7 @@ def getMidiMsg(midiInput):
       inp = midiInput.read(100)
       for msg in inp:
         getActionForReceivedMessage(msg)  
-        sleep(0.002)
+        #sleep(0.002)
       keepAliveCounter = 0
       checkRaveloxCounter = 0
     else:
