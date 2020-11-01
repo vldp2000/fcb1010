@@ -697,13 +697,13 @@ def setPreset(program, songPreset):
 
   #printDebug(f"channel {channel} , instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
 
-  delayFlag = songPreset['delayflag']
-  if delayFlag:
-    sendRaveloxCCMessage( channel, DELAY_TIME_CC , songPreset['delayvalue'] )
+  #delayFlag = songPreset['delayflag']
+  #if delayFlag:
+  #  sendRaveloxCCMessage( channel, DELAY_TIME_CC , songPreset['delayvalue'] )
 
-  reverbFlag = songPreset['reverbflag']
-  if reverbFlag:
-    sendRaveloxCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
+  #reverbFlag = songPreset['reverbflag']
+  #if reverbFlag:
+  #  sendRaveloxCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
 
 
 #----------------------------------------------------------------
