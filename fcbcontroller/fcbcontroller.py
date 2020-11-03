@@ -58,7 +58,7 @@ class raveloxBackgroundThread (threading.Thread):
 #################################################################
 #----------------------------------------------------------------
 
-gUseMessageQueue = False
+gUseMessageQueue = True
 gMessageQueue = None
 gQueueLock = None
 
