@@ -377,6 +377,18 @@ def executeSystemCommand(code):
     if gSystemCommandCounter > 0:
       displayData.drawReboot()
     command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
+ elif code == 3:
+    #reboot RPi
+    displayText = 'RESTART FCB1010'
+    if gSystemCommandCounter > 0:
+      displayData.drawReboot()
+    command = "/usr/bin/sudo systemctl restart fcb1010.service"
+  elif code == 3:
+    #reboot RPi
+    displayText = 'RESTART RAVELOX'
+    if gSystemCommandCounter > 0:
+      displayData.drawReboot()
+    command = "/usr/bin/sudo systemctl restart raveloxmidi.service"      
   elif code == 6:
     #Set as Access Point
     displayText = "Local Network"
