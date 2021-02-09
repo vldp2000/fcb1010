@@ -377,7 +377,7 @@ def executeSystemCommand(code):
     if gSystemCommandCounter > 0:
       displayData.drawReboot()
     command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
- elif code == 3:
+  elif code == 3:
     #reboot RPi
     displayText = 'RESTART FCB1010'
     if gSystemCommandCounter > 0:
