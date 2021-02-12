@@ -861,15 +861,28 @@ def getActionForReceivedMessage(midiMsg):
       # printDebug(">>2--")
       return
     elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
-      if msg2 == 11:
-        resyncWithGigController()  ## press pedal 3 times to resync
-      elif msg2 == 12:
-        isReloadRequired()  ## press pedal 3 times to reload data
 
-      elif msg2 == 13: #pedal 3 #Second Volume pedal sends messages to ch 1
+      if msg2 == 11:
+        clearScreenDebug()
+        setSongProgram(0)
+      elif msg2 == 12:
+        clearScreenDebug()
+        setSongProgram(1)
+      elif msg2 == 13:
+        clearScreenDebug()
+        setSongProgram(2)
+      elif msg2 == 14:
+        clearScreenDebug()
+        setSongProgram(3)
+
+      #elif msg2 == 16:
+      #  resyncWithGigController()  ## press pedal 3 times to resync
+      #elif msg2 == 17:
+      #  isReloadRequired()  ## press pedal 3 times to reload data
+      elif msg2 == 18: #pedal 3 #Second Volume pedal sends messages to ch 1
         setPedal1Value()
         #gPedal2_Channel = gChannel1
-      elif  msg2 == 14: #pedal 4 #Second Volume pedal sends messages to ch 2
+      elif  msg2 == 19: #pedal 4 #Second Volume pedal sends messages to ch 2
         setPedal2Value()
         #gPedal2_Channel = gChannel2
 
@@ -877,18 +890,6 @@ def getActionForReceivedMessage(midiMsg):
         clearScreenDebug()
         selectPreviousSong()
         setSongProgram(0)
-      elif msg2 == 16:
-        clearScreenDebug()
-        setSongProgram(0)
-      elif msg2 == 17:
-        clearScreenDebug()
-        setSongProgram(1)
-      elif msg2 == 18:
-        clearScreenDebug()
-        setSongProgram(2)
-      elif msg2 == 19:
-        clearScreenDebug()
-        setSongProgram(3)
       elif msg2 == 20:
         clearScreenDebug()
         selectNextSong()
