@@ -388,7 +388,7 @@ def executeSystemCommand(code):
     displayText = 'RESTART RAVELOX'
     if gSystemCommandCounter > 0:
       displayData.drawReboot()
-    command = "/usr/bin/sudo systemctl restart raveloxmidi.service"      
+    command = "/usr/bin/sudo systemctl restart raveloxmidi.service fcb1010.service"      
   elif code == 6:
     #Set as Access Point
     displayText = "Local Network"
