@@ -17,7 +17,7 @@ SPI_PORT = 0
 SPI_DEVICE = 0
 
 g_Disp = None
-g_DisplayInitialised = 0
+g_DisplayInitialised = False
 g_RaveloxmidiStatus = 0
 g_MessageAPIStatus = 0
 g_DataAPIStatus = 0
@@ -36,16 +36,16 @@ g_ProgramName = ''
 def initDisplay():
 
   global g_Disp
+  global g_DisplayInitialised
   try:
     g_Disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
     # Initialize library.
     g_Disp.begin()
-    g_DisplayInitialised = 1
+    g_Disp.clear()
+    g_Disp.display()
+    g_DisplayInitialised = True
   except:
-    g_DisplayInitialised = 0
-  # Clear display.
-  g_Disp.clear()
-  g_Disp.display()
+    g_DisplayInitialised = False
 
 
 # First define some constants to allow easy resizing of shapes.
@@ -53,7 +53,8 @@ def initDisplay():
 #  bottom = height-top
 
 def clearScreen():
-  return
+  if not g_DisplayInitialised:
+    return
   global g_Disp
   # Create blank image for drawing.
   # Make sure to create image with mode '1' for 1-bit color.
@@ -169,7 +170,9 @@ def drawScreen():
   ##time.sleep(.1)
 
 def drawShutdown():
-  return
+  if not g_DisplayInitialised:
+    return
+  
   global g_Disp
   
   g_Disp.clear()
@@ -187,7 +190,9 @@ def drawShutdown():
   g_Disp.display()
 
 def drawReboot():
-  return
+  if not g_DisplayInitialised:
+    return
+
   global g_Disp
 
   g_Disp.clear()
@@ -200,7 +205,8 @@ def drawReboot():
   time.sleep(2)
 
 def drawSysCommand(textValue):
-  return
+  if not g_DisplayInitialised:
+    return
   global g_Disp
   image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
