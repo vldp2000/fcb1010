@@ -17,7 +17,7 @@ SPI_PORT = 0
 SPI_DEVICE = 0
 
 g_Disp = None
-
+g_DisplayInitialised = 0
 g_RaveloxmidiStatus = 0
 g_MessageAPIStatus = 0
 g_DataAPIStatus = 0
@@ -34,11 +34,15 @@ g_ProgramName = ''
 # Note you can change the I2C address by passing an i2c_address parameter like:
 
 def initDisplay():
-  global g_Disp
-  g_Disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
-  # Initialize library.
-  g_Disp.begin()
 
+  global g_Disp
+  try:
+    g_Disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
+    # Initialize library.
+    g_Disp.begin()
+    g_DisplayInitialised = 1
+  except:
+    g_DisplayInitialised = 0
   # Clear display.
   g_Disp.clear()
   g_Disp.display()
@@ -49,6 +53,7 @@ def initDisplay():
 #  bottom = height-top
 
 def clearScreen():
+  return
   global g_Disp
   # Create blank image for drawing.
   # Make sure to create image with mode '1' for 1-bit color.
@@ -89,6 +94,7 @@ def setMacBookStatus(status):
   g_MacBookStatus = status
  
 def drawScreen():
+  return
   global g_Disp
   global g_RaveloxmidiStatus
   global g_MessageAPIStatus
@@ -163,6 +169,7 @@ def drawScreen():
   ##time.sleep(.1)
 
 def drawShutdown():
+  return
   global g_Disp
   
   g_Disp.clear()
@@ -180,6 +187,7 @@ def drawShutdown():
   g_Disp.display()
 
 def drawReboot():
+  return
   global g_Disp
 
   g_Disp.clear()
@@ -192,6 +200,7 @@ def drawReboot():
   time.sleep(2)
 
 def drawSysCommand(textValue):
+  return
   global g_Disp
   image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
