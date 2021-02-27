@@ -95,7 +95,8 @@ def setMacBookStatus(status):
   g_MacBookStatus = status
  
 def drawScreen():
-  return
+  if not g_DisplayInitialised:
+    return
   global g_Disp
   global g_RaveloxmidiStatus
   global g_MessageAPIStatus
