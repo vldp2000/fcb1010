@@ -960,19 +960,19 @@ def getListOfRaveloxMidiClients():
   data = ''
   result = ''
   gRaveloxClient.sendall( bytes )
-  loopFlag = True
+
   x = 0
-  while loopFlag:
+  while True:
     try:
       data,addr = gRaveloxClient.recvfrom(8192)
-      result = dataHelper.unicodetoASCII(str(data))
+      if data:
+        result = dataHelper.unicodetoASCII(str(data))
+        break
     except:
       pass
-    if data:
+    sleep(MIN_DELAY)
+    if (x > 5):
       break
-    sleep(MIN_DELAY / 2.0)
-    if (x > 100):
-      loopFlag = False
     x = x + 1   
   #----  
   if result.find("Vlad-iPad") > -1:
@@ -987,8 +987,6 @@ def getListOfRaveloxMidiClients():
   displayData.drawScreen()
   printDebug(result)
 #----------------------------------------------------------------
-
-
 #----------------------------------------------------------------
 #----------------------------------------------------------------
 
