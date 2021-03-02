@@ -35,14 +35,15 @@ def getScheduledGigId():
 def getGig(id):
   # print('----------------------------------------------------')
   URL = API_URL + "/gig/"+str(id)
+  pprint.pprint(URL)
   # PARAMS = {'id':id} 
   # response = requests.get(url = URL, params = PARAMS) 
   response = requests.get(url = URL) 
-  # pprint.pprint(response)
-  # print('----------------------------------------------------')
+  pprint.pprint(response)
+  print('----------------------------------------------------')
   data = response.json()
   if len(data) > 0:
-    # pprint.pprint(data)
+    pprint.pprint(data)
     gig = Gig(**data)
     return gig
 #----------------------------------------------------------------
