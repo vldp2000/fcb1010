@@ -87,7 +87,7 @@ def loadScheduledGig():
   gig = dataController.getGig(id)
 
   print(' >>>> returned  Gig   <<<<')
-  pprint.pprint(gig.__dict__)
+  print(gig.id)
   print('----------------------------------------------------')
   return gig
 
