@@ -45,6 +45,7 @@ import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 
 import displayData
+import myutils
 
 #################################################################
 class raveloxBackgroundThread (threading.Thread):
@@ -69,14 +70,9 @@ gExitFlag = False
 gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
-gGig = {}
 gSelectedGigId = -1
-
-gSongList = []
-gSongDict = {}
-
-gGigSongList = []
-gBankSongList = []
+gGig = {}
+gCurrentSong = {}
 
 gInstrumentChannelDict = {}
 gPresetDict= {}
@@ -84,8 +80,6 @@ gInstrumentBankDict = {}
 
 gDebugMessageCounter = 0
 gMode = 'Live'
-gPlaySongFromSelectedGigOnly = True
-gCurrentBank = -1
 
 gCurrentSongIdx = -1
 gCurrentSongId = -1
@@ -120,9 +114,15 @@ gLastGuitar2Volume = 0
 gSystemCommandCounter = 0
 gSystemCommandCode = -1
 
+
+def printDebug(message):
+      global gMode
+  if gMode == 'Debug':
+    print(message)
+
+
+
 sio = socketio.Client()
-
-
 #---SOCKET--CLIENT-------------
 @sio.event
 def connect():
@@ -260,10 +260,6 @@ def sendSyncNotificationMessage(bankId, songId, programIdx):
   # print(SYNC_MESSAGE + "=" +  jsonStr)
 #----------------------------------------------------------------
 
-def printDebug(message):
-  global gMode
-  if gMode == 'Debug':
-    print(message)
 
 def clearScreenDebug():
   global gMode
@@ -275,15 +271,12 @@ def clearScreenDebug():
 
 #----------------------------------------------------------------
 def loadAllData():
+  global gSelectedGigId
   global gGig
-  global gSongDict
-  global gSongList
   global gGigSongList
   global gInstrumentChannelDict
-  global gPresetDict
   global gInstrumentBankDict
-  global gBankSongList
-  global gSelectedGigId
+  global gPresetDict
 
   printDebug(' << Load All Data >>')
   if gGig != None and hasattr('gGig', 'shortSongList') :
@@ -297,24 +290,13 @@ def loadAllData():
     gPresetDict.clear()
   if gGigSongList != None:
     gGigSongList.clear()
-  if gSongList != None:
-    gSongList.clear()
-  if gSongDict != None:
-    gSongDict.clear()
-  if gBankSongList != None:
-    gBankSongList.clear()
+  
   try:
     gGig = dataHelper.loadScheduledGig()
     gSelectedGigId = gGig.id
     #printDebug(gGig.shortSongList)
 
-    gSongDict = dataHelper.loadSongs()
-    #printDebug(gSongDict)
-
-    gSongList = dataHelper.initAllSongs(gSongDict)
-    #printDebug(gSongList)
-
-    gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
+    #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     gInstrumentChannelDict = dataHelper.initInstruments()
     gPresetDict = dataHelper.initPresets()
     gInstrumentBankDict = dataHelper.initInstrumentBanks()
@@ -327,32 +309,6 @@ def loadAllData():
     print ('<< Exception. loadAllData >>')
 #----------------------------------------------------------------
 
-def isReloadRequired():
-  global gReloadCounter
-  global gCurrentBank
-  global gCurrentSongIdx
-  global gCurrentSongId
-  global gCurrentProgramIdx
-
-  printDebug(f' -- >>  ReloadRequired{gReloadCounter}')
-  if gReloadCounter < 2:
-    gReloadCounter = gReloadCounter + 1
-  else:
-    loadAllData()
-    gReloadCounter = 0
-
-    sleep(0.5)
-    gCurrentBank = -1
-    checkCurrentBank(1)    
-
-    if len(gBankSongList) > 0:
-      setSong(gCurrentSongId)
-      gCurrentProgramIdx = 0
-      setSongProgram(gCurrentProgramIdx)
-    else:
-      printDebug('len(gBankSongList) = 0')
-
-#----------------------------------------------------------------
 
 def executeSystemCommand(code):
   global gExitFlag
@@ -389,26 +345,28 @@ def executeSystemCommand(code):
     if gSystemCommandCounter > 0:
       displayData.drawReboot()
     command = "/usr/bin/sudo systemctl restart raveloxmidi.service fcb1010.service"      
-  elif code == 6:
+
+  #elif code == 6:
     #Set as Access Point
-    displayText = "Local Network"
-    command = "/usr/bin/sudo /home/pi/sys/net_local.sh"
-  elif code == 7:
+    #displayText = "Local Network"
+    #command = "/usr/bin/sudo /home/pi/sys/net_local.sh"
+  #elif code == 7:
     #Set as Access Point
-    displayText = 'Access Point'
-    command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
-  elif code == 8:
+    #displayText = 'Access Point'
+    #command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
+  #elif code == 8:
     #connect to home network
-    displayText = 'VP NET'
-    command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
-  elif code == 9:
+    #displayText = 'VP NET'
+    #command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
+  #elif code == 9:
     #connect to iPhone
-    displayText = 'VP iPhone'
-    command = "/usr/bin/sudo /home/pi/sys/net_phone.sh"
-  elif code == 10:
+    #displayText = 'VP iPhone'
+    #command = "/usr/bin/sudo /home/pi/sys/net_phone.sh"
+  #elif code == 10:
     #connect to GZ Sphera
-    displayText = 'GZ Sphera'
-    command = "/usr/bin/sudo /home/pi/sys/net_sphera.sh"
+    #displayText = 'GZ Sphera'
+    #command = "/usr/bin/sudo /home/pi/sys/net_sphera.sh"
+
   else:
     printDebug("ExecuteSystemCommand. Unknown command")
     return
@@ -613,52 +571,6 @@ def unmuteChannel(channel, volume, delay, step):
   sendRaveloxCCMessage(channel, VOLUME_CC, volume )
 
 #----------------------------------------------------------------
-
-def checkCurrentBank(bank):
-  global gCurrentBank
-  global gPlaySongFromSelectedGigOnly
-  global gBankSongList
-  global gGigSongList
-  global gSongList
-  global gGig
-  global gSelectedGigId 
-
-  if gCurrentBank != bank:
-    if bank == 1:
-      gPlaySongFromSelectedGigOnly = True
-      gCurrentBank = bank
-      gBankSongList = gGigSongList
-      gSelectedGigId = gGig.id
-    else:
-      gPlaySongFromSelectedGigOnly = False
-      gCurrentBank = 2
-      gBankSongList = gSongList
-      gSelectedGigId = -1
-
-    sendGigNotificationMessage(gSelectedGigId)
-
-#----------------------------------------------------------------
-
-def resyncWithGigController():
-  global gResyncCounter
-  global gCurrentSongIdx
-  global gCurrentSongId
-  global gCurrentProgramIdx
-  global gSelectedGigId 
-
-  global gSystemCommandCounter
-  gSystemCommandCounter = 0
-
-  if gResyncCounter < 2:
-    gResyncCounter = gResyncCounter + 1
-  else:
-    gCurrentSongId = gBankSongList[gCurrentSongIdx].id
-    printDebug(f'== gig == {gSelectedGigId}')
-    printDebug(f'== song == {gCurrentSongId}')
-    printDebug(f'-- Prog -- {gCurrentProgramIdx}') 
-    sendSyncNotificationMessage( gSelectedGigId, gCurrentSongId, gCurrentProgramIdx)
-    gResyncCounter = 0
-
 #----------------------------------------------------------------
 #----------------------------------------------------------------
 
@@ -673,8 +585,7 @@ def setSongProgram(idx):
 
   gCurrentProgramIdx = idx
 
-  song = gBankSongList[gCurrentSongIdx]
-  program = song.programList[idx]
+  program = gCurrentSong.programList[idx]
   #printDebug(program['name'])
   #printDebug(program['tytle'])
 
@@ -737,52 +648,38 @@ def setPreset(program, songPreset):
 
 #----------------------------------------------------------------
 
-def selectNextSong():
+def selectNextSong(step):
+  global gGig
+  global gCurrentSong
   global gCurrentSongIdx
-  global gBankSongList
   global gSelectedGigId
   global gCurrentSongId
-  
   global gSystemCommandCounter
+
   gSystemCommandCounter = 0
-
-  if gCurrentSongIdx + 1 < len(gBankSongList):
-    gCurrentSongIdx = gCurrentSongIdx + 1
+  
+  if step > 0:
+    if gCurrentSongIdx + 1 < len(gGig.shortSongList):
+      gCurrentSongIdx = gCurrentSongIdx + 1
+    else:
+      gCurrentSongIdx = 0
   else:
-    gCurrentSongIdx = 0
+    if gCurrentSongIdx - 1 > -1:
+      gCurrentSongIdx = gCurrentSongIdx - 1
+    else: 
+      gCurrentSongIdx = len(gBankSongList) - 1
 
-  sendGigNotificationMessage(gSelectedGigId)
-  gCurrentSongId = gBankSongList[gCurrentSongIdx].id
+  #sendGigNotificationMessage(gSelectedGigId)
+  gCurrentSongId = gGig.shortSongList[gCurrentSongIdx].id
   sendSongNotificationMessage(gCurrentSongId)
   
-  name = gBankSongList[gCurrentSongIdx].name
-  printDebug("next song " + gBankSongList[gCurrentSongIdx].name)
-
+  gCurrentSong = dataController.getSong(gCurrentSongId)
+  name = gCurrentSong.name
+  printDebug("next song " +name)
   displayData.setSongName(f"{gCurrentSongIdx}.{name}")
   #displayData.drawScreen()
 #----------------------------------------------------------------
 
-def selectPreviousSong():
-  global gCurrentSongIdx
-  global gCurrentSongId
-  global gBankSongList
-  global gSelectedGigId
-
-  if gCurrentSongIdx - 1 > -1:
-    gCurrentSongIdx = gCurrentSongIdx - 1
-  else: 
-    gCurrentSongIdx = len(gBankSongList) - 1
-
-  sendGigNotificationMessage(gSelectedGigId)  
-  gCurrentSongId = gBankSongList[gCurrentSongIdx].id
-  sendSongNotificationMessage(gCurrentSongId)
-  name = gBankSongList[gCurrentSongIdx].name
-
-  printDebug("previous song " + name)
-
-  displayData.setSongName(f"{gCurrentSongIdx}.{name}")
-  #displayData.drawScreen()
-#----------------------------------------------------------------
 def setSong(id):
   global gCurrentSongIdx
   global gBankSongList
@@ -862,37 +759,34 @@ def getActionForReceivedMessage(midiMsg):
       return
     elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
 
-      if msg2 == 11:
+      if msg2 == 11: #Pedal1 
         clearScreenDebug()
         setSongProgram(0)
-      elif msg2 == 12:
+      elif msg2 == 12: #Pedal2
         clearScreenDebug()
         setSongProgram(1)
-      elif msg2 == 13:
+      elif msg2 == 13: #Pedal3
         clearScreenDebug()
         setSongProgram(2)
-      elif msg2 == 14:
+      elif msg2 == 14: #Pedal4
         clearScreenDebug()
         setSongProgram(3)
 
-      #elif msg2 == 16:
-      #  resyncWithGigController()  ## press pedal 3 times to resync
-      #elif msg2 == 17:
-      #  isReloadRequired()  ## press pedal 3 times to reload data
-      elif msg2 == 18: #pedal 3 #Second Volume pedal sends messages to ch 1
+
+      elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
         setPedal1Value()
         #gPedal2_Channel = gChannel1
-      elif  msg2 == 19: #pedal 4 #Second Volume pedal sends messages to ch 2
+      elif  msg2 == 19: #pedal 9 #Second Volume pedal sends messages to ch 2
         setPedal2Value()
         #gPedal2_Channel = gChannel2
 
-      elif msg2 == 15:
+      elif msg2 == 15: #Pedal5
         clearScreenDebug()
-        selectPreviousSong()
+        selectNextSong(-1)
         setSongProgram(0)
-      elif msg2 == 20:
+      elif msg2 == 20: #Pedal10
         clearScreenDebug()
-        selectNextSong()
+        selectNextSong(1)
         setSongProgram(0)
 
       # gSynthTest = 0
@@ -1053,14 +947,13 @@ printDebug("Everything ready now...")
 
 getListOfRaveloxMidiClients()
 
-sleep(1)
+sleep(MIN_DELAY)
 loadAllData()
-sleep(1)
-checkCurrentBank(1)
+sleep(MIN_DELAY)
 
 if len(gBankSongList) > 0:
   gCurrentSongIdx = -1
-  selectNextSong()
+  selectNextSong(1)
   gCurrentProgramIdx = 0
   setSongProgram(gCurrentProgramIdx)
 
