@@ -958,7 +958,7 @@ sleep(MIN_DELAY)
 loadAllData()
 sleep(MIN_DELAY)
 
-if gGig.shortSongList.count > 0:
+if len(gGig.shortSongList) > 0:
   gCurrentSongIdx = -1
   selectNextSong(1)
   gCurrentProgramIdx = 0
