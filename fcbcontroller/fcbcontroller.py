@@ -298,7 +298,8 @@ def loadAllData():
   try:
     gGig = dataHelper.loadScheduledGig()
     gSelectedGigId = gGig.id
-    #printDebug(gGig.shortSongList)
+    printDebug(gGig)
+    printDebug(gGig.shortSongList)
 
     #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     gInstrumentChannelDict = dataHelper.initInstruments()
