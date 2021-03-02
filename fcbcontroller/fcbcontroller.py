@@ -114,9 +114,9 @@ gLastGuitar2Volume = 0
 gSystemCommandCounter = 0
 gSystemCommandCode = -1
 
-
+#---Print Debug utility-------------
 def printDebug(message):
-      global gMode
+  global gMode
   if gMode == 'Debug':
     print(message)
 
