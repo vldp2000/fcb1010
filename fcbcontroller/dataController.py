@@ -23,6 +23,7 @@ def getSongList():
 def getScheduledGigId():
   gigId = -1
   response = requests.get(API_URL + '/currentgig')
+  pprint.pprint(response)
   data = response.json()
   if len(data) > 0:
     gigId = data['id']
