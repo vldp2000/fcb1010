@@ -299,8 +299,8 @@ def loadAllData():
 
   try:
     gGig = dataHelper.loadScheduledGig()
-    gSelectedGigId = gGig.id
     printDebug(gGig)
+    gSelectedGigId = gGig.id
     printDebug(gGig.shortSongList)
 
     #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
