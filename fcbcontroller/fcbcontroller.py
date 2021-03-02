@@ -72,6 +72,7 @@ gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 #Global Variables
 gSelectedGigId = -1
 gGig = {}
+
 gCurrentSong = {}
 
 gInstrumentChannelDict = {}
@@ -273,7 +274,7 @@ def clearScreenDebug():
 def loadAllData():
   global gSelectedGigId
   global gGig
-  global gGigSongList
+  global gCurrentSong
   global gInstrumentChannelDict
   global gInstrumentBankDict
   global gPresetDict
@@ -282,9 +283,11 @@ def loadAllData():
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
     gGig = None
+    
   if gCurrentSong != None :
     #gCurrentSong.programList.clear()
     gCurrentSong = None
+
   if gInstrumentChannelDict != None:
     gInstrumentChannelDict.clear()
   if gInstrumentBankDict != None:
