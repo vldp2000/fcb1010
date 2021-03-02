@@ -44,7 +44,7 @@ def getGig(id):
   data = response.json()
   pprint.pprint(data)
   if len(data) > 0:
-    gig = Gig(**data)
+    gig = Gig(data)
     pprint.pprint(gig)
     return gig
 #----------------------------------------------------------------
