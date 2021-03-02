@@ -282,7 +282,7 @@ def loadAllData():
   printDebug(' << Load All Data >>')
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
-    gGig = None
+  gGig = None
 
   if gCurrentSong != None :
     #gCurrentSong.programList.clear()
@@ -295,6 +295,8 @@ def loadAllData():
   if gPresetDict != None:
     gPresetDict.clear()
   
+  printDebug(' << All objects and collections are cleared>>')
+
   try:
     gGig = dataHelper.loadScheduledGig()
     gSelectedGigId = gGig.id

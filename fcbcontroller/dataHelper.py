@@ -85,7 +85,7 @@ def loadScheduledGig():
   printDebug ('Current id = ',id)
 
   gig = dataController.getGig(id)
-  # pprint.pprint(gig)
+  pprint.pprint(gig)
   return gig
 
 #----------------------------------------------------------------
