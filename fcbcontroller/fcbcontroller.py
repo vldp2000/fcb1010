@@ -666,16 +666,17 @@ def selectNextSong(step):
   gSystemCommandCounter = 0
   
   if step > 0:
-    if gCurrentSongIdx + 1 < len(gGig.shortSongList):
-      gCurrentSongIdx = gCurrentSongIdx + 1
+    if gCurrentSongIdx + step < len(gGig.shortSongList):
+      gCurrentSongIdx = gCurrentSongIdx + step
     else:
       gCurrentSongIdx = 0
   else:
-    if gCurrentSongIdx - 1 > -1:
-      gCurrentSongIdx = gCurrentSongIdx - 1
+    if gCurrentSongIdx - step > -1:
+      gCurrentSongIdx = gCurrentSongIdx - step
     else: 
       gCurrentSongIdx = len(gBankSongList) - 1
-
+  
+  printDebug(gCurrentSongIdx) 
   #sendGigNotificationMessage(gSelectedGigId)
   gCurrentSongId = gGig.shortSongList[gCurrentSongIdx].id
   sendSongNotificationMessage(gCurrentSongId)
