@@ -678,7 +678,7 @@ def selectNextSong(step):
   
   printDebug(gCurrentSongIdx) 
   #sendGigNotificationMessage(gSelectedGigId)
-  gCurrentSongId = gGig.shortSongList[gCurrentSongIdx].["id"]
+  gCurrentSongId = gGig.shortSongList[gCurrentSongIdx]["id"]
   sendSongNotificationMessage(gCurrentSongId)
   
   gCurrentSong = dataController.getSong(gCurrentSongId)
