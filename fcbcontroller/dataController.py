@@ -25,6 +25,7 @@ def getScheduledGigId():
   response = requests.get(API_URL + '/currentgig')
   pprint.pprint(response)
   data = response.json()
+  pprint.pprint(data)
   if len(data) > 0:
     gigId = data['id']
   return gigId
