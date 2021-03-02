@@ -299,7 +299,7 @@ def loadAllData():
 
   try:
     gGig = dataHelper.loadScheduledGig()
-    printDebug(gGig)
+    print(gGig)
     gSelectedGigId = gGig.id
     printDebug(gGig.shortSongList)
 

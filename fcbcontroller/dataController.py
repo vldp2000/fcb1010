@@ -28,6 +28,7 @@ def getScheduledGigId():
   pprint.pprint(data)
   if len(data) > 0:
     gigId = data['id']
+    pprint.pprint(gigId)
   return gigId
 #----------------------------------------------------------------
 
