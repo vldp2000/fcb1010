@@ -49,6 +49,9 @@ def getGig(id):
     pprint.pprint(gig.__dict__)
     print('----------------------------------------------------')
     return gig
+  else:  
+    print(' Error. no GIG selected !!!!!!!!!-------------------')
+
 #----------------------------------------------------------------
 
 def getPresets():
