@@ -80,9 +80,9 @@ def reloadSong(allSongs, id):
 
 #----------------------------------------------------------------
 def loadScheduledGig():
-  global gGig
+  #global gGig
   id = dataController.getScheduledGigId()
-  printDebug ('Current id = ',id)
+  printDebug ('Current Gig id = ',id)
 
   gig = dataController.getGig(id)
   pprint.pprint(gig)
