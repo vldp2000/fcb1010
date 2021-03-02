@@ -283,7 +283,7 @@ def loadAllData():
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
     gGig = None
-    
+
   if gCurrentSong != None :
     #gCurrentSong.programList.clear()
     gCurrentSong = None
@@ -955,7 +955,7 @@ sleep(MIN_DELAY)
 loadAllData()
 sleep(MIN_DELAY)
 
-if len(gBankSongList) > 0:
+if len(gGig.shortSongList) > 0:
   gCurrentSongIdx = -1
   selectNextSong(1)
   gCurrentProgramIdx = 0
