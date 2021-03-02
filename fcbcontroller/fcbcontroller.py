@@ -282,14 +282,15 @@ def loadAllData():
   if gGig != None and hasattr('gGig', 'shortSongList') :
     gGig.shortSongList.clear()
     gGig = None
+  if gCurrentSong != None :
+    #gCurrentSong.programList.clear()
+    gCurrentSong = None
   if gInstrumentChannelDict != None:
     gInstrumentChannelDict.clear()
   if gInstrumentBankDict != None:
     gInstrumentBankDict.clear()
   if gPresetDict != None:
     gPresetDict.clear()
-  if gGigSongList != None:
-    gGigSongList.clear()
   
   try:
     gGig = dataHelper.loadScheduledGig()
