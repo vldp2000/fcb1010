@@ -14,13 +14,19 @@ class Gig(object):
   name = "",
   gigdate = "",
   shortSongList = []
-  def __init__(self, **entries):
+  #def __init__(self, **entries):
     #self.shortSongList=[]
-    self.__dict__.update(entries)
+    #self.__dict__.update(entries)
+  def __init__(self, aDict):    
+    self.__dict__.update(aDict)
+    for k, v in aDict.items():
+      if isinstance(v, dict):
+        self.__dict__[k] = Gig(v)
+
   def getId(self):
-      return self.id
+    return self.id
   def getSongs(self):
-      return self.shortSongList    
+    return self.shortSongList    
 
 #-----Song-----------------------------------------------------------
 class Song(object):
@@ -33,9 +39,9 @@ class Song(object):
     self.programList=[]
     self.__dict__.update(entries)
   def getId(self):
-      return self.id
+    return self.id
   def getPrograms(self):
-      return self.programList     
+    return self.programList     
 
 #----------------------------------------------------------------
 class Program(object):
@@ -47,9 +53,9 @@ class Program(object):
   def __init__(self, **entries):
     self.__dict__.update(entries)
   def getId(self):
-      return self.id
+    return self.id
   def getPresets(self):
-      return self.presetList     
+    return self.presetList     
   def __init__(self, id, name, midipedal):
     self.id = id
     self.name = name
