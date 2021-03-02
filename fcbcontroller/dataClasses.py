@@ -1,6 +1,6 @@
 import json
 
-#----------------------------------------------------------------
+#----BroadcastMessage------------------------------------------------------------
 class BroadcastMessage:
   message = "",
   messageType = ""
@@ -8,7 +8,7 @@ class BroadcastMessage:
     self.message = ms
     self.messageType = tp
 
-#----------------------------------------------------------------
+#-----Gig-----------------------------------------------------------
 class Gig(object):
   id = -1,
   name = "",
@@ -22,7 +22,7 @@ class Gig(object):
   def getSongs(self):
       return self.shortSongList    
 
-#----------------------------------------------------------------
+#-----Song-----------------------------------------------------------
 class Song(object):
   id = -1,
   name = "",
