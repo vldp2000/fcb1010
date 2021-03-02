@@ -15,10 +15,8 @@ class Gig(object):
   gigdate = "",
   shortSongList = []
   def __init__(self, **entries):
-    self.shortSongList=[]
-    for key, value in entries.iteritems():
-        setattr(self, key, value)
-    #self.__dict__.update(entries)
+    #self.shortSongList=[]
+    self.__dict__.update(entries)
   def getId(self):
       return self.id
   def getSongs(self):
