@@ -559,27 +559,27 @@ def loadAllData():
 
   try:
     gGig = dataHelper.loadScheduledGig()
-    if not gGig: # check if dictionary is not empty
+    if gGig: # check if dictionary is not empty
       print(gGig)
       gSelectedGigId = gGig["id"]
-      printDebug(gGig["shortSongList"])
+      pprint.pprint(gGig["shortSongList"])
     else:
       displayData.drawError("Gig not found")
       sleep(1)
     #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     
     gInstrumentChannelDict = dataHelper.initInstruments()
-    if gInstrumentChannelDict:
+    if not gInstrumentChannelDict:
       displayData.drawError("Instruments not found")
       sleep(1)
     
     gPresetDict = dataHelper.initPresets()
-    if gInstrumentChannelDict:
+    if not gInstrumentChannelDict:
       displayData.drawError("Presets not found")
       sleep(1)
       
     gInstrumentBankDict = dataHelper.initInstrumentBanks()
-    if gInstrumentChannelDict:
+    if not gInstrumentChannelDict:
       displayData.drawError("Banks not found")
       sleep(1)
 
@@ -615,6 +615,7 @@ def selectNextSong(step):
   printDebug(gCurrentSongIdx) 
   #sendGigNotificationMessage(gSelectedGigId)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
+  printDebug(id); 
   setCurrentSong(id)
   sendSongNotificationMessage(gCurrentSongId)
   
