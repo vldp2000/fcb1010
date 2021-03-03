@@ -46,7 +46,7 @@ import Adafruit_SSD1306
 
 import displayData
 import myutils
-import pprint
+#import pprint
 
 
 #################################################################
@@ -562,14 +562,13 @@ def loadAllData():
   try:
     gGig = dataHelper.loadScheduledGig()
     if gGig: # check if dictionary is not empty
-      print(gGig)
       gSelectedGigId = gGig["id"]
-      pprint.pprint(gGig["shortSongList"])
+      displayData.drawMessage("Gig loaded", gGig["name"])
+
     else:
       displayData.drawError("Gig not found")
-      sleep(1)
-    #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
-    
+    sleep(1.5)
+
     gInstrumentChannelDict = dataHelper.initInstruments()
     if not gInstrumentChannelDict:
       displayData.drawError("Instruments not found")
@@ -631,7 +630,7 @@ def setCurrentSong(id):
 
   try:
     gCurrentSong = dataController.getSong(id)
-    pprint.pprint(gCurrentSong)
+    #pprint.pprint(gCurrentSong)
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]

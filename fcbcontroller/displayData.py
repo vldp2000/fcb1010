@@ -240,12 +240,20 @@ def drawError(textValue):
   g_Disp.image(image)
   g_Disp.display()
 
+def drawMessage(headerValue,textValue):
+  global g_Disp
 
-# vcgencmd measure_volts
-###volt=1.2000V
-# vcgencmd measure_temp
-## temp=40.1'C
-# vcgencmd get_mem arm
-##arm=960M
-# vcgencmd get_mem gpu
-##gpu=64M
+  if not g_DisplayInitialised:
+    return
+  image = Image.new('1', (128, 64))
+  # Get drawing object to draw on image.
+  draw = ImageDraw.Draw(image)
+  
+  font1 = ImageFont.truetype('RetroGaming.ttf', 16)
+  font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
+
+  draw.text((1, 1), headerValue, font=font1, fill=255)
+  draw.text((1, 30), textValue,  font=font2, fill=255)
+
+  g_Disp.image(image)
+  g_Disp.display()

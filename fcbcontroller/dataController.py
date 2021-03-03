@@ -1,7 +1,7 @@
 import requests
 import json
 
-import pprint
+#import pprint
 
 from dataClasses import *
 from config import *
@@ -11,31 +11,31 @@ from config import *
 def getScheduledGigId():
   gigId = -1
   response = requests.get(API_URL + '/currentgig')
-  pprint.pprint(response)
+  #pprint.pprint(response)
   data = response.json()
-  pprint.pprint(data)
+  #pprint.pprint(data)
   if len(data) > 0:
     gigId = data['id']
-    pprint.pprint(gigId)
+    #pprint.pprint(gigId)
   return gigId
 #----------------------------------------------------------------
 
 def getGig(id):
   # print('----------------------------------------------------')
   URL = API_URL + "/gig/"+str(id)
-  pprint.pprint(URL)
+  #pprint.pprint(URL)
   # PARAMS = {'id':id} 
   # response = requests.get(url = URL, params = PARAMS) 
   response = requests.get(url = URL) 
-  pprint.pprint(response)
-  print('----------------------------------------------------')
+  #pprint.pprint(response)
+  #print('----------------------------------------------------')
   data = response.json()
-  pprint.pprint(data)
-  print('----------------------------------------------------')
+  #pprint.pprint(data)
+  #print('----------------------------------------------------')
   if len(data) > 0:
     return data
   else:  
-    print(' Error. no GIG selected !!!!!!!!!-------------------')
+    #print(' Error. no GIG selected !!!!!!!!!-------------------')
     return {}
 
 #----------------------------------------------------------------

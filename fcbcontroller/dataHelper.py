@@ -41,35 +41,13 @@ def getSong(id):
   #for i in range(4):
     #print ('-----------------------')
     #print (data['programList'][i])
-
-"""     program = song.programList[i]
-    programNew = data['programList'][i]
-    for x in range(4):
-      program['presetList'][x]['volume'] = programNew['presetList'][x]['volume']
-      program['presetList'][x]['delayflag'] = programNew['presetList'][x]['delayflag']
-      program['presetList'][x]['delayvalue'] = programNew['presetList'][x]['delayvalue']   
-      program['presetList'][x]['modeflag'] = programNew['presetList'][x]['modeflag']
-      program['presetList'][x]['muteflag'] = programNew['presetList'][x]['muteflag']
-      program['presetList'][x]['pan'] = programNew['presetList'][x]['pan']
-      program['presetList'][x]['refinstrumentbank'] = programNew['presetList'][x]['refinstrumentbank']
-      program['presetList'][x]['refpreset'] = programNew['presetList'][x]['refpreset']
-      program['presetList'][x]['refsongprogram'] = programNew['presetList'][x]['refsongprogram']
-      program['presetList'][x]['reverbflag'] = programNew['presetList'][x]['reverbflag']
-      program['presetList'][x]['reverbvalue'] = programNew['presetList'][x]['reverbvalue']
- """      #print(program['presetList'][x]['id'])
-      #print(programNew['presetList'][x]['id'])
-
 #----------------------------------------------------------------
 def loadScheduledGig():
   #global gGig
   id = dataController.getScheduledGigId()
-  print('Current Gig id = ',id)
+  #print('Current Gig id = ',id)
 
   gig = dataController.getGig(id)
-
-  print(' >>>> returned  Gig   <<<<')
-  print(gig["id"])
-  print('----------------------------------------------------')
   return gig
 
 #----------------------------------------------------------------
@@ -78,7 +56,7 @@ def findIndexById(list, id):
     idx = [x.id for x in list].index(id)
   except ValueError:
     idx = -1
-  print(idx)
+  #print(idx)
   return idx
 
 def unicodetoASCII(textValue):
