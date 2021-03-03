@@ -617,9 +617,9 @@ def selectNextSong(step):
   printDebug(gCurrentSongIdx) 
   #sendGigNotificationMessage(gSelectedGigId)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
-  printDebug(id); 
+  printDebug(f"Selected song. id={id}"); 
   setCurrentSong(id)
-  sendSongNotificationMessage(gCurrentSongId)
+  sendSongNotificationMessage(id)
   
   #displayData.drawScreen()
 #----------------------------------------------------------------
@@ -762,12 +762,6 @@ def getActionForReceivedMessage(midiMsg):
   msgParameter = midiMsg[1]
   channel=-1
 
-  printDebug(" >> midiMsg <<")
-  printDebug(msg0)
-  printDebug(msg1)
-  printDebug(msg2)
-  printDebug("-------------------")
-
 #System events
 #FCB1010 has 10 banks 0..9
 #Banks 0..3 are set to control the external Midi Devices. 
@@ -864,8 +858,8 @@ def getMidiMsg(midiInput):
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
-        printDebug("..... MIDI MSG received")
-        printDebug(msg)
+        #printDebug("..... MIDI MSG received")
+        #printDebug(msg)
         getActionForReceivedMessage(msg)  
         #sleep(0.002)
       keepAliveCounter = 0
