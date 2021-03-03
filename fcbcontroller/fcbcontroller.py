@@ -152,8 +152,7 @@ def disconnect():
 def processSongMessage(id):
   global gSongDict
   printDebug(f"VIEW_SONG_MESSAGE ID:  {id}")
-  dataHelper.reloadSong(gSongDict, id)
-  setSong(id)
+  setCurrentSong(id)
 
 #==
 @sio.on('VIEW_PROGRAM_MESSAGE')
@@ -168,23 +167,22 @@ def processPresetVolumeMessage(payload):
   global gInstrumentChannelDict
   global gCurrentSongId
   global gCurrentSongIdx
+  global gCurrentSong
   global gCurrentPresetId
   global gCurrentPreset
   global gCurrentProgramIdx
-
   global gSystemCommandCounter
+
   gSystemCommandCounter = 0
   # print(payload)
-
   # print('gCurrentSongId ', gCurrentSongId)
   # print('gCurrentSongIdx ', gCurrentSongIdx)
   # print('gCurrentPresetId ', gCurrentPresetId)
   # print('gCurrentProgramIdx ', gCurrentProgramIdx)
 
-  if payload['songId'] == gCurrentSongId and payload['programIdx'] == gCurrentProgramIdx:
+  if payload['songId'] == gCurrentSongId and payload['programIdx'] == gCurrentProgramIdx and gCurrentSong:
     if payload['presetId'] != gCurrentPresetId:
-      song = gBankSongList[gCurrentSongIdx]
-      program = song["programList"][gCurrentProgramIdx]
+      program = gCurrentSong["programList"][gCurrentProgramIdx]
       # print(program)
       # print(' ?? Not the same Preset > ', gCurrentPresetId)
       # print(program['presetList'])
@@ -658,7 +656,7 @@ def setCurrentSong(id):
 def setSongProgram(idx):
   global gCurrentProgramIdx
   global gCurrentSongIdx
-  global gBankSongList
+  global gCurrentSong
   global gPedal1Value
   global gPedal2Value
   global gSystemCommandCounter
