@@ -45,12 +45,10 @@ def getGig(id):
   pprint.pprint(data)
   print('----------------------------------------------------')
   if len(data) > 0:
-    gig = Gig(data)
-    pprint.pprint(gig.__dict__)
-    print('----------------------------------------------------')
-    return gig
+    return data
   else:  
     print(' Error. no GIG selected !!!!!!!!!-------------------')
+    return {}
 
 #----------------------------------------------------------------
 

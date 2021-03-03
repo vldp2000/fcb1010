@@ -222,6 +222,24 @@ def drawSysCommand(textValue):
   g_Disp.image(image)
   g_Disp.display()
 
+def drawError(textValue):
+      if not g_DisplayInitialised:
+    return
+  global g_Disp
+  image = Image.new('1', (128, 64))
+  # Get drawing object to draw on image.
+  draw = ImageDraw.Draw(image)
+  
+  font1 = ImageFont.truetype('RetroGaming.ttf', 20)
+  font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
+
+  draw.text((1, 1), 'ERROR', font=font1, fill=255)
+  draw.text((1, 30), textValue,  font=font2, fill=255)
+
+  g_Disp.image(image)
+  g_Disp.display()
+
+
 # vcgencmd measure_volts
 ###volt=1.2000V
 # vcgencmd measure_temp

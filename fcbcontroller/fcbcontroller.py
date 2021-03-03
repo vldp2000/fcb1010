@@ -66,13 +66,12 @@ gQueueLock = None
 gProcessRaveloxMidi = True
 gUseNewRaveloxMidi = True
 gExitFlag = False
-
+gInitialisationComplete = False
 gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
 
 #Global Variables
 gSelectedGigId = -1
 gGig = {}
-
 gCurrentSong = {}
 
 gInstrumentChannelDict = {}
@@ -87,8 +86,6 @@ gCurrentSongId = -1
 gCurrentProgramIdx = -1
 gCurrentPresetId = -1
 gCurrentPreset = {}
-gReloadCounter = 0
-gResyncCounter = 0
 
 gRaveloxClient = None
 
@@ -270,50 +267,7 @@ def clearScreenDebug():
     print(f'               >> ----- {gDebugMessageCounter} -------<<' )
     gDebugMessageCounter = gDebugMessageCounter + 1
 
-#----------------------------------------------------------------
-def loadAllData():
-  global gSelectedGigId
-  global gGig
-  global gCurrentSong
-  global gInstrumentChannelDict
-  global gInstrumentBankDict
-  global gPresetDict
 
-  printDebug(' << Load All Data >>')
-  if gGig != None and hasattr('gGig', 'shortSongList') :
-    gGig.shortSongList.clear()
-  gGig = None
-
-  if gCurrentSong != None :
-    #gCurrentSong.programList.clear()
-    gCurrentSong = None
-
-  if gInstrumentChannelDict != None:
-    gInstrumentChannelDict.clear()
-  if gInstrumentBankDict != None:
-    gInstrumentBankDict.clear()
-  if gPresetDict != None:
-    gPresetDict.clear()
-  
-  printDebug(' << All objects and collections are cleared>>')
-
-  try:
-    gGig = dataHelper.loadScheduledGig()
-    print(gGig)
-    gSelectedGigId = gGig.id
-    printDebug(gGig.shortSongList)
-
-    #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
-    gInstrumentChannelDict = dataHelper.initInstruments()
-    gPresetDict = dataHelper.initPresets()
-    gInstrumentBankDict = dataHelper.initInstrumentBanks()
-    
-    displayData.setDataAPIStatus(255)
-    #displayData.drawScreen()
-  except:
-    displayData.setDataAPIStatus(0)
-    displayData.drawScreen()
-    print ('<< Exception. loadAllData >>')
 #----------------------------------------------------------------
 
 
@@ -580,6 +534,124 @@ def unmuteChannel(channel, volume, delay, step):
 #----------------------------------------------------------------
 #----------------------------------------------------------------
 #----------------------------------------------------------------
+def loadAllData():
+  global gSelectedGigId
+  global gGig
+  global gCurrentSong
+  global gInstrumentChannelDict
+  global gInstrumentBankDict
+  global gPresetDict
+  global gInitialisationComplete
+
+  printDebug(' << Load All Data >>')
+  if gGig != None
+    gGig = None
+  if gCurrentSong != None :
+    gCurrentSong = None
+  if gInstrumentChannelDict != None:
+    gInstrumentChannelDict.clear()
+  if gInstrumentBankDict != None:
+    gInstrumentBankDict.clear()
+  if gPresetDict != None:
+    gPresetDict.clear()
+  
+  printDebug(' << All objects and collections are cleared>>')
+
+  try:
+    gGig = dataHelper.loadScheduledGig()
+    if len(gGig) > 0:
+      print(gGig)
+      gSelectedGigId = gGig["id"]
+      printDebug(gGig["shortSongList"])
+    else
+      displayData.drawError("Gig not found")
+      sleep(1)
+    #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
+    
+    gInstrumentChannelDict = dataHelper.initInstruments()
+    if len(gInstrumentChannelDict)  0:
+      displayData.drawError("Instruments not found")
+      sleep(1)
+    
+    gPresetDict = dataHelper.initPresets()
+    if len(gInstrumentChannelDict)  0:
+      displayData.drawError("Presets not found")
+      sleep(1)
+      
+    gInstrumentBankDict = dataHelper.initInstrumentBanks()
+    if len(gInstrumentChannelDict)  0:
+      displayData.drawError("Banks not found")
+      sleep(1)
+
+    displayData.setDataAPIStatus(255)
+    gInitialisationComplete = True
+
+  except:
+    displayData.setDataAPIStatus(0)
+    displayData.drawScreen()
+    print ('<< Exception. loadAllData >>')
+    gInitialisationComplete = False
+
+#----------------------------------------------------------------
+
+def selectNextSong(step):
+  global gGig
+  global gCurrentSongIdx
+  global gSystemCommandCounter
+
+  gSystemCommandCounter = 0
+  
+  if step > 0:
+    if gCurrentSongIdx + step < len(gGig["shortSongList"]):
+      gCurrentSongIdx = gCurrentSongIdx + step
+    else:
+      gCurrentSongIdx = 0
+  else:
+    if gCurrentSongIdx - step > -1:
+      gCurrentSongIdx = gCurrentSongIdx - step
+    else: 
+      gCurrentSongIdx = len(gGig["shortSongList"]) - 1
+  
+  printDebug(gCurrentSongIdx) 
+  #sendGigNotificationMessage(gSelectedGigId)
+  id = gGig["shortSongList"][gCurrentSongIdx]["id"]
+  setCurrentSong(id)
+  sendSongNotificationMessage(gCurrentSongId)
+  
+  #displayData.drawScreen()
+#----------------------------------------------------------------
+
+def setCurrentSong(id):
+  global gCurrentSongIdx
+  global gCurrentSong
+
+  try:
+    gCurrentSong = dataController.getSong(id)
+
+    if len(gCurrentSong) > 0:
+      gCurrentSongId = gCurrentSong["id"]
+      name = gCurrentSong["name"]
+      printDebug("next song " +name)
+      displayData.setSongName(f"{gCurrentSongIdx}.{name}")
+    
+      setSongProgram(0)
+      # sendSongNotificationMessage(id)
+      printDebug(f"Song selected. idx ={idx}")
+    else: 
+      printDebug(f"Error.Song id={id}")
+      displayData.drawError("Song corrupted")
+      sleep(1)
+
+  except:
+      displayData.drawError("Song not found")
+      sleep(1)
+
+
+    #displayData.setSongName()
+    #displayData.drawScreen()
+
+
+#----------------------------------------------------------------
 
 def setSongProgram(idx):
   global gCurrentProgramIdx
@@ -653,59 +725,6 @@ def setPreset(program, songPreset):
   #  sendRaveloxCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
 
 
-#----------------------------------------------------------------
-
-def selectNextSong(step):
-  global gGig
-  global gCurrentSong
-  global gCurrentSongIdx
-  global gSelectedGigId
-  global gCurrentSongId
-  global gSystemCommandCounter
-
-  gSystemCommandCounter = 0
-  
-  if step > 0:
-    if gCurrentSongIdx + step < len(gGig.shortSongList):
-      gCurrentSongIdx = gCurrentSongIdx + step
-    else:
-      gCurrentSongIdx = 0
-  else:
-    if gCurrentSongIdx - step > -1:
-      gCurrentSongIdx = gCurrentSongIdx - step
-    else: 
-      gCurrentSongIdx = len(gBankSongList) - 1
-  
-  printDebug(gCurrentSongIdx) 
-  #sendGigNotificationMessage(gSelectedGigId)
-  gCurrentSongId = gGig.shortSongList[gCurrentSongIdx]["id"]
-  sendSongNotificationMessage(gCurrentSongId)
-  
-  gCurrentSong = dataController.getSong(gCurrentSongId)
-  name = gCurrentSong.name
-  printDebug("next song " +name)
-  displayData.setSongName(f"{gCurrentSongIdx}.{name}")
-  #displayData.drawScreen()
-#----------------------------------------------------------------
-
-def setSong(id):
-  global gCurrentSongIdx
-  global gBankSongList
-  global gCurrentSongId
-
-  idx = dataHelper.findIndexById(gBankSongList, id)
-  if idx > -1:
-    gCurrentSongId = id
-    gCurrentSongIdx = idx
-    name = gBankSongList[gCurrentSongIdx].name
-    displayData.setSongName(f"{gCurrentSongIdx}.{name}")
-    setSongProgram(0)
-    # sendSongNotificationMessage(id)
-    printDebug(f"Song selected. idx ={idx}")
-  else: 
-    printDebug(f"There is no Song with id ={id}")
-    #displayData.setSongName()
-    #displayData.drawScreen()
 #----------------------------------------------------------------
 
 
