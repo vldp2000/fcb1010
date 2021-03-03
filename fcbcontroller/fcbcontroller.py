@@ -602,20 +602,20 @@ def selectNextSong(step):
 
   gSystemCommandCounter = 0
   print(" ---- next song ----")
-  print(len(gGig["shortSongList"]))
-  print(gCurrentSongIdx)
+  print(f"number of songs = { len(gGig['shortSongList']) }")
+  print(f"gCurrentSongIdx old = {gCurrentSongIdx}")
   if step > 0:
     if gCurrentSongIdx + step < len(gGig["shortSongList"]):
       gCurrentSongIdx = gCurrentSongIdx + step
     else:
       gCurrentSongIdx = 0
   else:
-    if gCurrentSongIdx - step > -1:
+    if gCurrentSongIdx + step > -1:
       gCurrentSongIdx = gCurrentSongIdx - step
     else: 
       gCurrentSongIdx = len(gGig["shortSongList"]) - 1
+  print(f"gCurrentSongIdx new = {gCurrentSongIdx}")
   
-  printDebug(gCurrentSongIdx) 
   sendGigNotificationMessage(gSelectedGigId)
   sleep(1)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
