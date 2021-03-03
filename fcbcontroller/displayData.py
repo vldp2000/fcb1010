@@ -223,9 +223,10 @@ def drawSysCommand(textValue):
   g_Disp.display()
 
 def drawError(textValue):
-      if not g_DisplayInitialised:
-    return
   global g_Disp
+
+  if not g_DisplayInitialised:
+    return
   image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
