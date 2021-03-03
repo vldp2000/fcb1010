@@ -33,25 +33,6 @@ def initInstrumentBanks():
     iDict[str(item['id'])] = item['number']
   # pprint.pprint(iDict)
   return iDict
-#----------------------------------------------------------------
-def initGigSongs(items, allSongs):  
-  ## Init Gig Songs
-  gigSongList = []
-
-  for item in items:
-    id = item['id']
-    song = allSongs[str(id)]
-    song.sequencenumber = item['sequencenumber']
-    gigSongList.append(song)
-  # print( len(gSongList))
-  return gigSongList
-#----------------------------------------------------------------
-def initAllSongs(songDict):
-  songList = []
-  for item in songDict:
-    songList.append(songDict[item])
-  print( len(songList))  
-  return songList
 
 #----------------------------------------------------------------
 def getSong(id):
@@ -87,14 +68,9 @@ def loadScheduledGig():
   gig = dataController.getGig(id)
 
   print(' >>>> returned  Gig   <<<<')
-  print(gig.id)
+  print(gig["id"])
   print('----------------------------------------------------')
   return gig
-
-#----------------------------------------------------------------
-def loadSongs():
-  songs = dataController.getSongList()
-  return songs
 
 #----------------------------------------------------------------
 def findIndexById(list, id):

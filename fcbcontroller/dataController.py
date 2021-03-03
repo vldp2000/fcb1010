@@ -8,18 +8,6 @@ from config import *
 
 #----------------------------------------------------------------
 
-def getSongList():
-  # pp = pprint.PrettyPrinter(indent=4)
-  songList = {}
-  response = requests.get(API_URL +  '/all/song')
-  data = response.json()
-  for item in data:
-    # pprint.pprint(item)
-    song = Song(**item)
-    songList[str(song.id)] = song   
-  return songList
-#----------------------------------------------------------------
-
 def getScheduledGigId():
   gigId = -1
   response = requests.get(API_URL + '/currentgig')
