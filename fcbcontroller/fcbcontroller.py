@@ -630,27 +630,13 @@ def setCurrentSong(id):
   global gCurrentSongId
 
   try:
-    printDebug("1 -----setCurrentSong------ ")
     gCurrentSong = dataController.getSong(id)
-    printDebug("2 -----setCurrentSong------ ")
     if gCurrentSong:
-      printDebug("3 -----setCurrentSong------ ")
-
       gCurrentSongId = gCurrentSong["id"]
-      printDebug(gCurrentSongId)
-
       name = gCurrentSong["name"]
-      printDebug("next song " +name)
       displayData.setSongName(f"{gCurrentSongIdx}.{name}")
-      printDebug("4 -----setCurrentSong------ ")
-    
       setSongProgram(0)
-      # sendSongNotificationMessage(id)
-      printDebug(f"Song selected. id ={id}")
-      printDebug("5 -----setCurrentSong------ ")
-
     else: 
-      printDebug(f"Error.Song id={id}")
       displayData.drawError("Song corrupted")
       sleep(1)
 
@@ -673,84 +659,49 @@ def setSongProgram(idx):
   global gPedal2Value
   global gSystemCommandCounter
   gSystemCommandCounter = 0
-
   gCurrentProgramIdx = idx
-
-  printDebug("1 -----setSongProgram------ ")
-
+ 
   program = gCurrentSong["programList"][idx]
-  #printDebug(program['name'])
-  #printDebug(program['tytle'])
-  printDebug("2 -----setSongProgram------ ")
-
   for preset in program['presetList']:
     #pprint.pprint(preset)
     setPreset(program, preset)
-
-  printDebug("3 -----setSongProgram------ ")
-  
+ 
   sendProgramNotificationMessage(idx)
-
-  printDebug("4 -----setSongProgram------ ")
-
-  # print(program['presetList'][0]['volume'])
-
   if  program['presetList'][0]['volume'] > 0:
     gPedal1Value = 1
   else:
     gPedal1Value = 2
   sendPedal1NotificationMessage(gPedal1Value)
 
-  printDebug("5 -----setSongProgram------ ")
-
-  # print(program['presetList'][2]['volume'])
   if  program['presetList'][2]['volume'] > 0:
     gPedal2Value = 1
   else:
     gPedal2Value = 2
   sendPedal2NotificationMessage(gPedal2Value)
-  printDebug("6 -----setSongProgram------ ")
 
 #----------------------------------------------------------------
 def setPreset(program, songPreset):
-  printDebug("1 -----setPreset------ ")
 
   id = songPreset['refpreset']
-  #print(id)
-  printDebug("2 -----setPreset------ ")
   preset = gPresetDict[str(id)] 
-  #print(preset)
-  printDebug("3 -----setPreset------ ")
-
   midiProgramChange = int(preset['midipc'])
-  printDebug("4 -----setPreset------ ")
-
   channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
-  printDebug("5 -----setPreset------ ")
 
   mute = songPreset['muteflag']
   if mute:
     muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
 
-  printDebug("6 -----setPreset------ ")
-
   sendRaveloxPCMessage(channel, midiProgramChange)
-
-  printDebug("7 -----setPreset------ ")
 
   if mute:
     unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
   else:
     sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
-  printDebug("8 -----setPreset------ ")
 
   if preset['refinstrument'] == 1:
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
 
-  printDebug("9 -----setPreset------ ")
-
-  #printDebug(f"channel {channel} , instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
 
   #delayFlag = songPreset['delayflag']
   #if delayFlag:
@@ -781,7 +732,6 @@ def setPedal2Value():
   sendPedal2NotificationMessage(gPedal2Value)
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
-  # printDebug("SEND MIDI MSG")
   global gReloadCounter
   global gSynthTest
   global gPianoTest
@@ -814,11 +764,8 @@ def getActionForReceivedMessage(midiMsg):
   if msg0 == 180:
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
       executeSystemCommand(msg2)
-      # printDebug(">>1--")
       return
     elif msg1 == 1:
-      #checkCurrentBank(msg2)
-      # printDebug(">>2--")
       return
     elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
 
@@ -863,7 +810,6 @@ def getActionForReceivedMessage(midiMsg):
       channel = 2
     if channel > 0:
       sendRaveloxCCMessage(channel, 7, msg2)
-    # printDebug('>>6--' + str(msg))
 
   elif msg0 == 181 and msg1 == 7:
     if gPedal1Value == 1:
@@ -876,12 +822,9 @@ def getActionForReceivedMessage(midiMsg):
 
   else:
     sendGenericMidiCommand(msg0, msg1, msg2)
-    printDebug(f'sendGenericMidiCommand  -- >>-- {str(msg)}')
 
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
-#  printDebug(""))
-  # printDebug("..... LISTEN TO MIDI MSG")
   keepAliveCounter = 0
   checkRaveloxCounter = 0
   gotMsg = 0
@@ -891,10 +834,7 @@ def getMidiMsg(midiInput):
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
-        #printDebug("..... MIDI MSG received")
-        #printDebug(msg)
         getActionForReceivedMessage(msg)  
-        #sleep(0.002)
       keepAliveCounter = 0
       checkRaveloxCounter = 0
     else:
@@ -914,7 +854,6 @@ def getListOfRaveloxMidiClients():
   global gRaveloxClient
   # Request status
   bytes = struct.pack( '4s', b'LIST' )
-
   #print(bytes)
   data = ''
   result = ''
@@ -942,9 +881,7 @@ def getListOfRaveloxMidiClients():
     displayData.g_MacBookStatus = 255
   else:
     displayData.g_MacBookStatus = 0
-
   displayData.drawScreen()
-  printDebug(result)
 #----------------------------------------------------------------
 #----------------------------------------------------------------
 #----------------------------------------------------------------
@@ -956,8 +893,8 @@ pygame.midi.init()
 displayData.initDisplay()
 displayData.clearScreen()
 
-displayData.drawScreen()
-sleep(3)
+#displayData.drawScreen()
+#sleep(3)
 #displayData.clearScreen()
 
 # print(str(sys.argv))
