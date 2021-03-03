@@ -676,15 +676,22 @@ def setSongProgram(idx):
 
   gCurrentProgramIdx = idx
 
+  printDebug("1 -----setSongProgram------ ")
+
   program = gCurrentSong["programList"][idx]
   #printDebug(program['name'])
   #printDebug(program['tytle'])
+  printDebug("2 -----setSongProgram------ ")
 
   for preset in program['presetList']:
     #pprint.pprint(preset)
     setPreset(program, preset)
-    
+
+  printDebug("3 -----setSongProgram------ ")
+  
   sendProgramNotificationMessage(idx)
+
+  printDebug("4 -----setSongProgram------ ")
 
   # print(program['presetList'][0]['volume'])
 
@@ -694,37 +701,54 @@ def setSongProgram(idx):
     gPedal1Value = 2
   sendPedal1NotificationMessage(gPedal1Value)
 
+  printDebug("5 -----setSongProgram------ ")
+
   # print(program['presetList'][2]['volume'])
   if  program['presetList'][2]['volume'] > 0:
     gPedal2Value = 1
   else:
     gPedal2Value = 2
   sendPedal2NotificationMessage(gPedal2Value)
+  printDebug("6 -----setSongProgram------ ")
 
 #----------------------------------------------------------------
 def setPreset(program, songPreset):
+  printDebug("1 -----setPreset------ ")
+
   id = songPreset['refpreset']
   #print(id)
+  printDebug("2 -----setPreset------ ")
   preset = gPresetDict[str(id)] 
   #print(preset)
+  printDebug("3 -----setPreset------ ")
 
   midiProgramChange = int(preset['midipc'])
+  printDebug("4 -----setPreset------ ")
+
   channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
+  printDebug("5 -----setPreset------ ")
 
   mute = songPreset['muteflag']
   if mute:
     muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
 
+  printDebug("6 -----setPreset------ ")
+
   sendRaveloxPCMessage(channel, midiProgramChange)
+
+  printDebug("7 -----setPreset------ ")
 
   if mute:
     unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
   else:
     sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
+  printDebug("8 -----setPreset------ ")
 
   if preset['refinstrument'] == 1:
     displayData.setProgramName(f"{program['name']}.{preset['name']}")
     displayData.drawScreen()
+
+  printDebug("9 -----setPreset------ ")
 
   #printDebug(f"channel {channel} , instrument {preset['refinstrument']} preset {songPreset['refpreset']}  preset volume {songPreset['volume']} , delay {songPreset['delayvalue']}, reverb {songPreset['reverbvalue']}  ")
 
