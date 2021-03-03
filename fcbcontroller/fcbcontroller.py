@@ -265,7 +265,7 @@ def clearScreenDebug():
   global gMode
   global gDebugMessageCounter
   if gMode == 'Debug':
-    print("\n" * 10)
+    print("\n" * 4)
     print(f'               >> ----- {gDebugMessageCounter} -------<<' )
     gDebugMessageCounter = gDebugMessageCounter + 1
 
@@ -455,7 +455,7 @@ def sendRaveloxCCMessage(channel, CC, value):
     gRaveloxClient.send(message )
     sleep(MIN_DELAY)
 
-  printDebug(f"channel {channel} , CC {CC} value {value} ")
+  #printDebug(f"channel {channel} , CC {CC} value {value} ")
 
 #----------------------------------------------------------------
 
