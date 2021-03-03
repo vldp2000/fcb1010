@@ -864,6 +864,8 @@ def getMidiMsg(midiInput):
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
+        printDebug("..... MIDI MSG received")
+        printDebug(msg)
         getActionForReceivedMessage(msg)  
         #sleep(0.002)
       keepAliveCounter = 0
