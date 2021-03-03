@@ -563,23 +563,23 @@ def loadAllData():
       print(gGig)
       gSelectedGigId = gGig["id"]
       printDebug(gGig["shortSongList"])
-    else
+    else:
       displayData.drawError("Gig not found")
       sleep(1)
     #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     
     gInstrumentChannelDict = dataHelper.initInstruments()
-    if len(gInstrumentChannelDict)  0:
+    if len(gInstrumentChannelDict) > 0:
       displayData.drawError("Instruments not found")
       sleep(1)
     
     gPresetDict = dataHelper.initPresets()
-    if len(gInstrumentChannelDict)  0:
+    if len(gInstrumentChannelDict) > 0:
       displayData.drawError("Presets not found")
       sleep(1)
       
     gInstrumentBankDict = dataHelper.initInstrumentBanks()
-    if len(gInstrumentChannelDict)  0:
+    if len(gInstrumentChannelDict) > 0:
       displayData.drawError("Banks not found")
       sleep(1)
 
