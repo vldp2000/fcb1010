@@ -627,19 +627,28 @@ def selectNextSong(step):
 def setCurrentSong(id):
   global gCurrentSongIdx
   global gCurrentSong
+  global gCurrentSongId
 
   try:
+    printDebug("1 -----setCurrentSong------ ")
     gCurrentSong = dataController.getSong(id)
-    #pprint.pprint(gCurrentSong)
+    printDebug("2 -----setCurrentSong------ ")
     if gCurrentSong:
+      printDebug("3 -----setCurrentSong------ ")
+
       gCurrentSongId = gCurrentSong["id"]
+      printDebug(gCurrentSongId)
+
       name = gCurrentSong["name"]
       printDebug("next song " +name)
       displayData.setSongName(f"{gCurrentSongIdx}.{name}")
+      printDebug("4 -----setCurrentSong------ ")
     
       setSongProgram(0)
       # sendSongNotificationMessage(id)
       printDebug(f"Song selected. idx ={idx}")
+      printDebug("5 -----setCurrentSong------ ")
+
     else: 
       printDebug(f"Error.Song id={id}")
       displayData.drawError("Song corrupted")
