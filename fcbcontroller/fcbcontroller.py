@@ -544,9 +544,9 @@ def loadAllData():
   global gInitialisationComplete
 
   printDebug(' << Load All Data >>')
-  if gGig != None
+  if gGig != None:
     gGig = None
-  if gCurrentSong != None :
+  if gCurrentSong != None:
     gCurrentSong = None
   if gInstrumentChannelDict != None:
     gInstrumentChannelDict.clear()
