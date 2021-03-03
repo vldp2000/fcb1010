@@ -646,7 +646,7 @@ def setCurrentSong(id):
     
       setSongProgram(0)
       # sendSongNotificationMessage(id)
-      printDebug(f"Song selected. idx ={idx}")
+      printDebug(f"Song selected. id ={id}")
       printDebug("5 -----setCurrentSong------ ")
 
     else: 
