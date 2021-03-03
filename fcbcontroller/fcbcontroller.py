@@ -46,6 +46,8 @@ import Adafruit_SSD1306
 
 import displayData
 import myutils
+import pprint
+
 
 #################################################################
 class raveloxBackgroundThread (threading.Thread):
@@ -628,7 +630,7 @@ def setCurrentSong(id):
 
   try:
     gCurrentSong = dataController.getSong(id)
-
+    pprint.pprint(gCurrentSong)
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]
