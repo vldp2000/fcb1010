@@ -544,22 +544,22 @@ def loadAllData():
   global gInitialisationComplete
 
   printDebug(' << Load All Data >>')
-  if gGig != None:
+  if gGig: # check if dictionary is not empty
     gGig = None
-  if gCurrentSong != None:
+  if gCurrentSong:
     gCurrentSong = None
-  if gInstrumentChannelDict != None:
+  if gInstrumentChannelDict:
     gInstrumentChannelDict.clear()
-  if gInstrumentBankDict != None:
+  if gInstrumentBankDict:
     gInstrumentBankDict.clear()
-  if gPresetDict != None:
+  if gPresetDict:
     gPresetDict.clear()
   
   printDebug(' << All objects and collections are cleared>>')
 
   try:
     gGig = dataHelper.loadScheduledGig()
-    if len(gGig) > 0:
+    if not gGig: # check if dictionary is not empty
       print(gGig)
       gSelectedGigId = gGig["id"]
       printDebug(gGig["shortSongList"])
@@ -569,17 +569,17 @@ def loadAllData():
     #gGigSongList = dataHelper.initGigSongs(gGig.shortSongList, gSongDict)
     
     gInstrumentChannelDict = dataHelper.initInstruments()
-    if len(gInstrumentChannelDict) > 0:
+    if gInstrumentChannelDict:
       displayData.drawError("Instruments not found")
       sleep(1)
     
     gPresetDict = dataHelper.initPresets()
-    if len(gInstrumentChannelDict) > 0:
+    if gInstrumentChannelDict:
       displayData.drawError("Presets not found")
       sleep(1)
       
     gInstrumentBankDict = dataHelper.initInstrumentBanks()
-    if len(gInstrumentChannelDict) > 0:
+    if gInstrumentChannelDict:
       displayData.drawError("Banks not found")
       sleep(1)
 
@@ -628,7 +628,7 @@ def setCurrentSong(id):
   try:
     gCurrentSong = dataController.getSong(id)
 
-    if len(gCurrentSong) > 0:
+    if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]
       printDebug("next song " +name)
@@ -978,12 +978,12 @@ sleep(MIN_DELAY)
 loadAllData()
 sleep(MIN_DELAY)
 
-if len(gGig["shortSongList"]) > 0:
+if gGig["shortSongList"]:
   gCurrentSongIdx = -1
+  gCurrentSongId = -1
   selectNextSong(1)
   gCurrentProgramIdx = 0
-  setSongProgram(gCurrentProgramIdx)
-
+  #setSongProgram(gCurrentProgramIdx)
 
 while not gExitFlag:
   getMidiMsg(midiInput)
