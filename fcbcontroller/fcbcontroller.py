@@ -761,9 +761,12 @@ def getActionForReceivedMessage(midiMsg):
   msg2 = msg[2]
   msgParameter = midiMsg[1]
   channel=-1
+
+  printDebug(" >> midiMsg <<")
   printDebug(msg0)
   printDebug(msg1)
   printDebug(msg2)
+  printDebug("-------------------")
 
 #System events
 #FCB1010 has 10 banks 0..9
