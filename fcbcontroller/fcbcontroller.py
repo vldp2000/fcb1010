@@ -545,14 +545,19 @@ def loadAllData():
 
   printDebug(' << Load All Data >>')
   if gGig: # check if dictionary is not empty
+    gGig.clear()
     gGig = None
   if gCurrentSong:
+    gCurrentSong.clear()
     gCurrentSong = None
   if gInstrumentChannelDict:
     gInstrumentChannelDict.clear()
+    gInstrumentChannelDict.clear()
   if gInstrumentBankDict:
     gInstrumentBankDict.clear()
+    gInstrumentBankDict.clear()
   if gPresetDict:
+    gPresetDict.clear()
     gPresetDict.clear()
   
   printDebug(' << All objects and collections are cleared>>')
@@ -632,7 +637,12 @@ def setCurrentSong(id):
   global gCurrentSongId
 
   try:
+    if gCurrentSong:
+      gCurrentSong.clear()
+      gCurrentSong = None
+
     gCurrentSong = dataController.getSong(id)
+
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]
@@ -645,7 +655,6 @@ def setCurrentSong(id):
   except:
       displayData.drawError("Song not found")
       sleep(1)
-
 
     #displayData.setSongName()
     #displayData.drawScreen()
@@ -712,7 +721,8 @@ def setPreset(program, songPreset):
   #reverbFlag = songPreset['reverbflag']
   #if reverbFlag:
   #  sendRaveloxCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
-
+  preset.clear()
+  preset = None
 
 #----------------------------------------------------------------
 
