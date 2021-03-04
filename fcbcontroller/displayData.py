@@ -168,6 +168,10 @@ def drawScreen():
   # Display image.
   g_Disp.image(image)
   g_Disp.display()
+  
+  draw.destroy()
+  image.destroy()
+  
   ##time.sleep(.1)
 
 def drawShutdown():
@@ -204,10 +208,12 @@ def drawReboot():
   g_Disp.image(image)
   g_Disp.display()
   time.sleep(2)
+  image.destroy()
 
 def drawSysCommand(textValue):
   if not g_DisplayInitialised:
     return
+
   global g_Disp
   image = Image.new('1', (128, 64))
   # Get drawing object to draw on image.
@@ -221,6 +227,7 @@ def drawSysCommand(textValue):
 
   g_Disp.image(image)
   g_Disp.display()
+  image.destroy()
 
 def drawError(textValue):
   global g_Disp
@@ -239,6 +246,7 @@ def drawError(textValue):
 
   g_Disp.image(image)
   g_Disp.display()
+  image.destroy()
 
 def drawMessage(headerValue,textValue):
   global g_Disp
@@ -257,3 +265,4 @@ def drawMessage(headerValue,textValue):
 
   g_Disp.image(image)
   g_Disp.display()
+  image.destroy()
