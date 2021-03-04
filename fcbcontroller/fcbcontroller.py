@@ -55,9 +55,9 @@ class raveloxBackgroundThread (threading.Thread):
     threading.Thread.__init__(self)
     self.threadID = threadID
   def run(self):
-    print ("Starting raveloxBackgroundThread")
+    printDebug("Starting raveloxBackgroundThread")
     processRaveloxMessageQueue()
-    print ("Exiting raveloxBackgroundThread")
+    printDebug ("Exiting raveloxBackgroundThread")
 #################################################################
 #----------------------------------------------------------------
 
@@ -174,18 +174,11 @@ def processPresetVolumeMessage(payload):
   global gSystemCommandCounter
 
   gSystemCommandCounter = 0
-  # print(payload)
-  # print('gCurrentSongId ', gCurrentSongId)
-  # print('gCurrentSongIdx ', gCurrentSongIdx)
-  # print('gCurrentPresetId ', gCurrentPresetId)
-  # print('gCurrentProgramIdx ', gCurrentProgramIdx)
 
   if payload['songId'] == gCurrentSongId and payload['programIdx'] == gCurrentProgramIdx and gCurrentSong:
     if payload['presetId'] != gCurrentPresetId:
       program = gCurrentSong["programList"][gCurrentProgramIdx]
-      # print(program)
-      # print(' ?? Not the same Preset > ', gCurrentPresetId)
-      # print(program['presetList'])
+
       for preset in program['presetList']:
         if preset['refpreset'] == payload['presetId']:
           gCurrentPresetId = payload['presetId']
@@ -193,8 +186,6 @@ def processPresetVolumeMessage(payload):
           printDebug('Found new Preset')
           printDebug(gCurrentPreset)
           break
-        # else:
-        #   print(' <><><> Not the expected preset', preset['refpreset'])
 
     # else:
     #   print(' !! Same Preset > ', gCurrentPresetId)
@@ -382,7 +373,6 @@ def connectRavelox():
     displayData.setRaveloxmidiStatus(0)
     displayData.drawScreen()
     printDebug('<<< exception. connectRavelox >>')
-    # pprint.pprint(sys.exc_info())
     return False
 
 #----------------------------------------------------------------
@@ -592,7 +582,7 @@ def loadAllData():
   except:
     displayData.setDataAPIStatus(0)
     displayData.drawScreen()
-    print ('<< Exception. loadAllData >>')
+    printDebug ('<< Exception. loadAllData >>')
     gInitialisationComplete = False
 
 #----------------------------------------------------------------
@@ -603,11 +593,6 @@ def selectNextSong(step):
   global gSystemCommandCounter
 
   gSystemCommandCounter = 0
-  print(" ---- next song ----")
-  print(f"step = { step }")
-
-  print(f"number of songs = { len(gGig['shortSongList']) }")
-  print(f"gCurrentSongIdx old = {gCurrentSongIdx}")
   if step > 0:
     if gCurrentSongIdx + step < len(gGig["shortSongList"]):
       gCurrentSongIdx = gCurrentSongIdx + step
@@ -619,12 +604,11 @@ def selectNextSong(step):
     else: 
       gCurrentSongIdx = len(gGig["shortSongList"]) - 1
 
-  print(f"gCurrentSongIdx new = {gCurrentSongIdx}")
-  
   sendGigNotificationMessage(gSelectedGigId)
   sleep(1)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
-  printDebug(f"Selected song. id={id}"); 
+  printDebug(f"Select song. id={id}"); 
+
   setCurrentSong(id)
   sendSongNotificationMessage(id)
   
@@ -680,7 +664,6 @@ def setSongProgram(idx):
   if program:
     printDebug(f"Selected program. idx={idx}"); 
     for songPreset in program['presetList']:
-      #pprint.pprint(preset)
       setPreset(program, songPreset)
  
     sendProgramNotificationMessage(idx)
@@ -882,7 +865,6 @@ def getListOfRaveloxMidiClients():
   global gRaveloxClient
   # Request status
   bytes = struct.pack( '4s', b'LIST' )
-  #print(bytes)
   data = ''
   result = ''
   gRaveloxClient.sendall( bytes )
@@ -925,7 +907,6 @@ displayData.clearScreen()
 #sleep(3)
 #displayData.clearScreen()
 
-# print(str(sys.argv))
 if len(sys.argv) > 1: 
   if str(sys.argv[1]).upper() == 'DEBUG':
     gMode = 'Debug'
