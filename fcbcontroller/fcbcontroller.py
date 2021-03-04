@@ -957,24 +957,26 @@ while not portOk:
   try:
     # result = initRaveloxClient()
     result = connectRavelox()
+  except:
+    printDebug("Raveloxmidi is not connected")
 
-    if result:
-      printDebug("Raveloxmidi is connected")
+  if result:
+    printDebug("Raveloxmidi is connected")
+    try:
       midiInput = pygame.midi.Input(MIDI_INPUT_DEVICE)  # Input MIDI device
       if midiInput:
-        printDebug("MIDI device is ready....")
-      sleep(0.04)
-      portOk = True
-    else:
-      printDebug("waiting for raveloxmidi...")
-      sleep(1)
-
-  except:
-    printDebug("MIDI device not ready....")
-    pygame.midi.quit()
-    pygame.midi.init()
+        printDebug("MIDI device is connected")
+        sleep(0.04)
+        portOk = True
+    except:
+      printDebug("MIDI device not ready....")
+      pygame.midi.quit()
+      pygame.midi.init()
     sleep(2)
 
+  else:
+    printDebug("waiting for raveloxmidi...")
+    sleep(1)
 
 printDebug("Everything ready now...")
 
