@@ -721,8 +721,6 @@ def setPreset(program, songPreset):
   #reverbFlag = songPreset['reverbflag']
   #if reverbFlag:
   #  sendRaveloxCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
-  preset.clear()
-  preset = None
 
 #----------------------------------------------------------------
 
