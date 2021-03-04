@@ -708,7 +708,7 @@ def setPreset(program, songPreset):
   preset = gPresetDict[str(id)] 
 
   if preset:
-    printDebug(f"Preset Selected {preset["name"]} not found")    
+    printDebug(f"Preset Selected {preset['name']} not found")    
     midiProgramChange = int(preset['midipc'])
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
 
@@ -724,7 +724,7 @@ def setPreset(program, songPreset):
       sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
     if preset['refinstrument'] == 1:
-      displayData.setProgramName(f"{program["name"]}.{preset["name"]}")
+      displayData.setProgramName(f"{program['name']}.{preset['name']}")
       displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
