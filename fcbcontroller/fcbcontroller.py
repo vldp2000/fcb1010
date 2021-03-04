@@ -708,7 +708,7 @@ def setPreset(program, songPreset):
   preset = gPresetDict[str(id)] 
 
   if preset:
-    printDebug(f"Preset Selected {preset['name']} not found")    
+    printDebug(f"Preset Selected {preset['name']}")    
     midiProgramChange = int(preset['midipc'])
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
 
