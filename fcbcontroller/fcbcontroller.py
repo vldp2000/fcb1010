@@ -673,9 +673,9 @@ def setSongProgram(idx):
   gCurrentProgramIdx = idx
  
   program = gCurrentSong["programList"][idx]
-  for preset in program['presetList']:
+  for songPreset in program['presetList']:
     #pprint.pprint(preset)
-    setPreset(program, preset)
+    setPreset(program, songPreset)
  
   sendProgramNotificationMessage(idx)
   if  program['presetList'][0]['volume'] > 0:
@@ -694,25 +694,29 @@ def setSongProgram(idx):
 def setPreset(program, songPreset):
 
   id = songPreset['refpreset']
+  
   preset = gPresetDict[str(id)] 
-  midiProgramChange = int(preset['midipc'])
-  channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
 
-  mute = songPreset['muteflag']
-  if mute:
-    muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
+  if preset:
+    midiProgramChange = int(preset['midipc'])
+    channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
 
-  sendRaveloxPCMessage(channel, midiProgramChange)
+    mute = songPreset['muteflag']
+    if mute:
+      muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
 
-  if mute:
-    unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
+    sendRaveloxPCMessage(channel, midiProgramChange)
+
+    if mute:
+      unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 20)
+    else:
+      sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
+
+    if preset['refinstrument'] == 1:
+      displayData.setProgramName(f"{program['name']}.{preset['name']}")
+      displayData.drawScreen()
   else:
-    sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
-
-  if preset['refinstrument'] == 1:
-    displayData.setProgramName(f"{program['name']}.{preset['name']}")
-    displayData.drawScreen()
-
+    printDebug(f"Preset id={id} not found")    
 
   #delayFlag = songPreset['delayflag']
   #if delayFlag:
