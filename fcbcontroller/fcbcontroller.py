@@ -673,22 +673,27 @@ def setSongProgram(idx):
   gCurrentProgramIdx = idx
  
   program = gCurrentSong["programList"][idx]
-  for songPreset in program['presetList']:
-    #pprint.pprint(preset)
-    setPreset(program, songPreset)
- 
-  sendProgramNotificationMessage(idx)
-  if  program['presetList'][0]['volume'] > 0:
-    gPedal1Value = 1
-  else:
-    gPedal1Value = 2
-  sendPedal1NotificationMessage(gPedal1Value)
 
-  if  program['presetList'][2]['volume'] > 0:
-    gPedal2Value = 1
+  if program:
+    for songPreset in program['presetList']:
+      #pprint.pprint(preset)
+      setPreset(program, songPreset)
+ 
+    sendProgramNotificationMessage(idx)
+    if  program['presetList'][0]['volume'] > 0:
+      gPedal1Value = 1
+    else:
+      gPedal1Value = 2
+    sendPedal1NotificationMessage(gPedal1Value)
+
+    if  program['presetList'][2]['volume'] > 0:
+      gPedal2Value = 1
+    else:
+      gPedal2Value = 2
+    sendPedal2NotificationMessage(gPedal2Value)
   else:
-    gPedal2Value = 2
-  sendPedal2NotificationMessage(gPedal2Value)
+    printDebug(f"Program {idx} not found")    
+    displayData.drawError(f"Program {idx} not found")
 
 #----------------------------------------------------------------
 def setPreset(program, songPreset):
@@ -716,7 +721,8 @@ def setPreset(program, songPreset):
       displayData.setProgramName(f"{program['name']}.{preset['name']}")
       displayData.drawScreen()
   else:
-    printDebug(f"Preset id={id} not found")    
+    printDebug(f"Preset {id} not found")    
+    displayData.drawError(f"Preset {id} not found")
 
   #delayFlag = songPreset['delayflag']
   #if delayFlag:
@@ -759,21 +765,21 @@ def getActionForReceivedMessage(midiMsg):
   msgParameter = midiMsg[1]
   channel=-1
 
-#System events
-#FCB1010 has 10 banks 0..9
-#Banks 0..3 are set to control the external Midi Devices. 
-#    CC1 messages : Channel 5 (msg0 = 180 ) 
-#    Pedals send (msg1 = 20, msg2 = 11..20)
-#    Epression Pedal 1 sends messages on channel 6 msg0 = 181, msg1 = 7
-#    Epression Pedal 2 sends messages on channel 1 msg0 = 176, msg1 = 7
-#    Selected bank can be identified by CC2 message
-#       where msg1 = 1 and msg2 = 1..4 
+  #System events
+  #FCB1010 has 10 banks 0..9
+  #Banks 0..3 are set to control the external Midi Devices. 
+  #    CC1 messages : Channel 5 (msg0 = 180 ) 
+  #    Pedals send (msg1 = 20, msg2 = 11..20)
+  #    Epression Pedal 1 sends messages on channel 6 msg0 = 181, msg1 = 7
+  #    Epression Pedal 2 sends messages on channel 1 msg0 = 176, msg1 = 7
+  #    Selected bank can be identified by CC2 message
+  #       where msg1 = 1 and msg2 = 1..4 
 
-#Bank  8 is programmed to initiate the Raspberry Pi system commands. 
-#    Pedals send (msg0 = 180, msg1 == 3, msq2 = 1..10)
+  #Bank  8 is programmed to initiate the Raspberry Pi system commands. 
+  #    Pedals send (msg0 = 180, msg1 == 3, msq2 = 1..10)
 
-# This vesion of the software will use Bank 1 to control the songs of the "Current Gig"
-# Bank 2 will be used to select any song in a dictionary of available songs 
+  # This vesion of the software will use Bank 1 to control the songs of the "Current Gig"
+  # Bank 2 will be used to select any song in a dictionary of available songs 
 
   if msg0 == 180:
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
