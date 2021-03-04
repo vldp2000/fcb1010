@@ -69,7 +69,7 @@ gProcessRaveloxMidi = True
 gUseNewRaveloxMidi = True
 gExitFlag = False
 gInitialisationComplete = False
-gMidiDevice = MIDI_INPUT_DEVICE  # Input MIDI device
+
 
 #Global Variables
 gSelectedGigId = -1
@@ -690,7 +690,7 @@ def setSongProgram(idx):
       gPedal1Value = 2
     sendPedal1NotificationMessage(gPedal1Value)
 
-    if  program['presetList'][2]['volume'] > 0:
+    if program['presetList'][2]['volume'] > 0:
       gPedal2Value = 1
     else:
       gPedal2Value = 2
@@ -959,7 +959,10 @@ while not portOk:
     result = connectRavelox()
 
     if result:
-      midiInput = pygame.midi.Input(gMidiDevice)
+      printDebug("Raveloxmidi is connected")
+      midiInput = pygame.midi.Input(MIDI_INPUT_DEVICE)  # Input MIDI device
+      if midiInput:
+        printDebug("MIDI device is ready....")
       sleep(0.04)
       portOk = True
     else:
