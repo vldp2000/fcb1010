@@ -952,15 +952,15 @@ if gUseMessageQueue:
 
 portOk = False
 midiInput = None
-ravelox = None
+raveloxConnected = False
 while not portOk:
   try:
     # result = initRaveloxClient()
-    ravelox = connectRavelox()
+    raveloxConnected = connectRavelox()
   except:
     printDebug("Raveloxmidi is not connected")
 
-  if ravelox:
+  if raveloxConnected:
     printDebug("Raveloxmidi is connected")
     try:
       midiInput = pygame.midi.Input(MIDI_INPUT_DEVICE)  # Input MIDI device
