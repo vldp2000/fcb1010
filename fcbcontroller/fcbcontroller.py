@@ -567,7 +567,6 @@ def loadAllData():
     if gGig: # check if dictionary is not empty
       gSelectedGigId = gGig["id"]
       displayData.drawMessage("Gig loaded", gGig["name"])
-
     else:
       displayData.drawError("Gig not found")
     sleep(1.5)
@@ -619,6 +618,7 @@ def selectNextSong(step):
       gCurrentSongIdx = gCurrentSongIdx + step
     else: 
       gCurrentSongIdx = len(gGig["shortSongList"]) - 1
+
   print(f"gCurrentSongIdx new = {gCurrentSongIdx}")
   
   sendGigNotificationMessage(gSelectedGigId)
@@ -646,13 +646,16 @@ def setCurrentSong(id):
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]
+      printDebug(f"Selected song. id={name}"); 
       displayData.setSongName(f"{gCurrentSongIdx}.{name}")
       setSongProgram(0)
     else: 
+      printDebug("Song corrupted")
       displayData.drawError("Song corrupted")
       sleep(1)
 
   except:
+      printDebug("Song not found")
       displayData.drawError("Song not found")
       sleep(1)
 
@@ -675,6 +678,7 @@ def setSongProgram(idx):
   program = gCurrentSong["programList"][idx]
 
   if program:
+    printDebug(f"Selected program. idx={idx}"); 
     for songPreset in program['presetList']:
       #pprint.pprint(preset)
       setPreset(program, songPreset)
@@ -694,6 +698,7 @@ def setSongProgram(idx):
   else:
     printDebug(f"Program {idx} not found")    
     displayData.drawError(f"Program {idx} not found")
+    sleep(1)
 
 #----------------------------------------------------------------
 def setPreset(program, songPreset):
@@ -703,6 +708,7 @@ def setPreset(program, songPreset):
   preset = gPresetDict[str(id)] 
 
   if preset:
+    printDebug(f"Preset Selected {preset["name"]} not found")    
     midiProgramChange = int(preset['midipc'])
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
 
@@ -718,11 +724,13 @@ def setPreset(program, songPreset):
       sendRaveloxCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
     if preset['refinstrument'] == 1:
-      displayData.setProgramName(f"{program['name']}.{preset['name']}")
+      displayData.setProgramName(f"{program["name"]}.{preset["name"]}")
       displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
     displayData.drawError(f"Preset {id} not found")
+    sleep(1)
+
 
   #delayFlag = songPreset['delayflag']
   #if delayFlag:
