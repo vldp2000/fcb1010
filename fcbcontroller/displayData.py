@@ -170,7 +170,7 @@ def drawScreen():
   g_Disp.display()
   
   #draw.destroy()
-  image.destroy()
+  #image.destroy()
   
   ##time.sleep(.1)
 
