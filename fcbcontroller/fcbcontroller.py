@@ -70,6 +70,7 @@ gUseNewRaveloxMidi = True
 gExitFlag = False
 gInitialisationComplete = False
 
+gMidiOutput = None
 
 #Global Variables
 gSelectedGigId = -1
@@ -931,10 +932,9 @@ if gUseMessageQueue:
   thread.start()
   sleep(1)
 
-portOk = False
 midiInput = None
 raveloxConnected = False
-while not portOk:
+while True:
   try:
     # result = initRaveloxClient()
     raveloxConnected = connectRavelox()
@@ -945,13 +945,20 @@ while not portOk:
     printDebug("Raveloxmidi is connected")
     try:
       midiInput = pygame.midi.Input(MIDI_INPUT_DEVICE)  # Input MIDI device
+      gMidiOutput = pygame.midi.Output(MIDI_OUTPUT_DEVICE)  # Input MIDI device
       if midiInput:
-        printDebug("MIDI device is connected")
+        printDebug("Input MIDI devices is connected")
         sleep(0.04)
-        portOk = True
+
+        if gMidiOutput:
+          printDebug("Output MIDI devices is connected")
+          sleep(0.04)
+          break
     except:
+      portOk = False
       printDebug("MIDI device not ready....")
       pygame.midi.quit()
+      sleep(0.5)
       pygame.midi.init()
     sleep(2)
 
