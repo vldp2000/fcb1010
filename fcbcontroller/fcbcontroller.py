@@ -438,7 +438,7 @@ def sendRaveloxCCMessage(channel, CC, value):
   else:
     message = struct.pack("BBBB", 0xaa, 176 + int(channel) - 1, int(CC), int(value))
 
-  gMidiOutput.write(0xaa, 176 + int(channel) - 1, int(CC), int(value))
+  gMidiOutput.write_short(0xb0, 176 + int(channel) - 1, int(CC), int(value))
   sleep(MIN_DELAY)
 
 #  if gUseMessageQueue:
@@ -470,7 +470,7 @@ def sendRaveloxPCMessage( channel, PC):
   else:
     message = struct.pack("BBB", 0xaa, 192 + int(channel) - 1, int(PC))
 
-  gMidiOutput.write(0xc0, 192 + int(channel) - 1, int(PC))
+  gMidiOutput.write_short(0xc0, 192 + int(channel) - 1, int(PC))
   sleep(MIN_DELAY)
 
 #  if gUseMessageQueue:
@@ -499,7 +499,7 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   else:
     message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
 
-  gMidiOutput.write(0xaa, 0xaa, msg0, msg1, msg2)
+  gMidiOutput.write_short(0xb0, msg0, msg1, msg2)
   sleep(MIN_DELAY)
 
   #if gUseMessageQueue:
