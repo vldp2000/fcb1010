@@ -57,7 +57,7 @@ def initDisplay():
     print(type(inst))    # the exception instance
     print(inst.args)     # arguments stored in .args
     print(inst)              
-  except
+  except:
     g_DisplayInitialised = False
     print ("Display init failed")
 
