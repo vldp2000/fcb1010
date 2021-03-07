@@ -442,7 +442,7 @@ def sendRaveloxCCMessage(channel, CC, value):
   gMidiOutput.write_short(0xb0 , 1, 0)
 
   sleep(1)
-  gMidiOutput.write([[[0xc0,0,0],0],[[0x90,60,100],0]])
+  gMidiOutput.write([[[0xaa,0,0],0],[[0x90,60,100],0]])
   sleep(1)
   gMidiOutput.write_short(0xc0 , 1, 0)
   sleep(1)
