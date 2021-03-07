@@ -446,7 +446,7 @@ def sendRaveloxCCMessage(channel, CC, value):
     pushRaveloxMessageToQueue(broadcastMessage)
   else:
     #gRaveloxClient.send(message )
-    gMidiOutput.write_short(broadcastMessage.message)
+    gMidiOutput.write_short(message)
     
     sleep(MIN_DELAY)
 
@@ -477,7 +477,7 @@ def sendRaveloxPCMessage( channel, PC):
     pushRaveloxMessageToQueue(broadcastMessage)
   else:
     #gRaveloxClient.send(message )    
-    gMidiOutput.write_short(broadcastMessage.message)
+    gMidiOutput.write_short(message)
 
     sleep(MIN_DELAY)
   
@@ -505,7 +505,7 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
     pushRaveloxMessageToQueue(broadcastMessage)
   else:
     #gRaveloxClient.send(message )  
-    gMidiOutput.write_short(broadcastMessage.message)
+    gMidiOutput.write_short(message)
     
     sleep(MIN_DELAY)
   
