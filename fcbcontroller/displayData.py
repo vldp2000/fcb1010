@@ -44,8 +44,10 @@ def initDisplay():
     g_Disp.clear()
     g_Disp.display()
     g_DisplayInitialised = True
+    print ("Display init complete")
   except:
     g_DisplayInitialised = False
+    print ("Display init failed")
 
 
 # First define some constants to allow easy resizing of shapes.
