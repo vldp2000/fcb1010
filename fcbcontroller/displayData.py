@@ -38,11 +38,19 @@ def initDisplay():
   global g_Disp
   global g_DisplayInitialised
   try:
+    print ("Display init 1")
+
     g_Disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST, i2c_address=0x3C)
+    print ("Display init 2")
     # Initialize library.
     g_Disp.begin()
+    print ("Display init 3")
+
     g_Disp.clear()
+    print ("Display init 4")
     g_Disp.display()
+    print ("Display init 5")
+
     g_DisplayInitialised = True
     print ("Display init complete")
   except:
