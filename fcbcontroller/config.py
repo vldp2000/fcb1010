@@ -1,8 +1,8 @@
 API_URL = 'http://localhost:8081'
 MESSAGE_URL = 'http://localhost:8081'
 
-MIDI_INPUT_DEVICE = 5
-MIDI_OUTPUT_DEVICE = 4
+MIDI_INPUT_DEVICE = 3
+MIDI_OUTPUT_DEVICE = 2
 
 _RAVELOX_HOST = 'http://192.168.17.55'
 RAVELOX_HOST = 'http://localhost'
