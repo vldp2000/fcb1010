@@ -61,7 +61,9 @@ class raveloxBackgroundThread (threading.Thread):
 #################################################################
 #----------------------------------------------------------------
 
-gUseMessageQueue = True
+#gUseMessageQueue = True
+gUseMessageQueue = False
+
 gMessageQueue = None
 gQueueLock = None
 
@@ -393,12 +395,14 @@ def processRaveloxMessageQueue():
       try:
         if (broadcastMessage.messageType == 'PC'):
           sleep(MIN_DELAY * 3.0)
-          gRaveloxClient.send( broadcastMessage.message )
+          #gRaveloxClient.send( broadcastMessage.message )
+          gMidiOutput.write_short(broadcastMessage.message)
           #sleep(MIN_DELAY * 2.0)
           # gRaveloxClient.send( broadcastMessage.message )
 
         if (broadcastMessage.messageType == 'CC'):
-          gRaveloxClient.send( broadcastMessage.message )
+          #gRaveloxClient.send( broadcastMessage.message )
+          gMidiOutput.write_short(broadcastMessage.message)
 
       except:
         displayData.setRaveloxmidiStatus(0)
@@ -441,7 +445,9 @@ def sendRaveloxCCMessage(channel, CC, value):
     broadcastMessage = BroadcastMessage(message, 'CC')  
     pushRaveloxMessageToQueue(broadcastMessage)
   else:
-    gRaveloxClient.send(message )
+    #gRaveloxClient.send(message )
+    gMidiOutput.write_short(broadcastMessage.message)
+    
     sleep(MIN_DELAY)
 
   #printDebug(f"channel {channel} , CC {CC} value {value} ")
@@ -470,7 +476,9 @@ def sendRaveloxPCMessage( channel, PC):
     broadcastMessage = BroadcastMessage(message, 'PC')  
     pushRaveloxMessageToQueue(broadcastMessage)
   else:
-    gRaveloxClient.send(message )    
+    #gRaveloxClient.send(message )    
+    gMidiOutput.write_short(broadcastMessage.message)
+
     sleep(MIN_DELAY)
   
   #if gMode == 'Debug':
@@ -496,7 +504,9 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
     broadcastMessage = BroadcastMessage(message, 'CC')  
     pushRaveloxMessageToQueue(broadcastMessage)
   else:
-    gRaveloxClient.send(message )      
+    #gRaveloxClient.send(message )  
+    gMidiOutput.write_short(broadcastMessage.message)
+    
     sleep(MIN_DELAY)
   
   if gMode == 'Debug':
@@ -945,12 +955,14 @@ while True:
     printDebug("Raveloxmidi is connected")
     try:
       midiInput = pygame.midi.Input(MIDI_INPUT_DEVICE)  # Input MIDI device
-      gMidiOutput = pygame.midi.Output(MIDI_OUTPUT_DEVICE)  # Input MIDI device
+      gMidiOutput = pygame.midi.Output(MIDI_OUTPUT_DEVICE, 0)  # Output MIDI device
+
       if midiInput:
         printDebug("Input MIDI devices is connected")
         sleep(0.04)
 
         if gMidiOutput:
+          gMidiOutput.set_instrument(0)
           printDebug("Output MIDI devices is connected")
           sleep(0.04)
           break
