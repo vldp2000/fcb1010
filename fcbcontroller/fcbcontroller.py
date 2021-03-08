@@ -745,7 +745,7 @@ def getMidiMsg(midiInput):
       printDebug(f"Incoming Input = > {listInp} ")
 
       for msg in inp:
-        pushMessageToQueue(inputMessage):           
+        pushMessageToQueue(inputMessage)
   
 #----------------------------------------------------------------
 
