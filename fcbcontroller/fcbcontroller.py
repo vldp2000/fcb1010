@@ -889,7 +889,7 @@ def getMidiMsg(midiInput):
           sleep(0.007)
           gMidiOutput.write_short(0xb0 , 1, 0)
           sleep(0.007)
-          gMidiOutput.write([[[0xaa,0,0],0])
+          gMidiOutput.write([[[0xaa,0,0],0]])
           sleep(0.007)
           gMidiOutput.write_short(0xc0 , 1, 0)
           sleep(2)
