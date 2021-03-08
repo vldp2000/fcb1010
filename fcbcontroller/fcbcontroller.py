@@ -445,7 +445,7 @@ def sendRaveloxCCMessage(channel, CC, value):
   gMidiOutput.write([[[0xaa,0,0],0],[[0x90,60,100],0]])
   sleep(0.007)
   gMidiOutput.write_short(0xc0 , 1, 0)
-  sleep(1)
+  sleep(0.007)
 
   printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
 
@@ -863,18 +863,18 @@ def getMidiMsg(midiInput):
   checkRaveloxCounter = 0
   gotMsg = 0
   print("-----")
+  if not gMidiOutput:
+    print("gMidiOutput is not set")  
+  
   while not(gotMsg):
     sleep(MIDI_RECEIVE_DELAY)
     if midiInput.poll():    
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
-        #getActionForReceivedMessage(msg)  
+        getActionForReceivedMessage(msg)  
         print("=====")
-        if gMidiOutput:
-          gMidiOutput.write(f"Incoming message = > {msg} ")
-        else:
-          print("gMidiOutput is not set")
+        gMidiOutput.write(f"Incoming message = > {msg} ")
 
       keepAliveCounter = 0
       checkRaveloxCounter = 0
