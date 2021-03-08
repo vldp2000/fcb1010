@@ -881,7 +881,9 @@ def getMidiMsg(midiInput):
         listMsg = list(msg)
         print(f"Incoming message = > {listMsg} ")
 
-        gMidiOutput.write_short(msg)
+        #gMidiOutput.write_short(msg)
+        gMidiOutput.note_on(64,100)
+        
         sleep(0.005)
         getActionForReceivedMessage(msg)  
 
