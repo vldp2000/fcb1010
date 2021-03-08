@@ -73,7 +73,7 @@ def getSong(id):
   #pprint.pprint(data)
   return data
 
-def readSongFromJson(id)
+def readSongFromJson(id):
   try:
     fileName = f"{PATH_TO_SONG_FOLDER}{id}.json"
     print(fileName)
