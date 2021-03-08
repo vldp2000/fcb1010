@@ -77,7 +77,7 @@ def readSongFromJson(id):
   fileName = f"{PATH_TO_SONG_FOLDER}{id}.json"
   print(fileName)
   with open('path_to_file/person.json') as f:
-    data = json.load(f)
+    data = json.load(fileName)
     print(data)
     return data
 
