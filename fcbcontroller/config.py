@@ -1,7 +1,7 @@
 API_URL = 'http://localhost:8081'
 MESSAGE_URL = 'http://localhost:8081'
 
-PATH_TO_SONG_FOLDER = '/hope/pi/fcbnew/fcb1010/apiserver/data/song/'
+PATH_TO_SONG_FOLDER = '/home/pi/fcbnew/fcb1010/apiserver/data/song/'
 
 MIDI_INPUT_DEVICE = 3
 MIDI_OUTPUT_DEVICE = 2
