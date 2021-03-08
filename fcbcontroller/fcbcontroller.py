@@ -874,7 +874,7 @@ def getMidiMsg(midiInput):
         if gMidiOutput:
           gMidiOutput.write(msg)
         else:
-          print("gMidiOutput is not set)
+          print("gMidiOutput is not set")
 
       keepAliveCounter = 0
       checkRaveloxCounter = 0
