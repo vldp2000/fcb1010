@@ -879,7 +879,7 @@ def getMidiMsg(midiInput):
         print("=====")
         listMsg = list(msg)
         print(f"Incoming message = > {listMsg} ")
-        gMidiOutput.write(msg)
+        gMidiOutput.write(listMsg)
         sleep(0.005)
 
       keepAliveCounter = 0
