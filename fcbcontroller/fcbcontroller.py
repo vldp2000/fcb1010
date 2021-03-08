@@ -870,7 +870,7 @@ def getMidiMsg(midiInput):
       inp = midiInput.read(100)
       for msg in inp:
         #getActionForReceivedMessage(msg)  
-        print(=====)
+        print("=====")
         if gMidiOutput:
           gMidiOutput.write(msg)
         else
