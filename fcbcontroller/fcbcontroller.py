@@ -886,7 +886,7 @@ def getMidiMsg(midiInput):
           gMidiOutput.write_short(0xb0 + 5, 7, 0)
           sleep(0.007)
           gMidiOutput.write_short(0xc0 + 5, 1, 0)
-          sleep(10)
+          sleep(2)
         except:
           print("Error")
         sleep(0.005)
