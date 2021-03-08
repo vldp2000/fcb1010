@@ -519,7 +519,8 @@ def setCurrentSong(id):
       gCurrentSong.clear()
       gCurrentSong = None
 
-    gCurrentSong = dataController.getSong(id)
+    #gCurrentSong = dataController.getSong(id)
+    gCurrentSong = dataController.readSongFromJson(id)
 
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
