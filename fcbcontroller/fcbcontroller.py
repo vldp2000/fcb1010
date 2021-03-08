@@ -872,7 +872,7 @@ def getMidiMsg(midiInput):
         #getActionForReceivedMessage(msg)  
         print("=====")
         if gMidiOutput:
-          gMidiOutput.write(msg)
+          gMidiOutput.write(f"Incoming message = > {msg} ")
         else:
           print("gMidiOutput is not set")
 
