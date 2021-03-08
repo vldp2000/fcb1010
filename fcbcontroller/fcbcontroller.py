@@ -868,7 +868,8 @@ def getMidiMsg(midiInput):
       gotMsg = 1
       inp = midiInput.read(100)
       for msg in inp:
-        getActionForReceivedMessage(msg)  
+        #getActionForReceivedMessage(msg)  
+        gMidiOutput.write(msg)
       keepAliveCounter = 0
       checkRaveloxCounter = 0
     else:
