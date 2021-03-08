@@ -342,10 +342,12 @@ def processMessageQueue():
   global gExitFlag
   global gMessageQueue
   global gQueueLock
-  delay = MIN_DELAY
   while not gExitFlag:
     gQueueLock.acquire()
-    if not gMessageQueue.empty():
+    if gMessageQueue.empty():
+      gQueueLock.release()
+      sleep(MIN_DELAY)
+    else:      
       #print (gMessageQueue.qsize())  
       inputMessage = gMessageQueue.get()
       gMessageQueue.task_done()
@@ -356,15 +358,11 @@ def processMessageQueue():
         displayData.drawError("Message Queue")
         printDebug(f'<<< exception. processMessageQueue >>{inputMessage}')
 
-      delay = MIN_DELAY
       #printDebug (f'Processed Message ->>>  {message}')
-    else:
-      gQueueLock.release()
-      sleep(MIN_DELAY)
 
 #----------------------------------------------------------------
 def pushMessageToQueue(inputMessage):
-  global gMessageQueue 
+  global gMessageQueue
   global gQueueLock
   global gUseMessageQueue
 
