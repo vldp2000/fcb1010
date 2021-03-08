@@ -438,14 +438,14 @@ def sendRaveloxCCMessage(channel, CC, value):
   else:
     message = struct.pack("BBBB", 0xaa, 176 + int(channel) - 1, int(CC), int(value))
 
-  gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
-  sleep(0.007)
-  gMidiOutput.write_short(0xb0 , 1, 0)
-  sleep(0.007)
-  gMidiOutput.write([[[0xaa,0,0],0],[[0x90,60,100],0]])
-  sleep(0.007)
-  gMidiOutput.write_short(0xc0 , 1, 0)
-  sleep(0.007)
+  #gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
+  #sleep(0.007)
+  #gMidiOutput.write_short(0xb0 , 1, 0)
+  #sleep(0.007)
+  #gMidiOutput.write([[[0xaa,0,0],0],[[0x90,60,100],0]])
+  #sleep(0.007)
+  #gMidiOutput.write_short(0xc0 , 1, 0)
+  #sleep(0.007)
 
   printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
 
@@ -881,9 +881,20 @@ def getMidiMsg(midiInput):
         listMsg = list(msg)
         print(f"Incoming message = > {listMsg} ")
 
-        #gMidiOutput.write_short(msg)
-        gMidiOutput.note_on(64,100)
-        
+        try:
+          #gMidiOutput.write_short(msg)
+          gMidiOutput.note_on(64,100)
+          sleep(0.007)
+          gMidiOutput.note_off(64,100)
+          sleep(0.007)
+          gMidiOutput.write_short(0xb0 , 1, 0)
+          sleep(0.007)
+          gMidiOutput.write([[[0xaa,0,0],0])
+          sleep(0.007)
+          gMidiOutput.write_short(0xc0 , 1, 0)
+          sleep(2)
+        except:
+          print("Error")
         sleep(0.005)
         getActionForReceivedMessage(msg)  
 
