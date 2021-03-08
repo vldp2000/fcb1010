@@ -46,7 +46,7 @@ import Adafruit_SSD1306
 
 import displayData
 import myutils
-#import pprint
+import pprint
 
 
 #################################################################
@@ -875,16 +875,15 @@ def getMidiMsg(midiInput):
       print(f"Incoming Input = > {listInp} ")
 
       for msg in inp:
-        getActionForReceivedMessage(msg)  
         print("=====")
+        pprint.pprint(msg)
+
         listMsg = list(msg)
         print(f"Incoming message = > {listMsg} ")
 
-        listTestByteAsHex = [int(hex(x).split('x')[-1]) for x in msg]
-        print(listTestByteAsHex)    
-
         gMidiOutput.write_short(msg)
         sleep(0.005)
+        getActionForReceivedMessage(msg)  
 
       keepAliveCounter = 0
       checkRaveloxCounter = 0
