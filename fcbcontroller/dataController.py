@@ -74,13 +74,11 @@ def getSong(id):
   return data
 
 def readSongFromJson(id):
-  try:
-    fileName = f"{PATH_TO_SONG_FOLDER}{id}.json"
-    print(fileName)
-    with open('path_to_file/person.json') as f:
-      data = json.load(f)
-      print(data)
-      return data
+  fileName = f"{PATH_TO_SONG_FOLDER}{id}.json"
+  print(fileName)
+  with open('path_to_file/person.json') as f:
+    data = json.load(f)
+    print(data)
+    return data
 
-  except:
 
