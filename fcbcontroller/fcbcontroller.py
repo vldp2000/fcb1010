@@ -871,11 +871,16 @@ def getMidiMsg(midiInput):
     if midiInput.poll():    
       gotMsg = 1
       inp = midiInput.read(100)
+      listInp = list(inp)
+      print(f"Incoming Input = > {listInp} ")
+
       for msg in inp:
         getActionForReceivedMessage(msg)  
         print("=====")
         listMsg = list(msg)
-        gMidiOutput.write(f"Incoming message = > {listMsg} ")
+        print(f"Incoming message = > {listMsg} ")
+        gMidiOutput.write(msg)
+        sleep(0.005)
 
       keepAliveCounter = 0
       checkRaveloxCounter = 0
