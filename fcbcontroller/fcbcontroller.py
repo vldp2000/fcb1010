@@ -862,6 +862,7 @@ def getMidiMsg(midiInput):
   keepAliveCounter = 0
   checkRaveloxCounter = 0
   gotMsg = 0
+  print("-----")
   while not(gotMsg):
     sleep(MIDI_RECEIVE_DELAY)
     if midiInput.poll():    
@@ -869,8 +870,11 @@ def getMidiMsg(midiInput):
       inp = midiInput.read(100)
       for msg in inp:
         #getActionForReceivedMessage(msg)  
-        gMidiOutput.write(msg)
-        print(msg)
+        print(=====)
+        if gMidiOutput:
+          gMidiOutput.write(msg)
+        else
+          print("gMidiOutput is not set)
 
       keepAliveCounter = 0
       checkRaveloxCounter = 0
