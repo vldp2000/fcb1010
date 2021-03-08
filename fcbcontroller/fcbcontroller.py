@@ -499,7 +499,7 @@ def selectNextSong(step):
       gCurrentSongIdx = len(gGig["shortSongList"]) - 1
 
   sendGigNotificationMessage(gSelectedGigId)
-  sleep(1)
+  sleep(0.05)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
   printDebug(f"Select song. id={id}"); 
 
