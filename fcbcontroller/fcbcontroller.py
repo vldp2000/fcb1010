@@ -873,7 +873,7 @@ def getMidiMsg(midiInput):
         print("=====")
         if gMidiOutput:
           gMidiOutput.write(msg)
-        else
+        else:
           print("gMidiOutput is not set)
 
       keepAliveCounter = 0
