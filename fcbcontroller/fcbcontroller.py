@@ -439,13 +439,13 @@ def sendRaveloxCCMessage(channel, CC, value):
     message = struct.pack("BBBB", 0xaa, 176 + int(channel) - 1, int(CC), int(value))
 
   #gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
-  gMidiOutput.write_short(0xb0 , 1, 0)
+  #gMidiOutput.write_short(0xb0 , 1, 0)
 
-  sleep(1)
-  gMidiOutput.write([[[0xaa,0,0],0],[[0x90,60,100],0]])
-  sleep(1)
-  gMidiOutput.write_short(0xc0 , 1, 0)
-  sleep(1)
+  #sleep(1)
+  #gMidiOutput.write([[[0xaa,0,0],0],[[0x90,60,100],0]])
+  #sleep(1)
+  #gMidiOutput.write_short(0xc0 , 1, 0)
+  #sleep(1)
 
   printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
 
@@ -480,10 +480,10 @@ def sendRaveloxPCMessage( channel, PC):
 
   #gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
 
-  gMidiOutput.write_short(0xc0 , 1)
+  #gMidiOutput.write_short(0xc0 , 1)
 
-  printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
-  s0.leep(MIN_DELAY)
+  #printDebug("SEND RAVELOX PC  MESSAGE %d %d" % (channel ,PC))
+  #s0.leep(MIN_DELAY)
 
 #  if gUseMessageQueue:
 #    broadcastMessage = BroadcastMessage(message, 'PC')  
@@ -511,8 +511,8 @@ def sendGenericMidiCommand(msg0, msg1, msg2):
   else:
     message = struct.pack("BBBB", 0xaa, msg0, msg1, msg2)
 
-  gMidiOutput.write_short(0xb0 + int(msg0), msg1, msg2)
-  sleep(MIN_DELAY)
+  #gMidiOutput.write_short(0xb0 + int(msg0), msg1, msg2)
+  #sleep(MIN_DELAY)
 
   #if gUseMessageQueue:
   #  broadcastMessage = BroadcastMessage(message, 'CC')  
@@ -870,6 +870,8 @@ def getMidiMsg(midiInput):
       for msg in inp:
         #getActionForReceivedMessage(msg)  
         gMidiOutput.write(msg)
+        print(msg)
+        
       keepAliveCounter = 0
       checkRaveloxCounter = 0
     else:
