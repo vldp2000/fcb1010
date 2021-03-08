@@ -439,11 +439,11 @@ def sendRaveloxCCMessage(channel, CC, value):
     message = struct.pack("BBBB", 0xaa, 176 + int(channel) - 1, int(CC), int(value))
 
   gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
-  sleep(0.07)
+  sleep(0.007)
   gMidiOutput.write_short(0xb0 , 1, 0)
-  sleep(0.07)
+  sleep(0.007)
   gMidiOutput.write([[[0xaa,0,0],0],[[0x90,60,100],0]])
-  sleep(0.07)
+  sleep(0.007)
   gMidiOutput.write_short(0xc0 , 1, 0)
   sleep(1)
 
