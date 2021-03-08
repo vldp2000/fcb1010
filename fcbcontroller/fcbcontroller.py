@@ -879,7 +879,11 @@ def getMidiMsg(midiInput):
         print("=====")
         listMsg = list(msg)
         print(f"Incoming message = > {listMsg} ")
-        gMidiOutput.write(listMsg)
+
+        listTestByteAsHex = [int(hex(x).split('x')[-1]) for x in msg]
+        print(listTestByteAsHex)        # [2, 0, 30, 3, 35]
+
+        gMidiOutput.write(listTestByteAsHex)
         sleep(0.005)
 
       keepAliveCounter = 0
