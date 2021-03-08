@@ -871,20 +871,20 @@ def getMidiMsg(midiInput):
         #getActionForReceivedMessage(msg)  
         gMidiOutput.write(msg)
         print(msg)
-        
+
       keepAliveCounter = 0
       checkRaveloxCounter = 0
     else:
       keepAliveCounter = keepAliveCounter + 1
       checkRaveloxCounter = checkRaveloxCounter + 1
 
-    if keepAliveCounter > KEEPALIVE_FREQUENCY:
-      sendRaveloxCCMessage(KEEPALIVE_CHANNEL, 7, 0)
-      keepAliveCounter = 0
+    #if keepAliveCounter > KEEPALIVE_FREQUENCY:
+    #  sendRaveloxCCMessage(KEEPALIVE_CHANNEL, 7, 0)
+    #  keepAliveCounter = 0
 
-    if checkRaveloxCounter > CHECK_RAVELOX_CLIENT_FREQUENCY:
-      getListOfRaveloxMidiClients()
-      checkRaveloxCounter = 0
+    #if checkRaveloxCounter > CHECK_RAVELOX_CLIENT_FREQUENCY:
+    #  getListOfRaveloxMidiClients()
+    #  checkRaveloxCounter = 0
 #----------------------------------------------------------------
 
 def getListOfRaveloxMidiClients():
