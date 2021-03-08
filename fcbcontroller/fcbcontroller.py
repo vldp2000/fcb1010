@@ -874,7 +874,8 @@ def getMidiMsg(midiInput):
       for msg in inp:
         getActionForReceivedMessage(msg)  
         print("=====")
-        gMidiOutput.write(f"Incoming message = > {msg} ")
+        listMsg = list(msg)
+        gMidiOutput.write(f"Incoming message = > {listMsg} ")
 
       keepAliveCounter = 0
       checkRaveloxCounter = 0
