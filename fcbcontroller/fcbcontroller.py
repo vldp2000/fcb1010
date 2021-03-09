@@ -264,7 +264,8 @@ def executeSystemCommand(code):
   global gExitFlag
   global gSystemCommandCounter
   global gSystemCommandCode
-  # printDebug("EXECUTE SYSTEM COMMAND");
+  
+  printDebug("EXECUTE SYSTEM COMMAND");
   command = ""
   displayText = ""
 
@@ -587,23 +588,24 @@ def setPreset(program, songPreset):
 
   if preset:
     printDebug(f"Preset Selected {preset['name']}")    
-    midiProgramChange = int(preset['midipc'])
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
-
-    mute = songPreset['muteflag']
-    if mute:
-      muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
-
-    sendPCMessage(channel, midiProgramChange)
-
-    if mute:
-      unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 20)
+    midiProgramChange = int(preset['midipc'])
+    if midiProgramChange == 0:
+      sendCCMessage( channel, VOLUME_CC, 0)
+      sendPCMessage(channel, midiProgramChange)
     else:
-      sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
+      mute = songPreset['muteflag']
+      if mute:
+        muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
+      sendPCMessage(channel, midiProgramChange)
+      if mute:
+        unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 20)
+      else:
+        sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
-    if preset['refinstrument'] == 1:
-      displayData.setProgramName(f"{program['name']}.{preset['name']}")
-      displayData.drawScreen()
+      if preset['refinstrument'] == 1:
+        displayData.setProgramName(f"{program['name']}.{preset['name']}")
+        displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
     displayData.drawError(f"Preset {id} not found")
