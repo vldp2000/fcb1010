@@ -339,6 +339,37 @@ def executeSystemCommand(code):
 ## 181 -CC Channel 6
 
 #----------------------------------------------------------------
+def isMessageForNextSong(msg):
+  if [0] == 180 and (msg[1] == 15 or msg[1] == 20) :
+    return True
+  else:
+    return False
+#----------------------------------------------------------------
+
+def getNextMessageFromQueue(message1):
+  global gMessageQueue
+  global gQueueLock
+
+  gQueueLock.acquire()
+  if gMessageQueue.empty():
+    gQueueLock.release()
+    return False
+  else:
+    message2 = gMessageQueue.get()
+    gMessageQueue.task_done()
+    gQueueLock.release()
+
+  if isMessageForNextSong(message2[0]):
+    getNextMessageFromQueue(message2[0])
+    printDebug(f"QUEUE. Skip message {message1}")
+    return False
+  else:
+    getActionForReceivedMessage(message1)  
+    printDebug(f"QUEUE. Send message {message1}")
+    getActionForReceivedMessage(message2)  
+    printDebug(f"QUEUE. Send message {message2}")
+    return True
+
 def processMessageQueue():
   global gExitFlag
   global gMessageQueue
@@ -353,13 +384,30 @@ def processMessageQueue():
       inputMessage = gMessageQueue.get()
       gMessageQueue.task_done()
       gQueueLock.release()
-      try:
+
+      if not isMessageForNextSong(inputMessage[0]):
         getActionForReceivedMessage(inputMessage)  
+      else:
+        getNextMessageFromQueue(inputMessage1[0])
+
+'''       try:
+        getActionForReceivedMessage(inputMessage1)  
       except:
         displayData.drawError("Message Queue")
         printDebug(f'<<< exception. processMessageQueue >>{inputMessage}')
-
+ '''
       #printDebug (f'Processed Message ->>>  {message}')
+
+''' 
+11
+12
+15
+15
+20
+11
+12
+14
+ '''
 
 #----------------------------------------------------------------
 def pushMessageToQueue(inputMessage):
@@ -670,7 +718,7 @@ def getActionForReceivedMessage(midiMsg):
 
   # This vesion of the software will use Bank 1 to control the songs of the "Current Gig"
   # Bank 2 will be used to select any song in a dictionary of available songs 
-
+  
   if msg0 == 180:
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
       executeSystemCommand(msg2)
