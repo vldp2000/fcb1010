@@ -783,6 +783,16 @@ def getActionForReceivedMessage(midiMsg):
   #else:
   #  sendGenericMidiCommand(msg0, msg1, msg2)
 
+
+#----------------------------------------------------------------
+def ignoreInputMessage(msg):
+  if (msg[0] > 180) 
+    or (msg[0] == 180 and msg[1] = 1 and
+          (msg[2] == 1 or msg[2] == 2 or msg[2] == 3  or msg[2] == 4)):
+    return True
+  else:
+    return False  
+
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
   keepAliveCounter = 0
@@ -795,13 +805,15 @@ def getMidiMsg(midiInput):
     sleep(MIDI_RECEIVE_DELAY)
     if midiInput.poll():    
       gotMsg = True
-      inp = midiInput.read(100)
-      listInp = list(inp)
-      printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")
+      inputData = midiInput.read(100)
+      for msg in inputData:
+        if ignoreInputMessage(msg[0]):  # Message comes as an array [[180,1,1],0] 
+          continue
+        else:
+          listInp = list(msg)
+          printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")       
+          pushMessageToQueue(msg)
 
-      for msg in inp:
-        pushMessageToQueue(msg)
-  
 #----------------------------------------------------------------
 
 
