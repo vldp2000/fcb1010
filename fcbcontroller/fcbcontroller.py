@@ -161,7 +161,8 @@ def processProgramMessage(idx):
 #==
 @sio.on('VIEW_PRESET_VOL_MESSAGE')
 def processPresetVolumeMessage(payload):
-  global gPresetDict
+  printDebug("processPresetVolumeMessage")
+'''   global gPresetDict
   global gInstrumentChannelDict
   global gCurrentSongId
   global gCurrentSongIdx
@@ -195,7 +196,7 @@ def processPresetVolumeMessage(payload):
     channel = int( gInstrumentChannelDict[str(gCurrentPreset['refinstrument'])] )
     if channel > 0:
       sendCCMessage(channel, 7, volume)
-  # else:
+ '''  # else:
   #   print('Not a current Song ??? ', gCurrentSongId)
 
 #==
@@ -353,7 +354,7 @@ def processMessageQueue():
       gMessageQueue.task_done()
       gQueueLock.release()
 
-      printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][3]}")
+      printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][2]} , [0][3] = {message[0][3]}")
       if message: 
         try:
           getActionForReceivedMessage(message)  
@@ -607,6 +608,7 @@ def setPreset(program, songPreset):
         sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
       if preset['refinstrument'] == 1:
+        printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']}"")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
         displayData.drawScreen()
   else:
