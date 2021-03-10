@@ -340,7 +340,7 @@ def executeSystemCommand(code):
 
 #----------------------------------------------------------------
 def isMessageForNextSong(msg):
-  if [0] == 180 and (msg[1] == 15 or msg[1] == 20) :
+  if msg[0] == 180 and (msg[1] == 15 or msg[1] == 20) :
     return True
   else:
     return False
@@ -384,6 +384,8 @@ def processMessageQueue():
       inputMessage = gMessageQueue.get()
       gMessageQueue.task_done()
       gQueueLock.release()
+
+      printDebug (f"Message From QUEUE >>>> [0][0] = {inputMessage[0][0]} , [0][1] = {inputMessage[0][1]}")
 
       if not isMessageForNextSong(inputMessage[0]):
         getActionForReceivedMessage(inputMessage)  
