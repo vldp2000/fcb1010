@@ -360,7 +360,7 @@ def getNextMessageFromQueue(message1):
     gQueueLock.release()
 
   if isMessageForNextSong(message2[0]):
-    getNextMessageFromQueue(message2[0])
+    getNextMessageFromQueue(message2)
     printDebug(f"QUEUE. Skip message {message1}")
     return False
   else:
@@ -390,7 +390,7 @@ def processMessageQueue():
         if not isMessageForNextSong(inputMessage[0]):
           getActionForReceivedMessage(inputMessage)  
         else:
-          getNextMessageFromQueue(inputMessage[0])
+          getNextMessageFromQueue(inputMessage)
 
 '''       try:
         getActionForReceivedMessage(inputMessage1)  
