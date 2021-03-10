@@ -181,8 +181,8 @@ def processPresetVolumeMessage(payload):
         if preset['refpreset'] == payload['presetId']:
           gCurrentPresetId = payload['presetId']
           gCurrentPreset = preset
-          printDebug('Found new Preset')
-          printDebug(gCurrentPreset)
+          #printDebug('Found new Preset')
+          #printDebug(gCurrentPreset)
           break
 
     # else:
@@ -207,27 +207,27 @@ def processPresetVolumeMessage(payload):
 #==
 def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(idx))
-  printDebug(f"{PROGRAM_MESSAGE} >> {str(idx)}")
+  #printDebug(f"{PROGRAM_MESSAGE} >> {str(idx)}")
 
 #==
 def sendSongNotificationMessage(id):
   sio.emit(SONG_MESSAGE, str(id))
-  printDebug(f'{SONG_MESSAGE}  >> { str(id)}')
+  #printDebug(f'{SONG_MESSAGE}  >> { str(id)}')
 
 #==
 def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
-  printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
+  #printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
 
 #==
 def sendPedal1NotificationMessage(value):
   sio.emit(PEDAL1_MESSAGE, str(value))
-  printDebug(value)
+  #printDebug(value)
 
 #==
 def sendPedal2NotificationMessage(value):
   sio.emit(PEDAL2_MESSAGE, str(value))
-  printDebug(value)
+  #printDebug(value)
 
 #==
 def sendSyncNotificationMessage(bankId, songId, programIdx):
@@ -252,7 +252,7 @@ def clearScreenDebug():
   global gMode
   global gDebugMessageCounter
   if gMode == 'Debug':
-    print("\n" * 4)
+    print("\n" * 2)
     print(f'               >> ----- {gDebugMessageCounter} -------<<' )
     gDebugMessageCounter = gDebugMessageCounter + 1
 
@@ -429,7 +429,7 @@ def pushMessageToQueue(inputMessage):
 def sendCCMessage(channel, CC, value):
   gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
   sleep(MIN_DELAY)
-  printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
+  #printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
 #----------------------------------------------------------------
 
 ## 192 -PC on Channel 1
@@ -797,7 +797,7 @@ def getMidiMsg(midiInput):
       gotMsg = True
       inp = midiInput.read(100)
       listInp = list(inp)
-      printDebug(f"Incoming Input = > {listInp} ")
+      printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")
 
       for msg in inp:
         pushMessageToQueue(msg)
