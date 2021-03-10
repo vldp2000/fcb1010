@@ -552,7 +552,7 @@ def selectNextSong(step):
   sendGigNotificationMessage(gSelectedGigId)
   sleep(MIN_DELAY)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
-  printDebug(f"Select song. id={id}"); 
+  #printDebug(f"Select song. id={id}"); 
 
   setCurrentSong(id)
   sendSongNotificationMessage(id)
@@ -608,7 +608,7 @@ def setSongProgram(idx):
   program = gCurrentSong["programList"][idx]
 
   if program:
-    printDebug(f"Selected program. idx={idx}"); 
+    #printDebug(f"Selected program. idx={idx}"); 
     for songPreset in program['presetList']:
       setPreset(program, songPreset)
  
@@ -637,7 +637,7 @@ def setPreset(program, songPreset):
   preset = gPresetDict[str(id)] 
 
   if preset:
-    printDebug(f"Preset Selected {preset['name']}")    
+    #printDebug(f"Preset Selected {preset['name']}")    
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
     midiProgramChange = int(preset['midipc'])
     if midiProgramChange == 0:
