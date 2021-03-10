@@ -354,12 +354,12 @@ def processMessageQueue():
       gQueueLock.release()
 
       printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][3]}")
-      if inputMessage: 
+      if message: 
         try:
-          getActionForReceivedMessage(inputMessage)  
+          getActionForReceivedMessage(message)  
         except:
           displayData.drawError("Message Queue")
-          printDebug(f'<<< exception. processMessageQueue >>{inputMessage}')
+          printDebug(f'<<< exception. processMessageQueue >>{message}')
 
 #----------------------------------------------------------------
 def pushMessageToQueue(inputMessage):
