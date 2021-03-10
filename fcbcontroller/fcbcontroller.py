@@ -786,7 +786,9 @@ def getActionForReceivedMessage(midiMsg):
 
 #----------------------------------------------------------------
 def ignoreInputMessage(msg):
-  if (msg[0] > 180) or (msg[0] == 180 and msg[1] = 1 and (msg[2] == 1 or msg[2] == 2 or msg[2] == 3  or msg[2] == 4)):
+  if msg[0] > 180:
+    return True
+  if msg[0] == 180 and msg[1] == 1 and msg[2] > 0 and msg[2] < 5:
     return True
   else:
     return False  
