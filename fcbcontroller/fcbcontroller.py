@@ -378,6 +378,7 @@ def pushMessageToQueue(inputMessage):
 
 def sendCCMessage(channel, CC, value):
   gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
+  sleep(MIN_DELAY)
   printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
 #----------------------------------------------------------------
 
@@ -387,6 +388,7 @@ def sendCCMessage(channel, CC, value):
 
 def sendPCMessage( channel, PC):
   gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
+  sleep(MIN_DELAY)
   printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
 
 #----------------------------------------------------------------
@@ -500,7 +502,7 @@ def selectNextSong(step):
       gCurrentSongIdx = len(gGig["shortSongList"]) - 1
 
   sendGigNotificationMessage(gSelectedGigId)
-  sleep(0.05)
+  sleep(MIN_DELAY)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
   printDebug(f"Select song. id={id}"); 
 
