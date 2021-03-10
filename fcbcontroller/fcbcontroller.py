@@ -338,38 +338,6 @@ def executeSystemCommand(code):
 ## 180 -CC Channel 5
 ## 181 -CC Channel 6
 
-#----------------------------------------------------------------
-def isMessageForNextSong(msg):
-  if msg[0] == 180 and (msg[1] == 15 or msg[1] == 20) :
-    return True
-  else:
-    return False
-#----------------------------------------------------------------
-
-def getNextMessageFromQueue(message1):
-  global gMessageQueue
-  global gQueueLock
-
-  gQueueLock.acquire()
-  if gMessageQueue.empty():
-    gQueueLock.release()
-    return False
-  else:
-    message2 = gMessageQueue.get()
-    gMessageQueue.task_done()
-    gQueueLock.release()
-
-  if isMessageForNextSong(message2[0]):
-    getNextMessageFromQueue(message2)
-    printDebug(f"QUEUE. Skip message {message1}")
-    return False
-  else:
-    getActionForReceivedMessage(message1)  
-    printDebug(f"QUEUE. Send message {message1}")
-    getActionForReceivedMessage(message2)  
-    printDebug(f"QUEUE. Send message {message2}")
-    return True
-
 def processMessageQueue():
   global gExitFlag
   global gMessageQueue
@@ -387,29 +355,11 @@ def processMessageQueue():
 
       printDebug (f"Message From QUEUE >>>> [0][0] = {inputMessage[0][0]} , [0][1] = {inputMessage[0][1]}")
       if inputMessage: 
-        if not isMessageForNextSong(inputMessage[0]):
-          getActionForReceivedMessage(inputMessage)  
-        else:
-          getNextMessageFromQueue(inputMessage)
-
-'''       try:
-        getActionForReceivedMessage(inputMessage1)  
-      except:
-        displayData.drawError("Message Queue")
-        printDebug(f'<<< exception. processMessageQueue >>{inputMessage}')
- '''
-      #printDebug (f'Processed Message ->>>  {message}')
-
-''' 
-11
-12
-15
-15
-20
-11
-12
-14
- '''
+        try:
+          getActionForReceivedMessage(inputMessage1)  
+        except:
+          displayData.drawError("Message Queue")
+          printDebug(f'<<< exception. processMessageQueue >>{inputMessage}')
 
 #----------------------------------------------------------------
 def pushMessageToQueue(inputMessage):
@@ -437,8 +387,9 @@ def sendCCMessage(channel, CC, value):
 ## 197 -PC on Channel 6
 
 def sendPCMessage( channel, PC):
+  sleep(MIN_DELAY)
   gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
-  sleep(MIN_DELAY * 2.0)
+  sleep(MIN_DELAY)
   printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
 
 #----------------------------------------------------------------
