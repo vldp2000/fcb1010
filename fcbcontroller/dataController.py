@@ -75,10 +75,10 @@ def getSong(id):
 
 def readSongFromJson(id):
   fileName = f"{PATH_TO_SONG_FOLDER}{id}.json"
-  print(fileName)
+  #print(fileName)
   with open(fileName) as jsonFile:
     data = json.load(jsonFile)
-    print(data)
+    #print(data)
     return data
 
 
