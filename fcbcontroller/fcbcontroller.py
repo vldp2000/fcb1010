@@ -388,7 +388,7 @@ def sendCCMessage(channel, CC, value):
 
 def sendPCMessage( channel, PC):
   gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
-  sleep(MIN_DELAY)
+  sleep(MIN_DELAY * 2.0)
   printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
 
 #----------------------------------------------------------------
