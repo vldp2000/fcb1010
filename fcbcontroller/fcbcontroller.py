@@ -608,7 +608,7 @@ def setPreset(program, songPreset):
         sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
       if preset['refinstrument'] == 1:
-        printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']}"")    
+        printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
         displayData.drawScreen()
   else:
