@@ -349,11 +349,11 @@ def processMessageQueue():
       sleep(MIN_DELAY)
     else:      
       #print (gMessageQueue.qsize())  
-      inputMessage = gMessageQueue.get()
+      message = gMessageQueue.get()
       gMessageQueue.task_done()
       gQueueLock.release()
 
-      printDebug (f"Message From QUEUE >>>> [0][0] = {inputMessage[0][0]} , [0][1] = {inputMessage[0][1]}")
+      printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][3]}")
       if inputMessage: 
         try:
           getActionForReceivedMessage(inputMessage)  
@@ -704,11 +704,11 @@ def getActionForReceivedMessage(midiMsg):
       elif msg2 == 15: #Pedal5
         clearScreenDebug()
         selectNextSong(-1)
-        setSongProgram(0)
+        #setSongProgram(0)
       elif msg2 == 20: #Pedal10
         clearScreenDebug()
         selectNextSong(1)
-        setSongProgram(0)
+        #setSongProgram(0)
 
       # gSynthTest = 0
       # gPianoTest = 0
