@@ -386,11 +386,11 @@ def processMessageQueue():
       gQueueLock.release()
 
       printDebug (f"Message From QUEUE >>>> [0][0] = {inputMessage[0][0]} , [0][1] = {inputMessage[0][1]}")
-
-      if not isMessageForNextSong(inputMessage[0]):
-        getActionForReceivedMessage(inputMessage)  
-      else:
-        getNextMessageFromQueue(inputMessage1[0])
+      if inputMessage: 
+        if not isMessageForNextSong(inputMessage[0]):
+          getActionForReceivedMessage(inputMessage)  
+        else:
+          getNextMessageFromQueue(inputMessage[0])
 
 '''       try:
         getActionForReceivedMessage(inputMessage1)  
