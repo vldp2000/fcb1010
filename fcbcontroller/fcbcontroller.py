@@ -356,7 +356,7 @@ def processMessageQueue():
       printDebug (f"Message From QUEUE >>>> [0][0] = {inputMessage[0][0]} , [0][1] = {inputMessage[0][1]}")
       if inputMessage: 
         try:
-          getActionForReceivedMessage(inputMessage1)  
+          getActionForReceivedMessage(inputMessage)  
         except:
           displayData.drawError("Message Queue")
           printDebug(f'<<< exception. processMessageQueue >>{inputMessage}')
