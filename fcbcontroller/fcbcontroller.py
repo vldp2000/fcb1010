@@ -739,14 +739,16 @@ def getActionForReceivedMessage(midiMsg):
 
 #----------------------------------------------------------------
 def ignoreInputMessage(msg):
-  if msg[0] == 180 and msg[1] == 3:
-    return False
-  elif msg[0] == 180 and msg[1] == 1 and msg[2] > 0 and msg[2] < 5:
-    return True
-  elif msg[0] == 176 and msg[1] == 7:
+  if msg[0] == 176 and msg[1] == 7:
     return False
   elif msg[0] == 181 and msg[1] == 7:    
     return False
+  elif msg[0] == 180 and msg[1] == 20:
+    return False
+  elif msg[0] == 180 and msg[1] == 3:
+    return False
+  elif msg[0] == 180 and msg[1] == 1 and msg[2] > 0 and msg[2] < 5:
+    return True
   else:
     return True
 
