@@ -530,7 +530,7 @@ def setCurrentSong(id):
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]
-      printDebug(f"Selected song. id={name}"); 
+      printDebug(f"Selected song = {name}"); 
       displayData.setSongName(f"{gCurrentSongIdx}.{name}")
       setSongProgram(0)
     else: 
