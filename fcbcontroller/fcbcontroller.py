@@ -739,16 +739,14 @@ def getActionForReceivedMessage(midiMsg):
 
 #----------------------------------------------------------------
 def ignoreInputMessage(msg):
-  if msg[0] > 180:
-    return True
-  elif msg[0] == 180 and msg[1] == 1 and msg[2] > 0 and msg[2] < 5:
+  if msg[0] == 180 and msg[1] == 1 and msg[2] > 0 and msg[2] < 5:
     return True
   elif msg[0] == 176 and msg[1] == 7:
-    return True
+    return False
   elif msg[0] == 181 and msg[1] == 7:    
-    return True
+    return False
   else:
-    return False  
+    return True
 
 #----------------------------------------------------------------
 def getMidiMsg(midiInput):
@@ -764,10 +762,11 @@ def getMidiMsg(midiInput):
       gotMsg = True
       inputData = midiInput.read(100)
       for msg in inputData:
+        listInp = list(msg)
+        printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")                   
         if ignoreInputMessage(msg[0]):  # Message comes as an array [[180,1,1],0] 
           continue
         else:
-          listInp = list(msg)
           printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")       
           pushMessageToQueue(msg)
 
