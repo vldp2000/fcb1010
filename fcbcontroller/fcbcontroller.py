@@ -610,7 +610,7 @@ def setPreset(program, songPreset):
       if preset['refinstrument'] == 1:
         printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
-        displayData.drawScreen()
+    displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
     displayData.drawError(f"Preset {id} not found")
