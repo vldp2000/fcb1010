@@ -719,10 +719,14 @@ def getActionForReceivedMessage(midiMsg):
     # Send Volume to Channel 1  (the echo message will be routed to channel 2 by another application)
     channel = 1
     sendCCMessage(channel, 7, msg2)
+    channel = 2
+    sendCCMessage(channel, 7, msg2)
 
   elif msg0 == 181 and msg1 == 7:
     # Send Volume to Channel 6  (the echo message will be routed to channel 4 by another application)
     channel = 6
+    sendCCMessage(channel, 7, msg2)
+    channel = 4
     sendCCMessage(channel, 7, msg2)
 
 #----------------------------------------------------------------
