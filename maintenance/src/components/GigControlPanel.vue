@@ -278,6 +278,7 @@ export default {
       dataChanged: false,
       currentPedal1Value: 1,
       currentPedal2Value: 1,
+      currentPresetVolumeFromController: 0,
       isPlaying: false
     }
   },
@@ -286,7 +287,7 @@ export default {
     ...mapState(['presetList', 'instrumentList', 'instrumentBankList',
       'gigList', 'songList', 'currentSongId', 'currentProgramMidiPedal',
       'selectedGigId', 'scheduledGigId',
-      'pedal1Value', 'pedal2Value',
+      'pedal1Value', 'pedal2Value','presetVolumeFromController',
       'allInitialized', 'instrumentListImagesInitialized',
       'refreshSong', 'initialisingIsInProgress', 'defaultPreset']),
     songId: {
@@ -386,6 +387,10 @@ export default {
       this.currentPedal2Value = this.pedal2Value
       // console.log(this.currentPedal2Value)
     }
+    presetVolumeFromController: function() {
+      if (this.currentPresetVolumeFromController > 0 && this.currentPresetVolumeFromController < 128) 
+        setPresetVolume(this.currentPresetVolumeFromController)
+    }
   },
   created () {
     this.initMessageSocket()
@@ -399,6 +404,15 @@ export default {
     OnControlDataChanged () {
       this.dataChanged = true
     },
+
+    async setPresetVolume (volume) {
+      if (program === this.currentProgramIdx && pedal === this.currentPedal2Value) {
+        return true
+      } else {
+        return false
+      }
+    },
+
     async setCurrentSong () {
       const id = this.currentSongId
       this.$log.debug(' --- setCurrentSong ---', id)

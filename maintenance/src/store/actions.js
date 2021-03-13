@@ -482,6 +482,12 @@ const actions = {
       commit(types.SET_PEDAL2VALUE, idx)
     })
 
+    this._vm.$socket.client.on(config.controllerPresetVoluleMessage, (data) => {
+      const volume = parseInt(data)
+      // console.log(idx)
+      commit(types.SET_PRESET_VOLUME_BY_CONTROLLER, volume)
+    })
+
     clientInitialized = true
   }
 }

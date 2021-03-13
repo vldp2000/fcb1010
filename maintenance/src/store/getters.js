@@ -21,6 +21,7 @@ const getters = {
   refreshSong: state => state.refreshSong,
   defaultPreset: state => state.defaultPreset,
   pedal1Value: state => state.pedal1Value,
-  pedal2Value: state => state.pedal2Value
+  pedal2Value: state => state.pedal2Value,
+  presetVolumeFromController: state => state.presetVolumeFromController
 }
 export default getters

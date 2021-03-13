@@ -33,7 +33,7 @@ const Store = new Vuex.Store({
     refreshSong: false,
     pedal1Value: 1,
     pedal2Value: 1,
-
+    presetVolumeFromController: 0,
     defaultPreset: {
       id: -1,
       refsong: -1,

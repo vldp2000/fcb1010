@@ -80,6 +80,7 @@ gPresetDict= {}
 gInstrumentBankDict = {}
 
 gDebugMessageCounter = 0
+gDebugFlag = False
 gMode = 'Live'
 
 gCurrentSongIdx = -1
@@ -114,8 +115,8 @@ gSystemCommandCode = -1
 
 #---Print Debug utility-------------
 def printDebug(message):
-  global gMode
-  if gMode == 'Debug':
+  global gDebugFlag
+  if gDebugFlag:
     print(message)
 
 
@@ -159,51 +160,18 @@ def processProgramMessage(idx):
   setSongProgram(idx)
 
 #==
-@sio.on('VIEW_PRESET_VOL_MESSAGE')
-def processPresetVolumeMessage(payload):
-  printDebug("processPresetVolumeMessage")
-'''   global gPresetDict
-  global gInstrumentChannelDict
-  global gCurrentSongId
-  global gCurrentSongIdx
-  global gCurrentSong
-  global gCurrentPresetId
-  global gCurrentPreset
-  global gCurrentProgramIdx
-  global gSystemCommandCounter
 
-  gSystemCommandCounter = 0
-
-  if payload['songId'] == gCurrentSongId and payload['programIdx'] == gCurrentProgramIdx and gCurrentSong:
-    if payload['presetId'] != gCurrentPresetId:
-      program = gCurrentSong["programList"][gCurrentProgramIdx]
-
-      for preset in program['presetList']:
-        if preset['refpreset'] == payload['presetId']:
-          gCurrentPresetId = payload['presetId']
-          gCurrentPreset = preset
-          #printDebug('Found new Preset')
-          #printDebug(gCurrentPreset)
-          break
-
-    # else:
-    #   print(' !! Same Preset > ', gCurrentPresetId)
-
-    volume = payload['value']
-    gCurrentPreset['volume'] = volume
-    # printDebug(volume)
-    #  'programIdx': 1, 'presetId': 3, 'instrumentId': 3, 'value': 73}
-    channel = int( gInstrumentChannelDict[str(gCurrentPreset['refinstrument'])] )
-    if channel > 0:
-      sendCCMessage(channel, 7, volume)
- '''  # else:
-  #   print('Not a current Song ??? ', gCurrentSongId)
-
-#==
-@sio.on('VIEW_PRESET_PAN_MESSAGE')
-def processPresetVolumeMessage(payload):
-  printDebug(payload)
-  # setSongProgram(idx)
+@sio.on('VIEW_EDIT_MODE_MESSAGE')
+def processControllerModeMessage(payload):
+  global gMode
+  if payload == 1:
+    gMode == 'Live'
+    displayData.drawScreen()
+  else:    
+    gMode = 'Config
+    displayData.drawMessage("Mode","Config")
+  printDebug(f"->-> Cuurent Mode {payload} => {gMode}")
+  
 
 #==
 def sendProgramNotificationMessage(idx):
@@ -247,12 +215,15 @@ def sendSyncNotificationMessage(bankId, songId, programIdx):
   sio.emit(SYNC_MESSAGE, jsonStr)
   # print(SYNC_MESSAGE + "=" +  jsonStr)
 #----------------------------------------------------------------
+def sendPresetVolume(gCurrentPresetId, value)    
+  sio.emit(PRESETVOLUME_MESSAGE, str(value))
+  #printDebug(value)
 
 
 def clearScreenDebug():
-  global gMode
+  global gDebugFlag
   global gDebugMessageCounter
-  if gMode == 'Debug':
+  if gDebugFlag == 'Debug':
     print("\n" * 2)
     print(f'               >> ----- {gDebugMessageCounter} -------<<' )
     gDebugMessageCounter = gDebugMessageCounter + 1
@@ -676,11 +647,18 @@ def getActionForReceivedMessage(midiMsg):
   
   if msg0 == 180:
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
-      executeSystemCommand(msg2)
+      if msg2 < 5:
+        executeSystemCommand(msg2)
+      elif msg2=6
+        if gMode == 'Live'
+          gMode = 'Config'
+          displayData.drawMessage("Configuration", "Set Volume")
+        else
+          gMode = 'Live'
       return
     elif msg1 == 1:
       return
-    elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
+    elif msg1 == 20 and gMode = 'Live': #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
 
       if msg2 == 11: #Pedal1 
         clearScreenDebug()
@@ -715,20 +693,24 @@ def getActionForReceivedMessage(midiMsg):
       # gSynthTest = 0
       # gPianoTest = 0
 
-  elif msg0 == 176 and msg1 == 7:
-    # Send Volume to Channel 1  (the echo message will be routed to channel 2 by another application)
-    channel = 1
-    sendCCMessage(channel, 7, msg2)
-    channel = 2
-    sendCCMessage(channel, 7, msg2)
-
+  elif msg0 == 176 and msg1 
+    if gMode = 'Live':
+      # Send Volume to Channel 1  (the echo message will be routed to channel 2 by another application)
+      channel = 1
+      sendCCMessage(channel, 7, msg2)
+      channel = 2
+      sendCCMessage(channel, 7, msg2)
+    else:
+      sendPresetVolume(gCurrentPresetId, msg3)        
   elif msg0 == 181 and msg1 == 7:
-    # Send Volume to Channel 6  (the echo message will be routed to channel 4 by another application)
-    channel = 6
-    sendCCMessage(channel, 7, msg2)
-    channel = 4
-    sendCCMessage(channel, 7, msg2)
-
+    if gMode = 'Live':
+        # Send Volume to Channel 6  (the echo message will be routed to channel 4 by another application)
+      channel = 6
+      sendCCMessage(channel, 7, msg2)
+      channel = 4
+      sendCCMessage(channel, 7, msg2)
+    else:
+      sendPresetVolume(gCurrentPresetId, msg3)    
 #----------------------------------------------------------------
 def ignoreInputMessage(msg):
   if msg[0] == 176 and msg[1] == 7:
@@ -778,11 +760,11 @@ displayData.clearScreen()
 
 if len(sys.argv) > 1: 
   if str(sys.argv[1]).upper() == 'DEBUG':
-    gMode = 'Debug'
+    gDebugFlag = True
 
 #Show the list of available midi devices
 printDebug(pygame.midi.get_count())
-if gMode == 'Debug':
+if gDebugFlag :
   for id in range(pygame.midi.get_count()):
     printDebug( "Id=%d Device=%s" % (id,pygame.midi.get_device_info(id)) )
 

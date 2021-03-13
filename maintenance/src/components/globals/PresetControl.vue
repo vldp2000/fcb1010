@@ -154,7 +154,12 @@ export default {
     programIdx: {
       type: Number,
       default: -1
-    }
+    },
+    currentPresetVolume: {
+      type: Number,
+      default: 0
+    },
+
   },
   data () {
     return {
@@ -188,7 +193,7 @@ export default {
   // },
 
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList']),
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'presetVolumeFromController']),
 
     volume: {
       get () {
@@ -225,6 +230,11 @@ export default {
           this.$log.debug('------------- empty -----')
           this.$log.debug(this.songPreset)
         }
+      }
+    },
+    presetVolumeFromController: function () {
+      if (this.editMode) {
+        setVolume(this.presetVolumeFromController)
       }
     }
   },

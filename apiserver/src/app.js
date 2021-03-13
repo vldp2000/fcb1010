@@ -33,14 +33,15 @@ try {
       io.emit(`${config.viewSongMessage}`, data)
     })
 
-    socket.on(`${config.viewPresetVolMessage}`, function(data) {
-      // console.log(config.viewPresetVolMessage)
-      io.emit(`${config.viewPresetVolMessage}`, data)
+    socket.on(`${config.viewEditModeMessage}`, function(data) {
+      // console.log(config.viewEdtModeMessage)
+      io.emit(`${config.viewEditModeMessage}`, data)
     })
-    socket.on(`${config.viewPresetPanMessage}`, function(data) {
-      io.emit(`${config.viewPresetPanMessage}`, data)
+    
+    
+    socket.on(`${config.controllerPresetVoluleMessage}`, function(data) {
+      io.emit(`${config.controllerPresetVoluleMessage}`, data)
     })
-
 
     socket.on(`${config.controllerProgramMessage}`, function(data) {
       io.emit(`${config.controllerProgramMessage}`, data)
@@ -53,10 +54,12 @@ try {
       io.emit(`${config.controllerGigMessage}`, data)
     })
     
+    //reserved
     socket.on(`${config.controllerPedal1Message}`, function(data) {
       io.emit(`${config.controllerPedal1Message}`, data)
     })
 
+    //reserved
     socket.on(`${config.controllerPedal2Message}`, function(data) {
       io.emit(`${config.controllerPedal2Message}`, data)
     })
