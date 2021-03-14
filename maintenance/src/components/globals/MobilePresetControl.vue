@@ -13,9 +13,6 @@
         </div>
       </v-row>
       <v-row no-gutters>
-        <div>
-          <h1>DEF</h1>
-        </div>
         <div class="presetName">
           v-bind:class="(volume > 0) ? 'active' : 'inactive'"
           <b>{{ getPresetName() }}</b>
@@ -65,7 +62,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'presetVolumeFromController'])
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'presetVolumeFromController']),
+
+    volume: {
+      get () {
+        // console.log(this.songPreset.volume)
+        return this.songPreset.volume
+      },
+    }
   },
 
   watch: {
