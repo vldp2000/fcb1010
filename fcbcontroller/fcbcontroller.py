@@ -168,7 +168,7 @@ def processControllerModeMessage(payload):
     gMode == 'Live'
     displayData.drawScreen()
   else:    
-    gMode = 'Config
+    gMode = 'Config'
     displayData.drawMessage("Mode","Config")
   printDebug(f"->-> Cuurent Mode {payload} => {gMode}")
   
