@@ -68,7 +68,7 @@ export default {
       get () {
         // console.log(this.songPreset.volume)
         return this.songPreset.volume
-      },
+      }
     }
   },
 
