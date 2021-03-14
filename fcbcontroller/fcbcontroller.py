@@ -165,7 +165,7 @@ def processProgramMessage(idx):
 def processControllerModeMessage(payload):
   global gMode
   printDebug(f"->->  Received message VIEW_EDIT_MODE_MESSAGE = {payload}")
-  if str(payload) == '0':
+  if str(payload) == '1':
     gMode = 'Config'
     displayData.drawMessage("Mode","Config")
   else:    
