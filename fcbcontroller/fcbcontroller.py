@@ -215,11 +215,12 @@ def sendSyncNotificationMessage(bankId, songId, programIdx):
   sio.emit(SYNC_MESSAGE, jsonStr)
   # print(SYNC_MESSAGE + "=" +  jsonStr)
 #----------------------------------------------------------------
-def sendPresetVolume(gCurrentPresetId, value)    
+def sendPresetVolume(gCurrentPresetId, value):
   sio.emit(PRESETVOLUME_MESSAGE, str(value))
   #printDebug(value)
 
 
+#----------------------------------------------------------------
 def clearScreenDebug():
   global gDebugFlag
   global gDebugMessageCounter
