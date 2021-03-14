@@ -34,7 +34,7 @@ try {
     })
 
     socket.on(`${config.viewEditModeMessage}`, function(data) {
-      console.log(config.viewEdtModeMessage)
+      console.log(config.viewEditModeMessage)
       console.log(data)
       io.emit(`${config.viewEditModeMessage}`, data)
     })
