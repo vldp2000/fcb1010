@@ -5,18 +5,20 @@
   >
     <v-container v-bind:class="view-mode ma-0 pa-0" fluid>
       <v-row no-gutters>
-          <v-col cols=2>
-            <div class="instrumentImage">
-              <v-img :src="imageURL" @click="onIconClick()"/>
-            </div>
-            </div>
-          </v-col>
-          <v-col cols=10>
-            <div class="presetName"
-              v-bind:class="(volume > 0) ? 'active' : 'inactive'"
-              <b>{{ getPresetName() }}</b>
-            </div>
-          </v-col>
+        <v-col cols=2>
+          <div class="instrumentImage">
+            <v-img :src="imageURL" />
+          </div>
+          </div>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col cols=10>
+          <div class="presetName"
+            v-bind:class="(volume > 0) ? 'active' : 'inactive'"
+            <b>{{ getPresetName() }}</b>
+          </div>
+        </v-col>
       </v-row>
     </v-container>
   </v-card>
