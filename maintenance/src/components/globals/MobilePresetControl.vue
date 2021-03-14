@@ -5,16 +5,12 @@
   >
     <v-container fluid>
       <v-row no-gutters>
-        <div>
-          <h1>ABC</h1>
-        </div>
         <div class="instrumentImage">
           <v-img :src="imageURL" />
         </div>
       </v-row>
       <v-row no-gutters>
-        <div class="presetName">
-          v-bind:class="(volume > 0) ? 'active' : 'inactive'"
+        <div class="presetName" v-bind:class="(volume > 0) ? 'active' : 'inactive'">
           <b>{{ getPresetName() }}</b>
         </div>
       </v-row>
