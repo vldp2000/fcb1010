@@ -441,7 +441,8 @@ const actions = {
   sendEditMode ({ commit }, editFlag) {
     this._vm.$socket.client.emit(config.viewEdtModeMessage, editFlag)
   },
-  
+
+  //  Socket Client Initialize  
   socketClientInitialize ({ commit }, payload) {
     Vue.$log.debug(';;>> socketClientIniotialize <<;;')
     Vue.$log.debug(this._vm)
