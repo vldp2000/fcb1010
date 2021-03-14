@@ -65,7 +65,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'presetVolumeFromController']),
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'presetVolumeFromController'])
   },
 
   watch: {
@@ -130,7 +130,7 @@ export default {
     getBaseColor () {
       if (this.songPreset && this.songPreset.volume > 0) return 'snow'
       else return 'gray'
-    },
+    }
   }
 }
 </script>
