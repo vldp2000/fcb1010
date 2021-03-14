@@ -5,15 +5,21 @@
   >
     <v-container v-bind:class="view-mode ma-0 pa-0" fluid>
       <v-row no-gutters>
-          <div class="instrumentImage">
-            <v-img :src="imageURL" />
-          </div>
+        <div>
+          <h1>ABC</h1>
+        </div>
+        <div class="instrumentImage">
+          <v-img :src="imageURL" />
+        </div>
       </v-row>
       <v-row no-gutters>
-          <div class="presetName"
-            v-bind:class="(volume > 0) ? 'active' : 'inactive'"
-            <b>{{ getPresetName() }}</b>
-          </div>
+        <div>
+          <h1>DEF</h1>
+        </div>
+        <div class="presetName"
+          v-bind:class="(volume > 0) ? 'active' : 'inactive'"
+          <b>{{ getPresetName() }}</b>
+        </div>
       </v-row>
     </v-container>
   </v-card>
