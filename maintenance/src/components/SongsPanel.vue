@@ -209,11 +209,11 @@ export default {
     },
 
     editItem (item) {
-      //this.$log.debug('... Edit Item', item)
+      // this.$log.debug('... Edit Item', item)
       this.editedIndex = this.songs.indexOf(item)
-      //this.$log.debug(this.editedIndex)
+      // this.$log.debug(this.editedIndex)
       this.editedItem = Object.assign({}, item)
-      //this.$log.debug(this.editedItem)
+      // this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -234,8 +234,8 @@ export default {
     saveSong (value) {
       if (value === null) {
         this.showLoading(true)
-        //this.$log.debug('saveSong () -------')
-        //this.$log.debug(this.editedItem)
+        // this.$log.debug('saveSong () -------')
+        // this.$log.debug(this.editedItem)
         if (this.editedIndex > -1) {
           try {
             // SongsService.put(this.editedItem)
@@ -259,10 +259,10 @@ export default {
     },
 
     async init () {
-      //this.$log.debug(' >>> Init all relted to songs storage')
+      // this.$log.debug(' >>> Init all relted to songs storage')
       // await SongsService.initAll()
       await this.showLoading(false)
-      //this.$log.debug(' Finish Init all relted to songs storage <<< ')
+      // this.$log.debug(' Finish Init all relted to songs storage <<< ')
     },
 
     customDataTableItemsFilter (value, search, items) {
@@ -280,7 +280,7 @@ export default {
     },
 
     async rowClicked (value) {
-      //this.$log.debug(`<SongPanel row clicked> ${value.id}`)
+      // this.$log.debug(`<SongPanel row clicked> ${value.id}`)
       let oldId = -1
 
       if (this.expanded.length === 1) {
@@ -289,7 +289,7 @@ export default {
       }
 
       let song = this.songList.find(sn => sn.id === value.id)
-      //this.$log.debug(song)
+      // this.$log.debug(song)
 
       if (!song.programList || song.programList.lenght === 0) {
         await this.$store.dispatch('addSongItems', value.id)
@@ -297,7 +297,7 @@ export default {
       if (oldId === value.id || !value.programList || value.programList.lenght === 0) {
         this.$log.debug('empty ----')
       } else {
-        //this.$log.debug('expand ----')
+        // this.$log.debug('expand ----')
         this.selectedProgramList = song.programList
         this.expanded.push(value)
       }

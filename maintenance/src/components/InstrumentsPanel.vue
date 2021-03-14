@@ -157,7 +157,7 @@ export default {
     editItem (item) {
       this.editedIndex = this.instrumentList.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      //this.$log.debug(this.editedItem)
+      // this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
