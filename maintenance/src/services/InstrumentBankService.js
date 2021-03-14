@@ -11,7 +11,6 @@ export default {
     return result.data.id
   },
   async put (instrumentBank) {
-    let result = await Api().put(`instrumentbank/${instrumentBank.id}`, instrumentBank)
-    let newObj = await result.data
+    await Api().put(`instrumentbank/${instrumentBank.id}`, instrumentBank)
   }
 }
