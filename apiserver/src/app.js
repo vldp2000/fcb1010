@@ -22,14 +22,14 @@ try {
     // console.log(`--- message socket connected. client ${socket.id}`)
 
     socket.on(`${config.viewProgramMessage}`, function(data) {
-      // console.log(config.viewProgramMessage)
-      // console.log(data)
+      console.log(config.viewProgramMessage)
+      console.log(data)
       io.emit(`${config.viewProgramMessage}`, data)
     })
 
     socket.on(`${config.viewSongMessage}`, function(data) {
-      // console.log(config.viewSongMessage)
-      // console.log(data)
+      console.log(config.viewSongMessage)
+      console.log(data)
       io.emit(`${config.viewSongMessage}`, data)
     })
 
