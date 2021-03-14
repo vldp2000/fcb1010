@@ -140,18 +140,10 @@ export default {
   },
 
   methods: {
-    // async init () {
-    //   try {
-
-    //   } catch (err) {
-    //     this.$log.debug(err)
-    //   }
-    // },
-
     editItem (item) {
       this.editedIndex = this.instrumentBankList.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.$log.debug(this.editedItem)
+      //this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -169,8 +161,8 @@ export default {
     },
 
     save () {
-      this.$log.debug('save Instrument bank -------')
-      this.$log.debug(this.editedItem)
+      //this.$log.debug('save Instrument bank -------')
+      //this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           this.$store.dispatch('updateInstrumentBank', this.editedItem)

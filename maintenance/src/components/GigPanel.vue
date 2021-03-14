@@ -135,11 +135,11 @@ export default {
 
   methods: {
     editItem (item) {
-      this.$log.debug(item)
+      //this.$log.debug(item)
       this.editedIndex = this.gigList.indexOf(item)
-      this.$log.debug(this.editedIndex)
+      //this.$log.debug(this.editedIndex)
       this.editedItem = Object.assign({}, item)
-      this.$log.debug(this.editedItem)
+      //this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -152,8 +152,8 @@ export default {
     },
 
     saveGig () {
-      // this.$log.debug('saveGig () -------')
-      // this.$log.debug(this.editedItem)
+      //this.$log.debug('saveGig () -------')
+      //this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           // GigsService.put(this.editedItem)
@@ -178,11 +178,11 @@ export default {
         oldGigId = this.expanded[0].id
         this.expanded.pop()
       }
-      this.$log.debug(value)
+      //this.$log.debug(value)
       if (oldGigId === value.id || !value.songList || value.songList.lenght === 0) {
         this.$log.debug('empty ----')
       } else {
-        this.$log.debug('expand ----')
+        //this.$log.debug('expand ----')
         this.selectedGig = value
         this.expanded.push(value)
       }

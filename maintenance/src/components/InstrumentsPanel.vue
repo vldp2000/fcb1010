@@ -157,7 +157,7 @@ export default {
     editItem (item) {
       this.editedIndex = this.instrumentList.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.$log.debug(this.editedItem)
+      //this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -191,24 +191,6 @@ export default {
       }
       this.closeDialog()
     }
-
-    // importAll (files) {
-    //   try {
-    //     files.keys().forEach(key => {
-    //       const pathLong = files(key)
-    //       const pathShort = key
-    //       let id = -1
-    //       if (pathShort.includes('image_')) {
-    //         id = key.substring(8, 10)
-    //         const payload = { 'id': parseInt(id, 10), 'url': pathLong }
-    //         this.$store.dispatch('setInstrumentImage', payload)
-    //       }
-    //     })
-    //     // this.$log.debug(this.instrumentList)
-    //   } catch (ex) {
-    //     this.$log.debug(ex)
-    //   }
-    // }
   }
 }
 </script>

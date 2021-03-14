@@ -127,9 +127,9 @@ export default {
   },
 
   mounted () {
-  //   this.programList = this.selectedSong.programList
-    // this.$log.debug('----->SongPresetsPanel')
-    // this.$log.debug(this.songPresetList)
+    //this.programList = this.selectedSong.programList
+    //this.$log.debug('----->SongPresetsPanel')
+    //this.$log.debug(this.songPresetList)
   },
   methods: {
     onClick (item) {

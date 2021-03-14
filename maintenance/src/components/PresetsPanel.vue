@@ -205,7 +205,7 @@ export default {
       val || this.closeDialog()
     },
     instrumentId: function () {
-      // this.$log.debug(`-- on InstrumentId change ${this.instrumentId}`)
+      //this.$log.debug(`-- on InstrumentId change ${this.instrumentId}`)
       if (this.instrumentId && this.instrumentId > 0) {
         this.editedItem.refinstrument = this.instrumentId
         this.bankList = this.getBankList(this.instrumentId)
@@ -224,12 +224,12 @@ export default {
 
   methods: {
     editItem (item) {
-      // this.$log.debug(`-------start editItem (item)  ${item.id}`)
+      //this.$log.debug(`-------start editItem (item)  ${item.id}`)
       this.editedIndex = this.presetList.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
       this.instrumentId = item.refinstrument
-      // this.$log.debug(`-------finish editItem (item)  ${item.id}`)
+      //this.$log.debug(`-------finish editItem (item)  ${item.id}`)
     },
 
     deleteItem (item) {
@@ -249,8 +249,8 @@ export default {
     },
 
     savePreset () {
-      // this.$log.debug('savePreset () -------')
-      // this.$log.debug(this.editedItem)
+      //this.$log.debug('savePreset () -------')
+      //this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           this.$store.dispatch('updatePreset', this.editedItem)
@@ -267,16 +267,16 @@ export default {
       this.closeDialog()
     },
     getBankList (id) {
-      // this.$log.debug(' -----getBankList======== ')
+      //this.$log.debug(' -----getBankList======== ')
       let result = []
-      // this.$log.debug(id)
+      //this.$log.debug(id)
       if (id > -1 && this.editedItem.refinstrument && this.editedItem.refinstrument > -1) {
         result = this.instrumentBankList.filter(item => item.refinstrument === id)
         if (result && result.length === 1) {
           this.bankId = result.id
         }
       }
-      // this.$log.debug(result)
+      //this.$log.debug(result)
       return result
     },
     getInstrument (id) {

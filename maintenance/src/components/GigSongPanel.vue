@@ -92,8 +92,8 @@ export default {
 
   methods: {
     init: async function () {
-      // console.log(this.songList)
-      // this.$log.debug(this.songList)
+      //console.log(this.songList)
+      //this.$log.debug(this.songList)
       if (this.gig) {
         this.gigSonglist = []
         for (let item of this.gig.songList) {

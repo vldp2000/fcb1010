@@ -223,13 +223,13 @@ export default {
           }
         } else {
           this.$log.debug('------------- empty -----')
-          this.$log.debug(this.songPreset)
+          //this.$log.debug(this.songPreset)
         }
       }
     },
     presetVolumeFromController: function () {
-      this.$log.debug('--> presetControl-----')
-      this.$log.debug(this.presetVolumeFromController)
+      //this.$log.debug('--> presetControl-----')
+      //this.$log.debug(this.presetVolumeFromController)
       if (this.editMode) {
         this.setVolume(this.presetVolumeFromController)
       }
@@ -271,23 +271,23 @@ export default {
       if (typeof pr === 'undefined') {
         return {}
       }
-      // this.$log.debug(pr.name)
+      //this.$log.debug(pr.name)
       return pr.name
     },
 
     async populatePresetList (id) {
       if (typeof this.presetList !== 'undefined' && this.presetList !== null &&
         typeof this.songPreset !== 'undefined' && this.songPreset !== null) {
-        // this.$log.debug('---get--preset--------------')
+        //this.$log.debug('---get--preset--------------')
         let list = await this.presetList.filter(item => item.refinstrument === id)
         this.presets = await _sortBy(list, 'name')
-        // this.$log.debug(this.presets)
+        //this.$log.debug(this.presets)
       }
     },
     setPreset () {
       const preset = this.presetList.find(item => item.id === this.presetId)
-      // this.$log.debug('---set-preset---------------')
-      // this.$log.debug(preset)
+      //this.$log.debug('---set-preset---------------')
+      //this.$log.debug(preset)
       if (preset) {
         this.songPreset.refpreset = this.presetId
         this.songPreset.refinstrumentbank = preset.refinstrumentbank
@@ -301,7 +301,7 @@ export default {
       }
     },
     saveSongPreset () {
-      this.$log.debug(this.songPreset)
+      //this.$log.debug(this.songPreset)
       this.$store.dispatch('updateSongProgramPreset', this.songPreset)
       this.setEditMode(false)
       this.$emit('changed', true)
@@ -312,7 +312,7 @@ export default {
     },
     onPresetClick () {
       if (this.editMode) {
-        // this.$log.debug(this.presets)
+        //this.$log.debug(this.presets)
         this.dialog = true
       }
     },
