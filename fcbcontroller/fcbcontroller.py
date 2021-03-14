@@ -166,7 +166,7 @@ def processControllerModeMessage(payload):
   global gMode
   printDebug(f"->->  Received message VIEW_EDIT_MODE_MESSAGE. Mode  => {gMode}  <= {payload}")
 
-  if payload == '0':
+  if str(payload) == '0':
     gMode = 'Config'
     displayData.drawMessage("Mode","Config")
   else:    
