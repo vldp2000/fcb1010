@@ -401,7 +401,7 @@ const actions = {
     }
   },
 
-  //  Set current Song Id-----------------------------------------------------
+  //  Set current Gig Id-----------------------------------------------------
   setSelectedGigId ({ commit }, id) {
     commit(types.SET_SELECTEDGIG_ID, id)
   },
@@ -482,8 +482,8 @@ const actions = {
       commit(types.SET_PEDAL2VALUE, idx)
     })
 
-    this._vm.$socket.client.on(config.controllerPresetVoluleMessage, (data) => {
-      const volume = parseInt(data)
+    this._vm.$socket.client.on(config.controllerPresetVoluleMessage, (value) => {
+      const volume = parseInt(value)
       // console.log(idx)
       commit(types.SET_PRESET_VOLUME_BY_CONTROLLER, volume)
     })

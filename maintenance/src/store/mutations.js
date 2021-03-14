@@ -201,8 +201,8 @@ const mutations = {
   [types.SET_PEDAL2VALUE] (state, value) {
     state.pedal2Value = value
   },
-  [types.SET_PRESET_VOLUME_BY_CONTROLLER] (state, value) {
-    state.presetVolumeFromController = value
+  [types.SET_PRESET_VOLUME_BY_CONTROLLER] (state, volume) {
+    state.presetVolumeFromController = volume
   }
 
 }
