@@ -165,7 +165,7 @@ def processProgramMessage(idx):
 def processControllerModeMessage(payload):
   global gMode
   if payload == 1:
-    gMode == 'Live'
+    gMode = 'Live'
     displayData.drawScreen()
   else:    
     gMode = 'Config'
@@ -659,7 +659,7 @@ def getActionForReceivedMessage(midiMsg):
       return
     elif msg1 == 1:
       return
-    elif msg1 == 20 and gMode = 'Live': #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
+    elif msg1 == 20 and gMode == 'Live': #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
 
       if msg2 == 11: #Pedal1 
         clearScreenDebug()
@@ -704,7 +704,7 @@ def getActionForReceivedMessage(midiMsg):
     else:
       sendPresetVolume(gCurrentPresetId, msg3)        
   elif msg0 == 181 and msg1 == 7:
-    if gMode = 'Live':
+    if gMode == 'Live':
         # Send Volume to Channel 6  (the echo message will be routed to channel 4 by another application)
       channel = 6
       sendCCMessage(channel, 7, msg2)
