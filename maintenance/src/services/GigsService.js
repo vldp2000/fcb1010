@@ -16,8 +16,7 @@ export default {
     try {
       let gigObj = Object.assign({}, gig)
       delete gigObj.songList
-
-      let result = await Api().put(`gig/${gig.id}`, gigObj)
+      await Api().put(`gig/${gig.id}`, gigObj)
     } catch (ex) {
       Vue.$log.error(ex)
     }
@@ -26,7 +25,7 @@ export default {
   async saveScheduledGigId (id) {
     try {
       const gigIdObj = { 'id': id }
-      let result = await Api().put('currentgig', gigIdObj)
+      await Api().put('currentgig', gigIdObj)
     } catch (ex) {
       Vue.$log.error(ex)
     }

@@ -10,7 +10,6 @@ export default {
     return result.data.id
   },
   async put (preset) {
-    let result = await Api().put(`preset/${preset.id}`, preset)
-    let newPreset = await result.data
+    await Api().put(`preset/${preset.id}`, preset)
   }
 }

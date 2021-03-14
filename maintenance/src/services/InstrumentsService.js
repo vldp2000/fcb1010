@@ -13,8 +13,7 @@ export default {
   },
 
   async put (instrument) {
-    let result = await Api().put(`instrument/${instrument.id}`, instrument)
-    let newObj = await result.data
+    await Api().put(`instrument/${instrument.id}`, instrument)
   },
 
   async getInstrumentIcons (files) {
