@@ -228,6 +228,8 @@ export default {
       }
     },
     presetVolumeFromController: function () {
+      this.$log.debug('--> presetControl-----')
+      this.$log.debug(this.presetVolumeFromController)
       if (this.editMode) {
         this.setVolume(this.presetVolumeFromController)
       }

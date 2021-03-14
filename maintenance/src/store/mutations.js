@@ -203,6 +203,8 @@ const mutations = {
   },
   [types.SET_PRESET_VOLUME_BY_CONTROLLER] (state, volume) {
     state.presetVolumeFromController = volume
+    Vue.$log.debug('types.SET_PRESET_VOLUME_BY_CONTROLLER')
+    Vue.$log.debug(volume)
   }
 
 }
