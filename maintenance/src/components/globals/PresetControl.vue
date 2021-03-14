@@ -154,12 +154,7 @@ export default {
     programIdx: {
       type: Number,
       default: -1
-    },
-    currentPresetVolume: {
-      type: Number,
-      default: 0
-    },
-
+    }
   },
   data () {
     return {
