@@ -1,7 +1,7 @@
 export const viewProgramMessage = process.env.VUE_APP_VIEW_PROGRAM_MESSAGE || 'VIEW_PROGRAM_MESSAGE'
 export const viewSongMessage = process.env.VUE_APP_VIEW_SONG_MESSAGE || 'VIEW_SONG_MESSAGE'
 export const viewEditModeMessage = process.env.VUE_APP_VIEW_EDIT_MODE_MESSAGE || 'VIEW_EDIT_MODE_MESSAGE'
-export const controllerPresetVoluleMessage = process.env.VUE_APP_CONTROLLER_PRESET_VOLUME_MESSAGE || 'CONTROLLER_PRESET_VOLUME_MESSAGE'
+export const controllerPresetVoluleMessage = process.env.VUE_APP_CONTROLLER_PRESETVOLUME_MESSAGE || 'CONTROLLER_PRESETVOLUME_MESSAGE'
 export const controllerProgramMessage = process.env.VUE_APP_CONTROLLER_PROGRAM_MESSAGE || 'CONTROLLER_PROGRAM_MESSAGE'
 export const controllerSongMessage = process.env.VUE_APP_CONTROLLER_SONG_MESSAGE || 'CONTROLLER_SONG_MESSAGE'
 export const controllerGigMessage = process.env.VUE_APP_CONTROLLER_GIG_MESSAGE || 'CONTROLLER_GIG_MESSAGE'

@@ -486,7 +486,7 @@ const actions = {
 
     this._vm.$socket.client.on(config.controllerPresetVoluleMessage, (value) => {
       const volume = parseInt(value)
-      // console.log(idx)
+      Vue.$log.debug(`>~>~> controllerPresetVoluleMessage  ${config.controllerPresetVoluleMessage} ${value}`)
       commit(types.SET_PRESET_VOLUME_BY_CONTROLLER, volume)
     })
 
