@@ -142,8 +142,8 @@ export default {
     padding: 0px;
     /* justify-content: flex-start; */
     /* align-items: flex-end; */
-    flex-direction: column;
-    height: 40px;
+    /*flex-direction: column;*/
+    height: 100px;
   }
   .custom-text-input {
     width: 65px;
