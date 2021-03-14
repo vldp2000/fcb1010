@@ -1,4 +1,5 @@
 import Api from '@/services/Api'
+import Vue from 'vue'
 
 export default {
 

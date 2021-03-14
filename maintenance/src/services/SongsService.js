@@ -1,7 +1,7 @@
 import Api from '@/services/Api'
+import Vue from 'vue'
 
 export default {
-
   async getAllData () {
     let result = await Api().get('all/song')
     return result.data
