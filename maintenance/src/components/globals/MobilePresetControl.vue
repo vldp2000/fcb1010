@@ -9,7 +9,6 @@
           <div class="instrumentImage">
             <v-img :src="imageURL" />
           </div>
-          </div>
         </v-col>
       </v-row>
       <v-row no-gutters>
