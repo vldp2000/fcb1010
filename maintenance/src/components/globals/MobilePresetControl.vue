@@ -3,7 +3,7 @@
     class="mx-auto ma-0 pa-0"
     max-width="400"
   >
-    <v-container v-bind:class='view-mode ma-0 pa-0' fluid>
+    <v-container v-bind:class="view-mode ma-0 pa-0" fluid>
       <v-row no-gutters>
         <div>
           <h1>ABC</h1>
