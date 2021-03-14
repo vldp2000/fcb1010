@@ -326,13 +326,12 @@ def processMessageQueue():
       gMessageQueue.task_done()
       gQueueLock.release()
 
-      printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][2]} , [0][3] = {message[0][3]}")
       if message: 
-        try:
-          getActionForReceivedMessage(message)  
-        except:
-          displayData.drawError("Message Queue")
-          printDebug(f'<<< exception. processMessageQueue >>{message}')
+        getActionForReceivedMessage(message)  
+        printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][2]} , [0][3] = {message[0][3]}")
+      else:
+        printDebug (f"Message grom Queue = None")
+          
 
 #----------------------------------------------------------------
 def pushMessageToQueue(inputMessage):
@@ -697,7 +696,7 @@ def getActionForReceivedMessage(midiMsg):
     channel = 2
     sendCCMessage(channel, 7, msg2)
     if gMode == 'Config':
-      sendPresetVolume(msg3)        
+      sendPresetVolume(msg2)        
 
   elif msg0 == 181 and msg1 == 7:
     # Send Volume to Channel 6  and  channel 4
@@ -707,7 +706,7 @@ def getActionForReceivedMessage(midiMsg):
     channel = 4
     sendCCMessage(channel, 7, msg2)
     if gMode == 'Config':
-      sendPresetVolume(msg3)    
+      sendPresetVolume(msg2)    
 
 #----------------------------------------------------------------
 
