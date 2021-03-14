@@ -125,11 +125,7 @@ export default {
     },
 
     editItem (item) {
-      // this.$log.debug('... Edit Item', item)
-      //this.editedIndex = this.programList.indexOf(item)
-      // this.$log.debug(this.editedIndex)
       this.editedItem = Object.assign({}, item)
-      // this.$log.debug(this.editedItem)
       this.dialog = true
     },
     closeDialog () {
