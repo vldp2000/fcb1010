@@ -650,7 +650,7 @@ def getActionForReceivedMessage(midiMsg):
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
       if msg2 < 5:
         executeSystemCommand(msg2)
-      elif msg2 == 6
+      elif msg2 == 6:
         if gMode == 'Live'
           gMode = 'Config'
           displayData.drawMessage("Configuration", "Set Volume")
