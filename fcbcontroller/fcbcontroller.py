@@ -217,8 +217,7 @@ def sendSyncNotificationMessage(bankId, songId, programIdx):
 #----------------------------------------------------------------
 def sendPresetVolume(value):
   sio.emit(PRESETVOLUME_MESSAGE, str(value))
-  #printDebug(value)
-
+  printDebug(f"Send message  PRESETVOLUME_MESSAGE {value}")
 
 #----------------------------------------------------------------
 def clearScreenDebug():
