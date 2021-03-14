@@ -426,21 +426,23 @@ const actions = {
   //  Socket Io----Message Related methods----------------------------------------
   selectSong ({ commit }, id) {
     this._vm.$socket.client.emit(config.viewSongMessage, id)
+    Vue.$log.debug(`>~>~> selectSong  ${config.viewSongMessage} ${id}`)
   },
 
   selectSongProgram ({ commit }, idx) {
     this._vm.$socket.client.emit(config.viewProgramMessage, idx)
-  },
-
-  sendChangePresetVolumeMessage ({ commit }, payload) {
-    // console.log(payload)
-    this._vm.$socket.client.emit(config.viewPresetVolMessage, payload)
+    Vue.$log.debug(`>~>~> selectSongProgram  ${config.viewProgramMessage} ${idx}`)
   },
 
   //  Socket Io.  VIEW_EDIT_MODE_MESSAGE---------------------------------------
   sendEditMode ({ commit }, editFlag) {
-    this._vm.$socket.client.emit(config.viewEdtModeMessage, editFlag)
-    Vue.$log.debug(`>~>~> VIEW_EDIT_MODE_MESSAGE ${editFlag}`)
+    this._vm.$socket.client.emit(config.viewEditModeMessage , editFlag)
+    Vue.$log.debug(`>~>~> sendEditMode ${config.viewEditModeMessage } ${editFlag}`)
+  },
+  
+  sendChangePresetVolumeMessage ({ commit }, payload) {
+    // console.log(payload)
+    this._vm.$socket.client.emit(config.viewPresetVolMessage, payload)
   },
 
   //  Socket Client Initialize
