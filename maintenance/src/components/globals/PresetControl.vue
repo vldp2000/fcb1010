@@ -253,6 +253,14 @@ export default {
         // console.log(this.songPreset)
 
         this.$store.dispatch('sendChangePresetVolumeMessage', payload)
+      },
+      setEditMode(value) {
+        let flag = 0
+        if (value) {
+          flag = 1
+        }
+        this.editMode = value
+        this.$store.dispatch('sendEditMode', flag)
       }
     },
 
@@ -298,11 +306,11 @@ export default {
     saveSongPreset () {
       this.$log.debug(this.songPreset)
       this.$store.dispatch('updateSongProgramPreset', this.songPreset)
-      this.editMode = false
+      this.setEditMode(false)
       this.$emit('changed', true)
     },
     onIconClick () {
-      this.editMode = !this.editMode
+      this.setEditMode(!this.editMode)
       this.presetId = this.songPreset.refpreset
     },
     onPresetClick () {

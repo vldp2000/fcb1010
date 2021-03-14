@@ -426,8 +426,11 @@ const actions = {
   //  Socket Io----Message Related methods----------------------------------------
   selectSong ({ commit }, id) {
     this._vm.$socket.client.emit(config.viewSongMessage, id)
-    // console.log('Send viewSongMessage', id)
-    // console.log(config.viewSongMessage)
+  },
+
+    //  Socket Io.  VIEW_EDIT_MODE_MESSAGE----------------------------------------
+  editMode ({ commit }, editFlag) {
+    this._vm.$socket.client.emit(config.view viewSongMessage, id)
   },
 
   selectSongProgram ({ commit }, idx) {
