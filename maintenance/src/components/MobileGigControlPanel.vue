@@ -74,28 +74,28 @@
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <mobile-preset-control
             :presetControlData='getPresetControlData(0, 0)'
-            :programIdx=0
+            :programIdx=0 />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <mobile-preset-control
             :presetControlData='getPresetControlData(0, 1)'
-            :programIdx=0
+            :programIdx=0 />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <mobile-preset-control
             :presetControlData='getPresetControlData(0, 2)'
-            :programIdx=0
+            :programIdx=0 />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 0) ? 'presetControlSelected' : 'presetControl'">
           <mobile-preset-control
             :presetControlData='getPresetControlData(0, 3)'
-            :programIdx=0
+            :programIdx=0 />
         </v-card>
       </v-col>
     </v-row>
@@ -108,32 +108,30 @@
       </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(1, 0)'
-            :programIdx=1
+            :programIdx=1 />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(1, 1)'
-            :programIdx=1
-            @changed="OnControlDataChanged()" />
+            :programIdx=1  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(1, 2)'
-            :programIdx=1
-            @changed="OnControlDataChanged()" />
+            :programIdx=1  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 1) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(1, 3)'
-            :programIdx=1
+            :programIdx=1  />
         </v-card>
       </v-col>
 
@@ -146,30 +144,30 @@
       </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(2, 0)'
-            :programIdx=2
+            :programIdx=2  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
           :presetControlData='getPresetControlData(2, 1)'
-          :programIdx=2
+          :programIdx=2  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(2, 2)'
-            :programIdx=2
+            :programIdx=2  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 2) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(2, 3)'
-            :programIdx=2
+            :programIdx=2  />
         </v-card>
       </v-col>
     </v-row>
@@ -182,30 +180,30 @@
       </div>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(3, 0)'
-            :programIdx=3
+            :programIdx=3  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(3, 1)'
-            :programIdx=3
+            :programIdx=3  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(3, 2)'
-            :programIdx=3
+            :programIdx=3  />
         </v-card>
       </v-col>
       <v-col md3 d-flex>
         <v-card  dark v-bind:class="(currentProgramIdx === 3) ? 'presetControlSelected' : 'presetControl'">
-          <mobile-programTytle
+          <mobile-preset-control
             :presetControlData='getPresetControlData(3, 3)'
-            :programIdx=3
+            :programIdx=3  />
         </v-card>
       </v-col>
     </v-row>
@@ -214,7 +212,6 @@
 
 <script>
 import { mapState } from 'vuex'
-// const config = require('@/config/config')
 import Metronome from '@/components/globals/Metronome'
 
 export default {
