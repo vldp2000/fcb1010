@@ -20,25 +20,25 @@ export default {
       delete songObj.ordernumber
       delete songObj.createdAt
       delete songObj.updatedAt
-      Vue.$log.debug('// --async putSong (song)')
+     // Vue.$log.debug('// --async putSong (song)')
       // console.log(song)
       let result = await Api().put(`song/${songObj.id}`, songObj)
-      // Vue.$log.debug('// -----------result')
-      Vue.$log.debug(result.data)
+      //// Vue.$log.debug('// -----------result')
+     // Vue.$log.debug(result.data)
       return result
     } catch (ex) {
-      Vue.$log.debug(ex)
+     // Vue.$log.debug(ex)
     }
   }
 
   // async getAll () {
   //   try {
-  //     // Vue.$log.debug('// ----------->> get all songs')
+  //     //// Vue.$log.debug('// ----------->> get all songs')
   //     let songs = await Api()('songs')
-  //     // Vue.$log.debug(songs.data)
+  //     //// Vue.$log.debug(songs.data)
   //     return songs.data
   //   } catch (ex) {
-  //     Vue.$log.debug(ex)
+  //    // Vue.$log.debug(ex)
   //   }
   // },
 
@@ -51,16 +51,16 @@ export default {
   //   try {
   //     let result = await Api().post('song', song)
   //     let newSong = await result.data
-  //     // Vue.$log.debug(newSong)
+  //     //// Vue.$log.debug(newSong)
   //     return newSong
   //   } catch (ex) {
-  //     Vue.$log.debug(ex)
+  //    // Vue.$log.debug(ex)
   //   }
   // },
 
   // // -- SONG PROGRAM PRESET -------
   // async getSongItems (songId) {
-  //   Vue.$log.debug(`// ----------->> get songitems by id ${songId}`)
+  //  // Vue.$log.debug(`// ----------->> get songitems by id ${songId}`)
   //   try {
   //     let items = await Api().get(`songitems/${songId}`)
   //     let programs = await items.data.songPrograms
@@ -74,65 +74,65 @@ export default {
   //       program.presetList.push(item)
   //     })
   //     const songPrograms = { 'songId': songId, 'programs': programs }
-  //     Vue.$log.debug(songPrograms)
+  //    // Vue.$log.debug(songPrograms)
   //     return songPrograms
   //   } catch (ex) {
-  //     Vue.$log.debug(ex)
+  //    // Vue.$log.debug(ex)
   //   }
   // },
 
   // async postSongPreset (songPreset) {
   //   try {
-  //     // Vue.$log.debug('// ----------->>return Api().postSongPreset')
-  //     // Vue.$log.debug(songPreset)
+  //     //// Vue.$log.debug('// ----------->>return Api().postSongPreset')
+  //     //// Vue.$log.debug(songPreset)
   //     let result = await Api().post('songprogrampreset', songPreset)
   //     let newSongPreset = await result.data
-  //     // Vue.$log.debug('// -----------result')
-  //     // Vue.$log.debug(newSongPreset)
+  //     //// Vue.$log.debug('// -----------result')
+  //     //// Vue.$log.debug(newSongPreset)
   //     return newSongPreset
   //     // await store.dispatch('addSongPreset', newSongPreset)
   //   } catch (ex) {
-  //     Vue.$log.debug(ex)
+  //    // Vue.$log.debug(ex)
   //   }
   // },
 
   // async putSongPreset (songPreset) {
   //   try {
-  //     // Vue.$log.debug('// --->>Api().putSongPreset')
-  //     // Vue.$log.debug(songPreset.id)
+  //     //// Vue.$log.debug('// --->>Api().putSongPreset')
+  //     //// Vue.$log.debug(songPreset.id)
   //     let result = await Api().put(`songprogrampreset/${songPreset.id}`, songPreset)
   //     let newSongPreset = await result.data
   //     return newSongPreset
-  //     // Vue.$log.debug(newSongPreset)
+  //     //// Vue.$log.debug(newSongPreset)
   //     // await store.dispatch('updateSongPreset', newSongPreset)
   //   } catch (ex) {
-  //     Vue.$log.debug(ex)
+  //    // Vue.$log.debug(ex)
   //   }
   // },
 
   // // -- SONG PROGRAM  -------
   // async postSongProgram (songProgram) {
   //   try {
-  //     // Vue.$log.debug('// ----------->>return Api().postSongProgram')
-  //     // Vue.$log.debug(songProgram)
+  //     //// Vue.$log.debug('// ----------->>return Api().postSongProgram')
+  //     //// Vue.$log.debug(songProgram)
   //     let result = await Api().post('songprogram', songProgram)
   //     let newSongProgram = await result.data
-  //     // Vue.$log.debug('// -----------result = ', newSongProgram)
+  //     //// Vue.$log.debug('// -----------result = ', newSongProgram)
   //     return newSongProgram
   //   } catch (ex) {
-  //     Vue.$log.debug(ex)
+  //    // Vue.$log.debug(ex)
   //   }
   // },
   // async putSongProgram (songProgram) {
   //   try {
-  //     // Vue.$log.debug('// --->>Api().putSongProgram')
-  //     // Vue.$log.debug(songProgram.id)
+  //     //// Vue.$log.debug('// --->>Api().putSongProgram')
+  //     //// Vue.$log.debug(songProgram.id)
   //     let result = await Api().put(`songprogram/${songProgram.id}`, songProgram)
   //     let newSongProgram = await result.data
   //     return newSongProgram
-  //     // Vue.$log.debug(newSongProgram)
+  //     //// Vue.$log.debug(newSongProgram)
   //   } catch (ex) {
-  //     Vue.$log.debug(ex)
+  //    // Vue.$log.debug(ex)
   //   }
   // }
 }

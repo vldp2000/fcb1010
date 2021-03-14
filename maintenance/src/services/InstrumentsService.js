@@ -19,8 +19,8 @@ export default {
     // console.log(instrument)
     let result = await Api().put(`instrument/${instrument.id}`, instrument)
     let newObj = await result.data
-    Vue.$log.debug('// -----------result')
-    Vue.$log.debug(newObj)
+   // Vue.$log.debug('// -----------result')
+   // Vue.$log.debug(newObj)
     // store.dispatch('updateInstrument', newObj)
   },
 
@@ -37,17 +37,17 @@ export default {
           result.push(item)
         }
       })
-      // Vue.$log.debug(result)
+      //// Vue.$log.debug(result)
       return result
     } catch (ex) {
-      Vue.$log.debug(ex)
+     // Vue.$log.debug(ex)
     }
   }
 
   // async getAll () {
   //   let instruments = await Api()('instruments')
-  //   // Vue.$log.debug('// ----------->> get all instruments')
-  //   // Vue.$log.debug(instruments.data)
+  //   //// Vue.$log.debug('// ----------->> get all instruments')
+  //   //// Vue.$log.debug(instruments.data)
   //   return instruments.data
   // },
 
@@ -57,8 +57,8 @@ export default {
   //       search: search
   //     }
   //   })
-  //   // Vue.$log.debug('// ----------->> get all instrument')
-  //   // Vue.$log.debug(instruments.data)
+  //   //// Vue.$log.debug('// ----------->> get all instrument')
+  //   //// Vue.$log.debug(instruments.data)
   //   return instruments.data
   // },
 
@@ -68,12 +68,12 @@ export default {
   // },
 
   // async post (instrument) {
-  //   Vue.$log.debug('// ----------->>return Api().post(instrument)')
-  //   Vue.$log.debug(instrument)
+  //  // Vue.$log.debug('// ----------->>return Api().post(instrument)')
+  //  // Vue.$log.debug(instrument)
   //   let result = await Api().post('instrument', instrument)
   //   let newObj = await result.data
-  //   Vue.$log.debug('// -----------result')
-  //   Vue.$log.debug(newObj)
+  //  // Vue.$log.debug('// -----------result')
+  //  // Vue.$log.debug(newObj)
   //   // store.dispatch('addInstrument', newObj)
   // },
 }

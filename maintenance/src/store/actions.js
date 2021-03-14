@@ -13,7 +13,7 @@ let clientInitialized = false
 
 async function setInstrumentIcons (commit) {
   let result = await InstrumentsService.getInstrumentIcons(require.context('../assets/', false, /\.png$/))
-  // Vue.$log.debug(result)
+  //// Vue.$log.debug(result)
   await commit(types.SET_INSTRUMENT_IMAGE, result)
 }
 
@@ -55,7 +55,7 @@ async function validateSong (song) {
 }
 // ---addNewSong-------
 async function addNewSong (getters, song) {
-  // Vue.$log.debug('1. __ New SOng__')
+  //// Vue.$log.debug('1. __ New SOng__')
   song.id = await SongsService.getId()
 
   Vue.set(song, 'programList', [])
@@ -97,13 +97,13 @@ async function addNewSong (getters, song) {
       j = j + 1
       // let newPreset =
       // await SongsService.postSongPreset(preset)
-      // Vue.$log.debug('3. ---new preset -------', newPreset)
+      //// Vue.$log.debug('3. ---new preset -------', newPreset)
     }
     song.programList.push(pr)
     i = i + 1
   }
   const newSong = await SongsService.putSong(song)
-  Vue.$log.debug(' --- new song ---- ', newSong)
+ // Vue.$log.debug(' --- new song ---- ', newSong)
   return newSong
 }
 
@@ -132,7 +132,7 @@ async function initializeAllLists (commit, getters) {
     let songs = await SongsService.getAllData()
     // console.log(songs)
     if (songs.length > 0) {
-      // Vue.$log.debug('action -  types.SET_SONGLIST')
+      //// Vue.$log.debug('action -  types.SET_SONGLIST')
       for (let song of songs) {
         if (!validateSong(song)) {
           Vue.$log.error(`Error. Song Invalid ${song.id}`)
@@ -189,7 +189,7 @@ async function initializeAllLists (commit, getters) {
           Vue.set(gig, 'songList', [])
         }
       }
-      // Vue.$log.debug('action -  types.SET_GIGLIST')
+      //// Vue.$log.debug('action -  types.SET_GIGLIST')
       await commit(types.SET_GIGLIST, gigs)
     }
     // console.log('----gig---')
@@ -215,7 +215,7 @@ async function initializeAllLists (commit, getters) {
   //  Init Is Complete
   commit(types.INIT_ALL)
   commit(types.INIT_INPROGRESS, false)
-  Vue.$log.debug('<<<Mutation. Finish Init ALL>>')
+ // Vue.$log.debug('<<<Mutation. Finish Init ALL>>')
 }
 
 // ----------A C T I O N S--------------------
@@ -241,23 +241,23 @@ const actions = {
   },
 
   updateSong ({ commit }, song) {
-    // Vue.$log.debug('action - updateSong')
+    //// Vue.$log.debug('action - updateSong')
     SongsService.putSong(song)
     commit(types.UPDATE_SONG, song)
   },
   refreshSong ({ commit }, songId) {
-    // Vue.$log.debug('action - updateSong')
+    //// Vue.$log.debug('action - updateSong')
     commit(types.REFRESH_SONG, songId)
   },
   async addSongItems ({ commit }, songId) {
     try {
-      // Vue.$log.debug('<<<<   action - addSongItems >>>>>>')
+      //// Vue.$log.debug('<<<<   action - addSongItems >>>>>>')
       let songPrograms = await SongsService.getSongItems(songId)
-      // Vue.$log.debug(songPrograms)
+      //// Vue.$log.debug(songPrograms)
       await commit(types.ADD_SONG_ITEMS, songPrograms)
       await commit(types.REFRESH_SONG, songId)
     } catch (ex) {
-      Vue.$log.debug(ex)
+     // Vue.$log.debug(ex)
     }
   },
   updateSongProgram ({ commit }, songProgram) {
@@ -266,12 +266,12 @@ const actions = {
   },
 
   updateSongProgramPreset ({ commit }, songPreset) {
-    // Vue.$log.debug('--- action >> updateSongProgramPreset')
+    //// Vue.$log.debug('--- action >> updateSongProgramPreset')
     // SongsService.putSongPreset(songPreset)
-    // Vue.$log.debug('--- action >> SongsService.putSongPreset')
+    //// Vue.$log.debug('--- action >> SongsService.putSongPreset')
     // console.log(songPreset)
     commit(types.UPDATE_SONGPROGRAMPRESET, songPreset)
-    Vue.$log.debug('--- action >> commit(types.UPDATE_SONGPROGRAMPRESET')
+   // Vue.$log.debug('--- action >> commit(types.UPDATE_SONGPROGRAMPRESET')
   },
 
   //  Instrument List -----------------------------------------------------
@@ -286,19 +286,19 @@ const actions = {
     commit(types.ADD_INSTRUMENT, instrument)
   },
   updateInstrument ({ commit }, instrument) {
-    // Vue.$log.debug('action - updateInstrument')
+    //// Vue.$log.debug('action - updateInstrument')
     InstrumentsService.put(this.instrument)
     commit(types.UPDATE_INSTRUMENT, instrument)
   },
 
   setInstrumentImage ({ commit }, payload) {
-    Vue.$log.debug('action - setInstrumentImage')
+   // Vue.$log.debug('action - setInstrumentImage')
     commit(types.SET_INSTRUMENT_IMAGE, payload)
   },
 
   //  Preset List -----------------------------------------------------
   setPresetList ({ commit }, payload) {
-    // Vue.$log.debug('action - setPresetList')
+    //// Vue.$log.debug('action - setPresetList')
     commit(types.SET_PRESETLIST, payload)
   },
   async addPreset ({ commit }, preset) {
@@ -310,7 +310,7 @@ const actions = {
     // console.log(preset)
   },
   updatePreset ({ commit }, preset) {
-    // Vue.$log.debug('action - updatePreset')
+    //// Vue.$log.debug('action - updatePreset')
     PresetsService.put(preset)
     commit(types.UPDATE_PRESET, preset)
   },
@@ -327,7 +327,7 @@ const actions = {
     commit(types.ADD_INSTRUMENTBANK, instrumentBank)
   },
   updateInstrumentBank ({ commit }, instrumentBank) {
-    // Vue.$log.debug('action - updateInstrumentBank')
+    //// Vue.$log.debug('action - updateInstrumentBank')
     InstrumentBankService.put(instrumentBank)
     commit(types.UPDATE_INSTRUMENTBANK, instrumentBank)
   },
@@ -345,14 +345,14 @@ const actions = {
     commit(types.ADD_GIG, gig)
   },
   updateGig ({ commit }, gig) {
-    // Vue.$log.debug('action - updateGig')
+    //// Vue.$log.debug('action - updateGig')
     GigsService.putGig(gig)
     commit(types.UPDATE_GIG, gig)
   },
 
   //  populateGigSongs -----------------------------------------------------
   populateGigSongs ({ commit }, payload) {
-    // Vue.$log.debug('action - populateGigSongs')
+    //// Vue.$log.debug('action - populateGigSongs')
     commit(types.POPULATE_GIG_SONGS, payload)
   },
 
@@ -364,7 +364,7 @@ const actions = {
     commit(types.ADD_GIGSONG, gigsong)
   },
   updateGigSong ({ commit }, gigsong) {
-    // Vue.$log.debug('action - updateGigSong')
+    //// Vue.$log.debug('action - updateGigSong')
     commit(types.UPDATE_GIGSONG, gigsong)
   },
 
@@ -397,7 +397,7 @@ const actions = {
       // console.log(gig)
       commit(types.UPDATE_GIG, gig)
     } catch (ex) {
-      Vue.$log.debug(ex)
+     // Vue.$log.debug(ex)
     }
   },
 
@@ -415,8 +415,8 @@ const actions = {
   //  Set current Song Id-----------------------------------------------------
   setCurrentSongId ({ commit }, id) {
     commit(types.SET_CURRENTSONG_ID, id)
-    // Vue.$log.debug('STORE. Set current Song Id-------------------------------
-    // Vue.$log.debug(id)
+    //// Vue.$log.debug('STORE. Set current Song Id-------------------------------
+    //// Vue.$log.debug(id)
   },
   //  Set current Program Id-----------------------------------------------------
   setCurrentProgramMidiPedal ({ commit }, idx) {
@@ -425,16 +425,16 @@ const actions = {
   //  Socket Io----Message Related methods----------------------------------------
   selectSong ({ commit }, id) {
     this._vm.$socket.client.emit(config.viewSongMessage, id)
-    Vue.$log.debug(`>~>~> selectSong  ${config.viewSongMessage} ${id}`)
+   // Vue.$log.debug(`>~>~> selectSong  ${config.viewSongMessage} ${id}`)
   },
   selectSongProgram ({ commit }, idx) {
     this._vm.$socket.client.emit(config.viewProgramMessage, idx)
-    Vue.$log.debug(`>~>~> selectSongProgram  ${config.viewProgramMessage} ${idx}`)
+   // Vue.$log.debug(`>~>~> selectSongProgram  ${config.viewProgramMessage} ${idx}`)
   },
   //  Socket Io.  VIEW_EDIT_MODE_MESSAGE---------------------------------------
   sendEditMode ({ commit }, editFlag) {
     this._vm.$socket.client.emit(config.viewEditModeMessage, editFlag)
-    Vue.$log.debug(`>~>~> sendEditMode ${config.viewEditModeMessage} === ${editFlag}`)
+   // Vue.$log.debug(`>~>~> sendEditMode ${config.viewEditModeMessage} === ${editFlag}`)
   },
   sendChangePresetVolumeMessage ({ commit }, payload) {
     // console.log(payload)
@@ -442,17 +442,17 @@ const actions = {
   },
   //  Socket Client Initialize
   socketClientInitialize ({ commit }, payload) {
-    Vue.$log.debug(';;>> socketClientInitialize <<;;')
-    Vue.$log.debug(this._vm)
-    Vue.$log.debug(this._vm.$socket)
+   // Vue.$log.debug(';;>> socketClientInitialize <<;;')
+   // Vue.$log.debug(this._vm)
+   // Vue.$log.debug(this._vm.$socket)
 
     if (clientInitialized) return
 
-    // Vue.$log.debug(payload)
+    //// Vue.$log.debug(payload)
 
     this._vm.$socket.client.on('connect', function (data) {
-      // Vue.$log.debug('Socket Io-------- Connected')
-      // Vue.$log.debug(data)
+      //// Vue.$log.debug('Socket Io-------- Connected')
+      //// Vue.$log.debug(data)
     })
 
     this._vm.$socket.client.on(config.controllerProgramMessage, (data) => {
@@ -486,7 +486,7 @@ const actions = {
 
     this._vm.$socket.client.on(config.controllerPresetVoluleMessage, (value) => {
       const volume = parseInt(value)
-      Vue.$log.debug(`>~>~> controllerPresetVoluleMessage  ${config.controllerPresetVoluleMessage} ${value}`)
+     // Vue.$log.debug(`>~>~> controllerPresetVoluleMessage  ${config.controllerPresetVoluleMessage} ${value}`)
       commit(types.SET_PRESET_VOLUME_BY_CONTROLLER, volume)
     })
 
