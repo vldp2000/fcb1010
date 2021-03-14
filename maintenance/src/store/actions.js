@@ -430,7 +430,7 @@ const actions = {
 
     //  Socket Io.  VIEW_EDIT_MODE_MESSAGE----------------------------------------
   editMode ({ commit }, editFlag) {
-    this._vm.$socket.client.emit(config.view viewSongMessage, id)
+    this._vm.$socket.client.emit(config.viewEditModeMessage , editFlag)
   },
 
   selectSongProgram ({ commit }, idx) {
