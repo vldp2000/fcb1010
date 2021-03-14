@@ -251,17 +251,17 @@ export default {
           'value': val
         }
         // console.log(this.songPreset)
-
         this.$store.dispatch('sendChangePresetVolumeMessage', payload)
-      },
-      setEditMode(value) {
-        let flag = 0
-        if (value) {
-          flag = 1
-        }
-        this.editMode = value
-        this.$store.dispatch('sendEditMode', flag)
       }
+    },
+
+    setEditMode(value) {
+      let flag = 0
+      if (value) {
+        flag = 1
+      }
+      this.editMode = value
+      this.$store.dispatch('sendEditMode', flag)
     },
 
     getPresetName () {
