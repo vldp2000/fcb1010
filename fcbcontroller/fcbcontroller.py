@@ -694,25 +694,26 @@ def getActionForReceivedMessage(midiMsg):
       # gSynthTest = 0
       # gPianoTest = 0
 
-  elif msg0 == 176 and msg1 
-    if gMode = 'Live':
-      # Send Volume to Channel 1  (the echo message will be routed to channel 2 by another application)
-      channel = 1
-      sendCCMessage(channel, 7, msg2)
-      channel = 2
-      sendCCMessage(channel, 7, msg2)
-    else:
+  elif msg0 == 176 and msg1 == 7:
+    # Send Volume to Channel 1  and channel 2
+    channel = 1
+    sendCCMessage(channel, 7, msg2)
+    channel = 2
+    sendCCMessage(channel, 7, msg2)
+    if gMode == 'Config':
       sendPresetVolume(gCurrentPresetId, msg3)        
+
   elif msg0 == 181 and msg1 == 7:
-    if gMode == 'Live':
-        # Send Volume to Channel 6  (the echo message will be routed to channel 4 by another application)
-      channel = 6
-      sendCCMessage(channel, 7, msg2)
-      channel = 4
-      sendCCMessage(channel, 7, msg2)
-    else:
+    # Send Volume to Channel 6  and  channel 4
+    channel = 6
+    sendCCMessage(channel, 7, msg2)
+    channel = 4
+    sendCCMessage(channel, 7, msg2)
+    if gMode == 'Config':
       sendPresetVolume(gCurrentPresetId, msg3)    
+
 #----------------------------------------------------------------
+
 def ignoreInputMessage(msg):
   if msg[0] == 176 and msg[1] == 7:
     return False
