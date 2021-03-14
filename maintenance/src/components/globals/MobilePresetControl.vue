@@ -134,15 +134,8 @@ export default {
 </script>
 
 <style>
-  .customControls {
-    height: 60px;
-  }
-  /* .v-label {
-    font-size: 8px;
-  } */
-
   .active {
-    color:azure
+    color:white
   }
   .inactive {
     color:gray
