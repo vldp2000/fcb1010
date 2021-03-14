@@ -14,7 +14,7 @@ module.exports = {
   API_URL: 'http://192.168.37.2:8081/',
   messageURL: 'http://192.168.37.2:8081/'
 }
-  _API_URL: process.env.VUE_APP_API_URL || 'http://192.168.37.2:8081/',
-  _messageURL: process.env.VUE_APP_MESSAGE_URL || 'http://192.168.37.2:8081/',
+  //_API_URL: process.env.VUE_APP_API_URL || 'http://192.168.37.2:8081/',
+  //_messageURL: process.env.VUE_APP_MESSAGE_URL || 'http://192.168.37.2:8081/',
 
   
