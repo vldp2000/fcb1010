@@ -437,14 +437,14 @@ const actions = {
     this._vm.$socket.client.emit(config.viewPresetVolMessage, payload)
   },
 
-  //  Socket Io.  VIEW_EDIT_MODE_MESSAGE----------------------------------------
+  //  Socket Io.  VIEW_EDIT_MODE_MESSAGE---------------------------------------
   sendEditMode ({ commit }, editFlag) {
     this._vm.$socket.client.emit(config.viewEdtModeMessage, editFlag)
   },
 
-  //  Socket Client Initialize  
+  //  Socket Client Initialize
   socketClientInitialize ({ commit }, payload) {
-    Vue.$log.debug(';;>> socketClientIniotialize <<;;')
+    Vue.$log.debug(';;>> socketClientInitialize <<;;')
     Vue.$log.debug(this._vm)
     Vue.$log.debug(this._vm.$socket)
 
