@@ -617,6 +617,7 @@ def setPedal2Value():
   sendPedal2NotificationMessage(gPedal2Value)
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
+  global gMode
   global gReloadCounter
   global gSynthTest
   global gPianoTest
@@ -701,7 +702,7 @@ def getActionForReceivedMessage(midiMsg):
     channel = 2
     sendCCMessage(channel, 7, msg2)
     if gMode == 'Config':
-      sendPresetVolume(gCurrentPresetId, msg3)        
+      sendPresetVolume(msg3)        
 
   elif msg0 == 181 and msg1 == 7:
     # Send Volume to Channel 6  and  channel 4
@@ -710,7 +711,7 @@ def getActionForReceivedMessage(midiMsg):
     channel = 4
     sendCCMessage(channel, 7, msg2)
     if gMode == 'Config':
-      sendPresetVolume(gCurrentPresetId, msg3)    
+      sendPresetVolume(msg3)    
 
 #----------------------------------------------------------------
 
