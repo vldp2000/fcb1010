@@ -351,8 +351,8 @@ def pushMessageToQueue(inputMessage):
 
 def sendCCMessage(channel, CC, value):
   gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
+  printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
   sleep(MIN_DELAY)
-  #printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
 #----------------------------------------------------------------
 
 ## 192 -PC on Channel 1
