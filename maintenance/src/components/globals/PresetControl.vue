@@ -234,7 +234,7 @@ export default {
     },
     presetVolumeFromController: function () {
       if (this.editMode) {
-        setVolume(this.presetVolumeFromController)
+        this.setVolume(this.presetVolumeFromController)
       }
     }
   },
@@ -255,7 +255,7 @@ export default {
       }
     },
 
-    setEditMode(value) {
+    setEditMode (value) {
       let flag = 0
       if (value) {
         flag = 1
