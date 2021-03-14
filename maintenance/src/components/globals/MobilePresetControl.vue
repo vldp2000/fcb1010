@@ -3,7 +3,7 @@
     class="mx-auto ma-0 pa-0"
     max-width="400"
   >
-    <v-container v-bind:class="view-mode ma-0 pa-0" fluid>
+    <v-container v-bind:class='view-mode ma-0 pa-0' fluid>
       <v-row no-gutters>
         <div>
           <h1>ABC</h1>
@@ -16,7 +16,7 @@
         <div>
           <h1>DEF</h1>
         </div>
-        <div class="presetName"
+        <div class="presetName">
           v-bind:class="(volume > 0) ? 'active' : 'inactive'"
           <b>{{ getPresetName() }}</b>
         </div>
