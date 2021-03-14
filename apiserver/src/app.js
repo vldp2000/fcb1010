@@ -42,6 +42,8 @@ try {
     
     socket.on(`${config.controllerPresetVoluleMessage}`, function(data) {
       io.emit(`${config.controllerPresetVoluleMessage}`, data)
+      console.log(config.controllerPresetVoluleMessage)
+      console.log(data)
     })
 
     socket.on(`${config.controllerProgramMessage}`, function(data) {
