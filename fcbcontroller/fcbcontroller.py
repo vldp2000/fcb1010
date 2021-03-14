@@ -164,7 +164,7 @@ def processProgramMessage(idx):
 @sio.on('VIEW_EDIT_MODE_MESSAGE')
 def processControllerModeMessage(payload):
   global gMode
-  printDebug(f"->->  Received message VIEW_EDIT_MODE_MESSAGE. Mode  => {gMode}  <= {payload}")
+  printDebug(f"->->  Received message VIEW_EDIT_MODE_MESSAGE = {payload}")
 
   if str(payload) == '0':
     gMode = 'Config'
@@ -172,6 +172,7 @@ def processControllerModeMessage(payload):
   else:    
     gMode = 'Live'
     displayData.drawScreen()
+  printDebug(f"->->  Mode  => {gMode}")
   
 
 #==
