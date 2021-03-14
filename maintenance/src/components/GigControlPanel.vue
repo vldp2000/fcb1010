@@ -321,8 +321,6 @@ export default {
 
   watch: {
     allInitialized: async function () {
-      // this.$log.debug(`-- ... received allInitialized ....-- ${this.allInitialized}`)
-      // this.$log.debug(this.instrumentListImagesInitialized)
       if (this.allInitialized) {
         this.setGigSong()
         this.initFlag = false
@@ -331,31 +329,18 @@ export default {
     refreshSong: async function () {
       if (this.currentSongId > 0) {
         if (typeof this.songList !== 'undefined') {
-          //  this.setCurrentSong()
           this.currentSong = await this.songList.find(song => song.id === this.currentSongId)
-          // this.$log.debug(`currentSong <<<<<<< ${this.currentSong.name}`)
-          //if (!this.currentGig.songList) {
-          //  this.$log.debug(` Need to populate Gig Songs ${this.currentGig}`)
-          //  await this.$store.dispatch('populateGigSongs', id)
-          //  this.currentGig = await this.gigList.find(gig => gig.id === id)
-          //  this.$log.debug(this.currentGig)
-          //}
-          //this.currentSongList = this.currentGig.songList
           this.songId = this.currentSong.id
         }
       }
     },
     selectedGigId: async function (id) {
-      // this.initFlag = true
       if (id > 0) {
         if (typeof this.gigList !== 'undefined') {
           this.currentGig = await this.gigList.find(gig => gig.id === id)
-          // this.$log.debug(`currentGig <<<<<<< ${this.currentGig}`)
           if (!this.currentGig.songList) {
-            // this.$log.debug(` Need to populate Gig Songs ${this.currentGig}`)
             await this.$store.dispatch('populateGigSongs', id)
             this.currentGig = await this.gigList.find(gig => gig.id === id)
-            // this.$log.debug(this.currentGig)
           }
           this.currentSongList = this.currentGig.songList
           this.songId = this.currentGig.songList[0].id
@@ -369,22 +354,18 @@ export default {
 
     currentSongId: async function () {
       if (!this.currentSong || this.currentSong.id !== this.currentSongId) {
-        // this.$log.debug('-- >>>>> current Song id was changed')
         this.setCurrentSong()
       }
     },
 
     currentProgramMidiPedal: function (idx) {
       this.currentProgramIdx = idx
-      // this.$log.debug(`currentProgramMidiPedal was changed -> ${this.currentProgramIdx}`)
     },
     pedal1Value: function () {
       this.currentPedal1Value = this.pedal1Value
-      // console.log(this.currentPedal1Value)
     },
     pedal2Value: function () {
       this.currentPedal2Value = this.pedal2Value
-      // console.log(this.currentPedal2Value)
     }
   },
   created () {
@@ -402,23 +383,18 @@ export default {
 
     async setCurrentSong () {
       const id = this.currentSongId
-      // this.$log.debug(' --- setCurrentSong ---', id)
-      // this.$log.debug(this.currentGig)
       if (this.currentSongList) {
         this.currentSong = await this.currentSongList.find(item => item.id === id)
       }
       if (!this.currentSong && this.selectedGigId > 0) {
         if (this.currentGig && this.currentGig.songList && this.currentGig.songList.length > 0) {
-          // console.log(this.currentGig)
           this.currentSong = await this.currentGig.songList.find(item => item.id === id)
         }
       }
 
       if (!this.currentSong) {
-        // this.$log.debug(`NOT found song in current gig >>  ${id}`)
         await this.setSongOutOfGig(id)
       }
-      // this.$log.debug(this.currentSong.name)
       if (this.currentSong && !this.currentSong.programList) {
         await this.initSongPrograms(id)
       }
@@ -428,7 +404,6 @@ export default {
       try {
         this.gigId = -1
         this.currentGig = null
-        //console.log('--- out of gig >>> ', this.currentSongId)
         this.currentSong = await this.songList.find(item => item.id === this.currentSongId)
       } catch (ex) {
         this.$log.error(ex)
@@ -452,8 +427,6 @@ export default {
     },
 
     async setGigSong () {
-      // this.$log.debug(` Lenght of gigList  = ${this.gigList.length}`)
-      // this.$log.debug(this.gigList)
       var gId = -1
       gId = this.gigList.find(g => g.currentFlag === 1).id
       if (gId > 0) {
@@ -462,13 +435,11 @@ export default {
         this.gigId = -1
         this.songId = -1
       }
-      // this.$log.debug(gId)
     },
 
     async initAllData () {
       try {
         if (!this.allInitialized && !this.initialisingIsInProgress) {
-          // this.$log.debug(' >>> Init all related collections in storage1')
           await this.$store.dispatch('initAllLists', 'initAll')
         }
       } catch (ex) {
@@ -504,15 +475,11 @@ export default {
     },
 
     onProgramClick (idx) {
-      // console.log('onProgramClick >> ', idx)
       this.$store.dispatch('selectSongProgram', idx)
     },
 
     checkIfGigIsCurrent () {
       if (!this.currentGig) return false
-      // console.log('>>>>-- checkIfGigIsCurrent')
-      // console.log(this.currentGig.id)
-      // console.log(this.scheduledGigId)
       return (this.currentGig.id === this.scheduledGigId)
     },
 
@@ -533,17 +500,14 @@ export default {
 
     saveGigAsCurrent () {
       if (this.currentGig) {
-        // this.$log.debug('setGigAsScheduled')
         this.$store.dispatch('setGigAsScheduled', this.currentGig.id)
       }
     },
     clearGig () {
-      // this.$log.debug('clearGig')
       this.currentGig = null
       this.$store.dispatch('setSelectedGigId', -1)
     },
     saveSong () {
-      // this.$log.debug('save song')
       this.$store.dispatch('updateSong', this.currentSong)
       this.dataChanged = false
     }
