@@ -12,4 +12,3 @@ module.exports = {
   API_URL: 'http://192.168.37.2:8081/',
   messageURL: 'http://192.168.37.2:8081/'
 }
-  
