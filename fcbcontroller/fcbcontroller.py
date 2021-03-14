@@ -651,10 +651,10 @@ def getActionForReceivedMessage(midiMsg):
       if msg2 < 5:
         executeSystemCommand(msg2)
       elif msg2 == 6:
-        if gMode == 'Live'
+        if gMode == 'Live':
           gMode = 'Config'
           displayData.drawMessage("Configuration", "Set Volume")
-        else
+        else:
           gMode = 'Live'
       return
     elif msg1 == 1:
