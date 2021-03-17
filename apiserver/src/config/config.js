@@ -3,7 +3,7 @@ const path = require('path')
 module.exports = {
   httpPort: process.env.PORT || 8081,
   messagePort: 8081,
-  filePath: './data/',
+  filePath: '/home/pi/fcb1010data/',
   viewProgramMessage: 'VIEW_PROGRAM_MESSAGE',
   viewSongMessage: 'VIEW_SONG_MESSAGE',
   viewEditModeMessage: 'VIEW_EDIT_MODE_MESSAGE',

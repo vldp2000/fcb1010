@@ -90,8 +90,8 @@ gCurrentPresetId = -1
 gCurrentPreset = {}
 
 
-gPedal1Value = 1
-gPedal2Value = 1
+gPedal1MaxVolume = 0
+gPedal2MaxVolume = 0
 
 #default value for second  volume pedal is 176 = 1st channel
 #gPedal2_Channel = 176
@@ -188,16 +188,6 @@ def sendSongNotificationMessage(id):
 def sendGigNotificationMessage(id):
   sio.emit(GIG_MESSAGE, str(id))
   #printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
-
-#==
-def sendPedal1NotificationMessage(value):
-  sio.emit(PEDAL1_MESSAGE, str(value))
-  #printDebug(value)
-
-#==
-def sendPedal2NotificationMessage(value):
-  sio.emit(PEDAL2_MESSAGE, str(value))
-  #printDebug(value)
 
 #==
 def sendSyncNotificationMessage(bankId, songId, programIdx):
@@ -524,8 +514,8 @@ def setSongProgram(idx):
   global gCurrentProgramIdx
   global gCurrentSongIdx
   global gCurrentSong
-  global gPedal1Value
-  global gPedal2Value
+  global gPedal1MaxVolume
+  global gPedal2MaxVolume
   global gSystemCommandCounter
   gSystemCommandCounter = 0
   gCurrentProgramIdx = idx
@@ -539,16 +529,14 @@ def setSongProgram(idx):
  
     sendProgramNotificationMessage(idx)
     if  program['presetList'][0]['volume'] > 0:
-      gPedal1Value = 1
+      gPedal1MaxVolume = program['presetList'][0]['volume']
     else:
-      gPedal1Value = 2
-    sendPedal1NotificationMessage(gPedal1Value)
-
+      gPedal1MaxVolume = program['presetList'][1]['volume']
+    
     if program['presetList'][2]['volume'] > 0:
-      gPedal2Value = 1
+      gPedal2MaxVolume = program['presetList'][2]['volume']
     else:
-      gPedal2Value = 2
-    sendPedal2NotificationMessage(gPedal2Value)
+      gPedal2MaxVolume = program['presetList'][3]['volume']
   else:
     printDebug(f"Program {idx} not found")    
     displayData.drawError(f"Program {idx} not found")
@@ -598,30 +586,14 @@ def setPreset(program, songPreset):
 
 #----------------------------------------------------------------
 
-
-def setPedal1Value():
-  global gPedal1Value
-  if gPedal1Value == 1:
-    gPedal1Value = 2
-  else:
-    gPedal1Value = 1
-  sendPedal1NotificationMessage(gPedal1Value)
-#----------------------------------------------------------------
-def setPedal2Value():
-  global gPedal2Value
-  if gPedal2Value == 1:
-    gPedal2Value = 2
-  else:
-    gPedal2Value = 1
-  sendPedal2NotificationMessage(gPedal2Value)
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
   global gMode
   global gReloadCounter
   global gSynthTest
   global gPianoTest
-  global gPedal1Value
-  global gPedal2Value
+  global gPedal1MaxVolume
+  global gPedal2MaxVolume
 
   msg = midiMsg[0]
   msg0 = msg[0]
@@ -669,11 +641,9 @@ def getActionForReceivedMessage(midiMsg):
         setSongProgram(3)
 
 
-      elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
-        setPedal1Value()
+      #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
         #gPedal2_Channel = gChannel1
-      elif  msg2 == 19: #pedal 9 #Second Volume pedal sends messages to ch 2
-        setPedal2Value()
+      #elif  msg2 == 19: #pedal 9 #Second Volume pedal sends messages to ch 2
         #gPedal2_Channel = gChannel2
 
       elif msg2 == 15: #Pedal5
@@ -691,23 +661,44 @@ def getActionForReceivedMessage(midiMsg):
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1  and channel 2
     printDebug(gMode)
-    channel = 1
-    sendCCMessage(channel, 7, msg2)
-    channel = 2
-    sendCCMessage(channel, 7, msg2)
-    if gMode == 'Config':
+    if (gMode == 'Live'):
+      if (msg2 <= gPedal2MaxVolume)
+        channel = 1
+        sendCCMessage(channel, 7, msg2)
+        channel = 2
+        sendCCMessage(channel, 7, msg2)
+      else:
+        printDebug(f"The volume for Pedal2 is higher than the limit {msg2} > {gPedal2MaxVolume}")
+    elif gMode == 'Config':
+      channel = 1
+      sendCCMessage(channel, 7, msg2)
+      channel = 2
+      sendCCMessage(channel, 7, msg2)
       sendPresetVolume(msg2)        
+    else:
+      printDebug(f"Unknown application mode")
+      displayData.drawError('Unknown mode')
 
   elif msg0 == 181 and msg1 == 7:
     # Send Volume to Channel 6  and  channel 4
     printDebug(gMode)
-    channel = 6
-    sendCCMessage(channel, 7, msg2)
-    channel = 4
-    sendCCMessage(channel, 7, msg2)
-    if gMode == 'Config':
-      sendPresetVolume(msg2)    
-
+    if (gMode == 'Live'):
+      if (msg2 <= gPedal2MaxVolume)
+        channel = 4
+        sendCCMessage(channel, 7, msg2)
+        channel = 6
+        sendCCMessage(channel, 7, msg2)
+      else:
+        printDebug(f"The volume for Pedal1 is higher than the limit {msg2} > {gPedal1MaxVolume}")
+    elif gMode == 'Config':
+      channel = 4
+      sendCCMessage(channel, 7, msg2)
+      channel = 6
+      sendCCMessage(channel, 7, msg2)
+      sendPresetVolume(msg2)        
+    else:
+      printDebug(f"Unknown application mode")
+      displayData.drawError('Unknown mode')
 #----------------------------------------------------------------
 
 def ignoreInputMessage(msg):
