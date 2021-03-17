@@ -662,7 +662,7 @@ def getActionForReceivedMessage(midiMsg):
     # Send Volume to Channel 1  and channel 2
     printDebug(gMode)
     if (gMode == 'Live'):
-      if (msg2 <= gPedal2MaxVolume)
+      if (msg2 <= gPedal2MaxVolume):
         channel = 1
         sendCCMessage(channel, 7, msg2)
         channel = 2
@@ -683,7 +683,7 @@ def getActionForReceivedMessage(midiMsg):
     # Send Volume to Channel 6  and  channel 4
     printDebug(gMode)
     if (gMode == 'Live'):
-      if (msg2 <= gPedal2MaxVolume)
+      if (msg2 <= gPedal2MaxVolume):
         channel = 4
         sendCCMessage(channel, 7, msg2)
         channel = 6
