@@ -4,16 +4,12 @@
     max-width="400"
   >
     <v-container fluid>
-      <v-row no-gutters>
         <div class="instrumentImage">
           <v-img :src="imageURL" />
         </div>
-      </v-row>
-      <v-row no-gutters>
         <div class="presetName" v-bind:class="(volume > 0) ? 'active' : 'inactive'">
           <b>{{ getPresetName() }}</b>
         </div>
-      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -149,7 +145,7 @@ export default {
     /* justify-content: flex-start; */
     /* align-items: flex-end; */
     /*flex-direction: column;*/
-    height: 30px;
+    /*height: 30px;*/
   }
   .custom-text-input {
     width: 65px;
@@ -161,11 +157,11 @@ export default {
     width: 80px;
   }
   .instrumentImage {
-    height: 40px;
-    width: 40px;
-    margin-top: 5px;
-    margin-left: 5px;
-    padding-bottom: -5px;
+    height: 25px;
+    width: 25px;
+    margin-top: 0px;
+    margin-left: 0px;
+    padding-bottom: 0px;
   }
   .view-mode {
     background-color:rgba(36, 34, 34, 0.830)
