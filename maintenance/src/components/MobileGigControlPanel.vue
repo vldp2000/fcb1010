@@ -1,8 +1,8 @@
 <template>
   <v-container grid-list-md text-md-center fluid class="darkBackgroud">
   <div class="selector-panel">
-    <v-row md12 no-gutters>
-      <v-col cols="12" md="4">
+    <v-row sm12 no-gutters>
+      <v-col cols="5" sm="5">
         <v-select
           v-if="gigList"
           label="Select Gig"
@@ -13,30 +13,7 @@
           item-value="id">
         </v-select>
       </v-col>
-      <v-col cols="12" md="1">
-        <div>
-          <v-icon
-            v-if="gigId>0"
-            large
-            v-bind:class="(checkIfGigIsCurrent()) ? 'defaultGigHighighted' : 'defaultGig'"
-            @click="saveGigAsCurrent()"
-          >
-          grade
-          </v-icon>
-          <v-icon large class="clearGigBbutton"
-            @click="clearGig()"
-          >
-          cancel
-          </v-icon>
-        </div>
-      </v-col>
-      <v-col cols="12" md="1">
-        <div v-if="currentSongId>0">
-           <metronome :bpm="tempo">
-           </metronome>
-        </div>
-      </v-col>
-      <v-col cols="12" md="5">
+      <v-col cols="6" sm="6">
         <v-select
           v-if="currentSongList"
           label="Select Song"
@@ -47,14 +24,8 @@
           item-value="id">
         </v-select>
       </v-col>
-       <v-col cols="12" md="1">
+      <v-col cols="1" sm="1">
         <div>
-          <v-icon large
-            v-bind:class="(dataChanged) ? 'saveSongButtonHighighted' : 'saveSongButton'"
-            @click="saveSong()"
-          >
-          save
-          </v-icon>
           <v-icon large class="selectSongButton"
             @click="selectSong()"
           >
@@ -212,12 +183,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import Metronome from '@/components/globals/Metronome'
-
 export default {
-  components: {
-    Metronome
-  },
   data () {
     return {
       // songId: 1,
@@ -418,22 +384,12 @@ export default {
     checkIfGigIsCurrent () {
       if (!this.currentGig) return false
       return (this.currentGig.id === this.scheduledGigId)
-    },
-
-    saveGigAsCurrent () {
-      if (this.currentGig) {
-        this.$store.dispatch('setGigAsScheduled', this.currentGig.id)
-      }
-    },
-    clearGig () {
-      this.currentGig = null
-      this.$store.dispatch('setSelectedGigId', -1)
     }
   }
 }
 </script>
 
-<style  scoped>
+<style scoped>
 
 .preset {
   margin: 5px;
@@ -446,10 +402,7 @@ export default {
   padding: 5px;
   margin: 5px;
   box-shadow: 1px 4px 8px 1px rgba(5, 79, 218, 0.83);
-  /* box-shadow: 0px 1px 5px 0px; */
-  /* color: blue !important; */
 }
-
 .darkBackgroud {
   background-color:rgba(12, 12, 12, 0.884)
 }
@@ -460,12 +413,11 @@ export default {
   color:black;
   border: 2px solid black;
   border-radius: 10px;
-
   width: 50px;
   height: 50px;
   /* margin: 50px, 10px, 0px, -10px; */
-  margin-top: 50px;
-  margin-left: -10px;
+  margin-top: 5px;
+  margin-left: -5px;
   margin-right: 2px;
   padding: 0px;
 }
@@ -476,12 +428,10 @@ export default {
   color: blue;
   border: 2px solid blue;
   border-radius: 10px;
-
   width: 50px;
   height: 50px;
-  /* margin: 50px, 10px, 0px, -10px; */
-  margin-top: 50px;
-  margin-left: -10px;
+  margin-top: 5px;
+  margin-left: -5px;
   margin-right: 2px;
   padding: 0px;
 }
@@ -489,21 +439,24 @@ export default {
   height: 45px;
 }
 .v-select  {
-  color:gray;
+  color: "warning";
   font-size: 20px;
   font-style: bold;
-  text-shadow: 1px 1px 1px rgba(5, 79, 218, 0.83);
+  text-shadow: 1px 1px 1px white;
+  /* text-shadow: 1px 1px 1px rgba(5, 79, 218, 0.83); */
   text-transform: uppercase;
   font-weight: bold;
   margin: 0px;
-  /* margin-bottom: -10px;
-  margin-bottom: -20px; */
   margin-top: 0px;
-  padding-bottom: 40px;
-  padding-left: 60px;
-  padding-right: 20px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
-
+.v-select__selection,
+.v-select__selection__comma,
+.v-text-field input {
+  color: yellow!important;
+}
 .selectSongButton {
   margin-left: 10px;
   color: blue;
@@ -513,65 +466,5 @@ export default {
   margin-top: 5px;
   color: blue;
   font-size: 36px;
-}
-.defaultGig {
-  margin-left: -10px;
-  margin-top: 5px;
-  color: rgb(103, 103, 109);
-  font-size: 36px;
-}
-.clearGigBbutton {
-  margin-left: 10px;
-  margin-top: 5px;
-  color: rgb(103, 103, 109);
-  font-size: 36px;
-}
-.programTytle {
-  -ms-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -webkit-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-  filter: none; /* Mandatory for IE9 to show the vertical text correctly */
-  margin-top: 110px;
-  margin-left: 5px;
-  padding-left: 10px;
-  padding-top: 5px;
-  width: 10px;
-  color: rgb(99, 98, 96);
-  -ms-transform-origin: center center 0;
-  -moz-transform-origin: center center 0;
-  -webkit-transform-origin: center center  0;
-  transform-origin: center center 0;
-  display: block;
-  position: relative;
-  text-align: center;
-  white-space: nowrap !important;
-  font-size: 14px;
-/*
-  border: 1px solid red; */
-  /* transform-origin:left top; */
-}
-
-.rotated {
-  /* border: 1px solid red;
-  writing-mode: sideways-lr;
-  -webkit-writing-mode: sideways-lr;
-  -ms-writing-mode: sideways-lr; */
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-}
-
-.v-avatar--metronome {
-  animation-name: metronome-example;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-}
-@keyframes metronome-example {
-  from {
-    transform: scale(.5);
-  }
-  to {
-    transform: scale(1);
-  }
 }
 </style>

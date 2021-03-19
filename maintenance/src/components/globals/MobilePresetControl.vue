@@ -3,14 +3,22 @@
     class="mx-auto ma-0 pa-0"
     max-width="400"
   >
-    <v-container fluid>
-        <div class="instrumentImage">
-          <v-img :src="imageURL" />
-        </div>
-        <div class="presetName" v-bind:class="(volume > 0) ? 'active' : 'inactive'">
-          <b>{{ getPresetName() }}</b>
-        </div>
-    </v-container>
+    <v-container class="view-mode ma-0 pa-0" fluid>
+      <v-row sm12 no-gutters>
+          <v-col cols=2>
+            <div class="instrumentImage">
+              <v-img :src="imageURL" />
+            </div>
+          </v-col>
+          <v-col cols=10>
+            <div class="presetName"
+              v-bind:class="(volume > 0) ? 'active' : 'inactive'"
+              >
+              {{ getPresetName() }}
+            </div>
+          </v-col>
+      </v-row>
+   </v-container>
   </v-card>
 </template>
 
@@ -138,24 +146,6 @@ export default {
   .inactive {
     color:gray
   }
-  .presetName {
-    display: flex;
-    margin: 0px;
-    padding: 0px;
-    /* justify-content: flex-start; */
-    /* align-items: flex-end; */
-    /*flex-direction: column;*/
-    /*height: 30px;*/
-  }
-  .custom-text-input {
-    width: 65px;
-  }
-  .inputpanel {
-    margin-left: 10px;
-  }
-  .valueInput {
-    width: 80px;
-  }
   .instrumentImage {
     height: 25px;
     width: 25px;
@@ -165,5 +155,14 @@ export default {
   }
   .view-mode {
     background-color:rgba(36, 34, 34, 0.830)
+  }
+  .presetName {
+    /*display: flex;*/
+    margin: 0px;
+    padding: 2px;
+    font-size: 14px;
+    /* justify-content: flex-start; */
+    /* align-items: flex-end; */
+    flex-direction: column;
   }
 </style>
