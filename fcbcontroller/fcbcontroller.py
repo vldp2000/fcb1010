@@ -685,7 +685,7 @@ def getActionForReceivedMessage(midiMsg):
     # Send Volume to Channel 6  and  channel 4
     printDebug(gMode)
     if (gMode == 'Live'):
-      if (msg2 <= gPedal2MaxVolume):
+      if (msg2 <= gPedal1MaxVolume):
         channel = 4
         sendCCMessage(channel, 7, msg2)
         channel = 6
@@ -695,7 +695,7 @@ def getActionForReceivedMessage(midiMsg):
     elif gMode == 'Config':
       if gConfigChannel > 0:
         sendCCMessage(gConfigChannel, 7, msg2)
-      sendPresetVolume(msg2)          
+        sendPresetVolume(msg2)          
     else:
       printDebug(f"Unknown application mode")
       displayData.drawError('Unknown mode')
