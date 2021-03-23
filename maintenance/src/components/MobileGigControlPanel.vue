@@ -415,7 +415,6 @@ export default {
   border-radius: 10px;
   width: 50px;
   height: 50px;
-  /* margin: 50px, 10px, 0px, -10px; */
   margin-top: 5px;
   margin-left: -5px;
   margin-right: 2px;
@@ -443,7 +442,6 @@ export default {
   font-size: 20px;
   font-style: bold;
   text-shadow: 1px 1px 1px white;
-  /* text-shadow: 1px 1px 1px rgba(5, 79, 218, 0.83); */
   text-transform: uppercase;
   font-weight: bold;
   margin: 0px;

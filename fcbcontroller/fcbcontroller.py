@@ -82,6 +82,7 @@ gInstrumentBankDict = {}
 gDebugMessageCounter = 0
 gDebugFlag = False
 gMode = 'Live'
+gConfigChannel = 0
 
 gCurrentSongIdx = -1
 gCurrentSongId = -1
@@ -164,16 +165,19 @@ def processProgramMessage(idx):
 @sio.on('VIEW_EDIT_MODE_MESSAGE')
 def processControllerModeMessage(payload):
   global gMode
+  global gConfigChannel
   printDebug(f"->->  Received message VIEW_EDIT_MODE_MESSAGE = {payload}")
-  if str(payload) == '1':
-    gMode = 'Config'
-    displayData.drawMessage("Mode","Config")
-  else:    
+  if str(payload) == '0':
     gMode = 'Live'
     displayData.drawScreen()
-  printDebug(f"->->  Mode  => {gMode}")
-  
+  else:
+    gMode = 'Config'
+    displayData.drawMessage("Mode","Config")
 
+  gConfigChannel = int(payload)
+
+  printDebug(f"->->  Mode =>{gMode}  Channel={gConfigChannel}")
+  
 #==
 def sendProgramNotificationMessage(idx):
   sio.emit(PROGRAM_MESSAGE, str(idx))
@@ -351,7 +355,7 @@ def sendCCMessage(channel, CC, value):
 def sendPCMessage( channel, PC):
   sleep(MIN_DELAY)
   gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
-  sleep(MIN_DELAY)
+  sleep(MIN_DELAY+MIN_DELAY)
   printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
 
 #----------------------------------------------------------------
@@ -670,10 +674,8 @@ def getActionForReceivedMessage(midiMsg):
       else:
         printDebug(f"The volume for Pedal2 is higher than the limit {msg2} > {gPedal2MaxVolume}")
     elif gMode == 'Config':
-      channel = 1
-      sendCCMessage(channel, 7, msg2)
-      channel = 2
-      sendCCMessage(channel, 7, msg2)
+      if gConfigChannel > 0
+        sendCCMessage(gConfigChannel, 7, msg2)
       sendPresetVolume(msg2)        
     else:
       printDebug(f"Unknown application mode")
