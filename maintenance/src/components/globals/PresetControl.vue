@@ -241,17 +241,17 @@ export default {
   methods: {
     setVolume (val) {
       this.songPreset.volume = val
-      if (this.editMode) {
-        const payload = {
-          'songId': this.songPreset.refsong,
-          'programIdx': this.programIdx,
-          'presetId': this.songPreset.refpreset,
-          'instrumentId': this.songPreset.refinstrument,
-          'value': val
-        }
-        // console.log(this.songPreset)
-        this.$store.dispatch('sendChangePresetVolumeMessage', payload)
-      }
+      // if (this.editMode) {
+      // const payload = {
+      // 'songId': this.songPreset.refsong,
+      // 'programIdx': this.programIdx,
+      // 'presetId': this.songPreset.refpreset,
+      // 'instrumentId': this.songPreset.refinstrument,
+      // 'value': val
+      // }
+      // console.log(this.songPreset)
+      // this.$store.dispatch('sendChangePresetVolumeMessage', payload)
+      // }
     },
 
     setEditMode (value) {
