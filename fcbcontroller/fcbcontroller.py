@@ -693,11 +693,9 @@ def getActionForReceivedMessage(midiMsg):
       else:
         printDebug(f"The volume for Pedal1 is higher than the limit {msg2} > {gPedal1MaxVolume}")
     elif gMode == 'Config':
-      channel = 4
-      sendCCMessage(channel, 7, msg2)
-      channel = 6
-      sendCCMessage(channel, 7, msg2)
-      sendPresetVolume(msg2)        
+      if gConfigChannel > 0:
+        sendCCMessage(gConfigChannel, 7, msg2)
+      sendPresetVolume(msg2)          
     else:
       printDebug(f"Unknown application mode")
       displayData.drawError('Unknown mode')
