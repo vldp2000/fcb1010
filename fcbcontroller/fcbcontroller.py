@@ -674,7 +674,7 @@ def getActionForReceivedMessage(midiMsg):
       else:
         printDebug(f"The volume for Pedal2 is higher than the limit {msg2} > {gPedal2MaxVolume}")
     elif gMode == 'Config':
-      if gConfigChannel > 0
+      if gConfigChannel > 0:
         sendCCMessage(gConfigChannel, 7, msg2)
       sendPresetVolume(msg2)        
     else:

@@ -258,8 +258,6 @@ export default {
       let channel = 0
       if (value) {
         channel = this.midichannel
-      } else {
-        channel = 0
       }
       this.editMode = value
       this.$store.dispatch('sendEditMode', channel)
