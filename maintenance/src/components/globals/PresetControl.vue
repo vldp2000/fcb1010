@@ -164,6 +164,7 @@ export default {
       imageURL: '',
       presets: {},
       presetId: -1,
+      midichannel: 0,
 
       songPreset: {
         id: -1,
@@ -219,6 +220,7 @@ export default {
             this.songPreset.refinstrument > 0) {
             const instrument = this.instrumentList.find(item => item.id === this.songPreset.refinstrument)
             this.imageURL = instrument.imageURL
+            this.midichannel = instrument.midichannel
             this.populatePresetList(this.songPreset.refinstrument)
           }
         } else {
@@ -253,12 +255,14 @@ export default {
     },
 
     setEditMode (value) {
-      let flag = 0
+      let channel = 0
       if (value) {
-        flag = 1
+        channel = this.midichannel
+      } else {
+        channel = 0
       }
       this.editMode = value
-      this.$store.dispatch('sendEditMode', flag)
+      this.$store.dispatch('sendEditMode', channel)
     },
 
     getPresetName () {
