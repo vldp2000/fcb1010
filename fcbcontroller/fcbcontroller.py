@@ -560,11 +560,15 @@ def setPreset(program, songPreset):
     if midiProgramChange == 0:
       sendCCMessage( channel, VOLUME_CC, 0)
       sendPCMessage(channel, midiProgramChange)
+      sendCCMessage( channel, VOLUME_CC, 0)
     else:
       mute = songPreset['muteflag']
       if mute:
         muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
+
+      sleep(MIN_DELAY)  
       sendPCMessage(channel, midiProgramChange)
+
       if mute:
         unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 20)
       else:
@@ -573,6 +577,7 @@ def setPreset(program, songPreset):
       if preset['refinstrument'] == 1:
         printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
+        
     displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
