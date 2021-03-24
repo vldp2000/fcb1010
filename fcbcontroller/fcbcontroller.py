@@ -566,8 +566,11 @@ def setPreset(program, songPreset):
       if mute:
         muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
 
-      sleep(MIN_DELAY)  
       sendPCMessage(channel, midiProgramChange)
+      sleep(MIN_DELAY)
+      
+      if channel == 4:  
+        sendPCMessage(channel, midiProgramChange)
 
       if mute:
         unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 20)
