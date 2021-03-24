@@ -527,9 +527,13 @@ def setSongProgram(idx):
 
   if program:
     #printDebug(f"Selected program. idx={idx}"); 
+  
     for songPreset in program['presetList']:
       setPreset(program, songPreset)
- 
+
+    sleep(MIN_DELAY)
+    setPreset(program, program['presetList'][1])
+
     sendProgramNotificationMessage(idx)
     if  program['presetList'][0]['volume'] > 0:
       gPedal1MaxVolume = program['presetList'][0]['volume']
@@ -567,9 +571,6 @@ def setPreset(program, songPreset):
 
       sendPCMessage(channel, midiProgramChange)
       sleep(MIN_DELAY)
-
-      if channel == 4:  
-        sendPCMessage(channel, midiProgramChange)
 
       if mute:
         unmuteChannel(channel, songPreset['volume'], 0.005, 20)
