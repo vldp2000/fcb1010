@@ -382,8 +382,7 @@ def unmuteChannel(channel, volume, delay, step):
   while x < volume:
     sendCCMessage( channel, VOLUME_CC, x )
     x = x + step
-    #sleep(delay)
-  sendCCMessage(channel, VOLUME_CC, volume )
+    sleep(delay)
 
 #----------------------------------------------------------------
 #----------------------------------------------------------------
@@ -564,18 +563,18 @@ def setPreset(program, songPreset):
     else:
       mute = songPreset['muteflag']
       if mute:
-        muteChannel(channel, songPreset['volume'], MIN_DELAY, 10)
+        muteChannel(channel, songPreset['volume'], 0.005, 10)
 
       sendPCMessage(channel, midiProgramChange)
       sleep(MIN_DELAY)
-      
+
       if channel == 4:  
         sendPCMessage(channel, midiProgramChange)
 
       if mute:
-        unmuteChannel(channel, songPreset['volume'], MIN_DELAY, 20)
-      else:
-        sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
+        unmuteChannel(channel, songPreset['volume'], 0.005, 20)
+
+      sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
       if preset['refinstrument'] == 1:
         printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
