@@ -633,12 +633,14 @@ def getActionForReceivedMessage(midiMsg):
   if msg0 == 180:
     if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
       if msg2 < 5:
+        gMode = 'Live'
         executeSystemCommand(msg2)
       return
     elif msg1 == 1:
       return
-    elif msg1 == 20 and gMode == 'Live': #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
-
+    elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
+      gMode = 'Live'
+      gConfigChannel = 0
       if msg2 == 11: #Pedal1 
         clearScreenDebug()
         setSongProgram(0)
@@ -688,6 +690,8 @@ def getActionForReceivedMessage(midiMsg):
     else:
       printDebug(f"Unknown application mode")
       displayData.drawError('Unknown mode')
+      gMode = 'Live'
+      gConfigChannel = 0
 
   elif msg0 == 181 and msg1 == 7:
     # Send Volume to Channel 6  and  channel 4
@@ -707,6 +711,12 @@ def getActionForReceivedMessage(midiMsg):
     else:
       printDebug(f"Unknown application mode")
       displayData.drawError('Unknown mode')
+      gMode = 'Live'
+      gConfigChannel = 0
+      
+  else:    
+    gMode = 'Live'
+    gConfigChannel = 0
 #----------------------------------------------------------------
 
 def ignoreInputMessage(msg):
