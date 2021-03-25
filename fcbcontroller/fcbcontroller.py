@@ -601,6 +601,7 @@ def setPreset(program, songPreset):
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
   global gMode
+  global gConfigChannel
   global gReloadCounter
   global gSynthTest
   global gPianoTest
