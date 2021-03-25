@@ -713,7 +713,6 @@ def getActionForReceivedMessage(midiMsg):
       displayData.drawError('Unknown mode')
       gMode = 'Live'
       gConfigChannel = 0
-      
   else:    
     gMode = 'Live'
     gConfigChannel = 0
