@@ -575,7 +575,10 @@ def setPreset(program, songPreset):
 
       if mute:
         unmuteChannel(channel, songPreset['volume'], 0.005, 20)
+      else:
+        sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
+      sleep(MIN_DELAY)
       sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
 
       if preset['refinstrument'] == 1:
