@@ -548,6 +548,7 @@ def setPreset(program, songPreset):
 
   id = songPreset['refpreset']
   preset = gPresetDict[str(id)] 
+  printDebug(f"Preset Selected  id={id} name ={preset['name']}")
 
   if preset:
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
@@ -557,7 +558,7 @@ def setPreset(program, songPreset):
     oldPC = gCurrentPCList[id]
     oldVolume = gCurrentVolumeList[id]
 
-    printDebug(f"Preset Selected  id={id} name ={preset['name']} oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
+    printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
 
     if newPC == oldPC and newPC > 0:
       if mute:
