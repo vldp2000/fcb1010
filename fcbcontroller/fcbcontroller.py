@@ -547,7 +547,7 @@ def setPreset(program, songPreset):
   global gCurrentVolumeList
 
   id = songPreset['refpreset']
-  idx = songPreset["id"]
+  idx = songPreset["id"] - 1
   preset = gPresetDict[str(id)] 
   printDebug(f"Preset Selected  id={id} name ={preset['name']}")
 
