@@ -313,7 +313,6 @@ def processMessageQueue():
     gQueueLock.acquire()
     if gMessageQueue.empty():
       gQueueLock.release()
-      sleep(MIN_DELAY)
     else:      
       #print (gMessageQueue.qsize())  
       message = gMessageQueue.get()
@@ -325,6 +324,8 @@ def processMessageQueue():
         printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][2]} , [0][3] = {message[0][3]}")
       else:
         printDebug (f"Message grom Queue = None")
+
+    sleep(MIN_DELAY)
           
 
 #----------------------------------------------------------------
