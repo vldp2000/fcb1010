@@ -519,12 +519,13 @@ def setSongProgram(idx):
 
   if program:
     #printDebug(f"Selected program. idx={idx}"); 
-  
+    i = 0
     for songPreset in program['presetList']:
-      setPreset(program, songPreset)
+      setPreset(program, songPreset, i)
+      i = i + 1
 
     sleep(MIN_DELAY)
-    setPreset(program, program['presetList'][1])
+    setPreset(program, program['presetList'][1], 0)
 
     sendProgramNotificationMessage(idx)
     if  program['presetList'][0]['volume'] > 0:
@@ -542,12 +543,11 @@ def setSongProgram(idx):
     sleep(1)
 
 #----------------------------------------------------------------
-def setPreset(program, songPreset):
+def setPreset(program, songPreset, idx):
   global gCurrentPCList
   global gCurrentVolumeList
 
   id = songPreset['refpreset']
-  idx = songPreset["id"] - 1
   preset = gPresetDict[str(id)] 
   printDebug(f"Preset Selected  id={id} name ={preset['name']}")
 
