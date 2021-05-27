@@ -559,7 +559,7 @@ def setPreset(program, songPreset):
     oldPC = gCurrentPCList[idx]
     oldVolume = gCurrentVolumeList[idx]
 
-    printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
+    printDebug(f" >>  idx={idx} oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
 
     if newPC == oldPC and newPC > 0:
       if mute:
