@@ -76,7 +76,7 @@ gGig = {}
 gCurrentSong = {}
 
 gInstrumentChannelDict = {}
-gPresetDict= {}
+gPresetDict = {}
 gInstrumentBankDict = {}
 
 gDebugMessageCounter = 0
@@ -99,17 +99,8 @@ gPedal2MaxVolume = 0
 #gChannel1 = 176
 #gChannel2 = 177
 
-gLastSynth1Program = 0
-gLastSynth1Volume = 0
-
-gLastSynth2Program = 0
-gLastSynth2Volume = 0
-
-gLastGuitar1Program = 0
-gLastGuitar1Volume = 0
-
-gLastGuitar2Program = 0
-gLastGuitar2Volume = 0
+gCurrentPCList = [0, 0, 0, 0]
+gCurrentVolumeList = [0, 0, 0, 0]
 
 gSystemCommandCounter = 0
 gSystemCommandCode = -1
@@ -552,38 +543,54 @@ def setSongProgram(idx):
 
 #----------------------------------------------------------------
 def setPreset(program, songPreset):
+  global gCurrentPCList
+  global gCurrentVolumeList
 
   id = songPreset['refpreset']
-  
   preset = gPresetDict[str(id)] 
 
   if preset:
-    #printDebug(f"Preset Selected {preset['name']}")    
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
-    midiProgramChange = int(preset['midipc'])
-    if midiProgramChange == 0:
-      sendCCMessage( channel, VOLUME_CC, 0)
-      sendPCMessage(channel, midiProgramChange)
-      sendCCMessage( channel, VOLUME_CC, 0)
-    else:
-      mute = songPreset['muteflag']
-      if mute:
-        muteChannel(channel, songPreset['volume'], 0.005, 10)
+    newPC = int(preset['midipc'])
+    newVolume = songPreset['volume']
+    mute = songPreset['muteflag']
+    oldPC = gCurrentPCList[id]
+    oldVolume = gCurrentVolumeList[id]
 
-      sendPCMessage(channel, midiProgramChange)
-      sleep(MIN_DELAY)
+    printDebug(f"Preset Selected  id={id} name ={preset['name']} oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
 
+    if newPC == oldPC and newPC > 0:
       if mute:
-        unmuteChannel(channel, songPreset['volume'], 0.005, 20)
+        muteChannel(channel, oldVolume, 0.005, 10)
+        sleep(MIN_DELAY)
+        unmuteChannel(channel, newVolume, 0.005, 20)
+
+    elif newPC != oldPC:
+      if newPC == 0:
+        sendCCMessage( channel, VOLUME_CC, 0)
+        sendPCMessage(channel, newPC)
+        sleep(MIN_DELAY)
+        sendCCMessage( channel, VOLUME_CC, 0)
       else:
-        sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
+        if mute:
+          muteChannel(channel, oldVolume, 0.005, 10)
 
-      sleep(MIN_DELAY)
-      sendCCMessage( channel, VOLUME_CC, songPreset['volume'] )
+        sendPCMessage(channel, newPC)
+        sleep(MIN_DELAY)
+
+        if mute:
+          unmuteChannel(channel, newVolume, 0.005, 20)
+        else:
+          sendCCMessage( channel, VOLUME_CC, newVolume )
+
+        sleep(MIN_DELAY)
+        sendCCMessage( channel, VOLUME_CC, newVolume )
 
       if preset['refinstrument'] == 1:
         printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
+    gCurrentPCList[id] = newPC
+    gCurrentVolumeList[id] = newVolume
         
     displayData.drawScreen()
   else:
