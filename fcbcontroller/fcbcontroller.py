@@ -101,6 +101,9 @@ gPedal2MaxVolume = 0
 
 gCurrentPCList = [0, 0, 0, 0]
 gCurrentVolumeList = [0, 0, 0, 0]
+gCurrentDelayList = [0, 0, 0, 0]
+gCurrentReverbList = [0, 0, 0, 0]
+gCurrentModList = [0, 0, 0, 0]
 
 gSystemCommandCounter = 0
 gSystemCommandCode = -1
@@ -546,6 +549,9 @@ def setSongProgram(idx):
 def setPreset(program, songPreset, idx):
   global gCurrentPCList
   global gCurrentVolumeList
+  global gCurrentDelayList
+  global gCurrentReverbList
+  global gCurrentModList
 
   id = songPreset['refpreset']
   preset = gPresetDict[str(id)] 
@@ -557,6 +563,7 @@ def setPreset(program, songPreset, idx):
     newPC = int(preset['midipc'])
     newVolume = songPreset['volume']
     mute = songPreset['muteflag']
+    currentDelay
     oldPC = gCurrentPCList[idx]
     oldVolume = gCurrentVolumeList[idx]
 
@@ -592,9 +599,23 @@ def setPreset(program, songPreset, idx):
       if preset['refinstrument'] == 1:
         printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
+
+      delayFlag = songPreset['delayflag']
+      if delayFlag:
+        sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 0)
+
+      reverbFlag = songPreset['reverbflag']
+      if reverbFlag:
+        sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 0)
+
+      modeflag = songPreset['modeflag']
+      if modeflag:
+        sendCCMessage( channel, MOD_EFFECT_OFF_CC, 0)
+
+
     gCurrentPCList[idx] = newPC
     gCurrentVolumeList[idx] = newVolume
-        
+    gCurrentDelayList[idx] =     
     displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
@@ -602,13 +623,6 @@ def setPreset(program, songPreset, idx):
     sleep(1)
 
 
-  #delayFlag = songPreset['delayflag']
-  #if delayFlag:
-  #  sendCCMessage( channel, DELAY_TIME_CC , songPreset['delayvalue'] )
-
-  #reverbFlag = songPreset['reverbflag']
-  #if reverbFlag:
-  #  sendCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
 
 #----------------------------------------------------------------
 
