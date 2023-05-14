@@ -55,9 +55,9 @@ x = 0
 
 # Alternatively load a TTF font.  Make sure the .ttf font file is in the same directory as the python script!
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
-font1 = ImageFont.truetype('8-bit-pusab.ttf', 11)
-font2 = ImageFont.truetype('8-bit-pusab.ttf', 11)
-font3 = ImageFont.truetype('8-bit-pusab.ttf', 11)
+font1 = ImageFont.truetype('font/8-bit-pusab.ttf', 11)
+font2 = ImageFont.truetype('font/8-bit-pusab.ttf', 11)
+font3 = ImageFont.truetype('font/8-bit-pusab.ttf', 11)
 while True:
 
     # Draw a black filled box to clear the image.
