@@ -408,13 +408,13 @@ printDebug("Everything ready now...")
 
 loadAllData()
 sleep(MIN_DELAY)
-
-if (gGig["shortSongList"]):
-  gCurrentSongIdx = -1
-  gCurrentSongId = -1
-  selectNextSong(1)
-  gCurrentProgramIdx = 0
-  #setSongProgram(gCurrentProgramIdx)
+if (gGig):
+  if (gGig["shortSongList"]):
+    gCurrentSongIdx = -1
+    gCurrentSongId = -1
+    selectNextSong(1)
+    gCurrentProgramIdx = 0
+    #setSongProgram(gCurrentProgramIdx)
 
 while not gExitFlag:
   getMidiMsg(midiInput)
