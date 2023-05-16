@@ -160,11 +160,15 @@ def loadAllData():
 
   try:
     gGig = dataHelper.loadScheduledGig()
+    
     if gGig: # check if dictionary is not empty
+      printDebug(gGig)
+
       gSelectedGigId = gGig["id"]
       displayData.drawMessage("Gig loaded", gGig["name"])
     else:
       displayData.drawError("Gig not found")
+      printDebug("Gig not found"))
     sleep(1)
 
     gInstrumentChannelDict = dataHelper.initInstruments()
