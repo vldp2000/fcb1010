@@ -391,8 +391,8 @@ def setPreset(program, songPreset, idx):
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
 
     gCurrentPCList[idx] = newPC
-    gCurrentVolumeList[idx] = newVolume
-    gCurrentDelayList[idx] =     
+    #gCurrentVolumeList[idx] = newVolume
+    #gCurrentDelayList[idx] =     
     displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
