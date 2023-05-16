@@ -220,7 +220,6 @@ def selectNextSong(step):
   global gCurrentSongIdx
   global gSystemCommandCounter
   #global gSelectedGigId
-  print(gGig)
 
   gSystemCommandCounter = 0
   if step > 0:
@@ -555,7 +554,6 @@ def loadAllData():
   printDebug(' << All objects and collections are cleared>>')
 
   try:
-    printDebug('--loadScheduledGig--')
     gGig = dataHelper.loadScheduledGig()
     
     if gGig: # check if dictionary is not empty
