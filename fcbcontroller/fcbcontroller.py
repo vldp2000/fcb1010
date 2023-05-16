@@ -258,7 +258,7 @@ def selectNextSong(step):
   sendGigNotificationMessage(gSelectedGigId)
   sleep(MIN_DELAY)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
-  printDebug( f"Select song. id={id}" )
+  printDebug(f"Select song. id={id}")
 
   setCurrentSong(id)
   sendSongNotificationMessage(id)
