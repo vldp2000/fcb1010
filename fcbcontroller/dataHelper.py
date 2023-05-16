@@ -6,8 +6,6 @@ from array import *
 # import pprint
 import dataController
 from dataClasses import *
-from globalVar import *
-from tools import *
 
 
 #----------------------------------------------------------------
@@ -47,9 +45,9 @@ def getSong(id):
 def loadScheduledGig():
   #global gGig
   id = dataController.getScheduledGigId()
-  printDebug('Current Gig id = ',id)
+  print('Current Gig id = ',id)
   gig = dataController.getGig(id)
-  printDebug(gig)
+  print(gig)
   return gig
 
 #----------------------------------------------------------------
