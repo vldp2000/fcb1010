@@ -430,6 +430,7 @@ def unmuteChannel(channel, volume, delay, step):
     sleep(delay)
 
 def processProgramEffects(channel, songPreset):
+  print(songPreset)
   delayFlag = songPreset['delayflag']
   printDebug(f">>> delayFlag = {delayFlag}")
   if delayFlag:
