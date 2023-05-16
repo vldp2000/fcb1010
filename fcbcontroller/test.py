@@ -8,6 +8,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 
 import subprocess
+from globalVar import *
 
 # Raspberry Pi pin configuration:
 RST = None     # on the PiOLED this pin isnt used

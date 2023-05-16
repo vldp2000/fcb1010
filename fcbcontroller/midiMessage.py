@@ -4,8 +4,7 @@ import time
 from time import sleep
 from config import *
 from tools import *
-
-gMidiOutput = None
+from globalVar import *
 
 #----------------------------------------------------------------
 

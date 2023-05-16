@@ -4,6 +4,8 @@ import displayData
 from socketMessage import *
 from midiMessage import *
 import dataController
+from globalVar import *
+
 
 def selectNextSong(step):
   global gGig
@@ -13,7 +15,7 @@ def selectNextSong(step):
 
   gSystemCommandCounter = 0
   if step > 0:
-    if gCurrentSongIdx + step < len(gGig["shortSongList"]):
+    if (gCurrentSongIdx + step < len(gGig["shortSongList"])):
       gCurrentSongIdx = gCurrentSongIdx + step
     else:
       gCurrentSongIdx = 0

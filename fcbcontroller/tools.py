@@ -1,5 +1,5 @@
 
-gDebugFlag = False
+from globalVar import *
 
 #---Print Debug utility-------------
 def printDebug(message):

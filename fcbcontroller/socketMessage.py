@@ -3,6 +3,8 @@ import socketio
 from tools import *
 from config import *
 import displayData
+from globalVar import *
+
 
 sio = socketio.Client()
 #---SOCKET--CLIENT-------------
