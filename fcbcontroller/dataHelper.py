@@ -43,9 +43,7 @@ def getSong(id):
 def loadScheduledGig():
   #global gGig
   id = dataController.getScheduledGigId()
-  print('Current Gig id = ',id)
   gig = dataController.getGig(id)
-  print(gig)
   return gig
 
 #----------------------------------------------------------------

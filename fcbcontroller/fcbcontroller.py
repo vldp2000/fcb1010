@@ -559,8 +559,6 @@ def loadAllData():
     gGig = dataHelper.loadScheduledGig()
     
     if gGig: # check if dictionary is not empty
-      printDebug(gGig)
-
       gSelectedGigId = gGig["id"]
       displayData.drawMessage("Gig loaded", gGig["name"])
     else:
