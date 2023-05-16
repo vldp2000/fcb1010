@@ -347,7 +347,8 @@ def setPreset(program, songPreset, idx):
 
     if newPC == oldPC and newPC > 0:
       if mute:
-        muteChannel(channel, oldVolume, MIN_DELAY, 10)
+        muteChannel(channel, oldVolume, MIN_DELAY, 20)
+        sendPCMessage(channel, newPC)
         processProgramEffects(channel, songPreset)
         unmuteChannel(channel, newVolume, MIN_DELAY, 20)
 
