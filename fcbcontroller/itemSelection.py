@@ -12,7 +12,8 @@ def selectNextSong(step):
   global gCurrentSongIdx
   global gSystemCommandCounter
   #global gSelectedGigId
-
+  print(gGig)
+  
   gSystemCommandCounter = 0
   if step > 0:
     if (gCurrentSongIdx + step < len(gGig["shortSongList"])):
