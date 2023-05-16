@@ -20,17 +20,17 @@
 # -*- coding: utf-8 -*-
 import json
 import io
-
-import pygame
-import pygame.midi
+#import pygame
+#import pygame.midi
 import time
 import sys
-import socket
-import socketio
 import struct
 import subprocess
 import queue
 import threading
+
+import Adafruit_GPIO.SPI as SPI
+import Adafruit_SSD1306
 
 import dataController
 import dataHelper
@@ -40,35 +40,20 @@ from time import sleep
 
 from dataClasses import *
 from config import *
-
-import Adafruit_GPIO.SPI as SPI
-import Adafruit_SSD1306
-
 import displayData
 import myutils
 import pprint
+from tools import *
+from midiMessage import *
+from socketMessage import *
 
-
-#################################################################
-class messageBackgroundThread (threading.Thread):
-  def __init__(self, threadID):
-    threading.Thread.__init__(self)
-    self.threadID = threadID
-  def run(self):
-    printDebug("Starting messageBackgroundThread")
-    processMessageQueue()
-    printDebug ("Exiting messageBackgroundThread")
 #################################################################
 #----------------------------------------------------------------
 
-gUseMessageQueue = True
-gMessageQueue = None
-gQueueLock = None
 
 gExitFlag = False
 gInitialisationComplete = False
 
-gMidiOutput = None
 
 #Global Variables
 gSelectedGigId = -1
@@ -80,7 +65,6 @@ gPresetDict = {}
 gInstrumentBankDict = {}
 
 gDebugMessageCounter = 0
-gDebugFlag = False
 gMode = 'Live'
 gConfigChannel = 0
 
@@ -101,118 +85,12 @@ gPedal2MaxVolume = 0
 
 gCurrentPCList = [0, 0, 0, 0]
 gCurrentVolumeList = [0, 0, 0, 0]
+gCurrentDelayList = [0, 0, 0, 0]
+gCurrentReverbList = [0, 0, 0, 0]
+gCurrentModList = [0, 0, 0, 0]
 
 gSystemCommandCounter = 0
 gSystemCommandCode = -1
-
-#---Print Debug utility-------------
-def printDebug(message):
-  global gDebugFlag
-  if gDebugFlag:
-    print(message)
-
-
-
-sio = socketio.Client()
-#---SOCKET--CLIENT-------------
-@sio.event
-def connect():
-  try:
-    printDebug('SOCKET connection established')
-    displayData.setMessageAPIStatus(255)
-    #displayData.drawScreen()
-  except:
-    printDebug('SOCKET connection can not be established')
-    displayData.setMessageAPIStatus(0)
-    displayData.drawScreen() 
-
-#==
-@sio.event
-def message(data):
-  printDebug(f"Message received with  {data}")
-
-#== 
-@sio.event
-def disconnect():
-  printDebug('disconnected from SOCKET server')
-  displayData.setMessageAPIStatus(0)
-  displayData.drawScreen() 
-
-#==
-@sio.on('VIEW_SONG_MESSAGE')
-def processSongMessage(id):
-  global gSongDict
-  printDebug(f"VIEW_SONG_MESSAGE ID:  {id}")
-  setCurrentSong(id)
-
-#==
-@sio.on('VIEW_PROGRAM_MESSAGE')
-def processProgramMessage(idx):
-  printDebug(f"VIEW_PROGRAM_MESSAGE IDX: {idx}")
-  setSongProgram(idx)
-
-#==
-
-@sio.on('VIEW_EDIT_MODE_MESSAGE')
-def processControllerModeMessage(payload):
-  global gMode
-  global gConfigChannel
-  printDebug(f"->->  Received message VIEW_EDIT_MODE_MESSAGE = {payload}")
-  if str(payload) == '0':
-    gMode = 'Live'
-    displayData.drawScreen()
-  else:
-    gMode = 'Config'
-    displayData.drawMessage("Mode","Config")
-
-  gConfigChannel = int(payload)
-
-  printDebug(f"->->  Mode =>{gMode}  Channel={gConfigChannel}")
-  
-#==
-def sendProgramNotificationMessage(idx):
-  sio.emit(PROGRAM_MESSAGE, str(idx))
-  #printDebug(f"{PROGRAM_MESSAGE} >> {str(idx)}")
-
-#==
-def sendSongNotificationMessage(id):
-  sio.emit(SONG_MESSAGE, str(id))
-  #printDebug(f'{SONG_MESSAGE}  >> { str(id)}')
-
-#==
-def sendGigNotificationMessage(id):
-  sio.emit(GIG_MESSAGE, str(id))
-  #printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
-
-#==
-def sendSyncNotificationMessage(bankId, songId, programIdx):
-  global gSystemCommandCounter
-  gSystemCommandCounter = 0
-
-  syncmessage = {}
-  syncmessage['songId'] = songId
-  syncmessage['programIdx'] = programIdx
-  syncmessage['bankId'] = bankId
-
-  jsonStr = json.dumps(syncmessage,
-    indent=4, sort_keys=True, cls=CustomEncoder,
-    separators=(',', ': '), ensure_ascii=False
-  )
-  sio.emit(SYNC_MESSAGE, jsonStr)
-  # print(SYNC_MESSAGE + "=" +  jsonStr)
-#----------------------------------------------------------------
-def sendPresetVolume(value):
-  sio.emit(PRESETVOLUME_MESSAGE, str(value))
-  printDebug(f"Send message  PRESETVOLUME_MESSAGE {value}")
-
-#----------------------------------------------------------------
-def clearScreenDebug():
-  global gDebugFlag
-  global gDebugMessageCounter
-  if gDebugFlag == 'Debug':
-    print("\n" * 2)
-    print(f'               >> ----- {gDebugMessageCounter} -------<<' )
-    gDebugMessageCounter = gDebugMessageCounter + 1
 
 
 #----------------------------------------------------------------
@@ -296,88 +174,6 @@ def executeSystemCommand(code):
 ## 180 -CC Channel 5
 ## 181 -CC Channel 6
 
-def processMessageQueue():
-  global gExitFlag
-  global gMessageQueue
-  global gQueueLock
-  while not gExitFlag:
-    gQueueLock.acquire()
-    if gMessageQueue.empty():
-      gQueueLock.release()
-    else:      
-      #print (gMessageQueue.qsize())  
-      message = gMessageQueue.get()
-      gMessageQueue.task_done()
-      gQueueLock.release()
-
-      if message: 
-        getActionForReceivedMessage(message)  
-        printDebug (f"Message From QUEUE >>>> [0][0] = {message[0][0]} , [0][1] = {message[0][1]} , [0][2] = {message[0][2]} , [0][3] = {message[0][3]}")
-      else:
-        printDebug (f"Message grom Queue = None")
-
-    sleep(MIN_DELAY)
-          
-
-#----------------------------------------------------------------
-def pushMessageToQueue(inputMessage):
-  global gMessageQueue
-  global gQueueLock
-  global gUseMessageQueue
-
-  if gUseMessageQueue:
-    gQueueLock.acquire()
-    gMessageQueue.put(inputMessage)
-    gQueueLock.release()
-  else:
-    getActionForReceivedMessage(inputMessage)  
-        
-#----------------------------------------------------------------
-
-def sendCCMessage(channel, CC, value):
-  gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
-  printDebug(f" Send CC message. channel {channel} , CC {CC} value {value} ")
-  sleep(MIN_DELAY)
-#----------------------------------------------------------------
-
-## 192 -PC on Channel 1
-## 193 -PC on Channel 2
-## 197 -PC on Channel 6
-
-def sendPCMessage( channel, PC):
-  sleep(MIN_DELAY)
-  gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
-  sleep(MIN_DELAY+MIN_DELAY)
-  printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
-
-#----------------------------------------------------------------
-
-def sendGenericMidiCommand(msg0, msg1, msg2):
-  #    message = struct.pack("BBB", msg0, msg1, msg2)
-  gMidiOutput.write_short(0xb0 + int(msg0), msg1, msg2)
-  printDebug("SEND GENERIC MESSAGE %d %d %d" % (msg0, msg1, msg2))
-
-#----------------------------------------------------------------
-
-def muteChannel(channel, volume, delay, step):
-  if volume > 0:
-    x = volume
-    while x > 0:
-      sendCCMessage( channel, VOLUME_CC, x )
-      x = x - step
-      #sleep(delay)
-    sendCCMessage(channel, VOLUME_CC, 0 )
-
-#----------------------------------------------------------------
-def unmuteChannel(channel, volume, delay, step):
-  x = step
-  while x < volume:
-    sendCCMessage( channel, VOLUME_CC, x )
-    x = x + step
-    sleep(delay)
-
-#----------------------------------------------------------------
-#----------------------------------------------------------------
 #----------------------------------------------------------------
 def loadAllData():
   global gSelectedGigId
@@ -414,7 +210,7 @@ def loadAllData():
       displayData.drawMessage("Gig loaded", gGig["name"])
     else:
       displayData.drawError("Gig not found")
-    sleep(1.5)
+    sleep(1)
 
     gInstrumentChannelDict = dataHelper.initInstruments()
     if not gInstrumentChannelDict:
@@ -546,6 +342,9 @@ def setSongProgram(idx):
 def setPreset(program, songPreset, idx):
   global gCurrentPCList
   global gCurrentVolumeList
+  global gCurrentDelayList
+  global gCurrentReverbList
+  global gCurrentModList
 
   id = songPreset['refpreset']
   preset = gPresetDict[str(id)] 
@@ -557,6 +356,7 @@ def setPreset(program, songPreset, idx):
     newPC = int(preset['midipc'])
     newVolume = songPreset['volume']
     mute = songPreset['muteflag']
+    #currentDelay
     oldPC = gCurrentPCList[idx]
     oldVolume = gCurrentVolumeList[idx]
 
@@ -564,27 +364,24 @@ def setPreset(program, songPreset, idx):
 
     if newPC == oldPC and newPC > 0:
       if mute:
-        muteChannel(channel, oldVolume, 0.005, 10)
-        sleep(MIN_DELAY)
-        unmuteChannel(channel, newVolume, 0.005, 20)
+        muteChannel(channel, oldVolume, MIN_DELAY, 10)
+        processProgramEffects(channel, songPreset)
+        unmuteChannel(channel, newVolume, MIN_DELAY, 20)
 
     elif newPC != oldPC:
       if newPC == 0:
         sendCCMessage( channel, VOLUME_CC, 0)
         sendPCMessage(channel, newPC)
-        sleep(MIN_DELAY)
         sendCCMessage( channel, VOLUME_CC, 0)
       else:
         if mute:
-          muteChannel(channel, oldVolume, 0.005, 10)
+          muteChannel(channel, oldVolume, MIN_DELAY, 10)
 
         sendPCMessage(channel, newPC)
-        sleep(MIN_DELAY)
+        processProgramEffects(channel, songPreset)
 
         if mute:
-          unmuteChannel(channel, newVolume, 0.005, 20)
-        else:
-          sendCCMessage( channel, VOLUME_CC, newVolume )
+          unmuteChannel(channel, newVolume, MIN_DELAY, 20)
 
         sleep(MIN_DELAY)
         sendCCMessage( channel, VOLUME_CC, newVolume )
@@ -592,26 +389,17 @@ def setPreset(program, songPreset, idx):
       if preset['refinstrument'] == 1:
         printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
+
     gCurrentPCList[idx] = newPC
     gCurrentVolumeList[idx] = newVolume
-        
+    gCurrentDelayList[idx] =     
     displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
     displayData.drawError(f"Preset {id} not found")
     sleep(1)
 
-
-  #delayFlag = songPreset['delayflag']
-  #if delayFlag:
-  #  sendCCMessage( channel, DELAY_TIME_CC , songPreset['delayvalue'] )
-
-  #reverbFlag = songPreset['reverbflag']
-  #if reverbFlag:
-  #  sendCCMessage( channel, REVERB_LENGTH_CC , songPreset['reverbvalue'] )
-
 #----------------------------------------------------------------
-
 #----------------------------------------------------------------
 def getActionForReceivedMessage(midiMsg):
   global gMode
@@ -756,7 +544,6 @@ def getMidiMsg(midiInput):
     print("gMidiOutput is not set")  
   
   while not(gotMsg):
-    sleep(MIDI_RECEIVE_DELAY)
     if midiInput.poll():    
       gotMsg = True
       inputData = midiInput.read(100)
@@ -767,7 +554,7 @@ def getMidiMsg(midiInput):
           continue
         else:
           printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")       
-          pushMessageToQueue(msg)
+          getActionForReceivedMessage(msg)
 
 #----------------------------------------------------------------
 
@@ -794,14 +581,6 @@ sio.connect('http://localhost:8081')
 
 #displayData.setMessageAPIStatus(255)
 #displayData.drawScreen()
-
-if gUseMessageQueue:
-  gQueueLock = threading.Lock()
-  gMessageQueue = queue.Queue(0)
-  threadID = 1
-  thread = messageBackgroundThread(threadID)
-  thread.start()
-  sleep(0.1)
 
 midiInput = None
 

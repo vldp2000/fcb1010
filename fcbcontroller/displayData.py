@@ -132,7 +132,7 @@ def drawScreen():
   statusY1 = 3
   statusY2 = 11
 
-  fontA = ImageFont.truetype('fontawesome-webfont.ttf', 14)
+  fontA = ImageFont.truetype('font/fontawesome-webfont.ttf', 14)
 
   #RaveloxMidi status
   draw.rectangle((0,0,20,14), outline=255, fill=0)
@@ -169,9 +169,9 @@ def drawScreen():
   else:
     draw.text((106,0), chr(61453),  font=fontA, fill=255)
 
-  font2 = ImageFont.truetype('RetroGaming.ttf', 14)
-  font1 = ImageFont.truetype('Pixelade.ttf', 22)
-  #font2 = ImageFont.truetype('UAVOSDMono.ttf', 12)
+  font2 = ImageFont.truetype('font/RetroGaming.ttf', 14)
+  font1 = ImageFont.truetype('font/Pixelade.ttf', 22)
+  #font2 = ImageFont.truetype('font/UAVOSDMono.ttf', 12)
 
   draw.text((0, 20), g_SongName, font=font1, fill=255)
   draw.text((0, 43), g_ProgramName, font=font2, fill=255)
@@ -194,13 +194,13 @@ def drawShutdown():
   g_Disp.clear()
   g_Disp.display()
   # Load image based on OLED display height.  Note that image is converted to 1 bit color.
-  image = Image.open('Goodbye.png').convert('1')
+  image = Image.open('image/Goodbye.png').convert('1')
   # Display image.
   g_Disp.image(image)
   g_Disp.display()
   time.sleep(2)
   g_Disp.clear()
-  image = Image.open('GoodbyeBlack.png').convert('1')
+  image = Image.open('image/GoodbyeBlack.png').convert('1')
   # Display image.
   g_Disp.image(image)
   g_Disp.display()
@@ -214,7 +214,7 @@ def drawReboot():
   g_Disp.clear()
   g_Disp.display()
   # Load image based on OLED display height.  Note that image is converted to 1 bit color.
-  image = Image.open('Restart.png').convert('1')
+  image = Image.open('image/Restart.png').convert('1')
   # Display image.
   g_Disp.image(image)
   g_Disp.display()
@@ -229,8 +229,8 @@ def drawSysCommand(textValue):
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   
-  font1 = ImageFont.truetype('RetroGaming.ttf', 20)
-  font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
+  font1 = ImageFont.truetype('font/RetroGaming.ttf', 20)
+  font2 = ImageFont.truetype('font/Montserrat-Regular.ttf', 16)
 
   draw.text((1, 1), 'SYSTEM', font=font1, fill=255)
   draw.text((1, 30), textValue,  font=font2, fill=255)
@@ -247,8 +247,8 @@ def drawError(textValue):
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   
-  font1 = ImageFont.truetype('RetroGaming.ttf', 20)
-  font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
+  font1 = ImageFont.truetype('font/RetroGaming.ttf', 20)
+  font2 = ImageFont.truetype('font/Montserrat-Regular.ttf', 16)
 
   draw.text((1, 1), 'ERROR', font=font1, fill=255)
   draw.text((1, 30), textValue,  font=font2, fill=255)
@@ -265,8 +265,8 @@ def drawMessage(headerValue,textValue):
   # Get drawing object to draw on image.
   draw = ImageDraw.Draw(image)
   
-  font1 = ImageFont.truetype('RetroGaming.ttf', 16)
-  font2 = ImageFont.truetype('Montserrat-Regular.ttf', 16)
+  font1 = ImageFont.truetype('font/RetroGaming.ttf', 16)
+  font2 = ImageFont.truetype('font/Montserrat-Regular.ttf', 16)
 
   draw.text((1, 1), headerValue, font=font1, fill=255)
   draw.text((1, 30), textValue,  font=font2, fill=255)

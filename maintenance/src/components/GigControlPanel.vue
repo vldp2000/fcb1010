@@ -4,8 +4,9 @@
     <v-row md12 no-gutters>
       <v-col cols="12" md="4">
         <v-select
+          dark
           v-if="gigList"
-          label="Select Gig"
+          label="Select Gig-2"
           v-model="gigId"
           :items="gigList"
           required
@@ -38,6 +39,7 @@
       </v-col>
       <v-col cols="12" md="5">
         <v-select
+          dark
           v-if="currentSongList"
           label="Select Song"
           v-model="songId"
@@ -572,7 +574,7 @@ export default {
   height: 45px;
 }
 .v-select  {
-  color:azure;
+  color: azure;
   font-size: 20px;
   font-style: bold;
   text-shadow: 1px 1px 1px rgba(5, 79, 218, 0.83);
