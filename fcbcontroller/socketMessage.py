@@ -1,7 +1,7 @@
 import socket
 import socketio
 from tools import *
-
+from config import *
 
 sio = socketio.Client()
 #---SOCKET--CLIENT-------------
