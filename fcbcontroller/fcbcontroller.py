@@ -20,8 +20,8 @@
 # -*- coding: utf-8 -*-
 import json
 import io
-#import pygame
-#import pygame.midi
+import pygame
+import pygame.midi
 import time
 import sys
 import struct
