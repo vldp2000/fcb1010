@@ -142,10 +142,10 @@ def loadAllData():
   printDebug(' << Load All Data >>')
   if gGig: # check if dictionary is not empty
     gGig.clear()
-    gGig = None
+#    gGig = None
   if gCurrentSong:
     gCurrentSong.clear()
-    gCurrentSong = None
+#    gCurrentSong = None
   if gInstrumentChannelDict:
     gInstrumentChannelDict.clear()
     gInstrumentChannelDict.clear()
