@@ -51,7 +51,7 @@ def unmuteChannel(channel, volume, delay, step):
     x = x + step
     sleep(delay)
 
-def processProgramEffects(channel, songPreset)
+def processProgramEffects(channel, songPreset):
   delayFlag = songPreset['delayflag']
   if delayFlag:
     sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 0)
