@@ -101,7 +101,7 @@ def executeSystemCommand(code):
   global gSystemCommandCounter
   global gSystemCommandCode
   
-  printDebug("EXECUTE SYSTEM COMMAND");
+  printDebug("EXECUTE SYSTEM COMMAND")
   command = ""
   displayText = ""
 
@@ -258,7 +258,7 @@ def selectNextSong(step):
   sendGigNotificationMessage(gSelectedGigId)
   sleep(MIN_DELAY)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
-  #printDebug(f"Select song. id={id}"); 
+  #printDebug(f"Select song. id={id}")
 
   setCurrentSong(id)
   sendSongNotificationMessage(id)
@@ -282,7 +282,7 @@ def setCurrentSong(id):
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]
-      printDebug(f"Selected song = {name}"); 
+      printDebug(f"Selected song = {name}")
       displayData.setSongName(f"{gCurrentSongIdx}.{name}")
       setSongProgram(0)
     else: 
@@ -314,7 +314,7 @@ def setSongProgram(idx):
   program = gCurrentSong["programList"][idx]
 
   if program:
-    #printDebug(f"Selected program. idx={idx}"); 
+    #printDebug(f"Selected program. idx={idx}")
     i = 0
     for songPreset in program['presetList']:
       setPreset(program, songPreset, i)
