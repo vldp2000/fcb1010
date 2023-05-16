@@ -15,9 +15,8 @@
 ## 181 -CC Channel 6
 ## 192 -PC on Channel 1
 ## 197 -PC on Channel 6
-
-
 # -*- coding: utf-8 -*-
+
 import json
 import io
 import pygame
