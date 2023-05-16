@@ -168,7 +168,7 @@ def loadAllData():
       displayData.drawMessage("Gig loaded", gGig["name"])
     else:
       displayData.drawError("Gig not found")
-      printDebug("Gig not found"))
+      printDebug("Gig not found")
     sleep(1)
 
     gInstrumentChannelDict = dataHelper.initInstruments()
