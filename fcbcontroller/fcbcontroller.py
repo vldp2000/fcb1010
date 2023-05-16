@@ -258,7 +258,7 @@ def selectNextSong(step):
   sendGigNotificationMessage(gSelectedGigId)
   sleep(MIN_DELAY)
   id = gGig["shortSongList"][gCurrentSongIdx]["id"]
-  printDebug(f"Select song. id={id}")
+  #printDebug(f"Select song. id={id}")
 
   setCurrentSong(id)
   sendSongNotificationMessage(id)
@@ -282,7 +282,7 @@ def setCurrentSong(id):
     if gCurrentSong:
       gCurrentSongId = gCurrentSong["id"]
       name = gCurrentSong["name"]
-      printDebug( f"Selected song = {name}" )
+      #printDebug( f"Selected song = {name}" )
       displayData.setSongName(f"{gCurrentSongIdx}.{name}")
       setSongProgram(0)
     else: 
