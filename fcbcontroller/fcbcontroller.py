@@ -405,7 +405,7 @@ printDebug("Everything ready now...")
 loadAllData()
 sleep(MIN_DELAY)
 
-if gGig["shortSongList"]:
+if (gGig["shortSongList"]):
   gCurrentSongIdx = -1
   gCurrentSongId = -1
   selectNextSong(1)

@@ -8,10 +8,10 @@ from globalVar import *
 
 
 def selectNextSong(step):
-  global gGig
+  #global gGig
   global gCurrentSongIdx
   global gSystemCommandCounter
-  global gSelectedGigId
+  #global gSelectedGigId
 
   gSystemCommandCounter = 0
   if step > 0:
@@ -37,7 +37,7 @@ def selectNextSong(step):
 #----------------------------------------------------------------
 
 def setCurrentSong(id):
-  global gCurrentSongIdx
+  #global gCurrentSongIdx
   global gCurrentSong
   global gCurrentSongId
 
@@ -73,11 +73,12 @@ def setCurrentSong(id):
 
 def setSongProgram(idx):
   global gCurrentProgramIdx
-  global gCurrentSongIdx
-  global gCurrentSong
+  #global gCurrentSongIdx
+  #global gCurrentSong
   global gPedal1MaxVolume
   global gPedal2MaxVolume
   global gSystemCommandCounter
+
   gSystemCommandCounter = 0
   gCurrentProgramIdx = idx
  
@@ -112,12 +113,12 @@ def setSongProgram(idx):
 #----------------------------------------------------------------
 def setPreset(program, songPreset, idx):
   global gCurrentPCList
-  global gCurrentVolumeList
+  #global gCurrentVolumeList
   global gCurrentDelayList
   global gCurrentReverbList
   global gCurrentModList
-  global gInstrumentChannelDict
-  global gPresetDict
+  #global gInstrumentChannelDict
+  #global gPresetDict
 
 
   id = songPreset['refpreset']
@@ -157,7 +158,7 @@ def setPreset(program, songPreset, idx):
         if mute:
           unmuteChannel(channel, newVolume, MIN_DELAY, 20)
 
-        sleep(MIN_DELAY)
+        #sleep(MIN_DELAY)
         sendCCMessage( channel, VOLUME_CC, newVolume )
 
       if preset['refinstrument'] == 1:
@@ -171,4 +172,4 @@ def setPreset(program, songPreset, idx):
   else:
     printDebug(f"Preset {id} not found")    
     displayData.drawError(f"Preset {id} not found")
-    sleep(1)
+    sleep(0.2)
