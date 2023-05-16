@@ -2,6 +2,7 @@ import socket
 import socketio
 from tools import *
 from config import *
+import displayData
 
 sio = socketio.Client()
 #---SOCKET--CLIENT-------------
