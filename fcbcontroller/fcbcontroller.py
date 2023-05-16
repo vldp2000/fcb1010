@@ -431,17 +431,17 @@ def unmuteChannel(channel, volume, delay, step):
     sleep(delay)
 
 def processProgramEffects(channel, songPreset):
-  print(songPreset)
+  #print(songPreset)
   delayFlag = songPreset['delayflag']
-  if delayFlag:
+  if delayFlag == 0:
     sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 0)
-    printDebug(f">>> delayFlag = {delayFlag} channel = {channel},  DELAY_EFFECT_OFF_CC ={DELAY_EFFECT_OFF_CC}")
+    #printDebug(f">>> delayFlag = {delayFlag} channel = {channel},  DELAY_EFFECT_OFF_CC ={DELAY_EFFECT_OFF_CC}")
   reverbFlag = songPreset['reverbflag']
-  if reverbFlag:
+  if reverbFlag == 0:
     sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 0)
 
   modeFlag = songPreset['modeflag']
-  if modeFlag:
+  if modeFlag == 0:
     sendCCMessage( channel, MOD_EFFECT_OFF_CC, 0)
   
 
