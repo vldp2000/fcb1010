@@ -46,6 +46,7 @@ import pprint
 from tools import *
 from midiMessage import *
 from socketMessage import *
+from itemSelection import *
 
 #################################################################
 #----------------------------------------------------------------
