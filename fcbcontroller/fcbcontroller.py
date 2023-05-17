@@ -328,10 +328,10 @@ def setPreset(program, songPreset, idx):
 
   id = songPreset['refpreset']
   preset = gPresetDict[str(id)] 
-  printDebug(f"Preset Selected  id={id} name ={preset['name']}")
+  #printDebug(f"Preset Selected  id={id} name ={preset['name']}")
 
   if preset:
-    printDebug(f" >>  idx = {idx} ")
+    #printDebug(f" >>  idx = {idx} ")
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
     newPC = int(preset['midipc'])
     newVolume = songPreset['volume']
@@ -340,7 +340,7 @@ def setPreset(program, songPreset, idx):
     oldPC = gCurrentPCList[idx]
     oldVolume = gCurrentVolumeList[idx]
 
-    printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
+    #printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
     samePC = False
     if newPC == oldPC and newPC > 0:
       samePC = True
@@ -369,7 +369,7 @@ def setPreset(program, songPreset, idx):
         sendCCMessage( channel, VOLUME_CC, newVolume )
 
       if preset['refinstrument'] == 1:
-        printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
+        #printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
 
     gCurrentPCList[idx] = newPC
@@ -441,18 +441,20 @@ def processProgramEffects(samePCFlag, idx,channel, songPreset):
     oldReverb = gCurrentReverbList[idx]
     oldMod = gCurrentModList[idx]
 
-  delayFlag = songPreset['delayflag']
+  delayFlag = songPreset['delayflag'] == 1
   if delayFlag != oldDelay:
     sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 0)
-  reverbFlag = songPreset['reverbflag']
+  reverbFlag = songPreset['reverbflag'] == 1
   if reverbFlag != oldReverb:
     sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 0)
 
-  modeFlag = songPreset['modeflag']
+  modeFlag = songPreset['modeflag'] == 1
   if modeFlag != oldMod:
     sendCCMessage( channel, MOD_EFFECT_OFF_CC, 0)
 
-  printDebug(f">>> delay {oldDelay} >> {delayFlag} , reverb {oldReverb} >> {reverbFlag} ,  mod {oldMod} >> {modeFlag}   channel = {channel},  DELAY_EFFECT_OFF_CC ={DELAY_EFFECT_OFF_CC}")
+  if (idx==0):
+    printDebug(songPreset)
+    printDebug(f">>> delay {oldDelay} >> {delayFlag} , reverb {oldReverb} >> {reverbFlag} ,  mod {oldMod} >> {modeFlag}   channel = {channel},  DELAY_EFFECT_OFF_CC ={DELAY_EFFECT_OFF_CC}")
 
   gCurrentDelayList[idx] = delayFlag
   gCurrentReverbList[idx] = reverbFlag
