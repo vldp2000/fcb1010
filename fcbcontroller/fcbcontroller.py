@@ -300,7 +300,7 @@ def setSongProgram(idx):
       i = i + 1
 
     #sleep(MIN_DELAY)
-    setPreset(program, program['presetList'][1], 0)
+    #setPreset(program, program['presetList'][1], 0)
 
     sendProgramNotificationMessage(idx)
     if  program['presetList'][0]['volume'] > 0:
