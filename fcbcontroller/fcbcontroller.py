@@ -437,25 +437,25 @@ def processProgramEffects(samePCFlag, idx,channel, songPreset):
   oldMod = False
   
   if (samePCFlag):   
-    oldDelay = gCurrentDelayList[idx] == 1
-    oldReverb = gCurrentReverbList[idx] == 1
-    oldMod = gCurrentModList[idx] == 1
+    oldDelay = int(gCurrentDelayList[idx]) == 1
+    oldReverb = int(gCurrentReverbList[idx]) == 1
+    oldMod = int(gCurrentModList[idx]) == 1
 
-  delayFlag = songPreset['delayflag'] == 1
+  delayFlag = int(songPreset['delayflag']) == 1
   if delayFlag != oldDelay:
     sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 0)
-    
-  reverbFlag = songPreset['reverbflag'] == 1
+
+  reverbFlag = int(songPreset['reverbflag']) == 1
   if reverbFlag != oldReverb:
     sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 0)
 
-  modeFlag = songPreset['modeflag'] == 1
+  modeFlag = int(songPreset['modeflag']) == 1
   if modeFlag != oldMod:
     sendCCMessage( channel, MOD_EFFECT_OFF_CC, 0)
 
   if (idx==0):
     printDebug(songPreset)
-    printDebug(f">>> delay {oldDelay} >> {delayFlag} , reverb {oldReverb} >> {reverbFlag} ,  mod {oldMod} >> {modeFlag}   channel = {channel},  DELAY_EFFECT_OFF_CC ={DELAY_EFFECT_OFF_CC}")
+    printDebug(f">>>  idx = {idx},  samepc = {samePCFlag}, delay {oldDelay} >> {delayFlag} , reverb {oldReverb} >> {reverbFlag} ,  mod {oldMod} >> {modeFlag} ,  channel = {channel}")
 
   gCurrentDelayList[idx] = delayFlag
   gCurrentReverbList[idx] = reverbFlag
