@@ -435,6 +435,20 @@ def processProgramEffects(samePCFlag, idx,channel, songPreset):
   oldDelay = False
   oldReverb = False
   oldMod = False
+  
+  test0 = 0
+  test1 = 1
+
+  if test0:
+    printDebug(f" test0 True")
+  else:
+    printDebug(f" test0 False")
+
+  if test1:
+    printDebug(f" test1 True")
+  else:
+    printDebug(f" test1 False")
+
 
   if (samePCFlag):   
     oldDelay = gCurrentDelayList[idx]
