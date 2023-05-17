@@ -757,8 +757,8 @@ def getMidiMsg(midiInput):
       inputData = midiInput.read(100)
       for msg in inputData:
         listInp = list(msg)
-        printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")                   
         if ignoreInputMessage(msg[0]):  # Message comes as an array [[180,1,1],0] 
+          printDebug(f"xxxxxx----- Ignore  Input = xxxxx {listInp} ")                   
           continue
         else:
           printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")       
