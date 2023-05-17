@@ -95,14 +95,15 @@ gMidiOutput = None
 
 gDebugFlag = False
 
-
+gDebugCount = 0
 
 #---Print Debug utility-------------
 def printDebug(message):
+  global gDebugCount
   global gDebugFlag
   if gDebugFlag:
-    print(message)
-
+    print(f"<{gDebugCount}>  --  {message}")
+  gDebugCount += 1
 
 #############################################################
 #Socket
