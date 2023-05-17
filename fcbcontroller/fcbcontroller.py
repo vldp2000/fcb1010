@@ -322,9 +322,6 @@ def setSongProgram(idx):
 def setPreset(program, songPreset, idx):
   global gCurrentPCList
   #global gCurrentVolumeList
-  global gCurrentDelayList
-  global gCurrentReverbList
-  global gCurrentModList
   #global gInstrumentChannelDict
   #global gPresetDict
 
@@ -344,12 +341,13 @@ def setPreset(program, songPreset, idx):
     oldVolume = gCurrentVolumeList[idx]
 
     printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
-
+    samePC = False
     if newPC == oldPC and newPC > 0:
+      samePC = True
       if mute:
         muteChannel(channel, oldVolume, MIN_DELAY, 20)
         sendPCMessage(channel, newPC)
-        processProgramEffects(channel, songPreset)
+        processProgramEffects(samePC, idx, channel, songPreset)
         unmuteChannel(channel, newVolume, MIN_DELAY, 20)
 
     elif newPC != oldPC:
@@ -362,7 +360,7 @@ def setPreset(program, songPreset, idx):
           muteChannel(channel, oldVolume, MIN_DELAY, 10)
 
         sendPCMessage(channel, newPC)
-        processProgramEffects(channel, songPreset)
+        processProgramEffects(samePC, idx, channel, songPreset)
 
         if mute:
           unmuteChannel(channel, newVolume, MIN_DELAY, 20)
@@ -375,8 +373,7 @@ def setPreset(program, songPreset, idx):
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
 
     gCurrentPCList[idx] = newPC
-    #gCurrentVolumeList[idx] = newVolume
-    #gCurrentDelayList[idx] =     
+    gCurrentVolumeList[idx] = newVolume
     displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
@@ -430,22 +427,36 @@ def unmuteChannel(channel, volume, delay, step):
     x = x + step
     sleep(delay)
 
-def processProgramEffects(channel, songPreset):
+def processProgramEffects(samePCFlag, idx,channel, songPreset):
+  global gCurrentDelayList
+  global gCurrentReverbList
+  global gCurrentModList
+
+  oldDelay = 0
+  oldReverb = 0
+  oldMod = 0
+
+  if (samePCFlag):   
+    oldDelay = gCurrentDelayList[idx]
+    oldReverb = gCurrentReverbList[idx]
+    oldMod = gCurrentModList[idx]
+
   #print(songPreset)
   delayFlag = songPreset['delayflag']
-  if delayFlag == 0:
+  if delayFlag != oldDelay:
     sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 0)
     #printDebug(f">>> delayFlag = {delayFlag} channel = {channel},  DELAY_EFFECT_OFF_CC ={DELAY_EFFECT_OFF_CC}")
   reverbFlag = songPreset['reverbflag']
-  if reverbFlag == 0:
+  if reverbFlag != oldReverb:
     sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 0)
 
   modeFlag = songPreset['modeflag']
-  if modeFlag == 0:
+  if modeFlag != oldMod:
     sendCCMessage( channel, MOD_EFFECT_OFF_CC, 0)
   
-
-
+  gCurrentDelayList[idx] = delayFlag
+  gCurrentReverbList[idx] = reverbFlag
+  gCurrentModList[idx] = modeFlag
 
 ###############################################################
 def executeSystemCommand(code):
