@@ -84,9 +84,9 @@ gPedal2MaxVolume = 0
 
 gCurrentPCList = [0, 0, 0, 0]
 gCurrentVolumeList = [0, 0, 0, 0]
-gCurrentDelayList = [0, 0, 0, 0]
-gCurrentReverbList = [0, 0, 0, 0]
-gCurrentModList = [0, 0, 0, 0]
+gCurrentDelayList = [False, False, False, False]
+gCurrentReverbList = [False, False, False, False]
+gCurrentModList = [False, False, False, False]
 
 gSystemCommandCounter = 0
 gSystemCommandCode = -1
@@ -321,9 +321,9 @@ def setSongProgram(idx):
 #----------------------------------------------------------------
 def setPreset(program, songPreset, idx):
   global gCurrentPCList
-  #global gCurrentVolumeList
-  #global gInstrumentChannelDict
-  #global gPresetDict
+  global gCurrentVolumeList
+  global gInstrumentChannelDict
+  global gPresetDict
 
 
   id = songPreset['refpreset']
@@ -432,9 +432,9 @@ def processProgramEffects(samePCFlag, idx,channel, songPreset):
   global gCurrentReverbList
   global gCurrentModList
 
-  oldDelay = 0
-  oldReverb = 0
-  oldMod = 0
+  oldDelay = False
+  oldReverb = False
+  oldMod = False
 
   if (samePCFlag):   
     oldDelay = gCurrentDelayList[idx]
