@@ -632,7 +632,11 @@ def getActionForReceivedMessage(midiMsg):
   #FCB1010 has 10 banks 0..9
   #Banks 0..3 are set to control the external Midi Devices. 
   #    CC1 messages : Channel 5 (msg0 = 180 ) 
-  #    Pedals send (msg1 = 20, msg2 = 11..20)
+  #    Pedals send (msg1 = 20, msg2 = 11..20) :
+  #        Switch1 = 11  
+  #        Switch2 = 12 ..
+  #        Switch6 = 16
+  #        Switch17 = 17
   #    Epression Pedal 1 sends messages on channel 6 msg0 = 181, msg1 = 7
   #    Epression Pedal 2 sends messages on channel 1 msg0 = 176, msg1 = 7
   #    Selected bank can be identified by CC2 message
@@ -669,6 +673,12 @@ def getActionForReceivedMessage(midiMsg):
         clearScreenDebug()
         setSongProgram(3)
 
+      elif msg2 == 16: #Pedal6
+        sendCCMessage(6,20,127)
+      elif msg2 == 17: #Pedal7
+        sendCCMessage(6,21,127)
+      elif msg2 == 18: #Pedal8
+        sendCCMessage(6,22,127)
 
       #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
         #gPedal2_Channel = gChannel1
