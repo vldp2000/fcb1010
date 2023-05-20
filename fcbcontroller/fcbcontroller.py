@@ -10,9 +10,10 @@
 #Pitch Bend	n=channel c=coarse f=fine (c+f = 14-bit
 #resolution) ----------------------------------------------------------------
 
-## 176 -CC Channel 1
-## 179 -CC Channel 4
-## 181 -CC Channel 6
+## 176 -CC Channel 1  /*Ipad Sample Tank*/
+## 177 -CC Channel 2  /*Macbook Alchemy*/
+## 179 -CC Channel 4  /*Macbook BiasFX*/
+## 181 -CC Channel 6  /*Ipad BiasFX*/
 ## 192 -PC on Channel 1
 ## 197 -PC on Channel 6
 # -*- coding: utf-8 -*-
@@ -652,6 +653,7 @@ def getActionForReceivedMessage(midiMsg):
     elif msg1 == 1:
       return
     elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
+      printDebug(msg2)   
       gMode = 'Live'
       gConfigChannel = 0
       if msg2 == 11: #Pedal1 
