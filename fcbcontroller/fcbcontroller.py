@@ -691,6 +691,8 @@ def getActionForReceivedMessage(midiMsg):
     if (gMode == 'Live'):
       sendCCMessage(1, 7, msg2) #channel 1
       sendCCMessage(2, 7, msg2) #channel 2
+      printDebug(f"Live volume. Channel{1} value {msg2}")
+
       #---------------------------------
     elif gMode == 'Config':
       if gConfigChannel > 0:
@@ -710,7 +712,7 @@ def getActionForReceivedMessage(midiMsg):
     if (gMode == 'Live'):
       sendCCMessage(4, 7, msg2) #channel 4
       sendCCMessage(6, 7, msg2) #channel 6
-
+      printDebug(f"Live volume. Channel{4} value {msg2}")
     elif gMode == 'Config':
       if gConfigChannel > 0:
         sendCCMessage(gConfigChannel, 7, msg2)
