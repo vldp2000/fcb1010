@@ -731,8 +731,10 @@ def getActionForReceivedMessage(midiMsg):
 #----------------------------------------------------------------
 def calibratePedalVolume(maxValue, value):
   result = int(127/maxValue*value)
-  if result < 10:
+  if result < 6:
     result = 0
+  if result > 127:
+    result = 127  
   return result
 
 
