@@ -686,19 +686,20 @@ def getActionForReceivedMessage(midiMsg):
       # gPianoTest = 0
 
   elif msg0 == 176 and msg1 == 7:
-    # Send Volume to Channel 1  and channel 2
+    # Send Volume to Channel 1  and channel 2 (Synth)
     printDebug(gMode)
+    vol = msg2
     if (gMode == 'Live'):
-      if (msg2 <= gPedal2MaxVolume):
-        channel = 1
-        sendCCMessage(channel, 7, msg2)
-        channel = 2
-        sendCCMessage(channel, 7, msg2)
-      else:
-        printDebug(f"The volume for Pedal2 is higher than the limit {msg2} > {gPedal2MaxVolume}")
+      if (vol > gPedal2MaxVolume):
+        vol = gPedal2MaxVolume
+
+      sendCCMessage(1, 7, vol) #channel 1
+      sendCCMessage(2, 7, vol) #channel 2
+      #---------------------------------
     elif gMode == 'Config':
       if gConfigChannel > 0:
-        sendCCMessage(gConfigChannel, 7, msg2)
+        sendCCMessage(gConfigChannel, 7, vol)
+        printDebug(f"Config volume. Channel{gConfigChannel} value {vol}")
       sendPresetVolume(msg2)        
     else:
       printDebug(f"Unknown application mode")
@@ -706,21 +707,23 @@ def getActionForReceivedMessage(midiMsg):
       gMode = 'Live'
       gConfigChannel = 0
 
-  elif msg0 == 181 and msg1 == 7:
-    # Send Volume to Channel 6  and  channel 4
+  elif msg0 == 181 and msg1 == 7:  
+    # Send Volume to Channel 6  and  channel 4 (Guitar)
     printDebug(gMode)
+    vol = msg2
     if (gMode == 'Live'):
-      if (msg2 <= gPedal1MaxVolume):
-        channel = 4
-        sendCCMessage(channel, 7, msg2)
-        channel = 6
-        sendCCMessage(channel, 7, msg2)
-      else:
-        printDebug(f"The volume for Pedal1 is higher than the limit {msg2} > {gPedal1MaxVolume}")
+      if (vol > gPedal1MaxVolume):
+        vol = gPedal1MaxVolume
+
+      sendCCMessage(4, 7, vol) #channel 4
+      sendCCMessage(6, 7, vol) #channel 6
+
     elif gMode == 'Config':
       if gConfigChannel > 0:
-        sendCCMessage(gConfigChannel, 7, msg2)
+        sendCCMessage(gConfigChannel, 7, vol)
         sendPresetVolume(msg2)          
+        printDebug(f"Config volume. Channel{gConfigChannel} value {vol}")
+
     else:
       printDebug(f"Unknown application mode")
       displayData.drawError('Unknown mode')
