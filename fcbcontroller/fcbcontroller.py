@@ -84,9 +84,9 @@ gPedal2MaxVolume = 0
 
 gCurrentPCList = [0, 0, 0, 0]
 gCurrentVolumeList = [0, 0, 0, 0]
-gCurrentDelayList = [False, False, False, False]
-gCurrentReverbList = [False, False, False, False]
-gCurrentModList = [False, False, False, False]
+gCurrentDelayList = [0, 0, 0, 0]
+gCurrentReverbList = [0, 0, 0, 0]
+gCurrentModList = [0, 0, 0, 0]
 
 gSystemCommandCounter = 0
 gSystemCommandCode = -1
@@ -429,29 +429,29 @@ def unmuteChannel(channel, volume, delay, step):
     sleep(delay)
 
 ###################################################################
-def processProgramEffects(samePCFlag, idx,channel, songPreset):
+def processProgramEffects(samePCFlag, idx, channel, songPreset):
   global gCurrentDelayList
   global gCurrentReverbList
   global gCurrentModList
 
-  oldDelay = False
-  oldReverb = False
-  oldMod = False
+  oldDelay = 0
+  oldReverb = 0
+  oldMod = 0
   
   if (samePCFlag):   
-    oldDelay = int(gCurrentDelayList[idx]) == 1
-    oldReverb = int(gCurrentReverbList[idx]) == 1
-    oldMod = int(gCurrentModList[idx]) == 1
+    oldDelay = int(gCurrentDelayList[idx])
+    oldReverb = int(gCurrentReverbList[idx])
+    oldMod = int(gCurrentModList[idx])
 
-  delayFlag = int(songPreset['delayflag']) == 1
+  delayFlag = int(songPreset['delayflag'])
   if delayFlag != oldDelay:
     sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 127)
 
-  reverbFlag = int(songPreset['reverbflag']) == 1
+  reverbFlag = int(songPreset['reverbflag'])
   if reverbFlag != oldReverb:
     sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 127)
 
-  modeFlag = int(songPreset['modeflag']) == 1
+  modeFlag = int(songPreset['modeflag'])
   if modeFlag != oldMod:
     sendCCMessage( channel, MOD_EFFECT_OFF_CC, 127)
 
