@@ -688,17 +688,17 @@ def getActionForReceivedMessage(midiMsg):
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1  and channel 2 (Synth)
     printDebug(gMode)   
+    volume = calibratePedalVolume(PEDAL2_MAX_VALUE, msg2)
     if (gMode == 'Live'):
-      sendCCMessage(1, 7, msg2) #channel 1
-      sendCCMessage(2, 7, msg2) #channel 2
-      printDebug(f"Live volume. Channel{1} value {msg2}")
-
+      sendCCMessage(1, 7, volume) #channel 1
+      sendCCMessage(2, 7, volume) #channel 2
+      printDebug(f"Live volume. Channel{1} value {volume}")
       #---------------------------------
     elif gMode == 'Config':
       if gConfigChannel > 0:
-        sendCCMessage(gConfigChannel, 7, msg2)
-        printDebug(f"Config volume. Channel{gConfigChannel} value {msg2}")
-      sendPresetVolume(msg2)        
+        sendCCMessage(gConfigChannel, 7, volume)
+        printDebug(f"Config volume. Channel{gConfigChannel} value {volume}")
+      sendPresetVolume(volume)        
     else:
       printDebug(f"Unknown application mode")
       displayData.drawError('Unknown mode')
@@ -708,17 +708,16 @@ def getActionForReceivedMessage(midiMsg):
   elif msg0 == 181 and msg1 == 7:  
     # Send Volume to Channel 6  and  channel 4 (Guitar)
     printDebug(gMode)
-    vol = calibratePedalVolume(PEDAL1_MAX_VALUE, msg2)
+    volume = calibratePedalVolume(PEDAL1_MAX_VALUE, msg2)
     if (gMode == 'Live'):
-      sendCCMessage(4, 7, msg2) #channel 4
-      sendCCMessage(6, 7, msg2) #channel 6
-      printDebug(f"Live volume. Channel{4} value {msg2},  calculated {vol}")
+      sendCCMessage(4, 7, volume) #channel 4
+      sendCCMessage(6, 7, volume) #channel 6
+      printDebug(f"Live volume. Channel{4} value {msg2},  calculated {volume}")
     elif gMode == 'Config':
       if gConfigChannel > 0:
-        sendCCMessage(gConfigChannel, 7, msg2)
-        sendPresetVolume(msg2)          
-        printDebug(f"Config volume. Channel{gConfigChannel} value {msg2}")
-
+        sendCCMessage(gConfigChannel, 7, volume)
+        sendPresetVolume(volume)          
+        printDebug(f"Config volume. Channel{gConfigChannel} value {volume}")
     else:
       printDebug(f"Unknown application mode")
       displayData.drawError('Unknown mode')
