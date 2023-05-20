@@ -294,7 +294,7 @@ def setSongProgram(idx):
   program = gCurrentSong["programList"][idx]
 
   if program:
-    printDebug( f"Selected program. idx={idx}" )
+    #printDebug( f"Selected program. idx={idx}" )
     i = 0
     for songPreset in program['presetList']:
       setPreset(program, songPreset, i)
@@ -400,7 +400,7 @@ def sendPCMessage( channel, PC):
   sleep(MIN_DELAY)
   gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
   sleep(MIN_DELAY+MIN_DELAY)
-  printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
+  #printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
 
 #----------------------------------------------------------------
 
@@ -456,7 +456,7 @@ def processProgramEffects(samePCFlag, idx,channel, songPreset):
     sendCCMessage( channel, MOD_EFFECT_OFF_CC, 127)
 
   if (idx==0):
-    printDebug(songPreset)
+    #printDebug(songPreset)
     printDebug(f">>>  idx = {idx},  samepc = {samePCFlag}, delay {oldDelay} >> {delayFlag} , reverb {oldReverb} >> {reverbFlag} ,  mod {oldMod} >> {modeFlag} ,  channel = {channel}")
 
   gCurrentDelayList[idx] = delayFlag
@@ -770,10 +770,10 @@ def getMidiMsg(midiInput):
       for msg in inputData:
         listInp = list(msg)
         if ignoreInputMessage(msg[0]):  # Message comes as an array [[180,1,1],0] 
-          printDebug(f"xxxxxx----- Ignore  Input = xxxxx {listInp} ")                   
+          #printDebug(f"xxxxxx----- Ignore  Input = xxxxx {listInp} ")                   
           continue
         else:
-          printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")       
+          #printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")       
           getActionForReceivedMessage(msg)
 
 #----------------------------------------------------------------
