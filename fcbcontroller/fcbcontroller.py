@@ -708,11 +708,11 @@ def getActionForReceivedMessage(midiMsg):
   elif msg0 == 181 and msg1 == 7:  
     # Send Volume to Channel 6  and  channel 4 (Guitar)
     printDebug(gMode)
-    vol = msg2
+    vol = calibratePedalVolume(PEDAL1_MAX_VALUE, msg2)
     if (gMode == 'Live'):
       sendCCMessage(4, 7, msg2) #channel 4
       sendCCMessage(6, 7, msg2) #channel 6
-      printDebug(f"Live volume. Channel{4} value {msg2}")
+      printDebug(f"Live volume. Channel{4} value {msg2},  calculated {vol}")
     elif gMode == 'Config':
       if gConfigChannel > 0:
         sendCCMessage(gConfigChannel, 7, msg2)
@@ -728,6 +728,16 @@ def getActionForReceivedMessage(midiMsg):
   else:    
     gMode = 'Live'
     gConfigChannel = 0
+
+#----------------------------------------------------------------
+def calibratePedalVolume(maxValue, value):
+  result = int(127/maxValue*value)
+  if result < 10:
+    result = 0
+  return result
+
+
+
 #----------------------------------------------------------------
 
 def ignoreInputMessage(msg):
