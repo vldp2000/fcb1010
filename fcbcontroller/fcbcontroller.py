@@ -428,6 +428,7 @@ def unmuteChannel(channel, volume, delay, step):
     x = x + step
     sleep(delay)
 
+###################################################################
 def processProgramEffects(samePCFlag, idx,channel, songPreset):
   global gCurrentDelayList
   global gCurrentReverbList
