@@ -444,15 +444,15 @@ def processProgramEffects(samePCFlag, idx,channel, songPreset):
 
   delayFlag = int(songPreset['delayflag']) == 1
   if delayFlag != oldDelay:
-    sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 0)
+    sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 127)
 
   reverbFlag = int(songPreset['reverbflag']) == 1
   if reverbFlag != oldReverb:
-    sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 0)
+    sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 127)
 
   modeFlag = int(songPreset['modeflag']) == 1
   if modeFlag != oldMod:
-    sendCCMessage( channel, MOD_EFFECT_OFF_CC, 0)
+    sendCCMessage( channel, MOD_EFFECT_OFF_CC, 127)
 
   if (idx==0):
     printDebug(songPreset)
