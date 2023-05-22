@@ -700,8 +700,12 @@ def getActionForReceivedMessage(midiMsg):
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1  and channel 2 (Synth)
     printDebug(gMode)   
+    
     volume = calibratePedalVolume(PEDAL2_MAX_VALUE, msg2)
+
     if (gMode == 'Live'):
+      if (volume > gPedal2MaxVolume):
+        volume = gPedal2MaxVolume      
       sendCCMessage(1, 7, volume) #channel 1
       sendCCMessage(2, 7, volume) #channel 2
       printDebug(f"Live volume. Channel{1} value {volume}")
@@ -720,8 +724,12 @@ def getActionForReceivedMessage(midiMsg):
   elif msg0 == 181 and msg1 == 7:  
     # Send Volume to Channel 6  and  channel 4 (Guitar)
     printDebug(gMode)
+
     volume = calibratePedalVolume(PEDAL1_MAX_VALUE, msg2)
+    
     if (gMode == 'Live'):
+      if (volume > gPedal1MaxVolume):
+        volume = gPedal1MaxVolume      
       sendCCMessage(4, 7, volume) #channel 4
       sendCCMessage(6, 7, volume) #channel 6
       printDebug(f"Live volume. Channel{4} value {msg2},  calculated {volume}")
