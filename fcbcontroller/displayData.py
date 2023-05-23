@@ -144,7 +144,7 @@ def drawScreen():
   else:
     draw.text((4, 1), chr(0xf026),  font=fontA, fill=255)
   #fa-volume-off [&#xf026;]  fa-volume-up [&#xf028;]
-  
+  print(g_VolumeAmplify)
 
   #Data API status
   draw.rectangle((25,0,45,14), outline=255, fill=0)
