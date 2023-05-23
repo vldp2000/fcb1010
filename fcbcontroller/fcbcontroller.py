@@ -796,7 +796,7 @@ def ignoreInputMessage(msg):
 def getMidiMsg(midiInput):
   keepAliveCounter = 0
   gotMsg = False
-  print("-----")
+  #print("-----")
   if not gMidiOutput:
     print("gMidiOutput is not set")  
   
