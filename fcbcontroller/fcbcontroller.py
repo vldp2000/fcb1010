@@ -43,7 +43,8 @@ from time import sleep
 
 from dataClasses import *
 from config import *
-from displayData import *
+
+import displayData
 import myutils
 import pprint
 
@@ -678,10 +679,10 @@ def getActionForReceivedMessage(midiMsg):
         setSongProgram(3)
 
       elif msg2 == 16: #Pedal6
-        g_VolumeAmplify = 1       
+        displayData.g_VolumeAmplify = 1       
         displayData.drawScreen()
       elif msg2 == 17: #Pedal7
-        g_VolumeAmplify = 0
+        displayData.g_VolumeAmplify = 0
         displayData.drawScreen()
 
       #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
