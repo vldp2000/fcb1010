@@ -343,7 +343,7 @@ def setPreset(program, songPreset, idx):
     newVolume = songPreset['volume']
     if displayData.g_VolumeAmplify > 0:
       printDebug(f"Original Volume {newVolume}")
-      newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY / 100)
+      newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY_PERCENT / 100)
       printDebug(f"Amplified Volume {newVolume}")
       if newVolume > 127:
         newVolume = 127
