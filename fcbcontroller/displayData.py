@@ -108,7 +108,19 @@ def setiPadStatus(status):
 def setMacBookStatus(status):
   global g_MacBookStatus
   g_MacBookStatus = status
- 
+
+def resetVolumeAmplify():
+  global g_VolumeAmplify
+  g_VolumeAmplify = 0
+
+
+def incrementVolumeAmplify():
+  global g_VolumeAmplify
+  g_VolumeAmplify += 1
+  if g_VolumeAmplify > 2:
+    g_VolumeAmplify = 0
+
+
 def drawScreen():
   if not g_DisplayInitialised:
     return
@@ -139,10 +151,13 @@ def drawScreen():
 
   #RaveloxMidi status
   draw.rectangle((0,0,20,14), outline=255, fill=0)
-  if g_VolumeAmplify > 0:
-    draw.text((4, 1), chr(0xf028),  font=fontA, fill=255)
-  else:
+  if g_VolumeAmplify == 0:
     draw.text((4, 1), chr(0xf026),  font=fontA, fill=255)
+  elif g_VolumeAmplify == 1:
+    draw.text((4, 1), chr(0xf027),  font=fontA, fill=255)
+  elif g_VolumeAmplify == 2:
+    draw.text((4, 1), chr(0xf028),  font=fontA, fill=255)
+
   #fa-volume-off [&#xf026;]  fa-volume-up [&#xf028;]
   print(g_VolumeAmplify)
 
