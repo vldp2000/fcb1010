@@ -343,7 +343,7 @@ def setPreset(program, songPreset, idx):
     newVolume = songPreset['volume']
     if displayData.g_VolumeAmplify > 0:
       printDebug(f"Original Volume {newVolume}")
-      newVolume = newVolume + int(newVolume * VOLUME_AMPLIFY / 100)
+      newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY / 100)
       printDebug(f"Amplified Volume {newVolume}")
       if newVolume > 127:
         newVolume = 127
@@ -689,10 +689,10 @@ def getActionForReceivedMessage(midiMsg):
         setSongProgram(3)
 
       elif msg2 == 16: #Pedal6
-        displayData.g_VolumeAmplify = 1       
+        displayData.incrementVolumeAmplify()
         displayData.drawScreen()
       elif msg2 == 17: #Pedal7
-        displayData.g_VolumeAmplify = 0
+        displayData.resetVolumeAmplify()
         displayData.drawScreen()
 
       #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
