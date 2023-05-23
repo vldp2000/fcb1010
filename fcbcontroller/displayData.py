@@ -27,6 +27,7 @@ g_MacBookStatus = 0
 g_SongName = ''
 g_ProgramName = ''
 
+g_VolumeAmplify = 0
 
 # 128x64 display with hardware I2C:
 # disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
@@ -119,6 +120,8 @@ def drawScreen():
   global g_ProgramName
   global g_iPadStatus
   global g_MacBookStatus
+  global g_VolumeAmplify
+
 
   ###draw.rectangle((0,0,11,11), outline=255, fill=0)
 
@@ -136,12 +139,12 @@ def drawScreen():
 
   #RaveloxMidi status
   draw.rectangle((0,0,20,14), outline=255, fill=0)
-  #if g_RaveloxmidiStatus > 0:
-  #  draw.text((4, 1), chr(61931),  font=fontA, fill=255)
-  #else:
-  #  draw.text((4, 1), chr(61453),  font=fontA, fill=255)
-  #fa-volume-off [&#xf026;] fa-volume-up
-  draw.text((4, 1), chr(0xf026),  font=fontA, fill=255)
+  if g_VolumeAmplify > 0:
+    draw.text((4, 1), chr(0xf028),  font=fontA, fill=255)
+  else:
+    draw.text((4, 1), chr(0xf026),  font=fontA, fill=255)
+  #fa-volume-off [&#xf026;]  fa-volume-up [&#xf028;]
+  
 
   #Data API status
   draw.rectangle((25,0,45,14), outline=255, fill=0)
