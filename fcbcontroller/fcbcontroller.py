@@ -339,7 +339,11 @@ def setPreset(program, songPreset, idx):
     #printDebug(f" >>  idx = {idx} ")
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
     newPC = int(preset['midipc'])
+
     newVolume = songPreset['volume']
+    if displayData.g_VolumeAmplify > 0:
+      newVolume = newVolume + int(newVolume * 0.1)
+      
     mute = songPreset['muteflag']
     #currentDelay
     oldPC = gCurrentPCList[idx]
