@@ -285,8 +285,8 @@ def setSongProgram(idx):
   global gCurrentProgramIdx
   #global gCurrentSongIdx
   #global gCurrentSong
-  global gPedal1MaxVolume
-  global gPedal2MaxVolume
+  #global gPedal1MaxVolume
+  #global gPedal2MaxVolume
   global gSystemCommandCounter
 
   gSystemCommandCounter = 0
@@ -305,15 +305,17 @@ def setSongProgram(idx):
     #setPreset(program, program['presetList'][1], 0)
 
     sendProgramNotificationMessage(idx)
-    if  program['presetList'][0]['volume'] > 0:
-      gPedal1MaxVolume = program['presetList'][0]['volume']
-    else:
-      gPedal1MaxVolume = program['presetList'][1]['volume']
+
+    #if  program['presetList'][0]['volume'] > 0:
+    #  gPedal1MaxVolume = program['presetList'][0]['volume']
+    #else:
+    #  gPedal1MaxVolume = program['presetList'][1]['volume']
     
-    if program['presetList'][2]['volume'] > 0:
-      gPedal2MaxVolume = program['presetList'][2]['volume']
-    else:
-      gPedal2MaxVolume = program['presetList'][3]['volume']
+    #if program['presetList'][2]['volume'] > 0:
+    #  gPedal2MaxVolume = program['presetList'][2]['volume']
+    #else:
+    #  gPedal2MaxVolume = program['presetList'][3]['volume']
+
   else:
     printDebug(f"Program {idx} not found")    
     displayData.drawError(f"Program {idx} not found")
@@ -398,7 +400,7 @@ def sendCCMessage(channel, CC, value):
 ## 197 -PC on Channel 6
 
 def sendPCMessage( channel, PC):
-  sleep(MIN_DELAY)
+  #sleep(MIN_DELAY)
   gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
   sleep(MIN_DELAY+MIN_DELAY)
   #printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
@@ -427,7 +429,7 @@ def unmuteChannel(channel, volume, delay, step):
   while x < volume:
     sendCCMessage( channel, VOLUME_CC, x )
     x = x + step
-    sleep(delay)
+    #sleep(delay)
 
 ###################################################################
 def processProgramEffects(samePCFlag, idx, channel, songPreset):
@@ -618,8 +620,9 @@ def getActionForReceivedMessage(midiMsg):
   global gReloadCounter
   global gSynthTest
   global gPianoTest
-  global gPedal1MaxVolume
-  global gPedal2MaxVolume
+  #global gPedal1MaxVolume
+  #global gPedal2MaxVolume
+  #global gCurrentVolumeList
 
   msg = midiMsg[0]
   msg0 = msg[0]
@@ -704,11 +707,12 @@ def getActionForReceivedMessage(midiMsg):
     volume = calibratePedalVolume(PEDAL2_MAX_VALUE, msg2)
 
     if (gMode == 'Live'):
-      if (volume > gPedal2MaxVolume):
-        volume = gPedal2MaxVolume      
-      sendCCMessage(1, 7, volume) #channel 1
-      sendCCMessage(2, 7, volume) #channel 2
-      printDebug(f"Live volume. Channel{1} value {volume}")
+      #if (volume > gPedal2MaxVolume):
+      #  volume = gPedal2MaxVolume      
+      #iPad Synth   
+      sendPedalVolumeCC(1 , 2, volume)
+      #MacBook Synth   
+      sendPedalVolumeCC(2 , 3, volume)
       #---------------------------------
     elif gMode == 'Config':
       if gConfigChannel > 0:
@@ -728,11 +732,17 @@ def getActionForReceivedMessage(midiMsg):
     volume = calibratePedalVolume(PEDAL1_MAX_VALUE, msg2)
     
     if (gMode == 'Live'):
-      if (volume > gPedal1MaxVolume):
-        volume = gPedal1MaxVolume      
-      sendCCMessage(4, 7, volume) #channel 4
-      sendCCMessage(6, 7, volume) #channel 6
-      printDebug(f"Live volume. Channel{4} value {msg2},  calculated {volume}")
+      #if (volume > gPedal1MaxVolume):
+      #  volume = gPedal1MaxVolume           
+      #sendCCMessage(4, 7, volume) #channel 4
+      #sendCCMessage(6, 7, volume) #channel 6
+      #printDebug(f"Live volume. Channel{4} value {msg2},  calculated {volume}")
+
+      #biasFX Macbook
+      sendPedalVolumeCC(4 , 1, volume)
+      #biasFX iPad
+      sendPedalVolumeCC(6 , 0, volume)
+
     elif gMode == 'Config':
       if gConfigChannel > 0:
         sendCCMessage(gConfigChannel, 7, volume)
@@ -757,7 +767,15 @@ def calibratePedalVolume(maxValue, value):
     result = 127  
   return result
 
+#----------------------------------------------------------------
+def sendPedalVolumeCC(channel, idx, volume):
+  global gCurrentVolumeList
 
+  maxVol = gCurrentVolumeList[idx]
+  if volume > maxVol:
+    volume = maxVol
+  sendCCMessage(channel, 7, volume) #channel 1  sendCCMessage(channel, 7, volume) #channel 1
+  printDebug(f" Pedal Volume ->  channel={channel},  maxVolume={maxVol} volume={volume} ")
 
 #----------------------------------------------------------------
 
