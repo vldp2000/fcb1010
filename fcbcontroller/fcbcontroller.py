@@ -702,7 +702,7 @@ def getActionForReceivedMessage(midiMsg):
 
   elif msg0 == 176 and msg1 == 7:
     # Send Volume to Channel 1  and channel 2 (Synth)
-    printDebug(gMode)   
+    #printDebug(gMode)   
     
     volume = calibratePedalVolume(PEDAL2_MAX_VALUE, msg2)
 
@@ -727,7 +727,7 @@ def getActionForReceivedMessage(midiMsg):
 
   elif msg0 == 181 and msg1 == 7:  
     # Send Volume to Channel 6  and  channel 4 (Guitar)
-    printDebug(gMode)
+    #printDebug(gMode)
 
     volume = calibratePedalVolume(PEDAL1_MAX_VALUE, msg2)
     
