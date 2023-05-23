@@ -140,9 +140,9 @@ def drawScreen():
   #  draw.text((4, 1), chr(61931),  font=fontA, fill=255)
   #else:
   #  draw.text((4, 1), chr(61453),  font=fontA, fill=255)
+  #fa-volume-off [&#xf026;] fa-volume-up
+  draw.text((4, 1), chr(0xf026),  font=fontA, fill=255)
 
-  draw.text((4, 1), chr(0xf0e7),  font=fontA, fill=255)
-  
   #Data API status
   draw.rectangle((25,0,45,14), outline=255, fill=0)
   if g_DataAPIStatus > 0:
