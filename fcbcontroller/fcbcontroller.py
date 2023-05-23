@@ -772,10 +772,9 @@ def sendPedalVolumeCC(channel, idx, volume):
   global gCurrentVolumeList
 
   maxVol = gCurrentVolumeList[idx]
-  if volume > maxVol:
-    volume = maxVol
-  sendCCMessage(channel, 7, volume) #channel 1  sendCCMessage(channel, 7, volume) #channel 1
-  printDebug(f" Pedal Volume ->  channel={channel},  maxVolume={maxVol} volume={volume} ")
+  if volume <= maxVol:
+    sendCCMessage(channel, 7, volume) #channel 1  sendCCMessage(channel, 7, volume) #channel 1
+    printDebug(f" Pedal Volume ->  channel={channel},  maxVolume={maxVol} volume={volume} ")
 
 #----------------------------------------------------------------
 
