@@ -43,7 +43,7 @@ from time import sleep
 
 from dataClasses import *
 from config import *
-import displayData
+from displayData import *
 import myutils
 import pprint
 
@@ -353,7 +353,6 @@ def setPreset(program, songPreset, idx):
         sendPCMessage(channel, newPC)
         processProgramEffects(samePC, idx, channel, songPreset)
         unmuteChannel(channel, newVolume, MIN_DELAY, 20)
-
     elif newPC != oldPC:
       if newPC == 0:
         sendCCMessage( channel, VOLUME_CC, 0)
@@ -620,6 +619,8 @@ def getActionForReceivedMessage(midiMsg):
   global gReloadCounter
   global gSynthTest
   global gPianoTest
+  global g_VolumeAmplify
+
   #global gPedal1MaxVolume
   #global gPedal2MaxVolume
   #global gCurrentVolumeList
@@ -677,11 +678,11 @@ def getActionForReceivedMessage(midiMsg):
         setSongProgram(3)
 
       elif msg2 == 16: #Pedal6
-        sendCCMessage(6,20,127)
+        g_VolumeAmplify = 1       
+        displayData.drawScreen()
       elif msg2 == 17: #Pedal7
-        sendCCMessage(6,21,127)
-      elif msg2 == 18: #Pedal8
-        sendCCMessage(6,22,127)
+        g_VolumeAmplify = 0
+        displayData.drawScreen()
 
       #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
         #gPedal2_Channel = gChannel1
@@ -733,11 +734,10 @@ def getActionForReceivedMessage(midiMsg):
     
     if (gMode == 'Live'):
       #if (volume > gPedal1MaxVolume):
-      #  volume = gPedal1MaxVolume           
+      #volume = gPedal1MaxVolume           
       #sendCCMessage(4, 7, volume) #channel 4
       #sendCCMessage(6, 7, volume) #channel 6
       #printDebug(f"Live volume. Channel{4} value {msg2},  calculated {volume}")
-
       #biasFX Macbook
       sendPedalVolumeCC(4 , 1, volume)
       #biasFX iPad
@@ -770,7 +770,6 @@ def calibratePedalVolume(maxValue, value):
 #----------------------------------------------------------------
 def sendPedalVolumeCC(channel, idx, volume):
   global gCurrentVolumeList
-
   maxVol = gCurrentVolumeList[idx]
   if volume <= maxVol:
     sendCCMessage(channel, 7, volume) #channel 1  sendCCMessage(channel, 7, volume) #channel 1
