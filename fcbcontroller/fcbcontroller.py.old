@@ -1,0 +1,3415 @@
+#A MIDI channel voice message consists of a status Byte followed by one or two data Bytes. Click here for a list of
+#currently assigned MIDI controller numbers. 
+#              Status Byte	Data Byte 1	Data Byte 2	Message	Legend 1000nnnn	0kkkkkkk 0vvvvvvv	
+#Note Off	n=channel* k=key # 0-127(60=middle C) v=velocity (0-127) 1001nnnn	0kkkkkkk 0vvvvvvv	
+#Note On	n=channel k=key # 0-127(60=middle C) v=velocity (0-127) 1010nnnn	0kkkkkkk	0ppppppp
+#Poly Key Pressure	n=channel k=key # 0-127(60=middle C) p=pressure (0-127) 1011nnnn	0ccccccc	0vvvvvv
+#Controller Change	n=channel c=controller v=controller value(0-127) 1100nnnn 0ppppp  [none]	
+#Program Change	n=channel p=preset number (0-127) 1101nnnn	0ppppppp	[none]	
+#Channel Pressure	n=channel p=pressure (0-127) 1110nnnn	0fffffff	0ccccccc	
+#Pitch Bend	n=channel c=coarse f=fine (c+f = 14-bit
+#resolution) ----------------------------------------------------------------
+
+## 176 -CC Channel 1  /*Ipad Sample Tank*/
+## 177 -CC Channel 2  /*Macbook Alchemy*/
+## 179 -CC Channel 4  /*Macbook BiasFX*/
+## 181 -CC Channel 6  /*Ipad BiasFX*/
+## 192 -PC on Channel 1
+## 197 -PC on Channel 6
+# -*- coding: utf-8 -*-
+
+import json
+import io
+import pygame
+import pygame.midi
+import time
+import sys
+import struct
+import subprocess
+import queue
+import threading
+
+import socket
+import socketio
+
+import Adafruit_GPIO.SPI as SPI
+import Adafruit_SSD1306
+
+import dataController
+import dataHelper
+
+from array import *
+from time import sleep
+
+from dataClasses import *
+from config import *
+
+import displayData
+import myutils
+import pprint
+
+#################################################################
+
+#Global Var
+
+gExitFlag = False
+gInitialisationComplete = False
+
+
+#Global Variables
+gSelectedGigId = -1
+gGig = {}
+gCurrentSong = {}
+
+gInstrumentChannelDict = {}
+gPresetDict = {}
+gInstrumentBankDict = {}
+
+gDebugMessageCounter = 0
+gMode = 'Live'
+gConfigChannel = 0
+
+gCurrentSongIdx = -1
+gCurrentSongId = -1
+gCurrentProgramIdx = -1
+gCurrentPresetId = -1
+gCurrentPreset = {}
+
+
+gPedal1MaxVolume = 0
+gPedal2MaxVolume = 0
+
+#default value for second  volume pedal is 176 = 1st channel
+#gPedal2_Channel = 176
+#gChannel1 = 176
+#gChannel2 = 177
+
+gCurrentPCList = [0, 0, 0, 0]
+gCurrentVolumeList = [0, 0, 0, 0]
+gCurrentDelayList = [0, 0, 0, 0]
+gCurrentReverbList = [0, 0, 0, 0]
+gCurrentModList = [0, 0, 0, 0]
+
+gSystemCommandCounter = 0
+gSystemCommandCode = -1
+
+gMidiOutput = None
+
+gDebugFlag = False
+
+gDebugCount = 0
+
+#---Print Debug utility-------------
+def printDebug(message):
+  global gDebugCount
+  global gDebugFlag
+  if gDebugFlag:
+    print(f"<{gDebugCount}>  --  {message}")
+  gDebugCount += 1
+
+#############################################################
+#Socket
+
+sio = socketio.Client()
+#---SOCKET--CLIENT-------------
+@sio.event
+def connect():
+  global displayData
+  try:
+    printDebug('SOCKET connection established')
+    displayData.setMessageAPIStatus(255)
+    #displayData.drawScreen()
+  except:
+    printDebug('SOCKET connection can not be established')
+    displayData.setMessageAPIStatus(0)
+    displayData.drawScreen() 
+
+#==
+@sio.event
+def message(data):
+  printDebug(f"Message received with  {data}")
+
+#== 
+@sio.event
+def disconnect():
+  printDebug('disconnected from SOCKET server')
+  displayData.setMessageAPIStatus(0)
+  displayData.drawScreen() 
+
+#==
+@sio.on('VIEW_SONG_MESSAGE')
+def processSongMessage(id):
+  global gSongDict
+  printDebug(f"VIEW_SONG_MESSAGE ID:  {id}")
+  setCurrentSong(id)
+
+#==
+@sio.on('VIEW_PROGRAM_MESSAGE')
+def processProgramMessage(idx):
+  printDebug(f"VIEW_PROGRAM_MESSAGE IDX: {idx}")
+  setSongProgram(idx)
+
+#==
+
+@sio.on('VIEW_EDIT_MODE_MESSAGE')
+def processControllerModeMessage(payload):
+  global gMode
+  global gConfigChannel
+  printDebug(f"->->  Received message VIEW_EDIT_MODE_MESSAGE = {payload}")
+  if str(payload) == '0':
+    gMode = 'Live'
+    displayData.drawScreen()
+  else:
+    gMode = 'Config'
+    displayData.drawMessage("Mode","Config")
+
+  gConfigChannel = int(payload)
+
+  printDebug(f"->->  Mode =>{gMode}  Channel={gConfigChannel}")
+  
+#==
+def sendProgramNotificationMessage(idx):
+  sio.emit(PROGRAM_MESSAGE, str(idx))
+  #printDebug(f"{PROGRAM_MESSAGE} >> {str(idx)}")
+
+#==
+def sendSongNotificationMessage(id):
+  sio.emit(SONG_MESSAGE, str(id))
+  #printDebug(f'{SONG_MESSAGE}  >> { str(id)}')
+
+#==
+def sendGigNotificationMessage(id):
+  sio.emit(GIG_MESSAGE, str(id))
+  #printDebug(f'{GIG_MESSAGE}  >> {str(id)}')
+
+#==
+def sendSyncNotificationMessage(bankId, songId, programIdx):
+  global gSystemCommandCounter
+  gSystemCommandCounter = 0
+
+  syncmessage = {}
+  syncmessage['songId'] = songId
+  syncmessage['programIdx'] = programIdx
+  syncmessage['bankId'] = bankId
+
+  jsonStr = json.dumps(syncmessage,
+    indent=4, sort_keys=True, cls=CustomEncoder,
+    separators=(',', ': '), ensure_ascii=False
+  )
+  sio.emit(SYNC_MESSAGE, jsonStr)
+  # print(SYNC_MESSAGE + "=" +  jsonStr)
+#----------------------------------------------------------------
+def sendPresetVolume(value):
+  sio.emit(PRESETVOLUME_MESSAGE, str(value))
+  printDebug(f"Send message  PRESETVOLUME_MESSAGE {value}")
+
+#----------------------------------------------------------------
+def clearScreenDebug():
+  global gDebugFlag
+  global gDebugMessageCounter
+  if gDebugFlag == 'Debug':
+    print("\n" * 2)
+    print(f'               >> ----- {gDebugMessageCounter} -------<<' )
+    gDebugMessageCounter = gDebugMessageCounter + 1
+
+
+
+
+#################################################################
+#Selection
+
+def selectNextSong(step):
+  #global gGig
+  global gCurrentSongIdx
+  global gSystemCommandCounter
+  #global gSelectedGigId
+
+  gSystemCommandCounter = 0
+  if step > 0:
+    if (gCurrentSongIdx + step < len(gGig["shortSongList"])):
+      gCurrentSongIdx = gCurrentSongIdx + step
+    else:
+      gCurrentSongIdx = 0
+  else:
+    if gCurrentSongIdx + step > -1:
+      gCurrentSongIdx = gCurrentSongIdx + step
+    else: 
+      gCurrentSongIdx = len(gGig["shortSongList"]) - 1
+
+  sendGigNotificationMessage(gSelectedGigId)
+  #sleep(MIN_DELAY)
+  id = gGig["shortSongList"][gCurrentSongIdx]["id"]
+  #printDebug(f"Select song. id={id}")
+
+  setCurrentSong(id)
+  sendSongNotificationMessage(id)
+  
+  #displayData.drawScreen()
+#----------------------------------------------------------------
+
+def setCurrentSong(id):
+  #global gCurrentSongIdx
+  global gCurrentSong
+  global gCurrentSongId
+
+  try:
+    if gCurrentSong:
+      gCurrentSong.clear()
+      gCurrentSong = None
+
+    #gCurrentSong = dataController.getSong(id)
+    gCurrentSong = dataController.readSongFromJson(id)
+
+    if gCurrentSong:
+      gCurrentSongId = gCurrentSong["id"]
+      name = gCurrentSong["name"]
+      #printDebug( f"Selected song = {name}" )
+      displayData.setSongName(f"{gCurrentSongIdx}.{name}")
+      setSongProgram(0)
+    else: 
+      printDebug("Song corrupted")
+      displayData.drawError("Song corrupted")
+      #sleep(1)
+
+  except:
+      printDebug("Song not found")
+      displayData.drawError("Song not found")
+      #sleep(1)
+
+    #displayData.setSongName()
+    #displayData.drawScreen()
+
+
+#----------------------------------------------------------------
+
+def setSongProgram(idx):
+  global gCurrentProgramIdx
+  #global gCurrentSongIdx
+  #global gCurrentSong
+  #global gPedal1MaxVolume
+  #global gPedal2MaxVolume
+  global gSystemCommandCounter
+
+  gSystemCommandCounter = 0
+  gCurrentProgramIdx = idx
+ 
+  program = gCurrentSong["programList"][idx]
+
+  if program:
+    #printDebug( f"Selected program. idx={idx}" )
+    i = 0
+    for songPreset in program['presetList']:
+      setPreset(program, songPreset, i)
+      i = i + 1
+
+    #sleep(MIN_DELAY)
+    #setPreset(program, program['presetList'][1], 0)
+
+    sendProgramNotificationMessage(idx)
+
+    #if  program['presetList'][0]['volume'] > 0:
+    #  gPedal1MaxVolume = program['presetList'][0]['volume']
+    #else:
+    #  gPedal1MaxVolume = program['presetList'][1]['volume']
+    
+    #if program['presetList'][2]['volume'] > 0:
+    #  gPedal2MaxVolume = program['presetList'][2]['volume']
+    #else:
+    #  gPedal2MaxVolume = program['presetList'][3]['volume']
+
+  else:
+    printDebug(f"Program {idx} not found")    
+    displayData.drawError(f"Program {idx} not found")
+    #sleep(1)
+
+
+#----------------------------------------------------------------
+def setPreset(program, songPreset, idx):
+  global gCurrentPCList
+  global gCurrentVolumeList
+  global gInstrumentChannelDict
+  global gPresetDict
+
+
+  id = songPreset['refpreset']
+  preset = gPresetDict[str(id)] 
+  #printDebug(f"Preset Selected  id={id} name ={preset['name']}")
+
+  if preset:
+    #printDebug(f" >>  idx = {idx} ")
+    channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
+    newPC = int(preset['midipc'])
+
+    newVolume = songPreset['volume']
+    printDebug(f"Original Volume {newVolume}")
+    if displayData.g_VolumeAmplify > 0:
+      #printDebug(f"Original Volume {newVolume}")
+      newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY_PERCENT / 100)
+      #printDebug(f"Amplified Volume {newVolume}")
+    if newVolume > 127:
+      newVolume = 127
+    if newVolume < 0:
+      newVolume = 0
+    printDebug(f"Amplified Volume {newVolume}")
+<2241>  --  Live
+<2242>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2243>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2244>  --  Live
+<2245>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2246>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2247>  --  Live
+<2248>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2249>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2250>  --  Live
+<2251>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2252>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2253>  --  Live
+<2254>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2255>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2256>  --  Live
+<2257>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2258>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2259>  --  Live
+<2260>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2261>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2262>  --  Live
+<2263>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2264>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2265>  --  Live
+<2266>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2267>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2268>  --  Live
+<2269>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2270>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2271>  --  Live
+<2272>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2273>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2274>  --  Live
+<2275>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2276>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2277>  --  Live
+<2278>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+<2279>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2280>  --  Live
+<2281>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+<2282>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2283>  --  Live
+<2284>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+<2285>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2286>  --  Live
+<2287>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<2288>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2289>  --  Live
+<2290>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<2291>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<2292>  --  Live
+<2293>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=85 
+<2294>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=85 
+-----
+<2295>  --  Live
+<2296>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<2297>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<2298>  --  Live
+<2299>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=82 
+<2300>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=82 
+-----
+<2301>  --  Live
+<2302>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<2303>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<2304>  --  Live
+<2305>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=78 
+<2306>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=78 
+-----
+<2307>  --  Live
+<2308>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<2309>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<2310>  --  Live
+<2311>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<2312>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<2313>  --  Live
+<2314>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<2315>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<2316>  --  Live
+<2317>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<2318>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<2319>  --  Live
+<2320>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<2321>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<2322>  --  Live
+<2323>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=67 
+<2324>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=67 
+-----
+<2325>  --  Live
+<2326>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=66 
+<2327>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=66 
+-----
+<2328>  --  Live
+<2329>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=64 
+<2330>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=64 
+-----
+<2331>  --  Live
+<2332>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=60 
+<2333>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=60 
+-----
+<2334>  --  Live
+<2335>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=58 
+<2336>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=58 
+-----
+<2337>  --  Live
+<2338>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=56 
+<2339>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=56 
+<2340>  --  Live
+<2341>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=55 
+<2342>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=55 
+-----
+<2343>  --  Live
+<2344>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=52 
+<2345>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=52 
+<2346>  --  Live
+<2347>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=50 
+<2348>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=50 
+-----
+<2349>  --  Live
+<2350>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<2351>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<2352>  --  Live
+<2353>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=46 
+<2354>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=46 
+-----
+<2355>  --  Live
+<2356>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=43 
+<2357>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=43 
+-----
+<2358>  --  Live
+<2359>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<2360>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<2361>  --  Live
+<2362>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=40 
+<2363>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=40 
+-----
+<2364>  --  Live
+<2365>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<2366>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<2367>  --  Live
+<2368>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=43 
+<2369>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=43 
+-----
+<2370>  --  Live
+<2371>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=44 
+<2372>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=44 
+-----
+<2373>  --  Live
+<2374>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=47 
+<2375>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=47 
+-----
+<2376>  --  Live
+<2377>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<2378>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<2379>  --  Live
+<2380>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=50 
+<2381>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=50 
+-----
+<2382>  --  Live
+<2383>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=51 
+<2384>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=51 
+-----
+<2385>  --  Live
+<2386>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=53 
+<2387>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=53 
+-----
+<2388>  --  Live
+<2389>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=55 
+<2390>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=55 
+-----
+<2391>  --  Live
+<2392>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=57 
+<2393>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=57 
+-----
+<2394>  --  Live
+<2395>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=59 
+<2396>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=59 
+-----
+<2397>  --  Live
+<2398>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=61 
+<2399>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=61 
+-----
+<2400>  --  Live
+<2401>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=62 
+<2402>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=62 
+-----
+<2403>  --  Live
+<2404>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=66 
+<2405>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=66 
+-----
+<2406>  --  Live
+<2407>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<2408>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<2409>  --  Live
+<2410>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<2411>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+-----
+<2412>  --  Live
+<2413>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<2414>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<2415>  --  Live
+<2416>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=74 
+<2417>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=74 
+-----
+<2418>  --  Live
+<2419>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<2420>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<2421>  --  Live
+<2422>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<2423>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<2424>  --  Live
+<2425>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<2426>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<2427>  --  Live
+<2428>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<2429>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<2430>  --  Live
+<2431>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<2432>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<2433>  --  Live
+<2434>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<2435>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<2436>  --  Live
+<2437>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<2438>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<2439>  --  Live
+<2440>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=87 
+<2441>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=87 
+-----
+<2442>  --  Live
+<2443>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+<2444>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2445>  --  Live
+<2446>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+<2447>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2448>  --  Live
+<2449>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2450>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2451>  --  Live
+<2452>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2453>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2454>  --  Live
+<2455>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2456>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2457>  --  Live
+<2458>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2459>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2460>  --  Live
+<2461>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2462>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2463>  --  Live
+<2464>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2465>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2466>  --  Live
+<2467>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2468>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2469>  --  Live
+<2470>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2471>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2472>  --  Live
+<2473>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2474>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2475>  --  Live
+<2476>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2477>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2478>  --  Live
+<2479>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2480>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2481>  --  Live
+<2482>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2483>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2484>  --  Live
+<2485>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2486>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2487>  --  Live
+<2488>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2489>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2490>  --  Live
+<2491>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+<2492>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2493>  --  Live
+<2494>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<2495>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<2496>  --  Live
+<2497>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<2498>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+-----
+<2499>  --  Live
+<2500>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=60 
+<2501>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=60 
+-----
+<2502>  --  Live
+<2503>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=58 
+<2504>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=58 
+-----
+<2505>  --  Live
+<2506>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=56 
+<2507>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=56 
+-----
+<2508>  --  Live
+<2509>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=53 
+<2510>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=53 
+-----
+<2511>  --  Live
+<2512>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=52 
+<2513>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=52 
+-----
+<2514>  --  Live
+<2515>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=51 
+<2516>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=51 
+-----
+<2517>  --  Live
+<2518>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=49 
+<2519>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=49 
+-----
+<2520>  --  Live
+<2521>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<2522>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<2523>  --  Live
+<2524>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=46 
+<2525>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=46 
+-----
+<2526>  --  Live
+<2527>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=43 
+<2528>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=43 
+-----
+<2529>  --  Live
+<2530>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<2531>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<2532>  --  Live
+<2533>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=40 
+<2534>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=40 
+-----
+<2535>  --  Live
+<2536>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=39 
+<2537>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=39 
+-----
+<2538>  --  Live
+<2539>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=37 
+<2540>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=37 
+-----
+<2541>  --  Live
+<2542>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=35 
+<2543>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=35 
+-----
+<2544>  --  Live
+<2545>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<2546>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+-----
+<2547>  --  Live
+<2548>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=32 
+<2549>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=32 
+-----
+<2550>  --  Live
+<2551>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=30 
+<2552>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=30 
+-----
+<2553>  --  Live
+<2554>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=28 
+<2555>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=28 
+-----
+<2556>  --  Live
+<2557>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=26 
+<2558>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=26 
+-----
+<2559>  --  Live
+<2560>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=24 
+<2561>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=24 
+-----
+<2562>  --  Live
+<2563>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=22 
+<2564>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=22 
+-----
+<2565>  --  Live
+<2566>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=20 
+<2567>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=20 
+-----
+<2568>  --  Live
+<2569>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=17 
+<2570>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=17 
+-----
+<2571>  --  Live
+<2572>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=15 
+<2573>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=15 
+-----
+<2574>  --  Live
+<2575>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=13 
+<2576>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=13 
+-----
+<2577>  --  Live
+<2578>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=12 
+<2579>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=12 
+-----
+<2580>  --  Live
+<2581>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=10 
+<2582>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=10 
+-----
+<2583>  --  Live
+<2584>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=7 
+<2585>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=7 
+-----
+<2586>  --  Live
+<2587>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2588>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2589>  --  Live
+<2590>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2591>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2592>  --  Live
+<2593>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2594>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2595>  --  Live
+<2596>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2597>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2598>  --  Live
+<2599>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2600>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2601>  --  Live
+<2602>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=6 
+<2603>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=6 
+-----
+<2604>  --  Live
+<2605>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=8 
+<2606>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=8 
+-----
+<2607>  --  Live
+<2608>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=10 
+<2609>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=10 
+-----
+<2610>  --  Live
+<2611>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=12 
+<2612>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=12 
+<2613>  --  Live
+<2614>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=13 
+<2615>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=13 
+-----
+<2616>  --  Live
+<2617>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=15 
+<2618>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=15 
+-----
+<2619>  --  Live
+<2620>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=17 
+<2621>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=17 
+-----
+<2622>  --  Live
+<2623>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=19 
+<2624>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=19 
+-----
+<2625>  --  Live
+<2626>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=21 
+<2627>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=21 
+-----
+<2628>  --  Live
+<2629>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=23 
+<2630>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=23 
+-----
+<2631>  --  Live
+<2632>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=25 
+<2633>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=25 
+-----
+<2634>  --  Live
+<2635>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=26 
+<2636>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=26 
+-----
+<2637>  --  Live
+<2638>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=28 
+<2639>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=28 
+-----
+<2640>  --  Live
+<2641>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=30 
+<2642>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=30 
+-----
+<2643>  --  Live
+<2644>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=31 
+<2645>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=31 
+-----
+<2646>  --  Live
+<2647>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=33 
+<2648>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=33 
+-----
+<2649>  --  Live
+<2650>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<2651>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+-----
+<2652>  --  Live
+<2653>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=35 
+<2654>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=35 
+-----
+<2655>  --  Live
+<2656>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=38 
+<2657>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=38 
+-----
+<2658>  --  Live
+<2659>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=39 
+<2660>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=39 
+-----
+<2661>  --  Live
+<2662>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=41 
+<2663>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=41 
+-----
+<2664>  --  Live
+<2665>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<2666>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<2667>  --  Live
+<2668>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=44 
+<2669>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=44 
+-----
+<2670>  --  Live
+<2671>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=47 
+<2672>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=47 
+-----
+<2673>  --  Live
+<2674>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<2675>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<2676>  --  Live
+<2677>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=50 
+<2678>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=50 
+-----
+<2679>  --  Live
+<2680>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=51 
+<2681>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=51 
+-----
+<2682>  --  Live
+<2683>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=53 
+<2684>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=53 
+-----
+<2685>  --  Live
+<2686>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=55 
+<2687>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=55 
+-----
+<2688>  --  Live
+<2689>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=57 
+<2690>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=57 
+-----
+<2691>  --  Live
+<2692>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=58 
+<2693>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=58 
+-----
+<2694>  --  Live
+<2695>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=59 
+<2696>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=59 
+-----
+<2697>  --  Live
+<2698>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=61 
+<2699>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=61 
+-----
+<2700>  --  Live
+<2701>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=62 
+<2702>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=62 
+-----
+<2703>  --  Live
+<2704>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=66 
+<2705>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=66 
+-----
+<2706>  --  Live
+<2707>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=67 
+<2708>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=67 
+-----
+<2709>  --  Live
+<2710>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<2711>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<2712>  --  Live
+<2713>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=70 
+<2714>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=70 
+-----
+<2715>  --  Live
+<2716>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<2717>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<2718>  --  Live
+<2719>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=74 
+<2720>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=74 
+-----
+<2721>  --  Live
+<2722>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<2723>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<2724>  --  Live
+<2725>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<2726>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<2727>  --  Live
+<2728>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<2729>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<2730>  --  Live
+<2731>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<2732>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<2733>  --  Live
+<2734>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<2735>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<2736>  --  Live
+<2737>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<2738>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<2739>  --  Live
+<2740>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<2741>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<2742>  --  Live
+<2743>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=87 
+<2744>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=87 
+-----
+<2745>  --  Live
+<2746>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+<2747>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2748>  --  Live
+<2749>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+<2750>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2751>  --  Live
+<2752>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2753>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2754>  --  Live
+<2755>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2756>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2757>  --  Live
+<2758>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2759>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2760>  --  Live
+<2761>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2762>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2763>  --  Live
+<2764>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2765>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2766>  --  Live
+<2767>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2768>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2769>  --  Live
+<2770>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2771>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2772>  --  Live
+<2773>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2774>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2775>  --  Live
+<2776>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2777>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2778>  --  Live
+<2779>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2780>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2781>  --  Live
+<2782>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2783>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2784>  --  Live
+<2785>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<2786>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2787>  --  Live
+<2788>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+<2789>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<2790>  --  Live
+<2791>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<2792>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<2793>  --  Live
+<2794>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<2795>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<2796>  --  Live
+<2797>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=57 
+<2798>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=57 
+-----
+<2799>  --  Live
+<2800>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=46 
+<2801>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=46 
+-----
+<2802>  --  Live
+<2803>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=43 
+<2804>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=43 
+-----
+<2805>  --  Live
+<2806>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=41 
+<2807>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=41 
+-----
+<2808>  --  Live
+<2809>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=39 
+<2810>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=39 
+-----
+<2811>  --  Live
+<2812>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=37 
+<2813>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=37 
+-----
+<2814>  --  Live
+<2815>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<2816>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+-----
+<2817>  --  Live
+<2818>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=33 
+<2819>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=33 
+-----
+<2820>  --  Live
+<2821>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=31 
+<2822>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=31 
+-----
+<2823>  --  Live
+<2824>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=29 
+<2825>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=29 
+-----
+<2826>  --  Live
+<2827>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=28 
+<2828>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=28 
+-----
+<2829>  --  Live
+<2830>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=25 
+<2831>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=25 
+-----
+<2832>  --  Live
+<2833>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=24 
+<2834>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=24 
+-----
+<2835>  --  Live
+<2836>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=22 
+<2837>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=22 
+-----
+<2838>  --  Live
+<2839>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=21 
+<2840>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=21 
+-----
+<2841>  --  Live
+<2842>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=19 
+<2843>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=19 
+-----
+<2844>  --  Live
+<2845>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=17 
+<2846>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=17 
+-----
+<2847>  --  Live
+<2848>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=15 
+<2849>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=15 
+-----
+<2850>  --  Live
+<2851>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=14 
+<2852>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=14 
+-----
+<2853>  --  Live
+<2854>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=12 
+<2855>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=12 
+-----
+<2856>  --  Live
+<2857>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=10 
+<2858>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=10 
+-----
+<2859>  --  Live
+<2860>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=8 
+<2861>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=8 
+-----
+<2862>  --  Live
+<2863>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=6 
+<2864>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=6 
+-----
+<2865>  --  Live
+<2866>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2867>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2868>  --  Live
+<2869>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2870>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2871>  --  Live
+<2872>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2873>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2874>  --  Live
+<2875>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<2876>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<2877>  --  Live
+<2878>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=6 
+<2879>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=6 
+-----
+<2880>  --  Live
+<2881>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=8 
+<2882>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=8 
+-----
+<2883>  --  Live
+<2884>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=11 
+<2885>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=11 
+-----
+<2886>  --  Live
+<2887>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=13 
+<2888>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=13 
+-----
+<2889>  --  Live
+<2890>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=15 
+<2891>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=15 
+-----
+<2892>  --  Live
+<2893>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=17 
+<2894>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=17 
+<2895>  --  Live
+<2896>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=19 
+<2897>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=19 
+-----
+<2898>  --  Live
+<2899>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=21 
+<2900>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=21 
+<2901>  --  Live
+<2902>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=23 
+<2903>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=23 
+-----
+<2904>  --  Live
+<2905>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=25 
+<2906>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=25 
+<2907>  --  Live
+<2908>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=26 
+<2909>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=26 
+-----
+<2910>  --  Live
+<2911>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=30 
+<2912>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=30 
+<2913>  --  Live
+<2914>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=33 
+<2915>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=33 
+-----
+<2916>  --  Live
+<2917>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<2918>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+<2919>  --  Live
+<2920>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=38 
+<2921>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=38 
+-----
+<2922>  --  Live
+<2923>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=39 
+<2924>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=39 
+<2925>  --  Live
+<2926>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=41 
+<2927>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=41 
+-----
+<2928>  --  Live
+<2929>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=43 
+<2930>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=43 
+<2931>  --  Live
+<2932>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=46 
+<2933>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=46 
+-----
+<2934>  --  Live
+<2935>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=47 
+<2936>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=47 
+<2937>  --  Live
+<2938>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=49 
+<2939>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=49 
+-----
+<2940>  --  Live
+<2941>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=51 
+<2942>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=51 
+-----
+<2943>  --  Live
+<2944>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=52 
+<2945>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=52 
+-----
+<2946>  --  Live
+<2947>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=53 
+<2948>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=53 
+-----
+<2949>  --  Live
+<2950>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=56 
+<2951>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=56 
+-----
+<2952>  --  Live
+<2953>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=58 
+<2954>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=58 
+-----
+<2955>  --  Live
+<2956>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=59 
+<2957>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=59 
+-----
+<2958>  --  Live
+<2959>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=61 
+<2960>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=61 
+-----
+<2961>  --  Live
+<2962>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=62 
+<2963>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=62 
+-----
+<2964>  --  Live
+<2965>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=65 
+<2966>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=65 
+-----
+<2967>  --  Live
+<2968>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=67 
+<2969>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=67 
+-----
+<2970>  --  Live
+<2971>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<2972>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<2973>  --  Live
+<2974>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=70 
+<2975>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=70 
+-----
+<2976>  --  Live
+<2977>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<2978>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<2979>  --  Live
+<2980>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<2981>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<2982>  --  Live
+<2983>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<2984>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<2985>  --  Live
+<2986>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<2987>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<2988>  --  Live
+<2989>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<2990>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<2991>  --  Live
+<2992>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<2993>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<2994>  --  Live
+<2995>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<2996>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<2997>  --  Live
+<2998>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<2999>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<3000>  --  Live
+<3001>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<3002>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<3003>  --  Live
+<3004>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<3005>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3006>  --  Live
+<3007>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+<3008>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3009>  --  Live
+<3010>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+<3011>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3012>  --  Live
+<3013>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3014>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3015>  --  Live
+<3016>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3017>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3018>  --  Live
+<3019>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3020>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3021>  --  Live
+<3022>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3023>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3024>  --  Live
+<3025>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3026>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3027>  --  Live
+<3028>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3029>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3030>  --  Live
+<3031>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3032>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3033>  --  Live
+<3034>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3035>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3036>  --  Live
+<3037>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3038>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3039>  --  Live
+<3040>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3041>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<3042>  --  Live
+<3043>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<3044>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+^C<3045>  --  disconnected from SOCKET server
+Traceback (most recent call last):
+  File "fcbcontroller.py", line 880, in <module>
+    getMidiMsg(midiInput)
+  File "fcbcontroller.py", line 805, in getMidiMsg
+    if midiInput.poll():    
+  File "/home/pi/.local/lib/python3.7/site-packages/pygame/midi.py", line 335, in poll
+    self._check_open()
+  File "/home/pi/.local/lib/python3.7/site-packages/pygame/midi.py", line 296, in _check_open
+    if self._input is None:
+  File "/home/pi/.local/lib/python3.7/site-packages/engineio/client.py", line 43, in signal_handler
+    return original_signal_handler(sig, frame)
+  File "/home/pi/.local/lib/python3.7/site-packages/socketio/client.py", line 26, in signal_handler
+    return original_signal_handler(sig, frame)
+KeyboardInterrupt
+Exception: b"PortMidi: `Bad pointer'"
+Exception ignored in: 'pypm.Output.__dealloc__'
+Exception: b"PortMidi: `Bad pointer'"
+Exception: b"PortMidi: `Bad pointer'"
+Exception ignored in: 'pypm.Input.__dealloc__'
+Exception: b"PortMidi: `Bad pointer'"
+pi@midipi:~/fcb1010/fcbcontroller $ sudo git pull
+remote: Enumerating objects: 7, done.
+remote: Counting objects: 100% (7/7), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 4 (delta 3), reused 4 (delta 3), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+From https://github.com/vldp2000/fcb1010
+   c56072d7..586b3bcb  singlesongselection -> origin/singlesongselection
+Updating c56072d7..586b3bcb
+Fast-forward
+ fcbcontroller/fcbcontroller.py | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+pi@midipi:~/fcb1010/fcbcontroller $ python3 fcbcontroller.py Debug
+pygame 1.9.6
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Display init 1
+Display init 2
+Display init 3
+Display init 4
+Display init 5
+Display init complete
+<0>  --  4
+<1>  --  Id=0 Device=(b'ALSA', b'Midi Through Port-0', 0, 1, 0)
+<2>  --  Id=1 Device=(b'ALSA', b'Midi Through Port-0', 1, 0, 0)
+<3>  --  Id=2 Device=(b'ALSA', b'USB MIDI Interface MIDI 1', 0, 1, 0)
+<4>  --  Id=3 Device=(b'ALSA', b'USB MIDI Interface MIDI 1', 1, 0, 0)
+<5>  --  SOCKET connection established
+<6>  --  Input MIDI devices is connected
+<7>  --  Output MIDI devices is connected
+<8>  --  Everything ready now...
+<9>  --   << Load All Data >>
+<10>  --   << All objects and collections are cleared>>
+<11>  --  >>>  idx = 0,  samepc = False, delay 0 >> 1 , reverb 0 >> 1 ,  mod 0 >> 1 ,  channel = 6
+-----
+<12>  --  Live
+-----
+<13>  --  Live
+<14>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<15>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<16>  --  Live
+<17>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<18>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<19>  --  Live
+<20>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<21>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<22>  --  Live
+<23>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<24>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<25>  --  Live
+<26>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<27>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<28>  --  Live
+<29>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<30>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<31>  --  Live
+<32>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<33>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<34>  --  Live
+<35>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<36>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<37>  --  Live
+<38>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<39>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<40>  --  Live
+<41>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<42>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+-----
+<43>  --  Live
+<44>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<45>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<46>  --  Live
+<47>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=67 
+<48>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=67 
+-----
+<49>  --  Live
+<50>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=65 
+<51>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=65 
+-----
+<52>  --  Live
+<53>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=62 
+<54>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=62 
+-----
+<55>  --  Live
+<56>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=61 
+<57>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=61 
+-----
+<58>  --  Live
+<59>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=59 
+<60>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=59 
+-----
+<61>  --  Live
+<62>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=58 
+<63>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=58 
+-----
+<64>  --  Live
+<65>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=56 
+<66>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=56 
+-----
+<67>  --  Live
+<68>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=55 
+<69>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=55 
+-----
+<70>  --  Live
+<71>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=52 
+<72>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=52 
+-----
+<73>  --  Live
+<74>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=50 
+<75>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=50 
+-----
+<76>  --  Live
+<77>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<78>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<79>  --  Live
+<80>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=47 
+<81>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=47 
+-----
+<82>  --  Live
+<83>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=44 
+<84>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=44 
+-----
+<85>  --  Live
+<86>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=43 
+<87>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=43 
+-----
+<88>  --  Live
+<89>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<90>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<91>  --  Live
+<92>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=40 
+<93>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=40 
+-----
+<94>  --  Live
+<95>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=39 
+<96>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=39 
+-----
+<97>  --  Live
+<98>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=37 
+<99>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=37 
+-----
+<100>  --  Live
+<101>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=35 
+<102>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=35 
+-----
+<103>  --  Live
+<104>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<105>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+-----
+<106>  --  Live
+<107>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=32 
+<108>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=32 
+-----
+<109>  --  Live
+<110>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=30 
+<111>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=30 
+-----
+<112>  --  Live
+<113>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=28 
+<114>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=28 
+-----
+<115>  --  Live
+<116>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=26 
+<117>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=26 
+-----
+<118>  --  Live
+<119>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=25 
+<120>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=25 
+-----
+<121>  --  Live
+<122>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=23 
+<123>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=23 
+-----
+<124>  --  Live
+<125>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=22 
+<126>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=22 
+-----
+<127>  --  Live
+<128>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=20 
+<129>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=20 
+-----
+<130>  --  Live
+<131>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=17 
+<132>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=17 
+-----
+<133>  --  Live
+<134>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=16 
+<135>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=16 
+-----
+<136>  --  Live
+<137>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=15 
+<138>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=15 
+-----
+<139>  --  Live
+<140>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=13 
+<141>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=13 
+-----
+<142>  --  Live
+<143>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=12 
+<144>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=12 
+-----
+<145>  --  Live
+<146>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=10 
+<147>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=10 
+-----
+<148>  --  Live
+<149>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=8 
+<150>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=8 
+-----
+<151>  --  Live
+<152>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=7 
+<153>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=7 
+-----
+<154>  --  Live
+<155>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<156>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<157>  --  Live
+<158>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<159>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<160>  --  Live
+<161>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<162>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<163>  --  Live
+<164>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<165>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<166>  --  Live
+<167>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=12 
+<168>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=12 
+-----
+<169>  --  Live
+<170>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=23 
+<171>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=23 
+-----
+<172>  --  Live
+<173>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=31 
+<174>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=31 
+-----
+<175>  --  Live
+<176>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=33 
+<177>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=33 
+-----
+<178>  --  Live
+<179>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<180>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+-----
+<181>  --  Live
+<182>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=35 
+<183>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=35 
+-----
+<184>  --  Live
+<185>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=38 
+<186>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=38 
+-----
+<187>  --  Live
+<188>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=39 
+<189>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=39 
+-----
+<190>  --  Live
+<191>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=41 
+<192>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=41 
+-----
+<193>  --  Live
+<194>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<195>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<196>  --  Live
+<197>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=44 
+<198>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=44 
+-----
+<199>  --  Live
+<200>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=47 
+<201>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=47 
+-----
+<202>  --  Live
+<203>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<204>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<205>  --  Live
+<206>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=50 
+<207>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=50 
+-----
+<208>  --  Live
+<209>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=51 
+<210>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=51 
+-----
+<211>  --  Live
+<212>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=53 
+<213>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=53 
+-----
+<214>  --  Live
+<215>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=55 
+<216>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=55 
+-----
+<217>  --  Live
+<218>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=57 
+<219>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=57 
+-----
+<220>  --  Live
+<221>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=58 
+<222>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=58 
+-----
+<223>  --  Live
+<224>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=59 
+<225>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=59 
+-----
+<226>  --  Live
+<227>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=61 
+<228>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=61 
+-----
+<229>  --  Live
+<230>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=62 
+<231>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=62 
+-----
+<232>  --  Live
+<233>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=65 
+<234>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=65 
+-----
+<235>  --  Live
+<236>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=66 
+<237>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=66 
+-----
+<238>  --  Live
+<239>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<240>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<241>  --  Live
+<242>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<243>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+-----
+<244>  --  Live
+<245>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<246>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<247>  --  Live
+<248>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<249>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<250>  --  Live
+<251>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<252>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<253>  --  Live
+<254>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<255>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<256>  --  Live
+<257>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<258>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<259>  --  Live
+<260>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<261>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<262>  --  Live
+<263>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<264>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<265>  --  Live
+<266>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<267>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<268>  --  Live
+<269>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<270>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<271>  --  Live
+<272>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<273>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<274>  --  Live
+<275>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=87 
+<276>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=87 
+-----
+<277>  --  Live
+<278>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+-----
+<279>  --  Live
+<280>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+-----
+<281>  --  Live
+<282>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<283>  --  Live
+<284>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+-----
+<285>  --  Live
+-----
+<286>  --  Live
+-----
+<287>  --  Live
+-----
+<288>  --  Live
+-----
+<289>  --  Live
+-----
+<290>  --  Live
+-----
+<291>  --  Live
+-----
+<292>  --  Live
+-----
+<293>  --  Live
+-----
+<294>  --  Live
+-----
+<295>  --  Live
+-----
+<296>  --  Live
+-----
+<297>  --  Live
+-----
+<298>  --  Live
+<299>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+-----
+<300>  --  Live
+<301>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<302>  --  Live
+<303>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+-----
+<304>  --  Live
+<305>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<306>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<307>  --  Live
+<308>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=87 
+<309>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=87 
+-----
+<310>  --  Live
+<311>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=85 
+<312>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=85 
+-----
+<313>  --  Live
+<314>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<315>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<316>  --  Live
+<317>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<318>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<319>  --  Live
+<320>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<321>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<322>  --  Live
+<323>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<324>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<325>  --  Live
+<326>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<327>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<328>  --  Live
+<329>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<330>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<331>  --  Live
+<332>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<333>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<334>  --  Live
+<335>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<336>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<337>  --  Live
+<338>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<339>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+-----
+<340>  --  Live
+<341>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<342>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<343>  --  Live
+<344>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=67 
+<345>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=67 
+-----
+<346>  --  Live
+<347>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<348>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<349>  --  Live
+<350>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<351>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+-----
+<352>  --  Live
+<353>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<354>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<355>  --  Live
+<356>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<357>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<358>  --  Live
+<359>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<360>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<361>  --  Live
+<362>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<363>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<364>  --  Live
+<365>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<366>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<367>  --  Live
+<368>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<369>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<370>  --  Live
+<371>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<372>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<373>  --  Live
+<374>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<375>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<376>  --  Live
+<377>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=85 
+<378>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=85 
+-----
+<379>  --  Live
+<380>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<381>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<382>  --  Live
+<383>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<384>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<385>  --  Live
+<386>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+-----
+<387>  --  Live
+<388>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<389>  --  Live
+<390>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+-----
+<391>  --  Live
+-----
+<392>  --  Live
+-----
+<393>  --  Live
+-----
+<394>  --  Live
+-----
+<395>  --  Live
+-----
+<396>  --  Live
+-----
+<397>  --  Live
+-----
+<398>  --  Live
+-----
+<399>  --  Live
+-----
+<400>  --  Live
+-----
+<401>  --  Live
+-----
+<402>  --  Live
+<403>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+-----
+<404>  --  Live
+<405>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<406>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<407>  --  Live
+<408>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<409>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<410>  --  Live
+<411>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<412>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<413>  --  Live
+<414>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<415>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<416>  --  Live
+<417>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<418>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<419>  --  Live
+<420>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<421>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<422>  --  Live
+<423>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<424>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<425>  --  Live
+<426>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<427>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<428>  --  Live
+<429>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<430>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<431>  --  Live
+<432>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<433>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<434>  --  Live
+<435>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<436>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<437>  --  Live
+<438>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<439>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<440>  --  Live
+<441>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<442>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<443>  --  Live
+<444>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<445>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<446>  --  Live
+<447>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<448>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<449>  --  Live
+<450>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=87 
+<451>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=87 
+-----
+<452>  --  Live
+<453>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+-----
+<454>  --  Live
+<455>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+-----
+<456>  --  Live
+<457>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<458>  --  Live
+<459>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+-----
+<460>  --  Live
+-----
+<461>  --  Live
+-----
+<462>  --  Live
+-----
+<463>  --  Live
+-----
+<464>  --  Live
+-----
+<465>  --  Live
+-----
+<466>  --  Live
+-----
+<467>  --  Live
+-----
+<468>  --  Live
+-----
+<469>  --  Live
+-----
+<470>  --  Live
+-----
+<471>  --  Live
+-----
+<472>  --  Live
+-----
+<473>  --  Live
+-----
+<474>  --  Live
+-----
+<475>  --  Live
+-----
+<476>  --  Live
+-----
+<477>  --  Live
+-----
+<478>  --  Live
+-----
+<479>  --  Live
+-----
+<480>  --  Live
+<481>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<482>  --  Live
+<483>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+-----
+<484>  --  Live
+<485>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+-----
+<486>  --  Live
+<487>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<488>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<489>  --  Live
+<490>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<491>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<492>  --  Live
+<493>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=85 
+<494>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=85 
+-----
+<495>  --  Live
+<496>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<497>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<498>  --  Live
+<499>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=85 
+<500>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=85 
+-----
+<501>  --  Live
+<502>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<503>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<504>  --  Live
+<505>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<506>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<507>  --  Live
+<508>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+-----
+<509>  --  Live
+<510>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<511>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<512>  --  Live
+<513>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+-----
+<514>  --  Live
+<515>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+-----
+<516>  --  Live
+<517>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<518>  --  Live
+<519>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+-----
+<520>  --  Live
+-----
+<521>  --  Live
+-----
+<522>  --  Live
+-----
+<523>  --  Live
+-----
+<524>  --  Live
+-----
+<525>  --  Live
+-----
+<526>  --  Live
+-----
+<527>  --  Live
+-----
+<528>  --  Live
+-----
+<529>  --  Live
+-----
+<530>  --  Live
+-----
+<531>  --  Live
+-----
+<532>  --  Live
+<533>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<534>  --  Live
+<535>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+-----
+<536>  --  Live
+<537>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+-----
+<538>  --  Live
+<539>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<540>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<541>  --  Live
+<542>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<543>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<544>  --  Live
+<545>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=85 
+<546>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=85 
+-----
+<547>  --  Live
+<548>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<549>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+-----
+<550>  --  Live
+<551>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<552>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+-----
+<553>  --  Live
+<554>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<555>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<556>  --  Live
+<557>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<558>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<559>  --  Live
+<560>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<561>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<562>  --  Live
+<563>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=75 
+<564>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=75 
+-----
+<565>  --  Live
+<566>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<567>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<568>  --  Live
+<569>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<570>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<571>  --  Live
+<572>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<573>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+-----
+<574>  --  Live
+<575>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<576>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<577>  --  Live
+<578>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=79 
+<579>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=79 
+-----
+<580>  --  Live
+<581>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+-----
+<582>  --  Live
+<583>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<584>  --  Live
+<585>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+-----
+<586>  --  Live
+-----
+<587>  --  Live
+-----
+<588>  --  Live
+-----
+<589>  --  Live
+-----
+<590>  --  Live
+-----
+<591>  --  Live
+-----
+<592>  --  Live
+-----
+<593>  --  Live
+-----
+<594>  --  Live
+-----
+<595>  --  Live
+-----
+<596>  --  Live
+-----
+<597>  --  Live
+-----
+<598>  --  Live
+-----
+<599>  --  Live
+-----
+<600>  --  Live
+-----
+<601>  --  Live
+-----
+<602>  --  Live
+-----
+<603>  --  Live
+-----
+<604>  --  Live
+<605>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<606>  --  Live
+<607>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=92 
+-----
+<608>  --  Live
+<609>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=89 
+-----
+<610>  --  Live
+<611>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<612>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+-----
+<613>  --  Live
+<614>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<615>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+-----
+<616>  --  Live
+<617>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<618>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+-----
+<619>  --  Live
+<620>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=74 
+<621>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=74 
+-----
+<622>  --  Live
+<623>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=73 
+<624>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=73 
+-----
+<625>  --  Live
+<626>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=70 
+<627>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=70 
+-----
+<628>  --  Live
+<629>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<630>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+-----
+<631>  --  Live
+<632>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=67 
+<633>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=67 
+-----
+<634>  --  Live
+<635>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=66 
+<636>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=66 
+-----
+<637>  --  Live
+<638>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=64 
+<639>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=64 
+-----
+<640>  --  Live
+<641>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=62 
+<642>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=62 
+-----
+<643>  --  Live
+<644>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=60 
+<645>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=60 
+-----
+<646>  --  Live
+<647>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=59 
+<648>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=59 
+-----
+<649>  --  Live
+<650>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=57 
+<651>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=57 
+-----
+<652>  --  Live
+<653>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=55 
+<654>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=55 
+-----
+<655>  --  Live
+<656>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=53 
+<657>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=53 
+-----
+<658>  --  Live
+<659>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=51 
+<660>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=51 
+-----
+<661>  --  Live
+<662>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=50 
+<663>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=50 
+-----
+<664>  --  Live
+<665>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<666>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<667>  --  Live
+<668>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=47 
+<669>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=47 
+-----
+<670>  --  Live
+<671>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=44 
+<672>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=44 
+-----
+<673>  --  Live
+<674>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=43 
+<675>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=43 
+-----
+<676>  --  Live
+<677>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<678>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<679>  --  Live
+<680>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=40 
+<681>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=40 
+-----
+<682>  --  Live
+<683>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=39 
+<684>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=39 
+-----
+<685>  --  Live
+<686>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=37 
+<687>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=37 
+-----
+<688>  --  Live
+<689>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=35 
+<690>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=35 
+-----
+<691>  --  Live
+<692>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<693>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+-----
+<694>  --  Live
+<695>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=32 
+<696>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=32 
+-----
+<697>  --  Live
+<698>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=30 
+<699>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=30 
+-----
+<700>  --  Live
+<701>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=28 
+<702>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=28 
+-----
+<703>  --  Live
+<704>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=26 
+<705>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=26 
+-----
+<706>  --  Live
+<707>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=25 
+<708>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=25 
+-----
+<709>  --  Live
+<710>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=23 
+<711>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=23 
+-----
+<712>  --  Live
+<713>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=22 
+<714>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=22 
+-----
+<715>  --  Live
+<716>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=20 
+<717>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=20 
+-----
+<718>  --  Live
+<719>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=17 
+<720>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=17 
+-----
+<721>  --  Live
+<722>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=16 
+<723>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=16 
+-----
+<724>  --  Live
+<725>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=15 
+<726>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=15 
+-----
+<727>  --  Live
+<728>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=13 
+<729>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=13 
+-----
+<730>  --  Live
+<731>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=12 
+<732>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=12 
+-----
+<733>  --  Live
+<734>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=10 
+<735>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=10 
+-----
+<736>  --  Live
+<737>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=8 
+<738>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=8 
+-----
+<739>  --  Live
+<740>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=6 
+<741>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=6 
+-----
+<742>  --  Live
+<743>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<744>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<745>  --  Live
+<746>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<747>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<748>  --  Live
+<749>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<750>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<751>  --  Live
+<752>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=0 
+<753>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=0 
+-----
+<754>  --  Live
+<755>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=13 
+<756>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=13 
+-----
+<757>  --  Live
+<758>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=24 
+<759>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=24 
+-----
+<760>  --  Live
+<761>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=34 
+<762>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=34 
+-----
+<763>  --  Live
+<764>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=35 
+<765>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=35 
+-----
+<766>  --  Live
+<767>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=37 
+<768>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=37 
+-----
+<769>  --  Live
+<770>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=40 
+<771>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=40 
+-----
+<772>  --  Live
+<773>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=42 
+<774>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=42 
+-----
+<775>  --  Live
+<776>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=44 
+<777>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=44 
+-----
+<778>  --  Live
+<779>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=47 
+<780>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=47 
+-----
+<781>  --  Live
+<782>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=48 
+<783>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=48 
+-----
+<784>  --  Live
+<785>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=50 
+<786>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=50 
+-----
+<787>  --  Live
+<788>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=51 
+<789>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=51 
+-----
+<790>  --  Live
+<791>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=53 
+<792>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=53 
+-----
+<793>  --  Live
+<794>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=57 
+<795>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=57 
+-----
+<796>  --  Live
+<797>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=58 
+<798>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=58 
+-----
+<799>  --  Live
+<800>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=60 
+<801>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=60 
+-----
+<802>  --  Live
+<803>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=62 
+<804>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=62 
+-----
+<805>  --  Live
+<806>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=64 
+<807>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=64 
+<808>  --  Live
+<809>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=66 
+<810>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=66 
+-----
+<811>  --  Live
+<812>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=68 
+<813>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=68 
+<814>  --  Live
+<815>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=69 
+<816>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=69 
+<817>  --  Live
+<818>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=71 
+<819>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=71 
+-----
+<820>  --  Live
+<821>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=74 
+<822>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=74 
+<823>  --  Live
+<824>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=76 
+<825>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=76 
+<826>  --  Live
+<827>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=77 
+<828>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=77 
+-----
+<829>  --  Live
+<830>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=80 
+<831>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=80 
+<832>  --  Live
+<833>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=83 
+<834>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=83 
+<835>  --  Live
+<836>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=84 
+<837>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=84 
+-----
+<838>  --  Live
+<839>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=86 
+<840>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=86 
+<841>  --  Live
+<842>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=88 
+<843>  --   Pedal Volume ->  channel=6,  maxVolume=88 volume=88 
+<844>  --  Live
+<845>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=91 
+<846>  --  Live
+<847>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=93 
+-----
+<848>  --  Live
+<849>  --   Pedal Volume ->  channel=4,  maxVolume=94 volume=94 
+<850>  --  Live
+<851>  --  Live
+<852>  --  Live
+-----
+<853>  --  Live
+-----
+<854>  --  Live
+-----
+<855>  --  Live
+-----
+<856>  --  Live
+-----
+<857>  --  Live
+-----
+<858>  --  Live
+-----
+<859>  --  Live
+-----
+<860>  --  Live
+-----
+<861>  --  Live
+-----
+<862>  --  Live
+-----
+<863>  --  Live
+-----
+<864>  --  Live
+-----
+<865>  --  Live
+-----
+<866>  --  Live
+-----
+<867>  --  Live
+-----
+<868>  --  Live
+-----
+<869>  --  Live
+-----
+<870>  --  Live
+-----
+<871>  --  Live
+-----
+<872>  --  Live
+-----
+<873>  --  Live
+-----
+<874>  --  Live
+-----
+<875>  --  Live
+-----
+<876>  --  Live
+-----
+<877>  --  Live
+-----
+<878>  --  Live
+-----
+<879>  --  Live
+-----
+<880>  --  Live
+-----
+<881>  --  Live
+-----
+<882>  --  Live
+-----
+<883>  --  Live
+-----
+<884>  --  Live
+-----
+<885>  --  Live
+-----
+<886>  --  Live
+-----
+<887>  --  Live
+-----
+<888>  --  Live
+-----
+<889>  --  Live
+-----
+<890>  --  Live
+-----
+<891>  --  Live
+<892>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=54 
+-----
+<893>  --  Live
+<894>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=53 
+<895>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=53 
+-----
+<896>  --  Live
+<897>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=51 
+<898>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=51 
+-----
+<899>  --  Live
+<900>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=50 
+<901>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=50 
+-----
+<902>  --  Live
+<903>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=47 
+<904>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=47 
+-----
+<905>  --  Live
+<906>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=46 
+<907>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=46 
+-----
+<908>  --  Live
+<909>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=44 
+<910>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=44 
+-----
+<911>  --  Live
+<912>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=43 
+<913>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=43 
+-----
+<914>  --  Live
+<915>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=40 
+<916>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=40 
+-----
+<917>  --  Live
+<918>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=39 
+<919>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=39 
+-----
+<920>  --  Live
+<921>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=37 
+<922>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=37 
+-----
+<923>  --  Live
+<924>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=36 
+<925>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=36 
+-----
+<926>  --  Live
+<927>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=34 
+<928>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=34 
+-----
+<929>  --  Live
+<930>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=32 
+<931>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=32 
+-----
+<932>  --  Live
+<933>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=30 
+<934>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=30 
+-----
+<935>  --  Live
+<936>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=29 
+<937>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=29 
+-----
+<938>  --  Live
+<939>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=26 
+<940>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=26 
+-----
+<941>  --  Live
+<942>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=25 
+<943>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=25 
+-----
+<944>  --  Live
+<945>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=23 
+<946>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=23 
+-----
+<947>  --  Live
+<948>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=22 
+<949>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=22 
+-----
+<950>  --  Live
+<951>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=19 
+<952>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=19 
+-----
+<953>  --  Live
+<954>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=18 
+<955>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=18 
+-----
+<956>  --  Live
+<957>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=17 
+<958>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=17 
+-----
+<959>  --  Live
+<960>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=15 
+<961>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=15 
+-----
+<962>  --  Live
+<963>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=12 
+<964>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=12 
+-----
+<965>  --  Live
+<966>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=11 
+<967>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=11 
+-----
+<968>  --  Live
+<969>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=10 
+<970>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=10 
+-----
+<971>  --  Live
+<972>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=8 
+<973>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=8 
+-----
+<974>  --  Live
+<975>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=0 
+<976>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=0 
+-----
+<977>  --  Live
+<978>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=0 
+<979>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=0 
+-----
+<980>  --  Live
+<981>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=0 
+<982>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=0 
+-----
+<983>  --  Live
+<984>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=0 
+<985>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=0 
+-----
+<986>  --  Live
+<987>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=0 
+<988>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=0 
+-----
+<989>  --  Live
+<990>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=0 
+<991>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=0 
+-----
+<992>  --  Live
+<993>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=0 
+<994>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=0 
+-----
+<995>  --  Live
+<996>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=8 
+<997>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=8 
+-----
+<998>  --  Live
+<999>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=9 
+<1000>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=9 
+-----
+<1001>  --  Live
+<1002>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=11 
+<1003>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=11 
+-----
+<1004>  --  Live
+<1005>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=15 
+<1006>  --   Pedal Volume ->  channel=2,  maxVolume=54 volume=15 
+-----
+<1007>  --  Live
+<1008>  --   Pedal Volume ->  channel=1,  maxVolume=53 volume=17 
+
+    mute = songPreset['muteflag']
+    #currentDelay
+    oldPC = gCurrentPCList[idx]
+    oldVolume = gCurrentVolumeList[idx]
+
+    #printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
+    samePC = False
+    if newPC == oldPC and newPC > 0:
+      samePC = True
+      if mute:
+        muteChannel(channel, oldVolume, MIN_DELAY, 20)
+        sendPCMessage(channel, newPC)
+        processProgramEffects(samePC, idx, channel, songPreset)
+        unmuteChannel(channel, newVolume, MIN_DELAY, 20)
+    elif newPC != oldPC:
+      if newPC == 0:
+        sendCCMessage( channel, VOLUME_CC, 0)
+        sendPCMessage(channel, newPC)
+        sendCCMessage( channel, VOLUME_CC, 0)
+      else:
+        if mute:
+          muteChannel(channel, oldVolume, MIN_DELAY, 10)
+
+        sendPCMessage(channel, newPC)
+        processProgramEffects(samePC, idx, channel, songPreset)
+
+        if mute:
+          unmuteChannel(channel, newVolume, MIN_DELAY, 20)
+
+        #sleep(MIN_DELAY)
+        sendCCMessage( channel, VOLUME_CC, newVolume )
+
+      if preset['refinstrument'] == 1:
+        #printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
+        displayData.setProgramName(f"{program['name']}.{preset['name']}")
+
+    gCurrentPCList[idx] = newPC
+    gCurrentVolumeList[idx] = newVolume
+    displayData.drawScreen()
+  else:
+    printDebug(f"Preset {id} not found")    
+    displayData.drawError(f"Preset {id} not found")
+    sleep(0.2)
+
+
+################################################################
+#Send Midi
+#----------------------------------------------------------------
+
+def sendCCMessage(channel, CC, value):
+  global gMidiOutput
+  gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
+  sleep(MIN_DELAY)
+#----------------------------------------------------------------
+
+## 192 -PC on Channel 1
+## 193 -PC on Channel 2
+## 197 -PC on Channel 6
+
+def sendPCMessage( channel, PC):
+  #sleep(MIN_DELAY)
+  gMidiOutput.write_short(0xc0 + int(channel) - 1, int(PC))
+  sleep(MIN_DELAY+MIN_DELAY)
+  #printDebug("SEND PC  MESSAGE %d %d" % (channel ,PC))
+
+#----------------------------------------------------------------
+
+def sendGenericMidiCommand(msg0, msg1, msg2):
+  #    message = struct.pack("BBB", msg0, msg1, msg2)
+  gMidiOutput.write_short(0xb0 + int(msg0), msg1, msg2)
+  printDebug("SEND GENERIC MESSAGE %d %d %d" % (msg0, msg1, msg2))
+
+#----------------------------------------------------------------
+
+def muteChannel(channel, volume, delay, step):
+  if volume > 0:
+    x = volume
+    while x > 0:
+      sendCCMessage( channel, VOLUME_CC, x )
+      x = x - step
+      #sleep(delay)
+    sendCCMessage(channel, VOLUME_CC, 0 )
+
+#----------------------------------------------------------------
+def unmuteChannel(channel, volume, delay, step):
+  x = step
+  while x < volume:
+    sendCCMessage( channel, VOLUME_CC, x )
+    x = x + step
+    #sleep(delay)
+
+###################################################################
+def processProgramEffects(samePCFlag, idx, channel, songPreset):
+  global gCurrentDelayList
+  global gCurrentReverbList
+  global gCurrentModList
+
+  oldDelay = 0
+  oldReverb = 0
+  oldMod = 0
+  
+  if (samePCFlag):   
+    oldDelay = int(gCurrentDelayList[idx])
+    oldReverb = int(gCurrentReverbList[idx])
+    oldMod = int(gCurrentModList[idx])
+
+  delayFlag = int(songPreset['delayflag'])
+  if delayFlag != oldDelay:
+    sendCCMessage( channel,DELAY_EFFECT_OFF_CC, 127)
+
+  reverbFlag = int(songPreset['reverbflag'])
+  if reverbFlag != oldReverb:
+    sendCCMessage( channel,REVERB_EFFECT_OFF_CC, 127)
+
+  modeFlag = int(songPreset['modeflag'])
+  if modeFlag != oldMod:
+    sendCCMessage( channel, MOD_EFFECT_OFF_CC, 127)
+
+  if (idx==0):
+    #printDebug(songPreset)
+    printDebug(f">>>  idx = {idx},  samepc = {samePCFlag}, delay {oldDelay} >> {delayFlag} , reverb {oldReverb} >> {reverbFlag} ,  mod {oldMod} >> {modeFlag} ,  channel = {channel}")
+
+  gCurrentDelayList[idx] = delayFlag
+  gCurrentReverbList[idx] = reverbFlag
+  gCurrentModList[idx] = modeFlag
+
+###############################################################
+def executeSystemCommand(code):
+  global gExitFlag
+  global gSystemCommandCounter
+  global gSystemCommandCode
+  
+  printDebug("EXECUTE SYSTEM COMMAND")
+  command = ""
+  displayText = ""
+
+  if gSystemCommandCode != code and gSystemCommandCounter > 0:
+    gSystemCommandCounter = 0
+
+  if code == 1:
+    #shutdown RPi
+    displayText = 'SHUTDOWN'
+    if gSystemCommandCounter > 0:
+      displayData.drawShutdown()
+    command = "/usr/bin/sudo /home/pi/sys/shutdown.sh"
+  elif code == 2:
+    #reboot RPi
+    displayText = 'REBOOT'
+    if gSystemCommandCounter > 0:
+      displayData.drawReboot()
+    command = "/usr/bin/sudo /home/pi/sys/reboot.sh"
+  elif code == 3:
+    #reboot RPi
+    displayText = 'RESTART FCB1010'
+    if gSystemCommandCounter > 0:
+      displayData.drawReboot()
+    command = "/usr/bin/sudo systemctl restart fcb1010.service"
+  #elif code == 4:
+    #reboot RPi
+
+  #elif code == 6:
+    #Set as Access Point
+    #displayText = "Local Network"
+    #command = "/usr/bin/sudo /home/pi/sys/net_local.sh"
+  #elif code == 7:
+    #Set as Access Point
+    #displayText = 'Access Point'
+    #command = "/usr/bin/sudo /home/pi/sys/net_accesspoint.sh"
+  #elif code == 8:
+    #connect to home network
+    #displayText = 'VP NET'
+    #command = "/usr/bin/sudo /home/pi/sys/net_vpnet.sh"
+  #elif code == 9:
+    #connect to iPhone
+    #displayText = 'VP iPhone'
+    #command = "/usr/bin/sudo /home/pi/sys/net_phone.sh"
+  #elif code == 10:
+    #connect to GZ Sphera
+    #displayText = 'GZ Sphera'
+    #command = "/usr/bin/sudo /home/pi/sys/net_sphera.sh"
+
+  else:
+    printDebug("ExecuteSystemCommand. Unknown command")
+    return
+
+  if gSystemCommandCounter > 0:
+    gExitFlag = True 
+    if command != "":
+       printDebug("Code =%d, Command=%s" % (code, command))
+       import subprocess
+       process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+       output = process.communicate()[0]
+       printDebug(output)
+  else:
+    displayData.drawSysCommand(displayText)
+    printDebug(displayText)
+    gSystemCommandCounter = gSystemCommandCounter + 1
+    gSystemCommandCode = code  
+
+#----------------------------------------------------------------
+## 176 -CC Channel 1
+## 177 -CC Channel 2
+## 180 -CC Channel 5
+## 181 -CC Channel 6
+
+#----------------------------------------------------------------
+def loadAllData():
+  global gSelectedGigId
+  global gGig
+  global gCurrentSong
+  global gInstrumentChannelDict
+  global gInstrumentBankDict
+  global gPresetDict
+  global gInitialisationComplete
+
+  printDebug(' << Load All Data >>')
+  if gGig: # check if dictionary is not empty
+    gGig.clear()
+#    gGig = None
+  if gCurrentSong:
+    gCurrentSong.clear()
+#    gCurrentSong = None
+  if gInstrumentChannelDict:
+    gInstrumentChannelDict.clear()
+    gInstrumentChannelDict.clear()
+  if gInstrumentBankDict:
+    gInstrumentBankDict.clear()
+    gInstrumentBankDict.clear()
+  if gPresetDict:
+    gPresetDict.clear()
+    gPresetDict.clear()
+  
+  printDebug(' << All objects and collections are cleared>>')
+
+  try:
+    gGig = dataHelper.loadScheduledGig()
+    
+    if gGig: # check if dictionary is not empty
+      gSelectedGigId = gGig["id"]
+      displayData.drawMessage("Gig loaded", gGig["name"])
+    else:
+      displayData.drawError("Gig not found")
+      printDebug("Gig not found")
+    sleep(1)
+
+    gInstrumentChannelDict = dataHelper.initInstruments()
+    if not gInstrumentChannelDict:
+      displayData.drawError("Instruments not found")
+      sleep(1)
+    
+    gPresetDict = dataHelper.initPresets()
+    if not gInstrumentChannelDict:
+      displayData.drawError("Presets not found")
+      sleep(1)
+      
+    gInstrumentBankDict = dataHelper.initInstrumentBanks()
+    if not gInstrumentChannelDict:
+      displayData.drawError("Banks not found")
+      sleep(1)
+
+    displayData.setDataAPIStatus(255)
+    gInitialisationComplete = True
+
+  except:
+    displayData.setDataAPIStatus(0)
+    displayData.drawScreen()
+    printDebug ('<< Exception. loadAllData >>')
+    gInitialisationComplete = False
+
+#----------------------------------------------------------------
+
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+def getActionForReceivedMessage(midiMsg):
+  global gMode
+  global gConfigChannel
+  global gReloadCounter
+  global gSynthTest
+  global gPianoTest
+  global g_VolumeAmplify
+
+  #global gPedal1MaxVolume
+  #global gPedal2MaxVolume
+  #global gCurrentVolumeList
+
+  msg = midiMsg[0]
+  msg0 = msg[0]
+  msg1 = msg[1]
+  msg2 = msg[2]
+  msgParameter = midiMsg[1]
+  channel=-1
+
+  #System events
+  #FCB1010 has 10 banks 0..9
+  #Banks 0..3 are set to control the external Midi Devices. 
+  #    CC1 messages : Channel 5 (msg0 = 180 ) 
+  #    Pedals send (msg1 = 20, msg2 = 11..20) :
+  #        Switch1 = 11  
+  #        Switch2 = 12 ..
+  #        Switch6 = 16
+  #        Switch17 = 17
+  #    Epression Pedal 1 sends messages on channel 6 msg0 = 181, msg1 = 7
+  #    Epression Pedal 2 sends messages on channel 1 msg0 = 176, msg1 = 7
+  #    Selected bank can be identified by CC2 message
+  #       where msg1 = 1 and msg2 = 1..4 
+
+  #Bank  8 is programmed to initiate the Raspberry Pi system commands. 
+  #    Pedals send (msg0 = 180, msg1 == 3, msq2 = 1..10)
+
+  # This vesion of the software will use Bank 1 to control the songs of the "Current Gig"
+  # Bank 2 will be used to select any song in a dictionary of available songs 
+  
+  if msg0 == 180:
+    if msg1 == 3: #FCB1010 bank 8 is programmed to send msg1 == 3 for system actions 
+      if msg2 < 5:
+        gMode = 'Live'
+        executeSystemCommand(msg2)
+      return
+    elif msg1 == 1:
+      return
+    elif msg1 == 20: #FCB1010 bank 8 is programmed to send msg1 == 20  for Banks 0 - 3 
+      printDebug(msg2)   
+      gMode = 'Live'
+      gConfigChannel = 0
+      if msg2 == 11: #Pedal1 
+        clearScreenDebug()
+        setSongProgram(0)
+      elif msg2 == 12: #Pedal2
+        clearScreenDebug()
+        setSongProgram(1)
+      elif msg2 == 13: #Pedal3
+        clearScreenDebug()
+        setSongProgram(2)
+      elif msg2 == 14: #Pedal4
+        clearScreenDebug()
+        setSongProgram(3)
+
+      elif msg2 == 16: #Pedal6
+        displayData.incrementVolumeAmplify()
+        displayData.drawScreen()
+      elif msg2 == 17: #Pedal7
+        displayData.resetVolumeAmplify()
+        displayData.drawScreen()
+
+      #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
+        #gPedal2_Channel = gChannel1
+      #elif  msg2 == 19: #pedal 9 #Second Volume pedal sends messages to ch 2
+        #gPedal2_Channel = gChannel2
+
+      elif msg2 == 15: #Pedal5
+        clearScreenDebug()
+        selectNextSong(-1)
+        #setSongProgram(0)
+      elif msg2 == 20: #Pedal10
+        clearScreenDebug()
+        selectNextSong(1)
+        #setSongProgram(0)
+
+      # gSynthTest = 0
+      # gPianoTest = 0
+
+  elif msg0 == 176 and msg1 == 7:
+    # Send Volume to Channel 1  and channel 2 (Synth)
+    #printDebug(gMode)   
+    
+    volume = calibratePedalVolume(PEDAL2_MAX_VALUE, msg2)
+
+    if (gMode == 'Live'):
+      #if (volume > gPedal2MaxVolume):
+      #  volume = gPedal2MaxVolume      
+      #iPad Synth   
+      sendPedalVolumeCC(1 , 2, volume)
+      #MacBook Synth   
+      sendPedalVolumeCC(2 , 3, volume)
+      #---------------------------------
+    elif gMode == 'Config':
+      if gConfigChannel > 0:
+        sendCCMessage(gConfigChannel, 7, volume)
+        printDebug(f"Config volume. Channel{gConfigChannel} value {volume}")
+      sendPresetVolume(volume)        
+    else:
+      printDebug(f"Unknown application mode")
+      displayData.drawError('Unknown mode')
+      gMode = 'Live'
+      gConfigChannel = 0
+
+  elif msg0 == 181 and msg1 == 7:  
+    # Send Volume to Channel 6  and  channel 4 (Guitar)
+    #printDebug(gMode)
+
+    volume = calibratePedalVolume(PEDAL1_MAX_VALUE, msg2)
+    
+    if (gMode == 'Live'):
+      #if (volume > gPedal1MaxVolume):
+      #volume = gPedal1MaxVolume           
+      #sendCCMessage(4, 7, volume) #channel 4
+      #sendCCMessage(6, 7, volume) #channel 6
+      #printDebug(f"Live volume. Channel{4} value {msg2},  calculated {volume}")
+      #biasFX Macbook
+      sendPedalVolumeCC(4 , 1, volume)
+      #biasFX iPad
+      sendPedalVolumeCC(6 , 0, volume)
+
+    elif gMode == 'Config':
+      if gConfigChannel > 0:
+        sendCCMessage(gConfigChannel, 7, volume)
+        sendPresetVolume(volume)          
+        printDebug(f"Config volume. Channel{gConfigChannel} value {volume}")
+    else:
+      printDebug(f"Unknown application mode")
+      displayData.drawError('Unknown mode')
+      gMode = 'Live'
+      gConfigChannel = 0
+
+  else:    
+    gMode = 'Live'
+    gConfigChannel = 0
+
+#----------------------------------------------------------------
+def calibratePedalVolume(maxValue, value):
+  result = int(127/maxValue*value)
+  if result < 6:
+    result = 0
+  if result > 127:
+    result = 127  
+  return result
+
+#----------------------------------------------------------------
+def sendPedalVolumeCC(channel, idx, volume):
+  global gCurrentVolumeList
+  maxVol = gCurrentVolumeList[idx]
+  if volume <= maxVol:
+    sendCCMessage(channel, 7, volume) #channel 1  sendCCMessage(channel, 7, volume) #channel 1
+    printDebug(f" Pedal Volume ->  channel={channel},  maxVolume={maxVol} volume={volume} ")
+
+#----------------------------------------------------------------
+
+def ignoreInputMessage(msg):
+  if msg[0] == 176 and msg[1] == 7:
+    return False
+  elif msg[0] == 181 and msg[1] == 7:    
+    return False
+  elif msg[0] == 180 and msg[1] == 20:
+    return False
+  elif msg[0] == 180 and msg[1] == 3:
+    return False
+  elif msg[0] == 180 and msg[1] == 1 and msg[2] > 0 and msg[2] < 5:
+    return True
+  else:
+    return True
+
+#----------------------------------------------------------------
+def getMidiMsg(midiInput):
+  keepAliveCounter = 0
+  gotMsg = False
+  #print("-----")
+  if not gMidiOutput:
+    print("gMidiOutput is not set")  
+  
+  while not(gotMsg):
+    if midiInput.poll():    
+      gotMsg = True
+      inputData = midiInput.read(100)
+      for msg in inputData:
+        listInp = list(msg)
+        if ignoreInputMessage(msg[0]):  # Message comes as an array [[180,1,1],0] 
+          #printDebug(f"xxxxxx----- Ignore  Input = xxxxx {listInp} ")                   
+          continue
+        else:
+          #printDebug(f">>>>>>----- Incoming Input = >>>>> {listInp} ")       
+          getActionForReceivedMessage(msg)
+
+#----------------------------------------------------------------
+
+
+#Main Module 
+pygame.midi.init()
+
+displayData.initDisplay()
+displayData.clearScreen()
+
+
+if len(sys.argv) > 1: 
+  if str(sys.argv[1]).upper() == 'DEBUG':
+    gDebugFlag = True
+
+#Show the list of available midi devices
+printDebug(pygame.midi.get_count())
+if gDebugFlag :
+  for id in range(pygame.midi.get_count()):
+    printDebug( "Id=%d Device=%s" % (id,pygame.midi.get_device_info(id)) )
+
+# sio = socketio.Client()
+sio.connect('http://localhost:8081')
+
+#displayData.setMessageAPIStatus(255)
+#displayData.drawScreen()
+
+midiInput = None
+
+while True:
+  try:
+    midiInput = pygame.midi.Input(MIDI_INPUT_DEVICE)  # Input MIDI device
+    gMidiOutput = pygame.midi.Output(MIDI_OUTPUT_DEVICE, 0)  # Output MIDI device
+
+    if midiInput:
+      printDebug("Input MIDI devices is connected")
+      sleep(0.04)
+
+      if gMidiOutput:
+        gMidiOutput.set_instrument(0)
+        printDebug("Output MIDI devices is connected")
+        sleep(0.04)
+        break
+  except:
+    printDebug("MIDI device not ready....")
+    pygame.midi.quit()
+    sleep(1)
+    pygame.midi.init()
+  sleep(0.5)
+
+printDebug("Everything ready now...")
+
+loadAllData()
+
+sleep(MIN_DELAY)
+if (gGig):
+  if (gGig["shortSongList"]):
+    gCurrentSongIdx = -1
+    gCurrentSongId = -1
+    selectNextSong(1)
+    gCurrentProgramIdx = 0
+    #setSongProgram(gCurrentProgramIdx)
+
+while not gExitFlag:
+  getMidiMsg(midiInput)
+
+del midiInput
+pygame.midi.quit()

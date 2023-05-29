@@ -341,15 +341,17 @@ def setPreset(program, songPreset, idx):
     newPC = int(preset['midipc'])
 
     newVolume = songPreset['volume']
-    if displayData.g_VolumeAmplify > 0:
-      printDebug(f"Original Volume {newVolume}")
-      newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY_PERCENT / 100)
-      printDebug(f"Amplified Volume {newVolume}")
-      if newVolume > 127:
-        newVolume = 127
-      if newVolume < 0:
-        newVolume = 0
-        
+    printDebug(f"Original Volume {newVolume}")
+    #if displayData.g_VolumeAmplify > 0:
+      #printDebug(f"Original Volume {newVolume}")
+    newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY_PERCENT / 100)
+      #printDebug(f"Amplified Volume {newVolume}")
+    if newVolume > 127:
+      newVolume = 127
+    if newVolume < 0:
+      newVolume = 0
+    printDebug(f"Amplified Volume {newVolume}")
+
     mute = songPreset['muteflag']
     #currentDelay
     oldPC = gCurrentPCList[idx]
@@ -364,6 +366,7 @@ def setPreset(program, songPreset, idx):
         sendPCMessage(channel, newPC)
         processProgramEffects(samePC, idx, channel, songPreset)
         unmuteChannel(channel, newVolume, MIN_DELAY, 20)
+        sendCCMessage( channel, VOLUME_CC, newVolume )
     elif newPC != oldPC:
       if newPC == 0:
         sendCCMessage( channel, VOLUME_CC, 0)
@@ -402,6 +405,7 @@ def setPreset(program, songPreset, idx):
 def sendCCMessage(channel, CC, value):
   global gMidiOutput
   gMidiOutput.write_short(0xb0 + int(channel) - 1, int(CC), int(value))
+  printDebug(f"SEND CC {channel} - {CC} - {value}")
   sleep(MIN_DELAY)
 #----------------------------------------------------------------
 
@@ -696,8 +700,10 @@ def getActionForReceivedMessage(midiMsg):
         displayData.drawScreen()
 
       #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
+        #sendCCMessage(6,7, 111)
         #gPedal2_Channel = gChannel1
-      #elif  msg2 == 19: #pedal 9 #Second Volume pedal sends messages to ch 2
+      #elif  msg2 == 19: #pedal 9 #Second Volume pedal sends messages to c 
+        #sendCCMessage(6,7, 121)
         #gPedal2_Channel = gChannel2
 
       elif msg2 == 15: #Pedal5
