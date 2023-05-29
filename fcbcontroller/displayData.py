@@ -116,12 +116,17 @@ def resetVolumeAmplify():
 
 def incrementVolumeAmplify():
   global g_VolumeAmplify
+  if g_VolumeAmplify < 0:
+    g_VolumeAmplify = 0
   g_VolumeAmplify += 1
   if g_VolumeAmplify > 2:
     g_VolumeAmplify = 0
 
 def decrementVolumeAmplify():
   global g_VolumeAmplify
+  if g_VolumeAmplify > 0:
+    g_VolumeAmplify = 0
+
   g_VolumeAmplify -= 1
   if g_VolumeAmplify < -2:
     g_VolumeAmplify = 0
@@ -184,13 +189,10 @@ def drawScreen():
   elif g_VolumeAmplify == -2:
     draw.text((57, 1), chr(0xf100),  font=fontA, fill=255)
 
-
   #if g_MessageAPIStatus > 0:
   #  draw.text((57,1), chr(61671),  font=fontA, fill=255)
   #else:
   #  draw.text((57,1), chr(62163),  font=fontA, fill=255)
-
-
 
   #4th icon 75,0  image 81, 1
   #iPad connection status
