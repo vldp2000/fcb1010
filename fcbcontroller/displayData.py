@@ -120,6 +120,12 @@ def incrementVolumeAmplify():
   if g_VolumeAmplify > 2:
     g_VolumeAmplify = 0
 
+def decrementVolumeAmplify():
+  global g_VolumeAmplify
+  g_VolumeAmplify -= 1
+  if g_VolumeAmplify < -2:
+    g_VolumeAmplify = 0
+
 
 def drawScreen():
   if not g_DisplayInitialised:
@@ -149,45 +155,70 @@ def drawScreen():
 
   fontA = ImageFont.truetype('font/fontawesome-webfont.ttf', 14)
 
-  #RaveloxMidi status
+  #1st icon 0,0  image 4, 1
   draw.rectangle((0,0,20,14), outline=255, fill=0)
   if g_VolumeAmplify == 0:
-    draw.text((4, 1), chr(0xf026),  font=fontA, fill=255)
+    draw.text((4, 1), chr(61527),  font=fontA, fill=255)
   elif g_VolumeAmplify == 1:
     draw.text((4, 1), chr(0xf027),  font=fontA, fill=255)
   elif g_VolumeAmplify == 2:
     draw.text((4, 1), chr(0xf028),  font=fontA, fill=255)
 
   #fa-volume-off [&#xf026;]  fa-volume-up [&#xf028;]
-  print(g_VolumeAmplify)
-
+  
+  #2nd icon 25,0  image 29, 1
   #Data API status
   draw.rectangle((25,0,45,14), outline=255, fill=0)
-  if g_DataAPIStatus > 0:
-    draw.text((29,1), chr(61888),  font=fontA, fill=255)
+  if g_VolumeAmplify == 0:
+    draw.text((29,1), chr(0xf026),  font=fontA, fill=255)
   else:
     draw.text((29,1), chr(61527),  font=fontA, fill=255)
   
+  #3rd icon 50,0  image 57, 1
   #Socket messeger status
   draw.rectangle((50,0,70,14), outline=255, fill=0)
-  if g_MessageAPIStatus > 0:
-    draw.text((57,1), chr(61671),  font=fontA, fill=255)
-  else:
-    draw.text((57,1), chr(62163),  font=fontA, fill=255)
+  if g_VolumeAmplify == 0:
+    draw.text((57, 1), chr(61527),  font=fontA, fill=255)
+  elif g_VolumeAmplify == -1:
+    draw.text((57, 1), chr(0xf104),  font=fontA, fill=255)
+  elif g_VolumeAmplify == -2:
+    draw.text((57, 1), chr(0xf100),  font=fontA, fill=255)
 
+
+  #if g_MessageAPIStatus > 0:
+  #  draw.text((57,1), chr(61671),  font=fontA, fill=255)
+  #else:
+  #  draw.text((57,1), chr(62163),  font=fontA, fill=255)
+
+
+
+  #4th icon 75,0  image 81, 1
   #iPad connection status
-  draw.rectangle((75,0,95,14), outline=255, fill=0) 
-  if g_iPadStatus > 0:
-    draw.text((81,1), chr(61706),  font=fontA, fill=255)
-  else:
-    draw.text((80,0), chr(61453),  font=fontA, fill=255)
+  #draw.rectangle((75,0,95,14), outline=255, fill=0) 
+  #if g_iPadStatus > 0:
+  #  draw.text((81,1), chr(61706),  font=fontA, fill=255)
+  #else:
+  #  draw.text((80,0), chr(61453),  font=fontA, fill=255)
 
+  draw.rectangle((75,0,95,14), outline=255, fill=0) 
+  if g_DataAPIStatus > 0:
+    draw.text((81,1), chr(61888),  font=fontA, fill=255)
+  else:
+    draw.text((80,0), chr(61527),  font=fontA, fill=255)
+
+  #5th icon 100,0  image 104, 1
   #Macbook connection status
   draw.rectangle((100,0,123,14), outline=255, fill=0)
-  if g_MacBookStatus > 0:
-    draw.text((104,1), chr(61704),  font=fontA, fill=255)
+  #if g_MacBookStatus > 0:
+  #  draw.text((104,1), chr(61704),  font=fontA, fill=255)
+  #else:
+  #  draw.text((106,0), chr(61453),  font=fontA, fill=255)
+
+  if g_MessageAPIStatus > 0:
+    draw.text((104,1), chr(61671),  font=fontA, fill=255)
   else:
-    draw.text((106,0), chr(61453),  font=fontA, fill=255)
+    draw.text((106,0), chr(62163),  font=fontA, fill=255)
+
 
   font2 = ImageFont.truetype('font/RetroGaming.ttf', 14)
   font1 = ImageFont.truetype('font/Pixelade.ttf', 22)

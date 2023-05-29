@@ -340,58 +340,49 @@ def setPreset(program, songPreset, idx):
     channel = int( gInstrumentChannelDict[str(songPreset['refinstrument'])] )
     newPC = int(preset['midipc'])
 
-    newVolume = songPreset['volume']
-    printDebug(f"Original Volume {newVolume}")
-    #if displayData.g_VolumeAmplify > 0:
-      #printDebug(f"Original Volume {newVolume}")
-    newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY_PERCENT / 100)
-      #printDebug(f"Amplified Volume {newVolume}")
-    if newVolume > 127:
-      newVolume = 127
-    if newVolume < 0:
-      newVolume = 0
-    printDebug(f"Amplified Volume {newVolume}")
+    if newPC == 0:  # mute the channel for PC=0
+      sendCCMessage( channel, VOLUME_CC, 0)
+      sendPCMessage(channel, newPC)
+      sendCCMessage( channel, VOLUME_CC, 0)
+    else: # newPC > 0
+      newVolume = songPreset['volume']
+      printDebug(f"Original Volume {newVolume}")
+      newVolume = newVolume + int(newVolume * displayData.g_VolumeAmplify * VOLUME_AMPLIFY_PERCENT / 100)
+        #printDebug(f"Amplified Volume {newVolume}")
 
-    mute = songPreset['muteflag']
-    #currentDelay
-    oldPC = gCurrentPCList[idx]
-    oldVolume = gCurrentVolumeList[idx]
+      if newVolume > 127:
+        newVolume = 127
+      if newVolume < 0:
+        newVolume = 0
+      printDebug(f"Amplified Volume {newVolume}")
 
-    #printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
-    samePC = False
-    if newPC == oldPC and newPC > 0:
-      samePC = True
+      mute = songPreset['muteflag']
+
+      oldPC = gCurrentPCList[idx]
+      oldVolume = gCurrentVolumeList[idx]
+      #printDebug(f" >> oldPC={oldPC} oldV={oldVolume} , newPC={newPC}  newV={newVolume}")  
+
+      samePC = False
+      if newPC == oldPC:
+        samePC = True
+
       if mute:
         muteChannel(channel, oldVolume, MIN_DELAY, 20)
-        sendPCMessage(channel, newPC)
-        processProgramEffects(samePC, idx, channel, songPreset)
+
+      sendPCMessage(channel, newPC)
+      processProgramEffects(samePC, idx, channel, songPreset)
+
+      if mute:     
         unmuteChannel(channel, newVolume, MIN_DELAY, 20)
-        sendCCMessage( channel, VOLUME_CC, newVolume )
-    elif newPC != oldPC:
-      if newPC == 0:
-        sendCCMessage( channel, VOLUME_CC, 0)
-        sendPCMessage(channel, newPC)
-        sendCCMessage( channel, VOLUME_CC, 0)
-      else:
-        if mute:
-          muteChannel(channel, oldVolume, MIN_DELAY, 10)
-
-        sendPCMessage(channel, newPC)
-        processProgramEffects(samePC, idx, channel, songPreset)
-
-        if mute:
-          unmuteChannel(channel, newVolume, MIN_DELAY, 20)
-
-        #sleep(MIN_DELAY)
-        sendCCMessage( channel, VOLUME_CC, newVolume )
+      sendCCMessage( channel, VOLUME_CC, newVolume )
 
       if preset['refinstrument'] == 1:
-        #printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
         displayData.setProgramName(f"{program['name']}.{preset['name']}")
+        #printDebug(f" Selected Program ={program['name']}  -  Preset = {preset['name']} ")    
 
-    gCurrentPCList[idx] = newPC
-    gCurrentVolumeList[idx] = newVolume
-    displayData.drawScreen()
+      gCurrentPCList[idx] = newPC
+      gCurrentVolumeList[idx] = newVolume
+      displayData.drawScreen()
   else:
     printDebug(f"Preset {id} not found")    
     displayData.drawError(f"Preset {id} not found")
@@ -697,6 +688,9 @@ def getActionForReceivedMessage(midiMsg):
         displayData.drawScreen()
       elif msg2 == 17: #Pedal7
         displayData.resetVolumeAmplify()
+        displayData.drawScreen()
+      elif msg2 == 18: #Pedal8
+        displayData.decrementVolumeAmplify()
         displayData.drawScreen()
 
       #elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
