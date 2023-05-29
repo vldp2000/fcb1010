@@ -162,7 +162,7 @@ def drawScreen():
 
   #1st icon 0,0  image 4, 1
   draw.rectangle((0,0,20,14), outline=255, fill=0)
-  if g_VolumeAmplify == 0:
+  if g_VolumeAmplify < 1:
     draw.text((4, 1), chr(61527),  font=fontA, fill=255)
   elif g_VolumeAmplify == 1:
     draw.text((4, 1), chr(0xf027),  font=fontA, fill=255)
@@ -182,12 +182,12 @@ def drawScreen():
   #3rd icon 50,0  image 57, 1
   #Socket messeger status
   draw.rectangle((50,0,70,14), outline=255, fill=0)
-  if g_VolumeAmplify == 0:
-    draw.text((57, 1), chr(61527),  font=fontA, fill=255)
+  if g_VolumeAmplify > -1:
+    draw.text((56, 1), chr(61527),  font=fontA, fill=255)
   elif g_VolumeAmplify == -1:
-    draw.text((57, 1), chr(0xf104),  font=fontA, fill=255)
+    draw.text((56, 1), chr(0xf104),  font=fontA, fill=255)
   elif g_VolumeAmplify == -2:
-    draw.text((57, 1), chr(0xf100),  font=fontA, fill=255)
+    draw.text((56, 1), chr(0xf100),  font=fontA, fill=255)
 
   #if g_MessageAPIStatus > 0:
   #  draw.text((57,1), chr(61671),  font=fontA, fill=255)
