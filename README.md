@@ -10,7 +10,7 @@ The are few types of applications used:
 I have modified the FCB1010 foot MIDI controller to be able to send the MIDI wireless signals 
 to iPad and to MacBook. 
 
-There is the RaspberryPi computer integrated into it which does the following:
+There is the RaspberryPi computer integrated into it, which does the following:
   1. Receives the wired MIDI signal from pedals,
   2. Converts them into PC (Program Change) and CC (Control Change) MIDI signals. 
 It's all done y the Python application I wrote (Python MIDI Controller app)
@@ -18,7 +18,7 @@ It's all done y the Python application I wrote (Python MIDI Controller app)
 The Python MIDI Controller sends the MIDI messages, they are picked by ReveloxMidi 
 (thanks to Dave Kelly https://github.com/ravelox/pimidi)
 ReveloxMidi broadcasts the MIDI messages via WiFi. 
-All the devices have to be connected to the same WiFi network to be able to connect to ReveloxMidi broadcasts service.
+All the devices have to be connected for direct MIDI signal exchange (using the MIDI and USB cables).
 
 ### Issues with the current solution
 The current solution has a limitation related to the way the guitar presets are selected for the specific songs.
@@ -33,7 +33,7 @@ I would like to change the whole way of setting and using the FCB1010 MIDI foot 
 ## Solution Diagram
 ![FCB1010 Solution Diagram](/fcb1010_SolutionDiagram.png)
 
-All the data will be saved into a SQLITE database with the following structure
+All the data will be saved using the following JSON files:
 
 ### Tables:
   1. Instrument
@@ -83,7 +83,7 @@ FCB1010 pedal usage:
  - pedals 1,2,3,4 are reserved for changing the parameters of the currently selected presets
  - pedals UP, DOWN allow to switch between the GIGS . there are 7 banks reserver for 7 gig.
 
-The current bank number is displayd on FCB1010 2 digit monitor 
+The current bank number is displayed on FCB1010 2 digit monitor 
 
 In fact all those pedals are programmed to send the predefind MIDI ControlChange messages to Python application running on RaspberryPi
 (UP, DOWN pedals do net send any MIDI message)
@@ -93,21 +93,21 @@ The Python application needs to know the rules how to convert those pedal messag
 
 The GM should provide the following info to a user:
 
- - show currnt gig
+ - show current gig
  - show current song
  - show current program
  - show list of presets for the selected program
  - show parameters for each preset
 
-On one hand As soon as anything is changed in python controller app the GM has to reflect the change
-On another hand User should be able to control the python controller using the GUI provided by GM
-It means the GM and python MIDI controller have to be always in sync
+On one hand, as soon as anything is changed in the Python controller app, the GM has to reflect the change
+On the other hand, the user should be able to control the Python controller using the GUI provided by GM
+It means the GM and Python MIDI controller have to be always in sync
 
 
-Whould be nice to have the graphical user controls similar to what is used by MidiDesigner (see mididesigner_example.jpg)
+It would be nice to have the graphical user controls similar to what is used by MidiDesigner (see mididesigner_example.jpg)
 It can be achieved by using the gauge components)
 
-see the examples:
+See the examples:
  
   https://www.jqwidgets.com/vue/vue-gauge/#https://www.jqwidgets.com/vue/vue-gauge/vue-gauge-lineargauge.htm
   https://hellocomet.github.io/vue-svg-gauge/
@@ -159,7 +159,8 @@ there is a Vue plugin for Chrome which helps to debug
 
 
 
-## SQLite DB API
+## The data is stored in JSON files
+
 ApiServer
 
 NodeJS based API
@@ -170,8 +171,6 @@ cd apiserver
 npm start
 
 you will see the logs of the apiserver in you terminal window
-
-
 
 1. test the load of all the records from a required table:
   http://127.0.0.1:8081/songs/
@@ -188,7 +187,7 @@ body:
   }
 
 
-3. Inser a new record into a table. Post request
+3. Insert a new record into a table. Post request
 http://127.0.0.1:8081/song
 body:
   {
