@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import GigControl from '@/components/GigControlPanel'
+import MobileGigControl from '@/components/MobileGigControlPanel'
 import Songs from '@/components/SongsPanel'
 import Instruments from '@/components/InstrumentsPanel'
 import InstrumentBank from '@/components/InstrumentBankPanel'
@@ -15,6 +16,11 @@ const routes = [
     path: '/gigcontrol',
     name: 'gigcontrol',
     component: GigControl
+  },
+  {
+    path: '/mobilegigcontrol',
+    name: 'mobilegigcontrol',
+    component: MobileGigControl
   },
   {
     path: '/songs',

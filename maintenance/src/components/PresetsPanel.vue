@@ -273,7 +273,7 @@ export default {
       if (id > -1 && this.editedItem.refinstrument && this.editedItem.refinstrument > -1) {
         result = this.instrumentBankList.filter(item => item.refinstrument === id)
         if (result && result.length === 1) {
-          this.bankId = result.id
+          this.bankId = result[0].id
         }
       }
       // this.$log.debug(result)

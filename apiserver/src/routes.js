@@ -1,5 +1,6 @@
 const SaveDataController = require('./controllers/SaveDataController')
 const ReadDataController = require('./controllers/ReadDataController')
+const PresetUsageController = require('./controllers/PresetUsageController')
 
 module.exports = (app) => {
 
@@ -16,6 +17,7 @@ module.exports = (app) => {
 
   app.get('/all/preset', ReadDataController.readDataFromFile)
   app.get('/id/preset', ReadDataController.getId)
+  app.get('/presetusage/:instrumentId/:midiPc', PresetUsageController.getPresetUsage)
 
   app.put('/instrumentbank/:id', SaveDataController.saveDataToFile)
 

@@ -14,7 +14,7 @@
 
     <template v-slot:item.image="{ item }">
       <div class ="image">
-        <v-img v-bind:src="instrumentList.find(i => i.id === item.refinstrument).imageURL" :alt="item.image"
+        <v-img v-bind:src="getInstrumentImageUrl(item.refinstrument)" :alt="item.image"
           contain
         >
         </v-img>
@@ -22,11 +22,11 @@
     </template>
 
     <template v-slot:item.preset="{ item }">
-      <v-chip color="blue" dark>{{ presetList.find(i => i.id === item.refpreset).name }}</v-chip>
+      <v-chip color="blue" dark>{{ getPresetName(item.refpreset) }}</v-chip>
     </template>
 
     <template v-slot:item.instrumentbank="{ item }">
-      <v-chip color="blue" dark>{{ instrumentBankList.find(i => i.id === item.refinstrumentbank).name }}</v-chip>
+      <v-chip color="blue" dark>{{ getInstrumentBankName(item.refinstrumentbank) }}</v-chip>
     </template>
 
     <template v-slot:item.volume="{ item }">
@@ -127,11 +127,20 @@ export default {
   },
 
   mounted () {
-  //   this.programList = this.selectedSong.programList
-    // this.$log.debug('----->SongPresetsPanel')
-    // this.$log.debug(this.songPresetList)
   },
   methods: {
+    getInstrumentImageUrl (id) {
+      const instrument = this.instrumentList.find(i => i.id === id)
+      return instrument && instrument.imageURL ? instrument.imageURL : ''
+    },
+    getPresetName (id) {
+      const preset = this.presetList.find(i => i.id === id)
+      return preset ? preset.name : ''
+    },
+    getInstrumentBankName (id) {
+      const instrumentBank = this.instrumentBankList.find(i => i.id === id)
+      return instrumentBank ? instrumentBank.name : ''
+    },
     onClick (item) {
       try {
         let that = this

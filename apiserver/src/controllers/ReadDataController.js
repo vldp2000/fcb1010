@@ -4,6 +4,7 @@ const { resolve } = require('path')
 var promisify = require("promisify-node");
 const readdir = promisify(fs.readdir)
 const readFile = promisify(fs.readFile)
+const writeFile = promisify(fs.writeFile)
 
 
 
@@ -67,12 +68,7 @@ async function getNewId(folder) {
   data.id = data.id + 1
   // console.log(data)
   
-  fs.writeFile(fileName, JSON.stringify(data), 'utf8', function (err) {
-    if (err) {
-      console.log("An error occured while writing JSON Object to File.")
-      result.id = -1
-    }
-  })
+  await writeFile(fileName, JSON.stringify(data), 'utf8')
   return result
 }
 
@@ -83,7 +79,7 @@ module.exports = {
     // console.log(req)
     if (req.params.id) {
       const fileName = getFileName(objName, req.params.id)
-      const result = readFromFile(fileName)
+      const result = await readFromFile(fileName)
       // console.log(result)
       res.send(result)
     } else {
@@ -111,7 +107,7 @@ module.exports = {
   async getId (req, res) {
     const objName = req.url.split("/")[2]
     const folder = config.filePath + objName 
-    result = await getNewId(folder.toLowerCase())
+    const result = await getNewId(folder.toLowerCase())
     res.send(result)
   },
 

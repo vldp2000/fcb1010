@@ -1,5 +1,9 @@
 const config = require('../config/config')
 const fs = require('fs')
+const promisify = require('promisify-node')
+const PresetUsageController = require('./PresetUsageController')
+
+const writeFile = promisify(fs.writeFile)
 
 function getFileName (objName, id) {    
   const result = config.filePath + objName.toLowerCase() + '/' + id + '.json'
@@ -15,17 +19,17 @@ module.exports = {
     // console.log(fileName)
 
     var jsonContent = JSON.stringify(req.body)
-    fs.writeFile(fileName, jsonContent, 'utf8', function (err) {
-      if (err) {
-        console.log("An error occured while writing saveScheduledGigId to File.")
-        res.status(500).send({
-          error: `an error has occured trying to save data ${err}`
-        })
-      }
-    })
-    res.status(200).send({
-      message: 'OK'
-    })
+    try {
+      await writeFile(fileName, jsonContent, 'utf8')
+      res.status(200).send({
+        message: 'OK'
+      })
+    } catch (err) {
+      console.log("An error occured while writing saveScheduledGigId to File.")
+      res.status(500).send({
+        error: `an error has occured trying to save data ${err}`
+      })
+    }
   },
 
   async saveDataToFile (req, res) {
@@ -36,17 +40,20 @@ module.exports = {
 
     // stringify JSON Object
     var jsonContent = JSON.stringify(req.body)
-    
-    fs.writeFile(fileName, jsonContent, 'utf8', function (err) {
-      if (err) {
-        console.log("An error occured while writing JSON Object to File.")
-        res.status(500).send({
-          error: `an error has occured trying to save data ${err}`
-        })
+
+    try {
+      await writeFile(fileName, jsonContent, 'utf8')
+      if (objName === 'song' || objName === 'preset') {
+        PresetUsageController.invalidateCache()
       }
-    })
-    res.status(200).send({
-      message: 'OK'
-    })
+      res.status(200).send({
+        message: 'OK'
+      })
+    } catch (err) {
+      console.log("An error occured while writing JSON Object to File.")
+      res.status(500).send({
+        error: `an error has occured trying to save data ${err}`
+      })
+    }
   }
 }

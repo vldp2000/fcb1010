@@ -12,7 +12,7 @@
           disable-pagination
         >
           <template v-slot:item.instrument="{ item }">
-            <v-chip color="blue" dark>{{ instrumentList.find(i => i.id === item.refinstrument).name }}</v-chip>
+            <v-chip color="blue" dark>{{ getInstrumentName(item.refinstrument) }}</v-chip>
           </template>
           <template v-slot:top>
             <v-toolbar flat color="white">
@@ -140,18 +140,14 @@ export default {
   },
 
   methods: {
-    // async init () {
-    //   try {
-
-    //   } catch (err) {
-    //     this.$log.debug(err)
-    //   }
-    // },
-
+    getInstrumentName (id) {
+      const instrument = this.instrumentList.find(i => i.id === id)
+      return instrument ? instrument.name : ''
+    },
     editItem (item) {
       this.editedIndex = this.instrumentBankList.indexOf(item)
       this.editedItem = Object.assign({}, item)
-      this.$log.debug(this.editedItem)
+      // this.$log.debug(this.editedItem)
       this.dialog = true
     },
 
@@ -169,8 +165,8 @@ export default {
     },
 
     save () {
-      this.$log.debug('save Instrument bank -------')
-      this.$log.debug(this.editedItem)
+      // this.$log.debug('save Instrument bank -------')
+      // this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           this.$store.dispatch('updateInstrumentBank', this.editedItem)

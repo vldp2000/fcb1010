@@ -101,17 +101,21 @@
           <v-dialog v-if="editMode"  v-model="dialog" persistent max-width="600px">
             <v-card>
               <v-card-title class="headline">Preset</v-card-title>
-              <div>
+              <v-card-text>
                 <v-select
-                  class="ml-10 mr-10"
+                  class="mx-0"
                   :items="presets"
                   v-model="presetId"
                   label="Preset"
                   required
                   item-text="name"
                   item-value="id">
-                ></v-select>
-              </div>
+                </v-select>
+                <div v-if="selectedPreset" class="actualPresetInfo">
+                  <div class="caption">Actual app preset:</div>
+                  <div>{{ selectedPresetInstrumentName }} / PC {{ selectedPreset.midipc }}</div>
+                </div>
+              </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -126,9 +130,68 @@
                 <v-btn
                   color="green darken-1"
                   text
+                  :disabled="!selectedPreset"
+                  @click="showPresetUsage()"
+                >
+                  <v-icon left small>format_list_bulleted</v-icon>
+                  Used In
+                </v-btn>
+
+                <v-btn
+                  color="green darken-1"
+                  text
                   @click="setPreset()"
                 >
                   OK
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-if="editMode" v-model="usageDialog" max-width="760px">
+            <v-card>
+              <v-card-title class="headline">
+                <v-icon left>format_list_bulleted</v-icon>
+                Preset Usage
+              </v-card-title>
+              <v-card-text>
+                <div v-if="selectedPreset" class="mb-3">
+                  <div><b>{{ selectedPreset.name }}</b></div>
+                  <div class="caption">Actual app preset: {{ selectedPresetInstrumentName }} / PC {{ selectedPreset.midipc }}</div>
+                </div>
+
+                <v-progress-linear v-if="usageLoading" indeterminate color="green darken-1" />
+
+                <v-alert v-else-if="usageError" type="error" dense text>
+                  Could not load preset usage.
+                </v-alert>
+
+                <v-alert v-else-if="presetUsage && presetUsage.usageCount === 0" type="info" dense text>
+                  This actual app preset is not used in any song program.
+                </v-alert>
+
+                <v-simple-table v-else-if="presetUsage">
+                  <thead>
+                    <tr>
+                      <th>Song</th>
+                      <th>Program</th>
+                      <th>Preset</th>
+                      <th class="text-right">Volume</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="usage in presetUsage.usages" :key="`${usage.songId}-${usage.programId}-${usage.songPresetId}`">
+                      <td>{{ usage.songName }}</td>
+                      <td>{{ usage.programName }}</td>
+                      <td>{{ usage.presetName }}</td>
+                      <td class="text-right">{{ usage.volume }}</td>
+                    </tr>
+                  </tbody>
+                </v-simple-table>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="usageDialog = false">
+                  Close
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -141,6 +204,7 @@
 <script>
 import { mapState } from 'vuex'
 import _sortBy from 'lodash/sortBy'
+import PresetUsageService from '@/services/PresetUsageService'
 
 export default {
   props: {
@@ -160,10 +224,15 @@ export default {
     return {
       editMode: false,
       dialog: false,
+      usageDialog: false,
+      usageLoading: false,
+      usageError: false,
+      presetUsage: null,
 
       imageURL: '',
       presets: {},
       presetId: -1,
+      midichannel: 0,
 
       songPreset: {
         id: -1,
@@ -188,7 +257,7 @@ export default {
   // },
 
   computed: {
-    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList']),
+    ...mapState(['presetList', 'instrumentList', 'instrumentBankList', 'songList', 'presetVolumeFromController']),
 
     volume: {
       get () {
@@ -207,6 +276,16 @@ export default {
       set (val) {
         this.songPreset.pan = val
       }
+    },
+    selectedPreset () {
+      if (!this.presetList || this.presetId < 0) return null
+      return this.presetList.find(item => item.id === this.presetId)
+    },
+    selectedPresetInstrumentName () {
+      if (!this.selectedPreset || !this.instrumentList) return ''
+      const instrument = this.instrumentList.find(item => item.id === this.selectedPreset.refinstrument)
+      if (!instrument) return `Instrument ${this.selectedPreset.refinstrument}`
+      return instrument.name
     }
   },
 
@@ -219,12 +298,20 @@ export default {
             this.songPreset.refinstrument > 0) {
             const instrument = this.instrumentList.find(item => item.id === this.songPreset.refinstrument)
             this.imageURL = instrument.imageURL
+            this.midichannel = instrument.midichannel
             this.populatePresetList(this.songPreset.refinstrument)
           }
         } else {
           this.$log.debug('------------- empty -----')
-          this.$log.debug(this.songPreset)
+          // this.$log.debug(this.songPreset)
         }
+      }
+    },
+    presetVolumeFromController: function () {
+      // this.$log.debug('--> presetControl-----')
+      // this.$log.debug(this.presetVolumeFromController)
+      if (this.editMode) {
+        this.setVolume(this.presetVolumeFromController)
       }
     }
   },
@@ -232,18 +319,54 @@ export default {
   methods: {
     setVolume (val) {
       this.songPreset.volume = val
-      if (this.editMode) {
-        const payload = {
-          'songId': this.songPreset.refsong,
-          'programIdx': this.programIdx,
-          'presetId': this.songPreset.refpreset,
-          'instrumentId': this.songPreset.refinstrument,
-          'value': val
-        }
-        // console.log(this.songPreset)
+      // if (this.editMode) {
+      // const payload = {
+      // 'songId': this.songPreset.refsong,
+      // 'programIdx': this.programIdx,
+      // 'presetId': this.songPreset.refpreset,
+      // 'instrumentId': this.songPreset.refinstrument,
+      // 'value': val
+      // }
+      // console.log(this.songPreset)
+      // this.$store.dispatch('sendChangePresetVolumeMessage', payload)
+      // }
+    },
 
-        this.$store.dispatch('sendChangePresetVolumeMessage', payload)
+    resetUsageState () {
+      this.usageDialog = false
+      this.usageLoading = false
+      this.usageError = false
+      this.presetUsage = null
+    },
+
+    async showPresetUsage () {
+      if (!this.selectedPreset) return
+
+      this.usageDialog = true
+      this.usageLoading = true
+      this.usageError = false
+      this.presetUsage = null
+
+      try {
+        this.presetUsage = await PresetUsageService.getUsage(
+          this.selectedPreset.refinstrument,
+          this.selectedPreset.midipc
+        )
+      } catch (ex) {
+        this.usageError = true
+        this.$log.error(ex)
+      } finally {
+        this.usageLoading = false
       }
+    },
+
+    setEditMode (value) {
+      let channel = 0
+      if (value) {
+        channel = this.midichannel
+      }
+      this.editMode = value
+      this.$store.dispatch('sendEditMode', channel)
     },
 
     getPresetName () {
@@ -283,21 +406,24 @@ export default {
         }
 
         this.dialog = false
+        this.resetUsageState()
       }
     },
     saveSongPreset () {
-      this.$log.debug(this.songPreset)
+      // this.$log.debug(this.songPreset)
       this.$store.dispatch('updateSongProgramPreset', this.songPreset)
-      this.editMode = false
+      this.setEditMode(false)
       this.$emit('changed', true)
     },
     onIconClick () {
-      this.editMode = !this.editMode
+      this.setEditMode(!this.editMode)
       this.presetId = this.songPreset.refpreset
+      this.resetUsageState()
     },
     onPresetClick () {
       if (this.editMode) {
         // this.$log.debug(this.presets)
+        this.resetUsageState()
         this.dialog = true
       }
     },
@@ -377,5 +503,8 @@ export default {
   }
   .edit-mode {
     background-color:rgba(57, 57, 66, 0.83)
+  }
+  .actualPresetInfo {
+    color: rgba(0, 0, 0, 0.87);
   }
 </style>

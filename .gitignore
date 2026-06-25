@@ -4,4 +4,4 @@ fcbcontroller/__pycache__/
 apiserver/node_modules/
 maintenance/node_modules/
 maintenance/dist/
-midiTest/node_modules/
+maintenance/build-output*.txt

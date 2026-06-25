@@ -22,25 +22,29 @@ try {
     // console.log(`--- message socket connected. client ${socket.id}`)
 
     socket.on(`${config.viewProgramMessage}`, function(data) {
-      // console.log(config.viewProgramMessage)
-      // console.log(data)
+      console.log(config.viewProgramMessage)
+      console.log(data)
       io.emit(`${config.viewProgramMessage}`, data)
     })
 
     socket.on(`${config.viewSongMessage}`, function(data) {
-      // console.log(config.viewSongMessage)
-      // console.log(data)
+      console.log(config.viewSongMessage)
+      console.log(data)
       io.emit(`${config.viewSongMessage}`, data)
     })
 
-    socket.on(`${config.viewPresetVolMessage}`, function(data) {
-      // console.log(config.viewPresetVolMessage)
-      io.emit(`${config.viewPresetVolMessage}`, data)
+    socket.on(`${config.viewEditModeMessage}`, function(data) {
+      console.log(config.viewEditModeMessage)
+      console.log(data)
+      io.emit(`${config.viewEditModeMessage}`, data)
     })
-    socket.on(`${config.viewPresetPanMessage}`, function(data) {
-      io.emit(`${config.viewPresetPanMessage}`, data)
+    
+    
+    socket.on(`${config.controllerPresetVoluleMessage}`, function(data) {
+      io.emit(`${config.controllerPresetVoluleMessage}`, data)
+      console.log(config.controllerPresetVoluleMessage)
+      console.log(data)
     })
-
 
     socket.on(`${config.controllerProgramMessage}`, function(data) {
       io.emit(`${config.controllerProgramMessage}`, data)
@@ -53,10 +57,12 @@ try {
       io.emit(`${config.controllerGigMessage}`, data)
     })
     
+    //reserved
     socket.on(`${config.controllerPedal1Message}`, function(data) {
       io.emit(`${config.controllerPedal1Message}`, data)
     })
 
+    //reserved
     socket.on(`${config.controllerPedal2Message}`, function(data) {
       io.emit(`${config.controllerPedal2Message}`, data)
     })

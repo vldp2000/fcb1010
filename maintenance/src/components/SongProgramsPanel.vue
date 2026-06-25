@@ -115,28 +115,17 @@ export default {
         oldId = this.expanded[0].id
         this.expanded.pop()
       }
-      if (oldId === value.id || !value.presetList || value.presetList.lenght === 0) {
+      if (oldId === value.id || !value.presetList || value.presetList.length === 0) {
         this.$log.debug('empty ----')
       } else {
         // this.$log.debug('expand ----')
         this.selectedPresetList = value.presetList
         this.expanded.push(value)
       }
-
-      // if (this.expanded.length > 0) {
-      //   this.expanded.pop()
-      // }
-      // this.selectedPresetList = value.presetList
-      // this.expanded.push(value)
-      // this.$log.debug(this.selectedPresetList)
     },
 
     editItem (item) {
-      this.$log.debug('... Edit Item', item)
-      this.editedIndex = this.programList.indexOf(item)
-      this.$log.debug(this.editedIndex)
       this.editedItem = Object.assign({}, item)
-      this.$log.debug(this.editedItem)
       this.dialog = true
     },
     closeDialog () {
@@ -147,8 +136,8 @@ export default {
     },
 
     saveSongProgram () {
-      this.$log.debug('() saveSongProgram () -------')
-      this.$log.debug(this.editedItem)
+      // this.$log.debug('() saveSongProgram () -------')
+      // this.$log.debug(this.editedItem)
       if (this.editedIndex > -1) {
         try {
           // SongsService.put(this.editedItem)

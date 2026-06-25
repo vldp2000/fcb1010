@@ -17,10 +17,15 @@ const getters = {
   currentProgramMidiPedal: state => state.currentProgramMidiPedal,
   allInitialized: state => state.allInitialized,
   initialisingIsInProgress: state => state.initialisingIsInProgress,
-  instrumentListImagesInitialized: state => state.instrumentList[0].imageURL.length > 0,
+  instrumentListImagesInitialized: state => {
+    return state.instrumentList.length > 0 &&
+      !!state.instrumentList[0].imageURL &&
+      state.instrumentList[0].imageURL.length > 0
+  },
   refreshSong: state => state.refreshSong,
   defaultPreset: state => state.defaultPreset,
   pedal1Value: state => state.pedal1Value,
-  pedal2Value: state => state.pedal2Value
+  pedal2Value: state => state.pedal2Value,
+  presetVolumeFromController: state => state.presetVolumeFromController
 }
 export default getters
