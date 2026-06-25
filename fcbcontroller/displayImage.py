@@ -31,7 +31,7 @@ disp.clear()
 disp.display()
 
 # Load image based on OLED display height.  Note that image is converted to 1 bit color.
-image = Image.open('VGMates.png').convert('1')
+image = Image.open('image/VGMates.png').convert('1')
 
 # Display image.
 disp.image(image)
@@ -40,7 +40,7 @@ disp.display()
 time.sleep(2)
 
 disp.clear()
-image = Image.open('VGMatesBlack.png').convert('1')
+image = Image.open('image/VGMatesBlack.png').convert('1')
 # Display image.
 disp.image(image)
 disp.display()

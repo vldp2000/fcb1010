@@ -1,41 +1,12 @@
 import json
 
-#----------------------------------------------------------------
+#----BroadcastMessage------------------------------------------------------------
 class BroadcastMessage:
   message = "",
   messageType = ""
   def __init__(self, ms, tp):
     self.message = ms
     self.messageType = tp
-
-#----------------------------------------------------------------
-class Gig(object):
-  id = -1,
-  name = "",
-  gigdate = "",
-  shortSongList = []
-  def __init__(self, **entries):
-    self.shortSongList=[]
-    self.__dict__.update(entries)
-  def getId(self):
-      return self.id
-  def getSongs(self):
-      return self.shortSongList    
-
-#----------------------------------------------------------------
-class Song(object):
-  id = -1,
-  name = "",
-  tempo = 0,
-  sequencenumber = -1,
-  programList = []
-  def __init__(self, **entries):
-    self.programList=[]
-    self.__dict__.update(entries)
-  def getId(self):
-      return self.id
-  def getPrograms(self):
-      return self.programList     
 
 #----------------------------------------------------------------
 class Program(object):
@@ -47,9 +18,9 @@ class Program(object):
   def __init__(self, **entries):
     self.__dict__.update(entries)
   def getId(self):
-      return self.id
+    return self.id
   def getPresets(self):
-      return self.presetList     
+    return self.presetList     
   def __init__(self, id, name, midipedal):
     self.id = id
     self.name = name
