@@ -104,7 +104,7 @@ def printDebug(message):
   global gDebugCount
   global gDebugFlag
   if gDebugFlag:
-    print(message)
+    print(f"<{gDebugCount}>  --  {message}")
   gDebugCount += 1
 
 #############################################################
@@ -329,7 +329,6 @@ def setPreset(program, songPreset, idx):
   global gCurrentVolumeList
   global gInstrumentChannelDict
   global gPresetDict
-
 
   id = songPreset['refpreset']
   preset = gPresetDict[str(id)] 
@@ -607,7 +606,6 @@ def loadAllData():
 
     displayData.setDataAPIStatus(255)
     gInitialisationComplete = True
-    displayData.resetVolumeAmplify()
 
   except:
     displayData.setDataAPIStatus(0)
@@ -685,10 +683,10 @@ def getActionForReceivedMessage(midiMsg):
         setSongProgram(3)
 
       elif msg2 == 16: #Pedal6
-        displayData.resetVolumeAmplify()
+        displayData.incrementVolumeAmplify()
         displayData.drawScreen()
       elif msg2 == 17: #Pedal7
-        displayData.incrementVolumeAmplify()
+        displayData.resetVolumeAmplify()
         displayData.drawScreen()
       elif msg2 == 18: #Pedal8
         displayData.decrementVolumeAmplify()
@@ -876,7 +874,7 @@ while True:
 printDebug("Everything ready now...")
 
 loadAllData()
-displayData.resetVolumeAmplify()
+
 sleep(MIN_DELAY)
 if (gGig):
   if (gGig["shortSongList"]):
