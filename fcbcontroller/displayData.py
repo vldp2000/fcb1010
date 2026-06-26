@@ -22,6 +22,10 @@ g_MessageAPIStatus = 0
 g_DataAPIStatus = 0
 g_iPadStatus = 0
 g_MacBookStatus = 0
+g_DelayEffectStatus = 0
+g_ReverbEffectStatus = 0
+g_ModEffectStatus = 0
+g_BoostEffectStatus = 0
 
 g_SongName = ''
 g_ProgramName = ''
@@ -102,6 +106,22 @@ def setMacBookStatus(status):
   global g_MacBookStatus
   g_MacBookStatus = status
 
+def setEffectStatus(delayStatus, reverbStatus, modStatus, boostStatus=0):
+  global g_DelayEffectStatus
+  global g_ReverbEffectStatus
+  global g_ModEffectStatus
+  global g_BoostEffectStatus
+  g_DelayEffectStatus = delayStatus
+  g_ReverbEffectStatus = reverbStatus
+  g_ModEffectStatus = modStatus
+  g_BoostEffectStatus = boostStatus
+
+def drawEffectStatus(draw, x, label, isOn, font, strikeOff=True):
+  draw.rectangle((x,0,x+16,14), outline=255, fill=0)
+  draw.text((x+4,1), label, font=font, fill=255)
+  if strikeOff and not isOn:
+    draw.line((x+3,12,x+13,2), fill=255)
+
 
 def drawScreen():
   if not g_DisplayInitialised:
@@ -113,6 +133,10 @@ def drawScreen():
   global g_ProgramName
   global g_iPadStatus
   global g_MacBookStatus
+  global g_DelayEffectStatus
+  global g_ReverbEffectStatus
+  global g_ModEffectStatus
+  global g_BoostEffectStatus
 
 
   ###draw.rectangle((0,0,11,11), outline=255, fill=0)
@@ -145,7 +169,13 @@ def drawScreen():
 
   font2 = ImageFont.truetype('font/RetroGaming.ttf', 14)
   font1 = ImageFont.truetype('font/Pixelade.ttf', 22)
+  fontEffect = ImageFont.truetype('font/RetroGaming.ttf', 12)
   #font2 = ImageFont.truetype('font/UAVOSDMono.ttf', 12)
+
+  drawEffectStatus(draw, 50, 'D', g_DelayEffectStatus > 0, fontEffect)
+  drawEffectStatus(draw, 69, 'R', g_ReverbEffectStatus > 0, fontEffect)
+  drawEffectStatus(draw, 88, 'M', g_ModEffectStatus > 0, fontEffect)
+  drawEffectStatus(draw, 107, 'B' if g_BoostEffectStatus > 0 else 'X', g_BoostEffectStatus > 0, fontEffect, False)
 
   draw.text((0, 20), g_SongName, font=font1, fill=255)
   draw.text((0, 43), g_ProgramName, font=font2, fill=255)

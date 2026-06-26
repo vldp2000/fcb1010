@@ -34,6 +34,7 @@ class SongPreset(object):
   delayvalue = 0,
   modeflag = 0,
   muteflag = 0,
+  boostflag = 0,
   pan = 64,
   reverbflag = 0,
   reverbvalue = 0,
@@ -49,12 +50,13 @@ class SongPreset(object):
       return self.id
 
   def __init__(self,id,delayflag,delayvalue,modeflag,muteflag,pan,reverbflag,
-    reverbvalue,volume,midichannel,bunknumber,midipc):
+    reverbvalue,volume,midichannel,bunknumber,midipc,boostflag=0):
     self.id = id,
     self.delayflag = delayflag,
     self.delayvalue = delayvalue,
     self.modeflag = modeflag,
     self.muteflag = muteflag,
+    self.boostflag = boostflag,
     self.pan = pan,
     self.reverbflag = reverbflag,
     self.reverbvalue = reverbvalue,

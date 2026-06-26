@@ -54,6 +54,9 @@ class FakeDisplay:
     def setProgramName(self, name):
         self.calls.append(("setProgramName", name))
 
+    def setEffectStatus(self, delayStatus, reverbStatus, modStatus, boostStatus=0):
+        self.calls.append(("setEffectStatus", delayStatus, reverbStatus, modStatus, boostStatus))
+
 
 class SongSelectionTest(unittest.TestCase):
     def setUp(self):
@@ -78,6 +81,7 @@ class SongSelectionTest(unittest.TestCase):
         songSelection.gCurrentDelayList[:] = [0, 0, 0, 0]
         songSelection.gCurrentReverbList[:] = [0, 0, 0, 0]
         songSelection.gCurrentModList[:] = [0, 0, 0, 0]
+        songSelection.gCurrentBoostList[:] = [0, 0, 0, 0]
         songSelection.gInitialisationComplete = False
 
     @patch.object(songSelection, "sleep", return_value=None)
@@ -241,6 +245,182 @@ class SongSelectionTest(unittest.TestCase):
         self.assertIn(("setProgramName", "A.Lead"), self.display.calls)
         self.assertIn(("drawScreen",), self.display.calls)
 
+    def test_set_preset_new_pc_applies_effects_while_volume_is_zero(self):
+        events = []
+        songSelection.gInstrumentChannelDict = {"1": config.DEV1_GUITAR_CHANNEL}
+        songSelection.gPresetDict = {"9": {"name": "Lead", "midipc": 12, "refinstrument": 1}}
+        songSelection.gCurrentPCList[0] = 4
+
+        with patch.object(songSelection, "sendCCMessage", side_effect=lambda *args: events.append(("cc",) + args)), \
+                patch.object(songSelection, "sendPCMessage", side_effect=lambda *args: events.append(("pc",) + args)), \
+                patch.object(songSelection, "scheduleVolumeReassert"):
+            songSelection.setPreset(
+                {"name": "A"},
+                {
+                    "refpreset": 9,
+                    "refinstrument": 1,
+                    "volume": 80,
+                    "delayflag": 1,
+                    "reverbflag": 0,
+                    "modeflag": 1,
+                },
+                0,
+            )
+
+        self.assertEqual(
+            events,
+            [
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 0),
+                ("pc", config.DEV1_GUITAR_CHANNEL, 12),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.BIASFX_DELAY_TOGGLE_CC, 127),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.BIASFX_MOD_TOGGLE_CC, 127),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 80),
+            ],
+        )
+        self.assertEqual(songSelection.gCurrentDelayList[0], 1)
+        self.assertEqual(songSelection.gCurrentReverbList[0], 0)
+        self.assertEqual(songSelection.gCurrentModList[0], 1)
+        self.assertEqual(songSelection.gCurrentPCList[0], 12)
+
+    def test_set_preset_new_pc_applies_boost_flag_while_volume_is_zero(self):
+        events = []
+        songSelection.gInstrumentChannelDict = {"1": config.DEV1_GUITAR_CHANNEL}
+        songSelection.gPresetDict = {"9": {"name": "Solo", "midipc": 12, "refinstrument": 1}}
+        songSelection.gCurrentPCList[0] = 4
+
+        with patch.object(songSelection, "sendCCMessage", side_effect=lambda *args: events.append(("cc",) + args)), \
+                patch.object(songSelection, "sendPCMessage", side_effect=lambda *args: events.append(("pc",) + args)), \
+                patch.object(songSelection, "scheduleVolumeReassert"):
+            songSelection.setPreset(
+                {"name": "A"},
+                {
+                    "refpreset": 9,
+                    "refinstrument": 1,
+                    "volume": 90,
+                    "boostflag": 1,
+                },
+                0,
+            )
+
+        self.assertEqual(
+            events,
+            [
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 0),
+                ("pc", config.DEV1_GUITAR_CHANNEL, 12),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.BIASFX_BOOST_TOGGLE_CC, 127),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 90),
+            ],
+        )
+        self.assertEqual(songSelection.gCurrentBoostList[0], 1)
+
+    def test_set_preset_new_pc_with_all_effects_off_sends_no_effect_toggles(self):
+        events = []
+        songSelection.gInstrumentChannelDict = {"1": config.DEV1_GUITAR_CHANNEL}
+        songSelection.gPresetDict = {"9": {"name": "Lead", "midipc": 12, "refinstrument": 1}}
+        songSelection.gCurrentPCList[0] = 4
+        songSelection.gCurrentDelayList[0] = 1
+        songSelection.gCurrentReverbList[0] = 1
+        songSelection.gCurrentModList[0] = 1
+
+        with patch.object(songSelection, "sendCCMessage", side_effect=lambda *args: events.append(("cc",) + args)), \
+                patch.object(songSelection, "sendPCMessage", side_effect=lambda *args: events.append(("pc",) + args)), \
+                patch.object(songSelection, "scheduleVolumeReassert"):
+            songSelection.setPreset(
+                {"name": "A"},
+                {
+                    "refpreset": 9,
+                    "refinstrument": 1,
+                    "volume": 80,
+                    "delayflag": 0,
+                    "reverbflag": 0,
+                    "modeflag": 0,
+                },
+                0,
+            )
+
+        self.assertEqual(
+            events,
+            [
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 0),
+                ("pc", config.DEV1_GUITAR_CHANNEL, 12),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 80),
+            ],
+        )
+        self.assertEqual(songSelection.gCurrentDelayList[0], 0)
+        self.assertEqual(songSelection.gCurrentReverbList[0], 0)
+        self.assertEqual(songSelection.gCurrentModList[0], 0)
+
+    def test_set_preset_same_pc_skips_program_change_and_keeps_effects_if_unchanged(self):
+        events = []
+        songSelection.gInstrumentChannelDict = {"1": config.DEV1_GUITAR_CHANNEL}
+        songSelection.gPresetDict = {"9": {"name": "Lead", "midipc": 12, "refinstrument": 1}}
+        songSelection.gCurrentPCList[0] = 12
+        songSelection.gCurrentDelayList[0] = 1
+        songSelection.gCurrentReverbList[0] = 0
+        songSelection.gCurrentModList[0] = 1
+
+        with patch.object(songSelection, "sendCCMessage", side_effect=lambda *args: events.append(("cc",) + args)), \
+                patch.object(songSelection, "sendPCMessage", side_effect=lambda *args: events.append(("pc",) + args)), \
+                patch.object(songSelection, "scheduleVolumeReassert"):
+            songSelection.setPreset(
+                {"name": "A"},
+                {
+                    "refpreset": 9,
+                    "refinstrument": 1,
+                    "volume": 75,
+                    "delayflag": 1,
+                    "reverbflag": 0,
+                    "modeflag": 1,
+                },
+                0,
+            )
+
+        self.assertEqual(
+            events,
+            [
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 0),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 75),
+            ],
+        )
+
+    def test_set_preset_same_pc_toggles_only_changed_effects_before_restoring_volume(self):
+        events = []
+        songSelection.gInstrumentChannelDict = {"1": config.DEV1_GUITAR_CHANNEL}
+        songSelection.gPresetDict = {"9": {"name": "Lead", "midipc": 12, "refinstrument": 1}}
+        songSelection.gCurrentPCList[0] = 12
+        songSelection.gCurrentDelayList[0] = 1
+        songSelection.gCurrentReverbList[0] = 0
+        songSelection.gCurrentModList[0] = 1
+
+        with patch.object(songSelection, "sendCCMessage", side_effect=lambda *args: events.append(("cc",) + args)), \
+                patch.object(songSelection, "sendPCMessage", side_effect=lambda *args: events.append(("pc",) + args)), \
+                patch.object(songSelection, "scheduleVolumeReassert"):
+            songSelection.setPreset(
+                {"name": "A"},
+                {
+                    "refpreset": 9,
+                    "refinstrument": 1,
+                    "volume": 75,
+                    "delayflag": 0,
+                    "reverbflag": 1,
+                    "modeflag": 1,
+                },
+                0,
+            )
+
+        self.assertEqual(
+            events,
+            [
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 0),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.BIASFX_DELAY_TOGGLE_CC, 127),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.BIASFX_REVERB_TOGGLE_CC, 127),
+                ("cc", config.DEV1_GUITAR_CHANNEL, config.VOLUME_CC, 75),
+            ],
+        )
+        self.assertEqual(songSelection.gCurrentDelayList[0], 0)
+        self.assertEqual(songSelection.gCurrentReverbList[0], 1)
+        self.assertEqual(songSelection.gCurrentModList[0], 1)
+
     @patch.object(songSelection, "sendCCMessage")
     def test_process_program_effects_sends_changed_flags_and_updates_state(self, sendCCMock):
         songSelection.processProgramEffects(
@@ -253,8 +433,8 @@ class SongSelectionTest(unittest.TestCase):
         self.assertEqual(
             sendCCMock.call_args_list,
             [
-                unittest.mock.call(config.DEV1_GUITAR_CHANNEL, config.DELAY_EFFECT_OFF_CC, 127),
-                unittest.mock.call(config.DEV1_GUITAR_CHANNEL, config.MOD_EFFECT_OFF_CC, 127),
+                unittest.mock.call(config.DEV1_GUITAR_CHANNEL, config.BIASFX_DELAY_TOGGLE_CC, 127),
+                unittest.mock.call(config.DEV1_GUITAR_CHANNEL, config.BIASFX_MOD_TOGGLE_CC, 127),
             ],
         )
         self.assertEqual(songSelection.gCurrentDelayList[0], 1)
@@ -274,7 +454,135 @@ class SongSelectionTest(unittest.TestCase):
             {"delayflag": 1, "reverbflag": 0, "modeflag": 0},
         )
 
-        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.REVERB_EFFECT_OFF_CC, 127)
+        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_REVERB_TOGGLE_CC, 127)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_toggle_live_delay_effect_turns_on_both_biasfx_targets_only(self, sendCCMock):
+        songSelection.gCurrentDelayList[:] = [0, 0, 1, 1]
+
+        songSelection.toggleLiveDelayEffect()
+
+        self.assertEqual(
+            sendCCMock.call_args_list,
+            [
+                unittest.mock.call(config.DEV1_GUITAR_CHANNEL, config.BIASFX_DELAY_TOGGLE_CC, 127),
+                unittest.mock.call(config.DEV2_GUITAR_CHANNEL, config.BIASFX_DELAY_TOGGLE_CC, 127),
+            ],
+        )
+        self.assertEqual(songSelection.gCurrentDelayList, [1, 1, 1, 1])
+        self.assertIn(("setEffectStatus", 1, 0, 0, 0), self.display.calls)
+        self.assertIn(("drawScreen",), self.display.calls)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_toggle_live_reverb_effect_turns_off_both_biasfx_targets_only(self, sendCCMock):
+        songSelection.gCurrentReverbList[:] = [1, 1, 0, 0]
+
+        songSelection.toggleLiveReverbEffect()
+
+        self.assertEqual(
+            sendCCMock.call_args_list,
+            [
+                unittest.mock.call(config.DEV1_GUITAR_CHANNEL, config.BIASFX_REVERB_TOGGLE_CC, 127),
+                unittest.mock.call(config.DEV2_GUITAR_CHANNEL, config.BIASFX_REVERB_TOGGLE_CC, 127),
+            ],
+        )
+        self.assertEqual(songSelection.gCurrentReverbList, [0, 0, 0, 0])
+        self.assertIn(("setEffectStatus", 0, 0, 0, 0), self.display.calls)
+        self.assertIn(("drawScreen",), self.display.calls)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_toggle_live_mod_effect_uses_dev1_as_master_when_states_are_mixed(self, sendCCMock):
+        songSelection.gCurrentModList[:] = [1, 0, 0, 0]
+
+        songSelection.toggleLiveModEffect()
+
+        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_MOD_TOGGLE_CC, 127)
+        self.assertEqual(songSelection.gCurrentModList, [0, 0, 0, 0])
+        self.assertIn(("setEffectStatus", 0, 0, 0, 0), self.display.calls)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_toggle_live_delay_effect_turns_on_dev2_when_dev1_master_is_off(self, sendCCMock):
+        songSelection.gCurrentDelayList[:] = [0, 1, 0, 0]
+
+        songSelection.toggleLiveDelayEffect()
+
+        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_DELAY_TOGGLE_CC, 127)
+        self.assertEqual(songSelection.gCurrentDelayList, [1, 1, 0, 0])
+        self.assertIn(("setEffectStatus", 1, 0, 0, 0), self.display.calls)
+
+    def test_update_effect_display_status_uses_dev1_master_state(self):
+        songSelection.gCurrentDelayList[:] = [1, 1, 0, 0]
+        songSelection.gCurrentReverbList[:] = [1, 0, 1, 1]
+        songSelection.gCurrentModList[:] = [1, 0, 0, 0]
+        songSelection.gCurrentBoostList[:] = [1, 0, 0, 0]
+
+        songSelection.updateEffectDisplayStatus()
+
+        self.assertIn(("setEffectStatus", 1, 1, 1, 1), self.display.calls)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_toggle_live_boost_effect_turns_on_both_biasfx_targets_only(self, sendCCMock):
+        songSelection.gCurrentBoostList[:] = [0, 0, 1, 1]
+
+        songSelection.toggleLiveBoostEffect()
+
+        self.assertEqual(
+            sendCCMock.call_args_list,
+            [
+                unittest.mock.call(config.DEV1_GUITAR_CHANNEL, config.BIASFX_BOOST_TOGGLE_CC, 127),
+                unittest.mock.call(config.DEV2_GUITAR_CHANNEL, config.BIASFX_BOOST_TOGGLE_CC, 127),
+            ],
+        )
+        self.assertEqual(songSelection.gCurrentBoostList, [1, 1, 1, 1])
+        self.assertIn(("setEffectStatus", 0, 0, 0, 1), self.display.calls)
+        self.assertIn(("drawScreen",), self.display.calls)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_toggle_live_boost_effect_uses_dev1_as_master_when_states_are_mixed(self, sendCCMock):
+        songSelection.gCurrentBoostList[:] = [1, 0, 0, 0]
+
+        songSelection.toggleLiveBoostEffect()
+
+        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_BOOST_TOGGLE_CC, 127)
+        self.assertEqual(songSelection.gCurrentBoostList, [0, 0, 0, 0])
+        self.assertIn(("setEffectStatus", 0, 0, 0, 0), self.display.calls)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_process_program_boost_uses_missing_boostflag_as_off_for_same_pc(self, sendCCMock):
+        songSelection.gCurrentBoostList[:] = [1, 1, 0, 0]
+
+        songSelection.processProgramBoost(True, 0, config.DEV1_GUITAR_CHANNEL, {})
+
+        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_BOOST_TOGGLE_CC, 127)
+        self.assertEqual(songSelection.gCurrentBoostList, [0, 1, 0, 0])
+        self.assertIn(("setEffectStatus", 0, 0, 0, 0), self.display.calls)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_process_program_boost_sends_toggle_for_new_pc_when_boostflag_is_on(self, sendCCMock):
+        songSelection.gCurrentBoostList[:] = [1, 1, 0, 0]
+
+        songSelection.processProgramBoost(False, 0, config.DEV1_GUITAR_CHANNEL, {"boostflag": 1})
+
+        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_BOOST_TOGGLE_CC, 127)
+        self.assertEqual(songSelection.gCurrentBoostList, [1, 1, 0, 0])
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_process_program_boost_resets_new_pc_to_missing_boostflag_without_sending_toggle(self, sendCCMock):
+        songSelection.gCurrentBoostList[:] = [1, 1, 0, 0]
+
+        songSelection.processProgramBoost(False, 0, config.DEV1_GUITAR_CHANNEL, {})
+
+        sendCCMock.assert_not_called()
+        self.assertEqual(songSelection.gCurrentBoostList, [0, 1, 0, 0])
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_process_program_boost_ignores_keyboard_targets(self, sendCCMock):
+        songSelection.gCurrentBoostList[:] = [0, 0, 1, 1]
+
+        songSelection.processProgramBoost(True, 2, config.DEV1_KEYBOARD_CHANNEL, {"boostflag": 1})
+
+        sendCCMock.assert_not_called()
+        self.assertEqual(songSelection.gCurrentBoostList, [0, 0, 1, 1])
 
 
 if __name__ == "__main__":

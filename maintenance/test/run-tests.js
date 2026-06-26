@@ -502,6 +502,7 @@ async function testAddNewSongBuildsDefaultProgramsAndPresets () {
     volume: 0,
     pan: 64,
     muteflag: 0,
+    boostflag: 0,
     reverbflag: 0,
     delayflag: 0,
     modeflag: 0,
@@ -890,6 +891,7 @@ function testMutationsUpdateState () {
     volume: 80,
     pan: 64,
     muteflag: 1,
+    boostflag: 1,
     reverbflag: 1,
     delayflag: 0,
     modeflag: 1,
@@ -897,6 +899,7 @@ function testMutationsUpdateState () {
     delayvalue: 6
   })
   assert.strictEqual(state.songList[0].programList[0].presetList[0].volume, 80)
+  assert.strictEqual(state.songList[0].programList[0].presetList[0].boostflag, 1)
 
   mutations.SET_INSTRUMENTLIST(state, [])
   mutations.ADD_INSTRUMENT(state, { id: 3 })
@@ -1438,6 +1441,31 @@ function testPresetBankAutoSelectUsesFirstMatchingBank () {
   assert(!source.includes('this.bankId = result.id'), 'PresetsPanel.vue uses result.id instead of result[0].id')
 }
 
+function testModulationEffectIsLabeledModInLiveUi () {
+  const presetControlSource = readSrcFile('components/globals/PresetControl.vue')
+  const songPresetsSource = readSrcFile('components/SongPresetsPanel.vue')
+
+  assert(presetControlSource.includes('label="Mod"'), 'PresetControl.vue should label modulation as Mod')
+  assert(!presetControlSource.includes('label="Mode"'), 'PresetControl.vue still labels modulation as Mode')
+  assert(songPresetsSource.includes("{ text: 'mod', value: 'modeflag' }"), 'SongPresetsPanel.vue should label modeflag as mod')
+  assert(!songPresetsSource.includes("{ text: 'mode', value: 'modeflag' }"), 'SongPresetsPanel.vue still labels modeflag as mode')
+}
+
+function testBoostFlagReplacesMuteInPresetUi () {
+  const presetControlSource = readSrcFile('components/globals/PresetControl.vue')
+  const songPresetsSource = readSrcFile('components/SongPresetsPanel.vue')
+  const actionsSource = readSrcFile('store/actions.js')
+  const mutationsSource = readSrcFile('store/mutations.js')
+
+  assert(presetControlSource.includes('label="Boost"'), 'PresetControl.vue should label boost as Boost')
+  assert(!presetControlSource.includes('label="Mute"'), 'PresetControl.vue still labels the live flag as Mute')
+  assert(presetControlSource.includes('v-model="songPreset.boostflag"'), 'PresetControl.vue should bind Boost to boostflag')
+  assert(songPresetsSource.includes("{ text: 'boost', value: 'boostflag' }"), 'SongPresetsPanel.vue should show boostflag')
+  assert(!songPresetsSource.includes("{ text: 'mute', value: 'muteflag' }"), 'SongPresetsPanel.vue still exposes muteflag as the active column')
+  assert(actionsSource.includes("'boostflag': 0"), 'New songs should default boostflag to 0')
+  assert(mutationsSource.includes("Vue.set(preset, 'boostflag'"), 'Existing presets should receive boostflag reactively')
+}
+
 async function run () {
   const tests = [
     testValidateSongAcceptsValidSong,
@@ -1473,7 +1501,9 @@ async function run () {
     testGigControlPanelsDoNotDispatchPopulateGigSongsWithRawId,
     testGigControlPanelsDoNotAssumeCurrentFlagExists,
     testReferenceLookupsDoNotDereferenceMissingItemsInline,
-    testPresetBankAutoSelectUsesFirstMatchingBank
+    testPresetBankAutoSelectUsesFirstMatchingBank,
+    testModulationEffectIsLabeledModInLiveUi,
+    testBoostFlagReplacesMuteInPresetUi
   ]
 
   const failures = []

@@ -47,8 +47,8 @@
       </div>
     </template>
 
-    <template v-slot:item.muteflag="{ item }">
-      <v-checkbox v-model="item.muteflag" />
+    <template v-slot:item.boostflag="{ item }">
+      <v-checkbox v-model="item.boostflag" />
    </template>
 
     <template v-slot:item.reverbflag="{ item }">
@@ -111,12 +111,12 @@ export default {
         { text: 'preset', value: 'preset' },
         { text: 'volume', value: 'volume' },
         { text: 'pan', value: 'pan' },
-        { text: 'mute', value: 'muteflag' },
+        { text: 'boost', value: 'boostflag' },
         { text: 'reverb', value: 'reverbflag' },
         { text: 'rev value', value: 'reverbvalue' },
         { text: 'delay', value: 'delayflag' },
         { text: 'del value', value: 'delayvalue' },
-        { text: 'mode', value: 'modeflag' }
+        { text: 'mod', value: 'modeflag' }
       ],
       expanded: [],
       singleExpand: false

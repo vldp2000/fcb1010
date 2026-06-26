@@ -29,6 +29,7 @@ class DataClassesTest(unittest.TestCase):
         self.assertEqual(songPreset.getId(), (1,))
         self.assertEqual(songPreset.volume, (100,))
         self.assertEqual(songPreset.midipc, 12)
+        self.assertEqual(songPreset.boostflag, (0,))
 
     def test_preset_and_instrument_get_id(self):
         preset = Preset(id=7)

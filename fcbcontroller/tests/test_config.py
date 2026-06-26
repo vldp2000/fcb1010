@@ -31,6 +31,28 @@ class ConfigTest(unittest.TestCase):
             ),
         )
 
+    def test_biasfx_effect_targets_are_guitar_only(self):
+        self.assertEqual(
+            config.BIASFX_EFFECT_TARGETS,
+            (
+                (config.DEV1_GUITAR_CHANNEL, config.DEV1_GUITAR_VOLUME_IDX),
+                (config.DEV2_GUITAR_CHANNEL, config.DEV2_GUITAR_VOLUME_IDX),
+            ),
+        )
+
+    def test_live_effect_ccs_are_consecutive_and_avoid_standard_volume_pan(self):
+        self.assertEqual(config.BIASFX_DELAY_TOGGLE_CC, 20)
+        self.assertEqual(config.BIASFX_REVERB_TOGGLE_CC, 21)
+        self.assertEqual(config.BIASFX_MOD_TOGGLE_CC, 22)
+        self.assertEqual(config.BIASFX_BOOST_TOGGLE_CC, 23)
+        self.assertNotIn(config.BIASFX_BOOST_TOGGLE_CC, {config.VOLUME_CC, 10})
+
+    def test_fcb_live_effect_pedals_match_buttons_6_to_9(self):
+        self.assertEqual(config.FCB_PEDAL_6_VALUE, 16)
+        self.assertEqual(config.FCB_PEDAL_7_VALUE, 17)
+        self.assertEqual(config.FCB_PEDAL_8_VALUE, 18)
+        self.assertEqual(config.FCB_PEDAL_9_VALUE, 19)
+
     def test_volume_indexes_match_current_volume_list_shape(self):
         all_indexes = {
             config.DEV1_GUITAR_VOLUME_IDX,

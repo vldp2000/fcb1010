@@ -43,6 +43,7 @@ const mutations = {
         preset.volume = payload.volume
         preset.pan = payload.pan
         preset.muteflag = payload.muteflag
+        Vue.set(preset, 'boostflag', payload.boostflag || 0)
         preset.reverbflag = payload.reverbflag
         preset.delayflag = payload.delayflag
         preset.modeflag = payload.modeflag

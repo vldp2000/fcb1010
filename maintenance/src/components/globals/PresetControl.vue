@@ -54,9 +54,9 @@
               v-if="volume > 0"
               class="ma-0 pa-0 checkbox"
               dense hide-details
-              label="Mute"
+              label="Boost"
               :disabled="volume == 0"
-              v-model="songPreset.muteflag" />
+              v-model="songPreset.boostflag" />
             <v-checkbox
               v-if="volume > 0"
               :readonly="!editMode"
@@ -81,7 +81,7 @@
               :readonly="!editMode"
               class="ma-0 pa-0 checkbox"
               dense hide-details
-              label="Mode"
+              label="Mod"
               :disabled="volume == 0"
               v-model="songPreset.modeflag" />
           </div>
@@ -244,6 +244,7 @@ export default {
         volume: 0,
         pan: 0,
         muteflag: 0,
+        boostflag: 0,
         reverbflag: 0,
         delayflag: 0,
         modeflag: 0,
@@ -292,7 +293,7 @@ export default {
   watch: {
     presetControlData: function () {
       if (this.presetControlData && this.presetControlData.id > -1) {
-        Object.assign(this.songPreset, this.presetControlData)
+        Object.assign(this.songPreset, this.getDefaultSongPreset(), this.presetControlData)
         if (typeof this.songPreset !== 'undefined' && this.songPreset.refpreset > -1) {
           if (typeof this.instrumentList !== 'undefined' && this.instrumentList &&
             this.songPreset.refinstrument > 0) {
@@ -330,6 +331,26 @@ export default {
       // console.log(this.songPreset)
       // this.$store.dispatch('sendChangePresetVolumeMessage', payload)
       // }
+    },
+
+    getDefaultSongPreset () {
+      return {
+        id: -1,
+        refsong: -1,
+        refsongprogram: -1,
+        refinstrument: -1,
+        refinstrumentbank: -1,
+        refpreset: -1,
+        volume: 0,
+        pan: 0,
+        muteflag: 0,
+        boostflag: 0,
+        reverbflag: 0,
+        delayflag: 0,
+        modeflag: 0,
+        reverbvalue: 0,
+        delayvalue: 0
+      }
     },
 
     resetUsageState () {

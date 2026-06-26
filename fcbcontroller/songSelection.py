@@ -6,9 +6,11 @@ import dataHelper
 import midiOutput
 
 from config import (
-    DELAY_EFFECT_OFF_CC,
-    MOD_EFFECT_OFF_CC,
-    REVERB_EFFECT_OFF_CC,
+    BIASFX_EFFECT_TARGETS,
+    BIASFX_BOOST_TOGGLE_CC,
+    BIASFX_DELAY_TOGGLE_CC,
+    BIASFX_MOD_TOGGLE_CC,
+    BIASFX_REVERB_TOGGLE_CC,
     VOLUME_CC,
 )
 from midiOutput import scheduleVolumeReassert, sendCCMessage, sendPCMessage
@@ -35,9 +37,15 @@ gCurrentVolumeList = [0, 0, 0, 0]
 gCurrentDelayList = [0, 0, 0, 0]
 gCurrentReverbList = [0, 0, 0, 0]
 gCurrentModList = [0, 0, 0, 0]
+gCurrentBoostList = [0, 0, 0, 0]
 gInitialisationComplete = False
 
 midiOutput.setCurrentVolumeList(gCurrentVolumeList)
+
+EFFECT_DELAY = "delay"
+EFFECT_REVERB = "reverb"
+EFFECT_MOD = "mod"
+EFFECT_BOOST = "boost"
 
 
 def init(displayData, printDebug, resetSystemCommandCounter):
@@ -218,10 +226,12 @@ def setPreset(program, songPreset, idx):
             samePC = newPC == oldPC
 
             sendCCMessage(channel, VOLUME_CC, 0)
-            sendPCMessage(channel, newPC)
 
-            # Reserved for future app-specific preset/effect mapping.
-            # processProgramEffects(samePC, idx, channel, songPreset)
+            if not samePC:
+                sendPCMessage(channel, newPC)
+
+            processProgramEffects(samePC, idx, channel, songPreset)
+            processProgramBoost(samePC, idx, channel, songPreset)
 
             sendCCMessage(channel, VOLUME_CC, newVolume)
 
@@ -251,17 +261,17 @@ def processProgramEffects(samePCFlag, idx, channel, songPreset):
         oldReverb = int(gCurrentReverbList[idx])
         oldMod = int(gCurrentModList[idx])
 
-    delayFlag = int(songPreset['delayflag'])
+    delayFlag = int(songPreset.get('delayflag', 0))
     if delayFlag != oldDelay:
-        sendCCMessage(channel, DELAY_EFFECT_OFF_CC, 127)
+        sendCCMessage(channel, BIASFX_DELAY_TOGGLE_CC, 127)
 
-    reverbFlag = int(songPreset['reverbflag'])
+    reverbFlag = int(songPreset.get('reverbflag', 0))
     if reverbFlag != oldReverb:
-        sendCCMessage(channel, REVERB_EFFECT_OFF_CC, 127)
+        sendCCMessage(channel, BIASFX_REVERB_TOGGLE_CC, 127)
 
-    modeFlag = int(songPreset['modeflag'])
+    modeFlag = int(songPreset.get('modeflag', 0))
     if modeFlag != oldMod:
-        sendCCMessage(channel, MOD_EFFECT_OFF_CC, 127)
+        sendCCMessage(channel, BIASFX_MOD_TOGGLE_CC, 127)
 
     if idx == 0:
         _debug(
@@ -270,6 +280,79 @@ def processProgramEffects(samePCFlag, idx, channel, songPreset):
     gCurrentDelayList[idx] = delayFlag
     gCurrentReverbList[idx] = reverbFlag
     gCurrentModList[idx] = modeFlag
+    updateEffectDisplayStatus()
+
+
+def processProgramBoost(samePCFlag, idx, channel, songPreset):
+    if not _isBiasFXEffectTarget(channel, idx):
+        return
+
+    oldBoost = int(gCurrentBoostList[idx]) if samePCFlag else 0
+    boostFlag = int(songPreset.get('boostflag', 0))
+    if boostFlag != oldBoost:
+        sendCCMessage(channel, BIASFX_BOOST_TOGGLE_CC, 127)
+
+    gCurrentBoostList[idx] = boostFlag
+    updateEffectDisplayStatus()
+
+
+def toggleLiveDelayEffect():
+    toggleLiveEffect(EFFECT_DELAY)
+
+
+def toggleLiveReverbEffect():
+    toggleLiveEffect(EFFECT_REVERB)
+
+
+def toggleLiveModEffect():
+    toggleLiveEffect(EFFECT_MOD)
+
+
+def toggleLiveBoostEffect():
+    toggleLiveEffect(EFFECT_BOOST)
+
+
+def toggleLiveEffect(effectName):
+    effectList, effectCC = getEffectStateAndCC(effectName)
+    _masterChannel, masterIdx = BIASFX_EFFECT_TARGETS[0]
+    targetState = 0 if int(effectList[masterIdx]) > 0 else 1
+
+    for channel, idx in BIASFX_EFFECT_TARGETS:
+        if int(effectList[idx]) != targetState:
+            sendCCMessage(channel, effectCC, 127)
+            effectList[idx] = targetState
+
+    updateEffectDisplayStatus()
+    if gDisplayData:
+        gDisplayData.drawScreen()
+
+
+def getEffectStateAndCC(effectName):
+    if effectName == EFFECT_DELAY:
+        return gCurrentDelayList, BIASFX_DELAY_TOGGLE_CC
+    if effectName == EFFECT_REVERB:
+        return gCurrentReverbList, BIASFX_REVERB_TOGGLE_CC
+    if effectName == EFFECT_MOD:
+        return gCurrentModList, BIASFX_MOD_TOGGLE_CC
+    if effectName == EFFECT_BOOST:
+        return gCurrentBoostList, BIASFX_BOOST_TOGGLE_CC
+    raise ValueError(f"Unknown live effect {effectName}")
+
+
+def updateEffectDisplayStatus():
+    if not gDisplayData or not hasattr(gDisplayData, "setEffectStatus"):
+        return
+
+    _masterChannel, masterIdx = BIASFX_EFFECT_TARGETS[0]
+    delayStatus = int(gCurrentDelayList[masterIdx] > 0)
+    reverbStatus = int(gCurrentReverbList[masterIdx] > 0)
+    modStatus = int(gCurrentModList[masterIdx] > 0)
+    boostStatus = int(gCurrentBoostList[masterIdx] > 0)
+    gDisplayData.setEffectStatus(delayStatus, reverbStatus, modStatus, boostStatus)
+
+
+def _isBiasFXEffectTarget(channel, idx):
+    return (channel, idx) in BIASFX_EFFECT_TARGETS
 
 
 def _resetSystemCommandCounter():

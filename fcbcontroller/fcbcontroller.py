@@ -153,13 +153,18 @@ def getActionForReceivedMessage(midiMsg):
             elif msg2 == 14:  # Pedal4
                 clearScreenDebug()
                 songSelection.setSongProgram(3)
-
-            # elif msg2 == 18: #pedal 8 #Second Volume pedal sends messages to ch 1
-                # sendCCMessage(6,7, 111)
-                # gPedal2_Channel = gChannel1
-            # elif  msg2 == 19: #pedal 9 #Second Volume pedal sends messages to c
-                # sendCCMessage(6,7, 121)
-                # gPedal2_Channel = gChannel2
+            elif msg2 == FCB_PEDAL_6_VALUE:
+                clearScreenDebug()
+                songSelection.toggleLiveDelayEffect()
+            elif msg2 == FCB_PEDAL_7_VALUE:
+                clearScreenDebug()
+                songSelection.toggleLiveReverbEffect()
+            elif msg2 == FCB_PEDAL_8_VALUE:
+                clearScreenDebug()
+                songSelection.toggleLiveModEffect()
+            elif msg2 == FCB_PEDAL_9_VALUE:
+                clearScreenDebug()
+                songSelection.toggleLiveBoostEffect()
 
             elif msg2 == 15:  # Pedal5
                 clearScreenDebug()

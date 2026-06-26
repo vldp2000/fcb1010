@@ -20,6 +20,43 @@ The live controller currently runs on a Raspberry Pi 2 instead of a Raspberry Pi
 
 One important practical issue is MIDI pacing. The USB MIDI interface connected to the Raspberry Pi 2 can miss or mishandle commands if too many MIDI messages are sent too quickly, so the controller uses small delays between outgoing MIDI commands. Current timing targets are 2 ms after CC/note/small realtime messages, 2 ms after each expression-pedal volume CC message, and 20 ms after Program Change messages. After a preset Program Change, the controller also reasserts the preset volume after 150 ms because some apps/plugins apply their own preset volume shortly after loading. Expression-pedal movement cancels that pending reassert for the affected channel, so the pedal still wins when it is moved immediately after a preset change.
 
+## BiasFX Effect Control
+
+BiasFX effect power assignments are handled as MIDI toggle commands, not absolute ON/OFF commands. The controller therefore uses a strict baseline rule: every BiasFX preset managed by the controller must be saved in BiasFX with Delay, Reverb, and Modulation blocks switched OFF by default on both the iPad and MacBook.
+
+The song-program checkboxes in the UI represent the desired live state for that song program:
+
+- `Del` checked means Delay should be ON after the song program is selected.
+- `Rev` checked means Reverb should be ON after the song program is selected.
+- `Mod` checked means Modulation should be ON after the song program is selected.
+- `Boost` checked means Boost/Special should be ON after the song program is selected.
+
+The configured BiasFX power-toggle CCs are:
+
+- Delay: CC 20
+- Reverb: CC 21
+- Modulation: CC 22
+- Boost/Special: CC 23
+
+When a song program is selected, the controller first sets the app volume to 0. If the requested BiasFX Program Change is different from the currently loaded Program Change, it sends the new PC and assumes the BiasFX effect baseline is OFF/OFF/OFF/OFF. If the requested PC is the same as the currently loaded one, it skips the PC to avoid unnecessary latency and uses the controller's runtime effect state instead. It then sends only the toggle CCs required to reach the song-program checkbox state, and only after that restores the requested volume.
+
+This means effect toggles must not be resent blindly. Sending the same BiasFX effect CC twice would flip the effect back to the opposite state.
+
+FCB1010 pedals 6, 7, and 8 are live BiasFX effect controls:
+
+- Pedal 6 toggles Delay for both BiasFX apps.
+- Pedal 7 toggles Reverb for both BiasFX apps.
+- Pedal 8 toggles Modulation for both BiasFX apps.
+- Pedal 9 toggles live Boost/Special for both BiasFX apps.
+
+These live buttons affect BiasFX guitar targets only: iPad channel 6 and MacBook channel 4. SampleTank and Alchemy are intentionally ignored even if their song-program data contains effect flags. The iPad BiasFX target is treated as the primary/master sound, while the MacBook BiasFX target follows it when present. This matches the live workflow where the iPad sound is configured first and the MacBook can be mixed in as an additional beautifier layer.
+
+For live effect button presses, the controller toggles the iPad/master effect state and then makes the MacBook/secondary effect state match it. For example, if iPad Modulation is ON and MacBook Modulation is OFF, pressing pedal 8 targets Modulation OFF and sends CC 22 only to the iPad. If iPad Modulation is OFF and MacBook Modulation is ON, pressing pedal 8 targets Modulation ON and sends CC 22 only to the iPad. The live buttons are temporary performance overrides; selecting the same song program again restores the saved song-program checkbox state without resending the Program Change when the PC is unchanged.
+
+Boost is stored as `boostflag` in the song-program preset data. Existing song JSON files that do not contain `boostflag` are treated as `false` by default. The old `muteflag` field is left in the data for compatibility, but it is not processed by the Python live controller. BiasFX presets that should support Boost/Special should include the required block saved OFF by default. Pressing pedal 9 sends CC 23 as a live override to the BiasFX targets that need to change. Selecting a song program restores Boost to the saved `boostflag` state.
+
+The OLED top row shows `D`, `R`, `M`, and Boost status boxes based on the iPad/master BiasFX state. A plain `D`, `R`, or `M` means the master effect is ON. A crossed `D`, `R`, or `M` means that effect is OFF. Boost shows `B` when active and `X` when not boosted.
+
 ## Live MIDI Routing
 
 The controller drives four MIDI targets:
@@ -94,20 +131,22 @@ Each preset selected for a Song to have extra parameters for
   - Panorama (kept in data only; not used for live MIDI control)
   - Delay On/Off
   - Revereb On/Off 
-  - Mode On/Off
-  - Mute/Unmute Flag 
+  - Modulation On/Off
+  - Boost/Special On/Off
+  - Legacy Mute/Unmute flag, kept in old data but not used by the live controller
 
-Panorama and effect control flags are kept in the data model for possible future use, but the live controller does not currently send PAN or effect-control MIDI messages. These can be enabled later after the best preset/effect mapping is decided for BiasFX, SampleTank, and Alchemy.
+Panorama is kept in the data model but is not used for live MIDI control. Delay, Reverb, Modulation, and Boost flags are used for BiasFX effect toggles according to the baseline rules above. The historical JSON/API field name for Modulation is still `modeflag`.
 
 See the Image of FCB1010 in the list of files "fcb1010.png"
 
 ![FCB1010](/fcb1010.png)
 
 FCB1010 pedal usage:
- - pedals 6, 7, 8, 9 send the command about the program change within the selected song
- - pedals 5, 10 send the commands to change the current song
- - pedals 1,2,3,4 are reserved for changing the parameters of the currently selected presets
- - pedals UP, DOWN allow to switch between the GIGS . there are 7 banks reserver for 7 gig.
+ - pedals 1, 2, 3, 4 select programs A, B, C, and D within the current song
+ - pedals 5 and 10 change the current song
+ - pedals 6, 7, 8 toggle BiasFX Delay, Reverb, and Modulation live
+ - pedal 9 toggles live BiasFX Boost/Special
+ - pedals UP and DOWN allow switching between FCB1010 banks
 
 The current bank number is displayd on FCB1010 2 digit monitor 
 

@@ -53,6 +53,7 @@ export default {
         volume: 0,
         pan: 0,
         muteflag: 0,
+        boostflag: 0,
         reverbflag: 0,
         delayflag: 0,
         modeflag: 0,

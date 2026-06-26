@@ -77,6 +77,7 @@ export async function addNewSong (getters, song) {
         'volume': 0,
         'pan': 64,
         'muteflag': 0,
+        'boostflag': 0,
         'reverbflag': 0,
         'delayflag': 0,
         'modeflag': 0,
