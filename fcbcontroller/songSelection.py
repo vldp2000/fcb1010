@@ -252,6 +252,9 @@ def setPreset(program, songPreset, idx):
 
 
 def processProgramEffects(samePCFlag, idx, channel, songPreset):
+    if not _isBiasFXEffectTarget(channel, idx):
+        return
+
     oldDelay = 0
     oldReverb = 0
     oldMod = 0

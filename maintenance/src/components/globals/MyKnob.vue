@@ -137,10 +137,12 @@ export default {
     }
   },
   watch: {
-    immediate: true,
-    value (val) {
-      if (this.flag) this.setValue(val)
-      else this.setValue(val, this.speed)
+    value: {
+      immediate: true,
+      handler (val) {
+        if (this.flag) this.setValue(val)
+        else this.setValue(val, this.speed)
+      }
     },
     max (val) {
       if (val < this.min) {
@@ -299,9 +301,10 @@ export default {
     },
     setCurrentValue (val, bool) {
       if (bool) {
-        if (val < this.minimum || val > this.maximum) return false
-        if (this.isDiff(this.currentValue, val)) {
-          this.currentValue = val
+        const normalizedValue = Number(val)
+        if (normalizedValue < this.minimum || normalizedValue > this.maximum) return false
+        if (this.isDiff(this.currentValue, normalizedValue)) {
+          this.currentValue = normalizedValue
         }
         this.$emit('input', this.currentValue)
       }
@@ -320,6 +323,8 @@ export default {
       if (this.data) {
         return val
       }
+      const numericValue = Number(val)
+      const value = Number.isNaN(numericValue) ? this.min : numericValue
       const inRange = (v) => {
         if (v < this.min) {
           this.printError(`[VueSlideBar warn]: The value of the slider is ${val}, the minimum value is ${this.min}, the value of this slider can not be less than the minimum value`)
@@ -330,7 +335,7 @@ export default {
         }
         return v
       }
-      return inRange(val)
+      return inRange(value)
     },
     getValue () {
       return this.val

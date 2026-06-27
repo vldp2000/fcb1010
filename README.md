@@ -66,6 +66,8 @@ The controller drives four MIDI targets:
 3. BiasFX on MacBook - MIDI channel 4
 4. Alchemy on MacBook - MIDI channel 2
 
+Song-program preset slots use this same fixed order. The controller's current PC, volume, Delay, Reverb, Modulation, and Boost state arrays also use this order. Expression pedal 1 controls slots 1 and 3. Expression pedal 2 controls slots 2 and 4. BiasFX effect toggles are only processed for slots 1 and 3.
+
 The Raspberry Pi sends MIDI into Zoom UAC2 (1). Zoom UAC2 (1) forwards MIDI to the iPad over USB, and its MIDI cable output feeds Zoom UAC2 (2). Zoom UAC2 (2) then forwards MIDI to the MacBook over USB.
 
 MIDI filtering is handled by MidiFire running on the iPad.

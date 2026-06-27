@@ -443,22 +443,40 @@ class SongSelectionTest(unittest.TestCase):
 
     @patch.object(songSelection, "sendCCMessage")
     def test_process_program_effects_same_pc_compares_against_existing_state(self, sendCCMock):
-        songSelection.gCurrentDelayList[1] = 1
-        songSelection.gCurrentReverbList[1] = 1
-        songSelection.gCurrentModList[1] = 0
+        songSelection.gCurrentDelayList[2] = 1
+        songSelection.gCurrentReverbList[2] = 1
+        songSelection.gCurrentModList[2] = 0
 
         songSelection.processProgramEffects(
             True,
-            1,
-            config.DEV1_GUITAR_CHANNEL,
+            2,
+            config.DEV2_GUITAR_CHANNEL,
             {"delayflag": 1, "reverbflag": 0, "modeflag": 0},
         )
 
-        sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_REVERB_TOGGLE_CC, 127)
+        sendCCMock.assert_called_once_with(config.DEV2_GUITAR_CHANNEL, config.BIASFX_REVERB_TOGGLE_CC, 127)
+
+    @patch.object(songSelection, "sendCCMessage")
+    def test_process_program_effects_ignores_keyboard_targets(self, sendCCMock):
+        songSelection.gCurrentDelayList[:] = [0, 0, 0, 0]
+        songSelection.gCurrentReverbList[:] = [0, 0, 0, 0]
+        songSelection.gCurrentModList[:] = [0, 0, 0, 0]
+
+        songSelection.processProgramEffects(
+            False,
+            config.DEV1_KEYBOARD_VOLUME_IDX,
+            config.DEV1_KEYBOARD_CHANNEL,
+            {"delayflag": 1, "reverbflag": 1, "modeflag": 1},
+        )
+
+        sendCCMock.assert_not_called()
+        self.assertEqual(songSelection.gCurrentDelayList, [0, 0, 0, 0])
+        self.assertEqual(songSelection.gCurrentReverbList, [0, 0, 0, 0])
+        self.assertEqual(songSelection.gCurrentModList, [0, 0, 0, 0])
 
     @patch.object(songSelection, "sendCCMessage")
     def test_toggle_live_delay_effect_turns_on_both_biasfx_targets_only(self, sendCCMock):
-        songSelection.gCurrentDelayList[:] = [0, 0, 1, 1]
+        songSelection.gCurrentDelayList[:] = [0, 1, 0, 1]
 
         songSelection.toggleLiveDelayEffect()
 
@@ -475,7 +493,7 @@ class SongSelectionTest(unittest.TestCase):
 
     @patch.object(songSelection, "sendCCMessage")
     def test_toggle_live_reverb_effect_turns_off_both_biasfx_targets_only(self, sendCCMock):
-        songSelection.gCurrentReverbList[:] = [1, 1, 0, 0]
+        songSelection.gCurrentReverbList[:] = [1, 0, 1, 0]
 
         songSelection.toggleLiveReverbEffect()
 
@@ -502,12 +520,12 @@ class SongSelectionTest(unittest.TestCase):
 
     @patch.object(songSelection, "sendCCMessage")
     def test_toggle_live_delay_effect_turns_on_dev2_when_dev1_master_is_off(self, sendCCMock):
-        songSelection.gCurrentDelayList[:] = [0, 1, 0, 0]
+        songSelection.gCurrentDelayList[:] = [0, 0, 1, 0]
 
         songSelection.toggleLiveDelayEffect()
 
         sendCCMock.assert_called_once_with(config.DEV1_GUITAR_CHANNEL, config.BIASFX_DELAY_TOGGLE_CC, 127)
-        self.assertEqual(songSelection.gCurrentDelayList, [1, 1, 0, 0])
+        self.assertEqual(songSelection.gCurrentDelayList, [1, 0, 1, 0])
         self.assertIn(("setEffectStatus", 1, 0, 0, 0), self.display.calls)
 
     def test_update_effect_display_status_uses_dev1_master_state(self):
@@ -522,7 +540,7 @@ class SongSelectionTest(unittest.TestCase):
 
     @patch.object(songSelection, "sendCCMessage")
     def test_toggle_live_boost_effect_turns_on_both_biasfx_targets_only(self, sendCCMock):
-        songSelection.gCurrentBoostList[:] = [0, 0, 1, 1]
+        songSelection.gCurrentBoostList[:] = [0, 1, 0, 1]
 
         songSelection.toggleLiveBoostEffect()
 

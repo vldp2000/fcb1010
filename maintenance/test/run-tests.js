@@ -1373,6 +1373,47 @@ async function testGigControlPanelBusinessMethods () {
   assert.deepStrictEqual(context.dispatches.at(-1), { type: 'setSelectedGigId', payload: -1 })
 }
 
+function testGigControlPanelRoutesPedalHighlightsByInstrumentSlot () {
+  const source = readSrcFile('components/GigControlPanel.vue')
+  const expected = [
+    ":activeVolumePedal='checkVolumePedal1(0, 1)'",
+    ":activeVolumePedal='checkVolumePedal2(0, 1)'",
+    ":activeVolumePedal='checkVolumePedal1(0, 2)'",
+    ":activeVolumePedal='checkVolumePedal2(0, 2)'"
+  ]
+
+  for (let pattern of expected) {
+    assert(source.includes(pattern), `GigControlPanel.vue should route active pedal highlight with ${pattern}`)
+  }
+
+  const firstRow = source.slice(source.indexOf('id="Proram0"'), source.indexOf('id="Proram1"'))
+  assert(firstRow.indexOf("checkVolumePedal1(0, 1)") < firstRow.indexOf("checkVolumePedal2(0, 1)"))
+  assert(firstRow.indexOf("checkVolumePedal2(0, 1)") < firstRow.indexOf("checkVolumePedal1(0, 2)"))
+  assert(firstRow.indexOf("checkVolumePedal1(0, 2)") < firstRow.indexOf("checkVolumePedal2(0, 2)"))
+}
+
+function testMyKnobValueWatcherIsImmediateAndNormalizesValues () {
+  const component = loadVueComponent('components/globals/MyKnob.vue', {
+    '@/helpers/utils': {
+      singleOrDoubleRowClick () {}
+    }
+  }, {})
+
+  assert.strictEqual(component.watch.value.immediate, true)
+
+  const context = makeComponentContext(component, {
+    min: 0,
+    max: 127,
+    currentValue: 0,
+    data: null
+  })
+  context.setCurrentValue(context.limitValue('120'), true)
+  assert.strictEqual(context.currentValue, 120)
+
+  context.setCurrentValue(context.limitValue('200'), true)
+  assert.strictEqual(context.currentValue, 127)
+}
+
 function testVueComponentsUseLengthProperty () {
   const files = [
     'components/SongsPanel.vue',
@@ -1497,6 +1538,8 @@ async function run () {
     testPresetsPanelBusinessMethods,
     testPresetControlBusinessMethods,
     testGigControlPanelBusinessMethods,
+    testGigControlPanelRoutesPedalHighlightsByInstrumentSlot,
+    testMyKnobValueWatcherIsImmediateAndNormalizesValues,
     testVueComponentsUseLengthProperty,
     testGigControlPanelsDoNotDispatchPopulateGigSongsWithRawId,
     testGigControlPanelsDoNotAssumeCurrentFlagExists,

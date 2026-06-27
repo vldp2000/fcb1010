@@ -5,3 +5,4 @@ apiserver/node_modules/
 maintenance/node_modules/
 maintenance/dist/
 maintenance/build-output*.txt
+maintenance-dist-*.zip
