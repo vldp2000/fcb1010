@@ -43,6 +43,7 @@ Push-Location $DistRepoPath
 try {
   if (!(Test-Path ".git")) {
     git init
+    git branch -M main
     git remote add origin $RemoteUrl
   }
 
