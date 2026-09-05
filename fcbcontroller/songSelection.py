@@ -202,14 +202,18 @@ def setSongProgram(idx):
 def setPreset(program, songPreset, idx):
     id = songPreset['refpreset']
     preset = gPresetDict[str(id)]
-    _debug(f"Preset Selected  id={id} name ={preset['name']}")
 
     if preset:
         channel = int(gInstrumentChannelDict[str(songPreset['refinstrument'])])
         newPC = int(preset['midipc'])
+        oldPC = gCurrentPCList[idx]
 
         newVolume = 0
         if newPC == 0:
+            _debug(
+                f"Preset Selected slot={idx} instrument={songPreset['refinstrument']} "
+                f"channel={channel} presetId={id} preset={preset['name']} "
+                f"requestedPC={newPC} cachedPC={oldPC} action=SENT")
             sendCCMessage(channel, VOLUME_CC, newVolume)
             sendPCMessage(channel, newPC)
             sendCCMessage(channel, VOLUME_CC, newVolume)
@@ -222,8 +226,12 @@ def setPreset(program, songPreset, idx):
             if newVolume < 0:
                 newVolume = 0
 
-            oldPC = gCurrentPCList[idx]
             samePC = newPC == oldPC
+            action = "SKIPPED" if samePC else "SENT"
+            _debug(
+                f"Preset Selected slot={idx} instrument={songPreset['refinstrument']} "
+                f"channel={channel} presetId={id} preset={preset['name']} "
+                f"requestedPC={newPC} cachedPC={oldPC} action={action}")
 
             sendCCMessage(channel, VOLUME_CC, 0)
 
